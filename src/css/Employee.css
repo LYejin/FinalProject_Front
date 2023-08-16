@@ -1,0 +1,27 @@
+.rightSelectBoxPadding {
+  padding-right: 5px;
+}
+
+.leftSelectBoxPadding {
+  padding-left: 50px;
+}
+
+.lastSelectBoxTextPadding {
+  padding-left: 30px;
+  padding-right: 7px;
+}
+
+.selectBoxButtonWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: end;
+  margin-right: 10px;
+}
+
+.tableHeader {
+  width: 100%;
+  color: blue;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
