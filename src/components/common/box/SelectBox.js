@@ -11,7 +11,7 @@ const SelectBox = ({ data, width }) => {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl sx={{ minWidth: 120 }} size="small">
       <Select
         id="demo-select-small"
         value={age}
