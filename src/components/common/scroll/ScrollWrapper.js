@@ -2,7 +2,7 @@ import React from "react";
 
 const ScrollWrapper = ({ width, height, children }) => {
   const scrollWrapper = {
-    width: width,
+    minWidth: width,
     height: `calc(${height} - 30px)`,
     overflowY: "scroll",
     //border: "1px solid blue",

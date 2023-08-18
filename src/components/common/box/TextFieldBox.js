@@ -1,19 +1,13 @@
 import React from "react";
-import { TextField } from "../../../../node_modules/@mui/material/index";
 
-const TextFieldBox = ({ width }) => {
-  return (
-    <TextField
-      inputProps={{
-        style: {
-          height: "10px",
-          width: width,
-          fontSize: "0.8rem",
-        },
-      }}
-      size="small"
-    />
-  );
+const TextFieldBox = ({ width, value }) => {
+  const TextFieldBoxWrapper = {
+    height: "23px",
+    width: width,
+    fontSize: "0.8rem",
+  };
+
+  return <input style={TextFieldBoxWrapper} defaultValue={value} />;
 };
 
 export default TextFieldBox;

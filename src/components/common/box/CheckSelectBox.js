@@ -5,21 +5,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
 
-const ITEM_HEIGHT = 45;
+const ITEM_HEIGHT = 40;
 const ITEM_PADDING_TOP = 1;
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
+const names = ["재직", "휴직", "퇴직"];
 
 const CheckSelectBox = ({ width, data }) => {
   const [personName, setPersonName] = React.useState([]);
@@ -55,7 +44,7 @@ const CheckSelectBox = ({ width, data }) => {
           renderValue={(selected) => selected.join(", ")}
           MenuProps={MenuProps}
           sx={{
-            height: "30px",
+            height: "28px",
             fontSize: "0.8rem",
             margin: 0,
           }}
