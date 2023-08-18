@@ -5,6 +5,9 @@ import MainContentWrapper from "./MainContentWrapper";
 import RightContentWrapper from "./RightContentWrapper";
 import SelectBoxWrapper from "./SelectBoxWrapper";
 import SelectListWrapper from "./SelectListWrapper";
+import EmpSelectListWrapper from "../../feature/amaranth/employee/EmpSelectListWrapper";
+import WorkPlaceInfoWrapper from "../../feature/amaranth/Workplace/WorkPlaceInfoWrapper";
+import SelectWorkplaceListWrapper from "./SelectWorkplaceListWrapper";
 
 export {
   ContentWrapper,
@@ -14,4 +17,7 @@ export {
   RightContentWrapper,
   SelectBoxWrapper,
   SelectListWrapper,
+  EmpSelectListWrapper,
+  WorkPlaceInfoWrapper,
+  SelectWorkplaceListWrapper,
 };

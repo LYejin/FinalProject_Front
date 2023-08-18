@@ -4,7 +4,7 @@ import axios from "../../../../node_modules/axios/index";
 import CompanyModel from "../../../model/CompanyModel";
 
 
-const SelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet }) => {
+const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet }) => {
   const selectListWrapper = {
     position: "relative",
     width: width,
@@ -102,18 +102,18 @@ const SelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet
         <span className="listBoxSort">정렬순</span>
       </div>
       <div className="listWrapper">
-        {data.map((info) => (
-          <ListBoxItem
-            leftTop={info.username}
-            rightTop={info.join_DT}
-            leftBottom={info.kor_NM}
-          />
-        ))}
-        {/* {data.map((data) => (
-          <ListBoxItem data={data} />
-        ))} */}
-      </div>
-      <div className="footerBox">
+      {listData && listData.map((data) => (
+        <ListBoxItem
+          clickEmp = {clickEmp} 
+          key={data.co_CD} // 각 항목의 고유한 키를 지정해주어야 합니다.
+          leftTop={data.co_CD} // 데이터의 실제 필드 값을 사용하도록 수정
+          rightBotton={data.co_FG} // 데이터의 실제 필드 값을 사용하도록 수정
+          rightTop={data.co_NM} // 데이터의 실제 필드 값을 사용하도록 수정
+          leftBottom={data.ceo_NM} // 데이터의 실제 필드 값을 사용하도록 수정
+        />
+      ))}
+    </div>
+      <div className="footerBox" onClick={clickAddBtn}>
         <i class="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
@@ -122,6 +122,6 @@ const SelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet
 };
 
 
-export default SelectListWrapper;
+export default CompanySelectListWrapper;
 
 
