@@ -1,12 +1,24 @@
 import React from "react";
-import ListBoxItem from "./ListBoxItem";
+import ListBoxItem from "../../../layout/amaranth/ListBoxItem";
 
-const SelectListWrapper = ({ width, title, dataCount, data }) => {
+const EmpSelectListWrapper = ({
+  width,
+  title,
+  dataCount,
+  data,
+  clickBoxEvent,
+  clickInsertEvent,
+}) => {
   const selectListWrapper = {
     position: "relative",
     width: width,
     height: "100%",
     border: "1px solid #ebebeb",
+  };
+
+  const onClickInsertEmp = (e) => {
+    console.log("boxclick");
+    clickInsertEvent();
   };
 
   return (
@@ -19,20 +31,22 @@ const SelectListWrapper = ({ width, title, dataCount, data }) => {
       <div className="listWrapper">
         {data.map((info) => (
           <ListBoxItem
+            key={info.username}
             leftTop={info.username}
             rightTop={info.join_DT}
             leftBottom={info.kor_NM}
+            clickBoxEvent={clickBoxEvent}
           />
         ))}
         {/* {data.map((data) => (
           <ListBoxItem data={data} />
         ))} */}
       </div>
-      <div className="footerBox">
-        <i class="fa-solid fa-circle-plus"></i>추가
+      <div className="footerBox" onClick={onClickInsertEmp}>
+        <i class="fa-solid fa-circle-plus"></i>사원추가
       </div>
     </div>
   );
 };
 
-export default SelectListWrapper;
+export default EmpSelectListWrapper;
