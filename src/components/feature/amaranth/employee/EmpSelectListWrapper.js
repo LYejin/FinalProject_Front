@@ -7,18 +7,18 @@ const EmpSelectListWrapper = ({
   dataCount,
   data,
   clickBoxEvent,
-  clickInsertEvent,
+  clickInsertBoxEvent,
 }) => {
   const selectListWrapper = {
     position: "relative",
-    width: width,
+    minWidth: width,
     height: "100%",
     border: "1px solid #ebebeb",
   };
 
   const onClickInsertEmp = (e) => {
     console.log("boxclick");
-    clickInsertEvent();
+    clickInsertBoxEvent(data);
   };
 
   return (
@@ -33,7 +33,7 @@ const EmpSelectListWrapper = ({
           <ListBoxItem
             key={info.username}
             leftTop={info.username}
-            rightTop={info.join_DT}
+            rightTop={info.join_DT || "5555"}
             leftBottom={info.kor_NM}
             clickBoxEvent={clickBoxEvent}
           />
