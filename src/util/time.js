@@ -13,3 +13,17 @@ export const getNowTime = () => {
   let todayDate = now.getDate();
   return todayYear + "-" + todayMonth + "-" + todayDate;
 };
+
+export const getNowJoinTime = (data) => {
+  let todayYear = data.getFullYear();
+  let todayMonth =
+    data.getMonth() / 10 === 1
+      ? data.getMonth() + 1
+      : "0" + (data.getMonth() + 1);
+  let todayDate = data.getDate();
+  return todayYear + "-" + todayMonth + "-" + todayDate;
+};
+
+export const getJoinTime = (data) => {
+  return data.substr(0, 10);
+};
