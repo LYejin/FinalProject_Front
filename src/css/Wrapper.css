@@ -16,13 +16,15 @@
 
 /* SelectBoxWrapper.js */
 .selectBoxWrapper {
-  width: 100%;
+  min-width: 1100px;
   height: 45px;
   border: 2px solid #e6e6e6;
   display: flex;
   align-items: center;
   padding-left: 90px;
   margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 /* SelectListWrapper.js */
@@ -39,12 +41,12 @@
 }
 
 .listBoxtitle {
+  width: 60px;
   padding-left: 13px;
 }
 
 .listBoxDataCount {
   color: blue;
-  padding-left: 10px;
 }
 
 .listBoxSort {

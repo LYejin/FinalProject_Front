@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link } from '../../../node_modules/react-router-dom/dist/index';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './Login.css';
-import { setAccessToken } from '../../cookie/Cookie';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "../../../node_modules/react-router-dom/dist/index";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./Login.css";
+import { setAccessToken } from "../../cookie/Cookie";
 
 const LoginHookForm = () => {
   const { register, handleSubmit } = useForm();
@@ -14,22 +14,22 @@ const LoginHookForm = () => {
     console.log(data);
     await axios
       .post(
-        '/login',
+        "/login",
         {
           username: data.username,
           password: data.password,
         },
         {
-          headers: { 'Content-type': 'application/json' },
-        },
+          headers: { "Content-type": "application/json" },
+        }
       )
       .then((res) => {
         console.log(res);
-        console.log(res.headers['authorization']);
-        if (res.headers['authorization'] != null) {
-          setAccessToken(res.headers['authorization']);
+        console.log(res.headers["authorization"]);
+        if (res.headers["authorization"] != null) {
+          setAccessToken(res.headers["authorization"]);
         }
-        navigate('/Main');
+        navigate("/Employee");
       });
   };
 
@@ -50,7 +50,7 @@ const LoginHookForm = () => {
                   type="text"
                   name="username"
                   className="form-control"
-                  {...register('username')}
+                  {...register("username")}
                 />
               </div>
               <div className="input-form-box">
@@ -59,14 +59,14 @@ const LoginHookForm = () => {
                   type="password"
                   name="password"
                   className="form-control"
-                  {...register('password')}
+                  {...register("password")}
                 />
               </div>
               <div className="button-login-box">
                 <button
                   type="submit"
                   className="btn btn-primary btn-xs"
-                  style={{ width: '50%' }}
+                  style={{ width: "50%" }}
                 >
                   로그인
                 </button>
@@ -74,7 +74,7 @@ const LoginHookForm = () => {
                   <button
                     type="button"
                     className="btn btn-primary btn-xs"
-                    style={{ width: '200%' }}
+                    style={{ width: "200%" }}
                   >
                     회원가입
                   </button>

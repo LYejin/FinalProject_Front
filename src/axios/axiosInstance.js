@@ -1,22 +1,23 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   setAccessToken,
   getAccessToken,
   removeAccessToken,
-} from '../cookie/Cookie';
+} from "../cookie/Cookie";
 
+console.log("인스턴스 토큰:", getAccessToken());
 const accesstoken = getAccessToken();
 
 const baseConfig = {
   baseURL: process.env.API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 };
 
 const authConfig = {
-  baseURL: '',
-  //timeout: 100000,
+  baseURL: "",
+  // timeout: 1000, 요청 최대 대기 시간
   headers: {
     Authorization: accesstoken,
   },
@@ -49,22 +50,21 @@ export const authAxiosInstance = axios.create(authConfig);
 //응답 인터셉터
 authAxiosInstance.interceptors.response.use(
   (response) => {
-    console.log('타ㅁ탐', response.headers['authorization']);
+    console.log("타ㅁ탐", response.headers["authorization"]);
     // accessToken 갱신
-    if (response.headers['authorization'] !== undefined) {
-      setAccessToken(response.headers['authorization']);
+    if (response.headers["authorization"] !== undefined) {
+      setAccessToken(response.headers["authorization"]);
     }
     return response;
   },
   async (error) => {
-    console.log('에러 발생:', error);
-    console.log('error.response.status', error.response.status);
+    console.log("에러 발생:", error);
+    console.log("error.response.status", error.response.status);
     if (error.response.status === 403) {
-      removeAccessToken();
-      window.location.href = '/';
-      alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+      window.location.href = "/";
+      alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
     }
 
     throw error;
-  },
+  }
 );

@@ -19,7 +19,7 @@ import {
   MainContentWrapper,
   RightContentWrapper,
   SelectBoxWrapper,
-  SelectListWrapper,
+  SelectWorkplaceListWrapper,
   WorkPlaceInfoWrapper,
 } from "../../components/layout/amaranth/Index";
 import axios from "../../../node_modules/axios/index";
@@ -76,7 +76,7 @@ const TestGrid = () => {
             <Button data={"퇴사처리"} />
           </SelectBoxWrapper>
           <MainContentWrapper>
-            <SelectListWrapper
+            <SelectWorkplaceListWrapper
               width={"295px"}
               title={"회사"}
               dataCount={527}
