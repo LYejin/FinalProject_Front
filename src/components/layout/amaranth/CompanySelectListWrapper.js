@@ -1,7 +1,6 @@
-import React, { useRef, useState } from "react";
-import ListBoxItem from "./ListBoxItem";
+import React, { useState } from "react";
 import axios from "../../../../node_modules/axios/index";
-import CompanyModel from "../../../model/CompanyModel";
+import CompanyBoxItem from "./CompanyBoxItem";
 
 
 const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet }) => {
@@ -103,7 +102,7 @@ const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,form
       </div>
       <div className="listWrapper">
       {listData && listData.map((data) => (
-        <ListBoxItem
+        <CompanyBoxItem
           clickEmp = {clickEmp} 
           key={data.co_CD} // 각 항목의 고유한 키를 지정해주어야 합니다.
           leftTop={data.co_CD} // 데이터의 실제 필드 값을 사용하도록 수정
