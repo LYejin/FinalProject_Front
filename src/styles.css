@@ -4,6 +4,7 @@
 @import "./css/Header.css";
 @import "./css/Title.css";
 @import "./css/Wrapper.css";
+@import "./css/CompanyPage.css";
 
 :root {
   --bs-blue: #0d6efd;
