@@ -5,7 +5,7 @@ const ScrollWrapper = ({ width, height, children }) => {
     width: width,
     height: `calc(${height} - 30px)`,
     overflowY: "scroll",
-    border: "1px solid blue",
+    //border: "1px solid blue",
   };
   return <div style={scrollWrapper}>{children}</div>;
 };

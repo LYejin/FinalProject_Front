@@ -17,14 +17,14 @@ const SelectListWrapper = ({ width, title, dataCount, data }) => {
         <span className="listBoxSort">정렬순</span>
       </div>
       <div className="listWrapper">
-        <ListBoxItem
-          leftTop={"0020"}
-          rightTop={"안녕하세요"}
-          leftBottom={"반갑습니다"}
-        />
-        {/* {data.map((data) => (
-          <ListBoxItem data={data} />
-        ))} */}
+        {data.map((data) => (
+          <ListBoxItem
+            key={data.div_CD}
+            leftTop={data.div_CD}
+            rightTop={data.co_CD}
+            leftBottom={data.div_NM}
+          />
+        ))}
       </div>
       <div className="footerBox">
         <i class="fa-solid fa-circle-plus"></i>추가
