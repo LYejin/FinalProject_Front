@@ -1,9 +1,10 @@
 import React from "react";
 import ButtonMUI from "@mui/material/Button";
 
-const Button = ({ data, width, height }) => {
+const SubmitButton = ({ data, width, height }) => {
   return (
     <ButtonMUI
+      type="submit"
       variant="contained"
       size="small"
       sx={{
@@ -20,4 +21,4 @@ const Button = ({ data, width, height }) => {
   );
 };
 
-export default Button;
+export default SubmitButton;

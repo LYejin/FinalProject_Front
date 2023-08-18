@@ -5,6 +5,10 @@
 @import "./css/Title.css";
 @import "./css/Wrapper.css";
 @import "./css/CompanyPage.css";
+@import "./css/Employee.css";
+@import "./css/Box.css";
+@import "./css/Workplace.css";
+
 
 :root {
   --bs-blue: #0d6efd;
