@@ -250,7 +250,7 @@ const EmployeePage = () => {
                   <SubmitButton data={"저장"} width={"-10px"} height={30} />
                   <Button data={"삭제"} width={"-10px"} height={30} />
                 </div>
-                <ScrollWrapper width={"100%"} height={"600px"}>
+                <ScrollWrapper width={"700px"} height={"600px"}>
                   {/* 테이블 입력 */}
                   {/* 
                   {clickYN && !isLoading && (
