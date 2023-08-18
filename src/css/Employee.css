@@ -36,7 +36,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 30px;
+  margin-left: -5px;
 }
 
 .userAvater {
@@ -53,22 +53,22 @@
 
 .userImageLabel img {
   border: 2px solid #838383;
-  width: 10rem;
-  height: 10rem;
+  width: 87px;
+  height: 90px;
   cursor: pointer;
 }
 
 .imageButtonWrapper {
-  width: 40px;
-  height: 40px;
+  width: 27px;
+  height: 27px;
   background-color: white;
   border: 1px solid gray;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 7.5rem;
-  right: -2.8rem;
+  top: 3.95rem;
+  right: -1.9rem;
   cursor: pointer;
   font-size: 1.2rem;
 }

@@ -3,7 +3,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button, TextFieldBox } from "../../../common/Index";
 
-const EmpInfoBox = ({ data, register, setOpenDate, openDate }) => {
+const EmpInfoBox = ({
+  data,
+  register,
+  setOpenDate,
+  openDate,
+  selectedValue,
+  handleRadioChange,
+}) => {
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
   // 이미지
@@ -217,21 +224,28 @@ const EmpInfoBox = ({ data, register, setOpenDate, openDate }) => {
           <tr>
             <th className="headerCellStyle">성별</th>
             <td className="cellStyle">
-              <input
-                className="radioStyle"
-                type="radio"
-                name="W"
-                value="W"
-                defaultChecked
-              />{" "}
-              여성
-              <input
-                className="radioStyle"
-                type="radio"
-                name="M"
-                value="M"
-              />{" "}
-              남성
+              <div>
+                <label>
+                  <input
+                    className="radioStyle"
+                    type="radio"
+                    value="W"
+                    checked={selectedValue === "W"}
+                    onChange={handleRadioChange}
+                  />
+                  여자
+                </label>
+                <label>
+                  <input
+                    className="radioStyle"
+                    type="radio"
+                    value="M"
+                    checked={selectedValue === "M"}
+                    onChange={handleRadioChange}
+                  />
+                  남자
+                </label>
+              </div>
             </td>
             <th className="headerCellStyle">사용언어</th>
             <td className="cellStyle">
