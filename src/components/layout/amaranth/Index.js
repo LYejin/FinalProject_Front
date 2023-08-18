@@ -8,7 +8,8 @@ import SelectListWrapper from "./SelectListWrapper";
 import EmpSelectListWrapper from "../../feature/amaranth/employee/EmpSelectListWrapper";
 import WorkPlaceInfoWrapper from "../../feature/amaranth/Workplace/WorkPlaceInfoWrapper";
 import SelectWorkplaceListWrapper from "./SelectWorkplaceListWrapper";
-
+import CompanySelectListWrapper from "./CompanySelectListWrapper";
+import CompanyBoxItem from "./CompanyBoxItem";
 export {
   ContentWrapper,
   DetailContentWrapper,
@@ -20,4 +21,6 @@ export {
   EmpSelectListWrapper,
   WorkPlaceInfoWrapper,
   SelectWorkplaceListWrapper,
+  CompanySelectListWrapper,
+  CompanyBoxItem,
 };

@@ -1,6 +1,4 @@
 import React from "react";
-
-
 import CompanyModel from "../../model/CompanyModel";
 import {  
   Button,
@@ -22,9 +20,11 @@ import {
   DetailContentWrapper,
   MainContentWrapper,
   RightContentWrapper,
-  SelectBoxWrapper,
-  SelectListWrapper,} from './../../components/layout/amaranth/Index';
-import CompanyInputBox from "../../components/feature/amaranth/company/CompanyInputBox";
+  CompanySelectListWrapper,
+  SelectListWrapper,
+  SelectBoxWrapper,} from './../../components/layout/amaranth/Index';
+import {CompanyInputBox} from "../../components/feature/amaranth/Index";
+
 
 
 const CompanyPage = () => {
@@ -46,7 +46,7 @@ const CompanyPage = () => {
             <Button data={"퇴사처리"} /> 
           </SelectBoxWrapper>
           <MainContentWrapper>
-            <SelectListWrapper width={"295px"} title={"회사"} dataCount={527} formData={formData} formDataSet={formDataSet}/>
+            <CompanySelectListWrapper width={"295px"} title={"회사"} dataCount={527} formData={formData} formDataSet={formDataSet}/>
             <RightContentWrapper>
               <DetailTitle detailTitle={"기본정보"}></DetailTitle>
               <ScrollWrapper width={"100%"} height={"100%"}>
