@@ -1,14 +1,16 @@
 .rightSelectBoxPadding {
-  padding-right: 5px;
+  width: 40px;
 }
 
 .leftSelectBoxPadding {
-  padding-left: 50px;
+  margin-left: 50px;
+  width: 60px;
 }
 
 .lastSelectBoxTextPadding {
-  padding-left: 30px;
-  padding-right: 7px;
+  margin-left: 30px;
+  margin-right: 7px;
+  width: 100px;
 }
 
 .selectBoxButtonWrapper {
@@ -20,8 +22,66 @@
 
 .tableHeader {
   width: 100%;
-  color: blue;
+  color: black;
+  font-weight: 600;
   height: 40px;
   display: flex;
   align-items: center;
+}
+
+/* 이미지 업로드 */
+.userAvaterWrapper {
+  width: 100px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.userAvater {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userImage {
+  visibility: hidden;
+  width: 0px;
+}
+
+.userImageLabel img {
+  border: 2px solid #838383;
+  width: 10rem;
+  height: 10rem;
+  cursor: pointer;
+}
+
+.imageButtonWrapper {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 7.5rem;
+  right: -2.8rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.imageButtonWrapper:hover {
+  background-color: #8f8f8f;
+}
+
+.saveButton {
+  color: gray;
+  font-size: 30px;
+}
+
+.saveButton:hover {
+  color: #d1d1d1;
 }
