@@ -25,9 +25,9 @@ const SelectBox = ({ data, width }) => {
         <MenuItem value="">
           <em>전체</em>
         </MenuItem>
-        <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem>
+        <MenuItem value={10}>더존비즈온</MenuItem>
+        <MenuItem value={20}>더존비즈온2</MenuItem>
+        <MenuItem value={30}>더존비즈온3</MenuItem>
       </Select>
     </FormControl>
   );
