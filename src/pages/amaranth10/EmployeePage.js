@@ -36,10 +36,10 @@ const EmployeePage = () => {
   const [insertButtonClick, setInsertButtonClick] = useState(false);
   const [openDate, setOpenDate] = useState(new Date()); // 개업일 선택 상태 관리
   const [onChangeForm, setChangeForm] = useState(false); // 폼 변경 사항 확인
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedRadioValue, setSelectedRadioValue] = useState('W'); //radio 값
 
-  const handleRadioChange = event => {
-    setSelectedValue(event.target.value);
+  const handleRadioChange = e => {
+    setSelectedRadioValue(e.target.value);
   };
 
   const [data, setData] = useState({});
@@ -75,6 +75,7 @@ const EmployeePage = () => {
       console.log(response.data[0]);
       setData(response.data[0]);
       setEmpList(response.data);
+      setSelectedRadioValue(response.data.gender_FG);
     } catch (error) {
       console.error('Error fetching employee list:', error);
     }
@@ -101,6 +102,7 @@ const EmployeePage = () => {
         { kor_NM: kor_NM, username: username }
       );
       setData(response.data);
+      setSelectedRadioValue(response.data.gender_FG);
       setOpenDate(new Date(response.data.join_DT) || '');
       setIsLoading(false);
     } catch (error) {
@@ -121,6 +123,7 @@ const EmployeePage = () => {
     setOpenDate(new Date());
     setInsertButtonClick(true);
     setClickYN(false);
+    setSelectedRadioValue('W');
   };
 
   // 사원 remove 이벤트
@@ -165,22 +168,23 @@ const EmployeePage = () => {
         const response = await authAxiosInstance.post(
           'system/user/groupManage/employee/empInsert',
           {
-            username: data.username || '',
-            password: data.password || '',
-            kor_NM: data.kor_NM || '',
-            email_ADD: data.email_ADD || '',
-            gender_FG: selectedValue,
-            emp_CD: data.emp_CD || '',
+            emp_CD: data.emp_CD || null,
+            username: data.username || null,
+            password: data.password || null,
+            kor_NM: data.kor_NM || null,
+            email_ADD: data.email_ADD || null,
+            tel: data.tel || null,
+            gender_FG: selectedRadioValue,
+            join_DT: getJoinDT || null,
             enrl_FG: '0',
-            join_DT: getJoinDT || '',
-            personal_MAIL: data.personal_MAIL || '',
-            personal_MAIL_CP: data.personal_MAIL_CP || '',
-            salary_MAIL: data.salary_MAIL || '',
-            tel: data.tel || '',
-            home_TEL: data.home_TEL || '',
-            zipcode: data.zipcode || '',
-            addr: data.addr || '',
-            addr_NUM: data.addr_NUM || '',
+            personal_MAIL: data.personal_MAIL || null,
+            personal_MAIL_CP: data.personal_MAIL_CP || null,
+            salary_MAIL: data.salary_MAIL || null,
+            salary_MAIL_CP: data.salary_MAIL_CP || null,
+            home_TEL: data.home_TEL || null,
+            zipcode: data.zipcode || null,
+            addr: data.addr || null,
+            addr_NUM: data.addr_NUM || null,
           }
         );
         console.log(response.data);
@@ -251,7 +255,7 @@ const EmployeePage = () => {
                     register={register}
                     setOpenDate={setOpenDate}
                     openDate={openDate}
-                    selectedValue={selectedValue}
+                    selectedValue={selectedRadioValue}
                     handleRadioChange={handleRadioChange}
                   />
                 </ScrollWrapper>
