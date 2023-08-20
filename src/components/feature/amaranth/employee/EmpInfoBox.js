@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { Button, TextFieldBox } from "../../../common/Index";
+import React, { useRef, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Button } from '../../../common/Index';
+import EventButton from './../../../common/button/EventButton';
 
 const EmpInfoBox = ({
   data,
@@ -10,22 +11,25 @@ const EmpInfoBox = ({
   openDate,
   selectedValue,
   handleRadioChange,
+  onChangeOpenPost,
+  address,
+  addressDetail,
+  setImage,
+  imgFile,
 }) => {
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
   // 이미지
   const [imgPriviewFile, setImgPriviewFile] = useState();
-  const [imgFile, setImgFile] = useState();
-  const [image, setImage] = useState();
   const imgRef = useRef();
 
   // 개업일 선택 시 처리 함수
-  const handleOpenDateChange = (date) => {
+  const handleOpenDateChange = date => {
     setOpenDate(date);
   };
 
   // 폐업일 선택 시 처리 함수
-  const handleCloseDateChange = (date) => {
+  const handleCloseDateChange = date => {
     setCloseDate(date);
   };
 
@@ -78,13 +82,13 @@ const EmpInfoBox = ({
   // };
 
   // // 프로필 이미지 미리보기 기능
-  const imgPreview = (fileBlob) => {
+  const imgPreview = fileBlob => {
     const reader = new FileReader();
     reader.readAsDataURL(fileBlob);
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       reader.onload = () => {
         setImgPriviewFile(reader.result);
-        console.log("base64:", reader.result);
+        console.log('base64:', reader.result);
         resolve();
       };
     });
@@ -134,7 +138,7 @@ const EmpInfoBox = ({
                     className="userImage"
                     type="file"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={e => {
                       setImage(e.target.files[0]);
                       imgPreview(e.target.files[0]);
                     }}
@@ -147,8 +151,8 @@ const EmpInfoBox = ({
                       <img
                         src={
                           imgFile
-                            ? `data:image/;base64, ${imgFile}`
-                            : "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
+                            ? `data:image/jpeg;base64,${imgFile}`
+                            : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
                         }
                         alt="userImage"
                       />
@@ -171,7 +175,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                {...register("emp_CD")}
+                {...register('emp_CD')}
                 defaultValue={data.emp_CD}
               />
             </td>
@@ -182,7 +186,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                {...register("kor_NM")}
+                {...register('kor_NM')}
                 defaultValue={data.kor_NM}
               />
             </td>
@@ -193,7 +197,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                {...register("username")}
+                {...register('username')}
                 defaultValue={data.username}
               />
             </td>
@@ -202,7 +206,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                {...register("email_ADD")}
+                {...register('email_ADD')}
                 defaultValue={data.email_ADD}
               />
             </td>
@@ -213,7 +217,7 @@ const EmpInfoBox = ({
               <input
                 type="password"
                 className="reqInputStyle"
-                {...register("password")}
+                {...register('password')}
               />
             </td>
             <th className="headerCellStyle">결재 비밀번호</th>
@@ -230,7 +234,7 @@ const EmpInfoBox = ({
                     className="radioStyle"
                     type="radio"
                     value="W"
-                    checked={selectedValue === "W"}
+                    checked={selectedValue === 'W'}
                     onChange={handleRadioChange}
                   />
                   여자
@@ -240,7 +244,7 @@ const EmpInfoBox = ({
                     className="radioStyle"
                     type="radio"
                     value="M"
-                    checked={selectedValue === "M"}
+                    checked={selectedValue === 'M'}
                     onChange={handleRadioChange}
                   />
                   남자
@@ -258,14 +262,14 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="mailInputStyle"
-                {...register("personal_MAIL")}
+                {...register('personal_MAIL')}
                 defaultValue={data.personal_MAIL}
               />
               @
               <input
                 type="text"
                 className="mailInputStyle"
-                {...register("personal_MAIL_CP")}
+                {...register('personal_MAIL_CP')}
                 defaultValue={data.personal_MAIL_CP}
               />
             </td>
@@ -276,14 +280,14 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="mailInputStyle"
-                {...register("salary_MAIL")}
+                {...register('salary_MAIL')}
                 defaultValue={data.salary_MAIL}
               />
               @
               <input
                 type="text"
                 className="mailInputStyle"
-                {...register("salary_MAIL_CP")}
+                {...register('salary_MAIL_CP')}
                 defaultValue={data.salary_MAIL_CP}
               />
             </td>
@@ -294,7 +298,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="inputStyle"
-                {...register("tel")}
+                {...register('tel')}
                 defaultValue={data.tel}
               />
             </td>
@@ -303,7 +307,7 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="inputStyle"
-                {...register("home_TEL")}
+                {...register('home_TEL')}
                 defaultValue={data.home_TEL}
               />
             </td>
@@ -316,10 +320,13 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="addressInputStyle"
-                {...register("zipcode")}
-                defaultValue={data.zipcode}
+                {...register('zipcode')}
+                defaultValue={address ? address : data.zipcode}
               />
-              <Button data={"우편번호"}></Button>
+              <EventButton
+                data={'우편번호'}
+                onClickEvent={onChangeOpenPost}
+              ></EventButton>
             </td>
           </tr>
           <tr>
@@ -327,15 +334,15 @@ const EmpInfoBox = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                {...register("addr")}
-                defaultValue={data.addr}
+                {...register('addr')}
+                defaultValue={addressDetail ? addressDetail : data.addr}
               />
             </td>
             <td className="cellStyle">
               <input
                 type="text"
                 className="inputStyle"
-                {...register("addr_NUM")}
+                {...register('addr_NUM')}
                 defaultValue={data.addr_NUM}
               />
             </td>
