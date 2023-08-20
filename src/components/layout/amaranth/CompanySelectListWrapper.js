@@ -35,6 +35,7 @@ const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,form
     try {
       const empData = await asyncRequest("system/admin/groupManage/CompanyDetail/" + co_CD, 'get');
       formDataSet(empData.data);
+      console.log("상세:",empData.data)
     } catch (error) {
       console.error(error);
     }
@@ -45,13 +46,13 @@ const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,form
     console.log("안녕".formData);
     formDataSet(prevFormData => ({ 
       ...prevFormData, 
-      acct_FG:"" ,
+      acct_FG:"일반 의료기관" ,
       business:"" ,
       ceo_NM: "",
       ceo_TEL:"" ,
       close_DT: "",
       co_CD: "",
-      co_FG: "",
+      co_FG: "개인",
       co_NB: "",
       co_NM: "",
       co_NMK: "",
@@ -104,11 +105,11 @@ const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,form
       {listData && listData.map((data) => (
         <CompanyBoxItem
           clickEmp = {clickEmp} 
-          key={data.co_CD} // 각 항목의 고유한 키를 지정해주어야 합니다.
-          leftTop={data.co_CD} // 데이터의 실제 필드 값을 사용하도록 수정
-          rightBotton={data.co_FG} // 데이터의 실제 필드 값을 사용하도록 수정
-          rightTop={data.co_NM} // 데이터의 실제 필드 값을 사용하도록 수정
-          leftBottom={data.ceo_NM} // 데이터의 실제 필드 값을 사용하도록 수정
+          key={data.co_CD} 
+          leftTop={data.co_CD}
+          rightBotton={data.co_FG} 
+          rightTop={data.co_NM} 
+          leftBottom={data.ceo_NM} 
         />
       ))}
     </div>

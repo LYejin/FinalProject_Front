@@ -11,7 +11,7 @@ const EmpInfoBox = ({
   selectedValue,
   handleRadioChange,
 }) => {
-  const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
+const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
   // 이미지
   const [imgPriviewFile, setImgPriviewFile] = useState();

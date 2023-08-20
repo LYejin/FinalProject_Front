@@ -50,7 +50,7 @@ const CompanyPage = () => {
             <RightContentWrapper>
               <DetailTitle detailTitle={"기본정보"}></DetailTitle>
               <ScrollWrapper width={"100%"} height={"100%"}>
-                <CompanyInputBox formData={formData}/>
+                <CompanyInputBox formData={formData} formDataSet={formDataSet}/>
               </ScrollWrapper>
             </RightContentWrapper>
           </MainContentWrapper>

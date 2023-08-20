@@ -5,6 +5,8 @@ import { useCallback } from 'react';
 const CompanyModel = () => {
     const [formData, formDataSet] = useState();
     const [listData, listDataSet] = useState();
+    
+    
 
     const print = useCallback(() => {
         console.log("모델", formData);
