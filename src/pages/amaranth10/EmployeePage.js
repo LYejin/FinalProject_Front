@@ -119,7 +119,7 @@ const EmployeePage = () => {
     reset();
     resetData();
     setOpenDate(new Date());
-    setInsertButtonClick(true);
+    setInsertButtonClick(true); 
     setClickYN(false);
   };
 

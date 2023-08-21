@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import { ButtonW, DetailTitle, SelectBox } from "../../../common/Index";
-import "react-datepicker/dist/react-datepicker.css";
-const WorkPlaceInfoWrapper = () => {
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
+import 'react-datepicker/dist/react-datepicker.css';
+import { getNowJoinTime } from '../../../../util/time';
+
+const WorkPlaceInfoWrapper = ({ data }) => {
+  console.log(data);
   const [openDate, setOpenDate] = useState(null); // 개업일 선택 상태 관리
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
   // 개업일 선택 시 처리 함수
-  const handleOpenDateChange = (date) => {
-    setOpenDate(date);
+  const handleOpenDateChange = date => {
+    setOpenDate(getNowJoinTime(date));
   };
 
   // 폐업일 선택 시 처리 함수
-  const handleCloseDateChange = (date) => {
-    setCloseDate(date);
+  const handleCloseDateChange = date => {
+    setCloseDate(getNowJoinTime(date));
   };
 
   return (
@@ -22,7 +25,7 @@ const WorkPlaceInfoWrapper = () => {
         <tbody>
           <tr>
             <th className="headerCellStyle">회사선택</th>
-            <td className="cellStyle"></td>
+            <td className="cellStyle">회사이름추가필요</td>
             <th className="headerCellStyle">본점여부</th>
             <td className="cellStyle">
               <input
@@ -30,20 +33,20 @@ const WorkPlaceInfoWrapper = () => {
                 type="radio"
                 name="location"
                 value="본점"
-              />{" "}
+              />{' '}
               본점
               <input
                 className="radioStyle"
                 type="radio"
                 name="location"
                 value="지점"
-              />{" "}
+              />{' '}
               지점
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장코드</th>
-            <td className="cellStyle">사업장이야</td>
+            <td className="cellStyle"> {data.div_CD}</td>
             <th className="headerCellStyle">사용여부</th>
             <td className="cellStyle">
               <input
@@ -51,31 +54,31 @@ const WorkPlaceInfoWrapper = () => {
                 type="radio"
                 name="status"
                 value="사용"
-              />{" "}
+              />{' '}
               사용
               <input
                 className="radioStyle"
                 type="radio"
                 name="status"
                 value="미사용"
-              />{" "}
+              />{' '}
               미사용
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장명</th>
             <td colSpan="3" className="cellStyle">
-              <input type="text" className="reqInputStyle" />
+              <input
+                type="text"
+                className="reqInputStyle"
+                value={data.div_NM}
+              />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장 약칭</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                // placeholder={workplaceData[1].div_NMK}
-              />
+              <input type="text" className="inputStyle" value={data.div_NMK} />
             </td>
             <th className="headerCellStyle">조작도표시</th>
             <td className="cellStyle">
@@ -84,14 +87,14 @@ const WorkPlaceInfoWrapper = () => {
                 type="radio"
                 name="display"
                 value="표시"
-              />{" "}
+              />{' '}
               표시
               <input
                 className="radioStyle"
                 type="radio"
                 name="display"
                 value="미표시"
-              />{" "}
+              />{' '}
               미표시
             </td>
           </tr>
@@ -101,7 +104,7 @@ const WorkPlaceInfoWrapper = () => {
               <input
                 type="text"
                 className="reqInputStyle"
-                // placeholder={workplaceData[1].business}
+                value={data.business}
               />
             </td>
             <th className="headerCellStyle">종목</th>
@@ -109,18 +112,14 @@ const WorkPlaceInfoWrapper = () => {
               <input
                 type="text"
                 className="reqInputStyle"
-                // placeholder={workplaceData[1].jongmok}
+                value={data.jongmok}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">대표전화</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                // placeholder={workplaceData[1].div_TEL}
-              />
+              <input type="text" className="inputStyle" value={data.div_TEL} />
             </td>
             <th className="headerCellStyle">대표팩스</th>
             <td className="cellStyle">
@@ -130,11 +129,7 @@ const WorkPlaceInfoWrapper = () => {
           <tr>
             <th className="headerCellStyle">사업자번호</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                // placeholder={workplaceData[1].reg_NB}
-              />
+              <input type="text" className="inputStyle" value={data.reg_NB} />
             </td>
             <th className="headerCellStyle">법인번호</th>
             <td className="cellStyle">
@@ -166,7 +161,7 @@ const WorkPlaceInfoWrapper = () => {
               <input
                 type="text"
                 className="reqInputStyle"
-                // placeholder={workplaceData[1].mas_NM}
+                value={data.mas_NM}
               />
             </td>
             <th className="headerCellStyle">관할세무서</th>
@@ -186,12 +181,12 @@ const WorkPlaceInfoWrapper = () => {
               <input
                 type="text"
                 style={{
-                  border: "1px solid #ccc",
-                  height: "26px",
-                  background: "#fef4f4",
+                  border: '1px solid #ccc',
+                  height: '26px',
+                  background: '#fef4f4',
                 }}
               />
-              <ButtonW data={"우편번호"}></ButtonW>
+              <ButtonW data={'우편번호'}></ButtonW>
             </td>
           </tr>
           <tr>
@@ -199,7 +194,7 @@ const WorkPlaceInfoWrapper = () => {
               <input
                 type="text"
                 className="reqInputStyle"
-                // placeholder={workplaceData[1].div_ADDR}
+                value={data.div_ADDR}
               />
             </td>
             <td className="cellStyle">
@@ -217,7 +212,7 @@ const WorkPlaceInfoWrapper = () => {
       </table>
       <br />
       <div>
-        <DetailTitle detailTitle={"신고 관련 정보"}></DetailTitle>
+        <DetailTitle detailTitle={'신고 관련 정보'}></DetailTitle>
       </div>
       <table className="tableStyle">
         <tbody>
@@ -264,44 +259,44 @@ const WorkPlaceInfoWrapper = () => {
                 type="text"
                 className="inputStyle"
                 style={{
-                  border: "1px solid #ccc",
-                  height: "26px",
-                  width: "120px",
+                  border: '1px solid #ccc',
+                  height: '26px',
+                  width: '120px',
                 }}
               />
-              <ButtonW data={"우편번호"}></ButtonW>
+              <ButtonW data={'우편번호'}></ButtonW>
               <SelectBox
                 className="inputStyle"
-                style={{ verticalAlign: "middle" }}
+                style={{ verticalAlign: 'middle' }}
               />
               <input
                 type="text"
                 className="inputStyle"
                 style={{
-                  border: "1px solid #ccc",
-                  height: "26px",
-                  width: "120px",
-                  marginLeft: "10px",
+                  border: '1px solid #ccc',
+                  height: '26px',
+                  width: '120px',
+                  marginLeft: '10px',
                 }}
               />
               <input
                 type="text"
                 className="inputStyle"
                 style={{
-                  border: "1px solid #ccc",
-                  height: "26px",
-                  width: "120px",
-                  marginLeft: "10px",
+                  border: '1px solid #ccc',
+                  height: '26px',
+                  width: '120px',
+                  marginLeft: '10px',
                 }}
               />
               <input
                 type="text"
                 className="inputStyle"
                 style={{
-                  border: "1px solid #ccc",
-                  height: "26px",
-                  width: "120px",
-                  marginLeft: "10px",
+                  border: '1px solid #ccc',
+                  height: '26px',
+                  width: '120px',
+                  marginLeft: '10px',
                 }}
               />
             </td>
@@ -336,7 +331,7 @@ const WorkPlaceInfoWrapper = () => {
 
       <br />
       <div>
-        <DetailTitle detailTitle={"인감 정보"}></DetailTitle>
+        <DetailTitle detailTitle={'인감 정보'}></DetailTitle>
       </div>
       <table className="tableStyle">
         <tbody>
@@ -360,17 +355,17 @@ const WorkPlaceInfoWrapper = () => {
         </thead>
         <tbody>
           <tr>
-            <td className="imageCellStyle">
-              <img src="" alt="Image 1" />
+            <td className="imageCellStyle_Wokrplace">
+              <img src="1" alt="Image 1" />
             </td>
-            <td className="imageCellStyle">
-              <img src="" alt="Image 2" />
+            <td className="imageCellStyle_Wokrplace">
+              <img src="1" alt="Image 2" />
             </td>
-            <td className="imageCellStyle">
-              <img src="" alt="Image 3" />
+            <td className="imageCellStyle_Wokrplace">
+              <img src="1" alt="Image 3" />
             </td>
-            <td className="imageCellStyle">
-              <img src="" alt="Image 4" />
+            <td className="imageCellStyle_Workplace">
+              <img src="1" alt="Image 4" />
             </td>
           </tr>
         </tbody>

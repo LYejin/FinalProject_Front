@@ -1,12 +1,53 @@
-import React from "react";
-import ListBoxItem from "./ListBoxItem";
+import React, { useEffect, useState } from 'react';
+import ListBoxItem from './ListBoxItem';
+import axios from '../../../../node_modules/axios/index';
+import { WorkplaceListBoxItem } from './Index';
 
-const SelectListWrapper = ({ width, title, dataCount, data }) => {
+const SelectWorkplaceListWrapper = ({
+  width,
+  title,
+  dataCount,
+  data,
+  FetchWorkplaceDetailInfo,
+}) => {
   const selectListWrapper = {
-    position: "relative",
+    position: 'relative',
     width: width,
-    height: "100%",
-    border: "1px solid #ebebeb",
+    height: '100%',
+    border: '1px solid #ebebeb',
+  };
+  const [listData, listDataSet] = useState();
+  const asyncRequest = async (url, methodType, data, headers) => {
+    const cookies = document.cookie;
+    const token = cookies.split('=')[1];
+    try {
+      const response = await axios({
+        method: methodType,
+        url: url,
+        data: data,
+        withCredentials: true,
+        headers: { Authorization: token },
+      });
+      console.log(response.data);
+
+      return response;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  const fetchWorkplaceInfo = async divCd => {
+    try {
+      const response = await asyncRequest(
+        `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
+        'get',
+        null
+      );
+      console.log('Fetched workplace info:', response.data);
+    } catch (error) {
+      console.error('Error fetching workplace info:', error);
+    }
   };
 
   return (
@@ -17,20 +58,22 @@ const SelectListWrapper = ({ width, title, dataCount, data }) => {
         <span className="listBoxSort">정렬순</span>
       </div>
       <div className="listWrapper">
-        {data.map((data) => (
-          <ListBoxItem
+        {data.map(data => (
+          <WorkplaceListBoxItem
             key={data.div_CD}
             leftTop={data.div_CD}
             rightTop={data.co_CD}
             leftBottom={data.div_NM}
+            fetchWorkplaceInfo={fetchWorkplaceInfo}
+            handleFetchWorkplaceInfo={FetchWorkplaceDetailInfo}
           />
         ))}
       </div>
       <div className="footerBox">
-        <i class="fa-solid fa-circle-plus"></i>추가
+        <i className="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
   );
 };
 
-export default SelectListWrapper;
+export default SelectWorkplaceListWrapper;
