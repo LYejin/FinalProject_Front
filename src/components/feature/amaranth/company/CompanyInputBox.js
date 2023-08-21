@@ -10,7 +10,7 @@
 
 
 
-    const CompanyInputBox = ({formData}) => {
+    const CompanyInputBox = ({formData, ch_listData, ch_listDataSet }) => {
     const { register, handleSubmit, setValue, getValues, reset } = useForm();
 
     const labels = {
@@ -44,38 +44,25 @@
     const up_FormData = useRef(); //{ EST_DT: "", OPEN_DT: "", CLOSE_DT: "" }
     const [selectedDate, setSelectedDate] = useState();
 
-    const handleDateChange = (key, date) => {
-       
-            // if(formData["co_CD"] || getValues("CO_CD")){
-            //      setSelectedDate((prevState) => ({
-            //         ...prevState,
-            //         [key]: date
-            //         }));
-            // }else if(!formData["co_CD"]){
-            //     console.log("sdvnsdnovonsidvonsdiv");
-            //     setSelectedDate({ EST_DT: "", OPEN_DT: "", CLOSE_DT: "" });
-            // }
-            console.log(selectedDate);
-            setSelectedDate((prevState) => ({
-                ...prevState,
-                [key]: date
-                }));
-       
-    };
+   
     React.useEffect(() => {
-        
 
         if(formData){
-        console.log("마운틴",formData);
-        setSelectedImage(formData.pic_FILE_ID);
+            console.log("마운틴",formData);
+            setSelectedImage(formData.pic_FILE_ID);
+
+            setChFormData((prevChFormData) => ({
+                ...prevChFormData,
+                CO_CD : formData.co_CD, CEO_TEL: formData.ceo_TEL, PPL_NB:formData.ppl_NB, CO_NB:formData.co_NB
+            }));
     
         for (const key in formData) {
-        const uppercaseKey = key.toUpperCase();
-        up_FormData[uppercaseKey] = formData[key];
-        setValue(uppercaseKey, formData[key]);
+            const uppercaseKey = key.toUpperCase();
+            up_FormData[uppercaseKey] = formData[key];
+            setValue(uppercaseKey, formData[key]);
         }
-        console.log("qudrud",getValues());
-        setSelectedDate(getValues());//
+            console.log("qudrud",getValues());
+            setSelectedDate(getValues());//
     }
     }, [formData]);
 
@@ -95,6 +82,23 @@
         //reader.readAsArrayBuffer(blob);   //BLOB형으로 변환
         reader.readAsDataURL(blob);//base64형으로 변환
         });
+    };
+
+    const handleDateChange = (key, date) => {
+        
+        if(ch_formData.CO_CD !== ""){
+            setChFormData((prevChFormData) => ({
+                ...prevChFormData,
+                [key]: date,
+                }));
+        }
+
+        setSelectedDate((prevState) => ({
+            ...prevState,
+            [key]: date
+            }));
+        console.log(selectedDate);
+   
     };
     
     const handleImageChange = async (e) => {
@@ -133,7 +137,7 @@
         try {
         const n_formData = new FormData();
         for (const key in empdata) {
-            n_formData.append(key, empdata[key]);
+                n_formData.append(key, empdata[key]);
         }
         if (selectedImage) {
             const imageByteArray = selectedImage
@@ -153,6 +157,10 @@
             n_formData,
             {"Content-Type": "multipart/form-data"}, // 이부분 코드 확인하기
         );
+        if(response.data !== ""){
+            ch_listDataSet((prveData) => prveData+1)
+        }   
+
         console.log("전달된:",response.data);
         } catch (error) {
         console.error("데이터 전송 실패:", error);
@@ -160,43 +168,55 @@
     };
 
     const onChangeInput = (e) => {
-        const fieldName = e.target.name;
-        const fieldValue = e.target.value;
+        if(ch_formData.CO_CD !== ""){
+            const fieldName = e.target.name;
+            const fieldValue = e.target.value;
 
-        setChFormData((prevChFormData) => ({
-        ...prevChFormData,
-        [fieldName]: fieldValue,
-        }));
+            setChFormData((prevChFormData) => ({
+            ...prevChFormData,
+            [fieldName]: fieldValue,
+            }));
+        }
     };
     
     
     const updateBtnClick = async () => {
-        if(ch_formData.PIC_FILE_ID !== ""){
-            ch_formData.PIC_FILE_ID = selectedImage;
-        }
-        console.log(ch_formData.PIC_FILE_ID);
-        setChFormData((prevChFormData) => ({
-            ...prevChFormData,
-            CO_CD : formData.co_CD,
-        }));
 
-        try {
-            const response = await asyncRequest("system/admin/groupManage/CompanyUpdate", "put", ch_formData, {"Content-Type": "multipart/form-data"})
-            console.log(response.data);
-        } catch (error) {
-            console.log(error);        
+        if(ch_formData.CO_CD !== ""){
+            const formData = new FormData();
+
+            if(ch_formData.PIC_FILE_ID !== ""){
+                ch_formData.PIC_FILE_ID = selectedImage;
+            }
+
+            for (const key in ch_formData) {
+                formData.append(key, ch_formData[key]);
+            }
+
+            try {
+                const response = await asyncRequest("system/admin/groupManage/CompanyUpdate", "put", formData, {"Content-Type": "multipart/form-data"},)
+                console.log(response.data);
+                if(response.data !== ""){
+                    ch_listDataSet((prveData) => prveData+1)
+                }  
+            } catch (error) {
+                console.log(error);        
+            }
+            console.log(ch_formData);
         }
-        console.log(ch_formData);
+
     }
 
     const removeBtnClick = async () => {
-        reset();
+        
         const CO_CD = formData.co_CD;
         try {
-        const response = await asyncRequest("system/admin/groupManage/CompanyRemove/"+CO_CD, "put")
-        console.log(response.data);
+            const response = await asyncRequest("system/admin/groupManage/CompanyRemove/"+CO_CD, "put")
+            if(response.data !== ""){
+                ch_listDataSet((prveData) => prveData+1)
+            }   
         } catch (error) {
-        console.log(error);        
+            console.log(error);        
         }    
 
     }
@@ -230,20 +250,19 @@
         );
         } else if (key === "EST_DT" || key === "OPEN_DT" || key === "CLOSE_DT") {
 
-        const modifiedKey = key.split('_')[0].toLowerCase()+"_DT";
         const selectedDateValue = selectedDate && selectedDate[key] ?  new Date(selectedDate[key]) : null;
-        const formDataModifiedDate = formData && formData[modifiedKey] ? new Date(formData[modifiedKey]) : null;
+
         
         inputElement = (
             <DatePicker
-                selected={selectedDateValue} 
+            selected={selectedDateValue} 
             onChange={(date) => {
                 handleDateChange(key, getNowJoinTime(date))
-                setValue(key, date);
-            }
-            }
+                setValue(key, getNowJoinTime(date));
+            }}
             dateFormat="yyyy-MM-dd"
-            
+            calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
+            isClearable // 선택한 날짜를 지우는 기능 활성화
             />
         );
         } else if (key === "PIC_FILE_ID") {

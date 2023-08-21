@@ -3,7 +3,7 @@ import axios from "../../../../node_modules/axios/index";
 import CompanyBoxItem from "./CompanyBoxItem";
 
 
-const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet }) => {
+const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,formDataSet, ch_listData }) => {
   const selectListWrapper = {
     position: "relative",
     width: width,
@@ -88,7 +88,7 @@ const CompanySelectListWrapper = ({ width, title, dataCount, data, formData,form
     };
     fetchData();
 
-  },[])
+  },[ch_listData])
 
 
 
