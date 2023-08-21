@@ -28,7 +28,7 @@ import {CompanyInputBox} from "../../components/feature/amaranth/Index";
 
 
 const CompanyPage = () => {
-  const { formData, formDataSet } = CompanyModel();
+  const { formData, formDataSet, ch_listData, ch_listDataSet } = CompanyModel();
   return (
     <div className="sb-nav-fixed">
       <Header />
@@ -46,11 +46,11 @@ const CompanyPage = () => {
             <Button data={"퇴사처리"} /> 
           </SelectBoxWrapper>
           <MainContentWrapper>
-            <CompanySelectListWrapper width={"295px"} title={"회사"} dataCount={527} formData={formData} formDataSet={formDataSet}/>
+            <CompanySelectListWrapper width={"295px"} title={"회사"} dataCount={527} formData={formData} formDataSet={formDataSet} ch_listData ={ch_listData}/>
             <RightContentWrapper>
               <DetailTitle detailTitle={"기본정보"}></DetailTitle>
               <ScrollWrapper width={"100%"} height={"100%"}>
-                <CompanyInputBox formData={formData}/>
+                <CompanyInputBox formData={formData} formDataSet={formDataSet} ch_listData={ch_listData} ch_listDataSet={ch_listDataSet}/>
               </ScrollWrapper>
             </RightContentWrapper>
           </MainContentWrapper>
