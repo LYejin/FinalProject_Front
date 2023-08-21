@@ -36,7 +36,7 @@ import Modal from '../../components/common/modal/Modal';
 import EventButton from '../../components/common/button/EventButton';
 
 const EmployeePage = () => {
-  const { register, handleSubmit, reset, getValue } = useForm();
+  const { register, handleSubmit, reset, getValues } = useForm();
   const [empList, setEmpList] = useState([]);
   const [clickYN, setClickYN] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -137,7 +137,6 @@ const EmployeePage = () => {
       setIsLoading(true);
       setInsertButtonClick(false);
       setClickYN(true);
-      console.log(kor_NM, username);
       const response = await authAxiosInstance.post(
         'system/user/groupManage/employee/empDetail',
         { kor_NM: kor_NM, username: username }
@@ -173,19 +172,14 @@ const EmployeePage = () => {
   };
 
   // 사원 remove 이벤트
-  const onClickButtonRemoveEmp = async (kor_NM, username) => {
-    try {
-      console.log('clickemovebutton');
-      const response = await authAxiosInstance.post(
-        'system/user/groupManage/employee/empRemove',
-        { kor_NM, username }
-      );
-      console.log('hiii');
-      console.log(response.data);
-      setClickYN(false);
-    } catch (error) {
-      console.error('Error fetching employee list:', error);
-    }
+  const onClickButtonRemoveEmp = async () => {
+    const response = await authAxiosInstance.post(
+      'system/user/groupManage/employee/empRemove',
+      { kor_NM: data.kor_NM, username: data.username }
+    );
+    console.log('hiii');
+    console.log(response.data);
+    setClickYN(false);
   };
 
   // 사원 submit button(update, insert) 이벤트
@@ -215,8 +209,6 @@ const EmployeePage = () => {
       addr_NUM: data.addr_NUM || null,
     };
 
-    // const blob =
-    // console.log(blob);
     formData.append(
       'userData',
       new Blob([JSON.stringify(userData)], {
@@ -241,7 +233,7 @@ const EmployeePage = () => {
       console.log(data);
       const response = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empUpdate',
-        { formData }
+        formData
       );
       console.log('hiii');
       console.log(response.data);
