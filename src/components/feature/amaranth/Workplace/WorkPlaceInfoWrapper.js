@@ -4,7 +4,13 @@ import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getNowJoinTime } from '../../../../util/time';
 
-const WorkPlaceInfoWrapper = ({ data, inputRefs, isAdding, companyData }) => {
+const WorkPlaceInfoWrapper = ({
+  data,
+  inputRefs,
+  isAdding,
+  companyData,
+  onCompanyChange,
+}) => {
   console.log(data);
   const [openDate, setOpenDate] = useState(null); // 개업일 선택 상태 관리
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
@@ -18,11 +24,12 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs, isAdding, companyData }) => {
 
   // 폐업일 선택 시 처리 함수
   const handleCloseDateChange = date => {
-    setCloseDate(getNowJoinTime(date));
+    setCloseDate((date));
   };
 
   const handleCompanyChange = event => {
     setSelectedCompany(event.target.value);
+    onCompanyChange(event.target.value);
   };
 
   return (
@@ -76,7 +83,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs, isAdding, companyData }) => {
                 <input
                   type="text"
                   className="inputStyle"
-                  ref={inputRefs.divNMRef}
+                  ref={inputRefs.divCDRef}
                 />
               ) : data ? (
                 data.div_CD || ''

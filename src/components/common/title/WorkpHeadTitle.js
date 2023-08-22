@@ -1,6 +1,19 @@
 import React from 'react';
 import { Button, ButtonW } from '../Index';
-const WorkpHeadTitle = ({ titleName, onClick }) => {
+const WorkpHeadTitle = ({
+  titleName,
+  onClickInsert,
+  onClickUpdate,
+  isAdding,
+}) => {
+  const onClick = () => {
+    if (isAdding) {
+      onClickInsert();
+    } else {
+      onClickUpdate();
+    }
+  };
+
   return (
     <div className="detailTitleWrapper">
       <i class="fa-solid fa-circle"></i>

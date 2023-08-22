@@ -34,6 +34,7 @@ const WorkplacePage = () => {
   const [workplaceData, setWorkplaceData] = useState([]);
   const [workplaceDetailData, setWorkplaceDetailData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [selectedCompanyForInsert, setSelectedCompanyForInsert] = useState('');
 
   useEffect(() => {
     fetchCompanyData();
@@ -119,8 +120,6 @@ const WorkplacePage = () => {
 
   const createFormData = inputRefs => {
     const formData = new FormData();
-    formData.append('DIV_CD', inputRefs.divCDRef?.current?.value || '');
-    formData.append('CO_CD', '11'); // 회사코드 업데이트 필요 시 추가
     formData.append('DIV_NM', inputRefs.divNMRef?.current?.value || '');
     formData.append('DIV_ADDR', inputRefs.divADDRRef?.current?.value || '');
     formData.append('DIV_TEL', inputRefs.divTELRef?.current?.value || '');
@@ -134,7 +133,10 @@ const WorkplacePage = () => {
   };
 
   const handleInsert = async () => {
+    console.log('무엇일까요?', inputRefs.divCDRef.current.value);
     const formData = createFormData(inputRefs, workplaceDetailData);
+    formData.append('DIV_CD', inputRefs.divCDRef.current.value || '');
+    formData.append('CO_CD', selectedCompanyForInsert || '');
 
     for (const [key, value] of formData.entries()) {
       console.log(key, value);
@@ -167,7 +169,8 @@ const WorkplacePage = () => {
   const handleUpdate = async () => {
     console.log('update 함수 실행!');
     const formData = createFormData(inputRefs, workplaceDetailData);
-
+    formData.set('DIV_CD', workplaceDetailData.div_CD || '');
+    formData.set('CO_CD', workplaceDetailData.co_CD || '');
     try {
       const response = await axios.put(
         '/system/user/WorkplaceManage/update',
@@ -217,6 +220,10 @@ const WorkplacePage = () => {
     }
   };
 
+  const handleCompanyChangeForInsert = selectedValue => {
+    setSelectedCompanyForInsert(selectedValue);
+  };
+
   return (
     <div className="sb-nav-fixed">
       <Header />
@@ -251,7 +258,9 @@ const WorkplacePage = () => {
             <RightContentWrapper>
               <WorkpHeadTitle
                 titleName={'기본정보'}
-                onClick={handleInsert}
+                isAdding={isAdding}
+                onClickInsert={handleInsert}
+                onClickUpdate={handleUpdate}
               ></WorkpHeadTitle>
               <ScrollWrapper width={'100%'} height={'100%'}>
                 {workplaceDetailData && (
@@ -260,6 +269,7 @@ const WorkplacePage = () => {
                     inputRefs={inputRefs}
                     isAdding={isAdding}
                     companyData={companyData}
+                    onCompanyChange={setSelectedCompanyForInsert}
                   />
                 )}
               </ScrollWrapper>
