@@ -1,14 +1,14 @@
 /* GOOGLE FONTS */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
-@import "./css/MainSidebar.css";
-@import "./css/Header.css";
-@import "./css/Title.css";
-@import "./css/Wrapper.css";
-@import "./css/CompanyPage.css";
-@import "./css/Employee.css";
-@import "./css/Box.css";
-@import "./css/Workplace.css";
-
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+@import './css/MainSidebar.css';
+@import './css/Header.css';
+@import './css/Title.css';
+@import './css/Wrapper.css';
+@import './css/CompanyPage.css';
+@import './css/Employee.css';
+@import './css/Box.css';
+@import './css/Workplace.css';
+@import './css/Common.css';
 
 :root {
   --bs-blue: #0d6efd;
@@ -54,11 +54,11 @@
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
   --bs-body-bg-rgb: 255, 255, 255;
-  --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --bs-font-sans-serif: system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+    'Liberation Mono', 'Courier New', monospace;
   --bs-gradient: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.15),
@@ -95,7 +95,7 @@
   --white-color: #fff;
 
   /* Fuente y tipografia */
-  --body-font: "Poppins", sans-serif;
+  --body-font: 'Poppins', sans-serif;
   --normal-font-size: 1rem;
   --small-font-size: 0.875rem;
 

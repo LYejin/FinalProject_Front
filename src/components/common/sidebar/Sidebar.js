@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 
 const Sidebar = () => {
   return (
@@ -7,7 +8,7 @@ const Sidebar = () => {
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
           <div class="sb-sidenav-menu">
             <div class="nav">
-              <a
+              <div
                 className="nav-link collapsed"
                 href="#"
                 data-bs-toggle="collapse"
@@ -22,7 +23,7 @@ const Sidebar = () => {
                 <div class="sb-sidenav-collapse-arrow">
                   <i class="fas fa-angle-down"></i>
                 </div>
-              </a>
+              </div>
               <div
                 class="collapse"
                 id="collapseLayouts"
@@ -30,15 +31,15 @@ const Sidebar = () => {
                 data-bs-parent="#sidenavAccordion"
               >
                 <nav class="sb-sidenav-menu-nested nav">
-                  <a class="nav-link" href="layout-static.html">
+                  <Link class="nav-link" to="/Company">
                     회사관리
-                  </a>
-                  <a class="nav-link" href="layout-sidenav-light.html">
+                  </Link>
+                  <Link class="nav-link" to="/Workplace">
                     사업장관리
-                  </a>
+                  </Link>
                 </nav>
               </div>
-              <a
+              <div
                 class="nav-link collapsed"
                 href="#"
                 data-bs-toggle="collapse"
@@ -53,7 +54,7 @@ const Sidebar = () => {
                 <div class="sb-sidenav-collapse-arrow">
                   <i class="fas fa-angle-down"></i>
                 </div>
-              </a>
+              </div>
               <div
                 class="collapse"
                 id="collapsePages"
@@ -64,9 +65,9 @@ const Sidebar = () => {
                   class="sb-sidenav-menu-nested nav accordion"
                   id="sidenavAccordionPages"
                 >
-                  <a class="nav-link" href="#">
+                  <Link class="nav-link" to="/Employee">
                     상용직관리
-                  </a>
+                  </Link>
                 </nav>
               </div>
               <a class="nav-link" href="charts.html">
