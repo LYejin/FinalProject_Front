@@ -4,7 +4,7 @@ import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getNowJoinTime } from '../../../../util/time';
 
-const WorkPlaceInfoWrapper = ({ data }) => {
+const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
   console.log(data);
   const [openDate, setOpenDate] = useState(null); // 개업일 선택 상태 관리
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
@@ -71,14 +71,20 @@ const WorkPlaceInfoWrapper = ({ data }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                value={data.div_NM}
+                defaultValue={data.div_NM || ''}
+                ref={inputRefs.divNMRef}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장 약칭</th>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" value={data.div_NMK} />
+              <input
+                type="text"
+                className="inputStyle"
+                defaultValue={data.div_NMK || ''}
+                ref={inputRefs.divNMKRef}
+              />
             </td>
             <th className="headerCellStyle">조작도표시</th>
             <td className="cellStyle">
@@ -104,7 +110,8 @@ const WorkPlaceInfoWrapper = ({ data }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                value={data.business}
+                defaultValue={data.business || ''}
+                ref={inputRefs.businessRef}
               />
             </td>
             <th className="headerCellStyle">종목</th>
@@ -112,14 +119,20 @@ const WorkPlaceInfoWrapper = ({ data }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                value={data.jongmok}
+                defaultValue={data.jongmok || ''}
+                ref={inputRefs.jongmokRef}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">대표전화</th>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" value={data.div_TEL} />
+              <input
+                type="text"
+                className="inputStyle"
+                defaultValue={data.div_TEL || ''}
+                ref={inputRefs.divTELRef}
+              />
             </td>
             <th className="headerCellStyle">대표팩스</th>
             <td className="cellStyle">
@@ -129,7 +142,12 @@ const WorkPlaceInfoWrapper = ({ data }) => {
           <tr>
             <th className="headerCellStyle">사업자번호</th>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" value={data.reg_NB} />
+              <input
+                type="text"
+                className="inputStyle"
+                defaultValue={data.reg_NB || ''}
+                ref={inputRefs.regNBRef}
+              />
             </td>
             <th className="headerCellStyle">법인번호</th>
             <td className="cellStyle">
@@ -161,7 +179,8 @@ const WorkPlaceInfoWrapper = ({ data }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                value={data.mas_NM}
+                defaultValue={data.mas_NM || ''}
+                ref={inputRefs.masNMRef}
               />
             </td>
             <th className="headerCellStyle">관할세무서</th>
@@ -194,7 +213,8 @@ const WorkPlaceInfoWrapper = ({ data }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                value={data.div_ADDR}
+                defaultValue={data.div_ADDR}
+                ref={inputRefs.divADDRRef}
               />
             </td>
             <td className="cellStyle">

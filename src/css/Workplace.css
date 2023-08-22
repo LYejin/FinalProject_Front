@@ -86,4 +86,8 @@
     align-items: center;
     justify-content: center;
   }
+
+  .headTitleButton{
+    margin-left: auto;
+  }
   
