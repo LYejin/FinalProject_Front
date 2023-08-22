@@ -4,11 +4,13 @@ import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getNowJoinTime } from '../../../../util/time';
 
-const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
+const WorkPlaceInfoWrapper = ({ data, inputRefs, isAdding, companyData }) => {
   console.log(data);
   const [openDate, setOpenDate] = useState(null); // 개업일 선택 상태 관리
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
+  const [selectedCompany, setSelectedCompany] = useState('');
 
+  console.log('어서와', companyData);
   // 개업일 선택 시 처리 함수
   const handleOpenDateChange = date => {
     setOpenDate(getNowJoinTime(date));
@@ -19,13 +21,36 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
     setCloseDate(getNowJoinTime(date));
   };
 
+  const handleCompanyChange = event => {
+    setSelectedCompany(event.target.value);
+  };
+
   return (
     <div className="selectListWrapper">
       <table className="tableStyle">
         <tbody>
           <tr>
             <th className="headerCellStyle">회사선택</th>
-            <td className="cellStyle">회사이름추가필요</td>
+            <td className="cellStyle">
+              {isAdding ? (
+                <select
+                  id="companySelect"
+                  value={selectedCompany}
+                  onChange={handleCompanyChange}
+                >
+                  <option value="">선택하세요</option>
+                  {companyData.map(company => (
+                    <option key={company.value} value={company.value}>
+                      {company.label}
+                    </option>
+                  ))}
+                </select>
+              ) : data ? (
+                data.co_NM || ''
+              ) : (
+                ''
+              )}
+            </td>
             <th className="headerCellStyle">본점여부</th>
             <td className="cellStyle">
               <input
@@ -46,7 +71,19 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
           </tr>
           <tr>
             <th className="headerCellStyle">사업장코드</th>
-            <td className="cellStyle"> {data.div_CD}</td>
+            <td className="cellStyle">
+              {isAdding ? (
+                <input
+                  type="text"
+                  className="inputStyle"
+                  ref={inputRefs.divNMRef}
+                />
+              ) : data ? (
+                data.div_CD || ''
+              ) : (
+                ''
+              )}
+            </td>
             <th className="headerCellStyle">사용여부</th>
             <td className="cellStyle">
               <input
@@ -71,7 +108,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data.div_NM || ''}
+                defaultValue={data ? data.div_NM || '' : ''}
                 ref={inputRefs.divNMRef}
               />
             </td>
@@ -82,7 +119,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data.div_NMK || ''}
+                defaultValue={data ? data.div_NMK || '' : ''}
                 ref={inputRefs.divNMKRef}
               />
             </td>
@@ -110,7 +147,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data.business || ''}
+                defaultValue={data ? data.business || '' : ''}
                 ref={inputRefs.businessRef}
               />
             </td>
@@ -119,7 +156,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data.jongmok || ''}
+                defaultValue={data ? data.jongmok || '' : ''}
                 ref={inputRefs.jongmokRef}
               />
             </td>
@@ -130,7 +167,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data.div_TEL || ''}
+                defaultValue={data ? data.div_TEL || '' : ''}
                 ref={inputRefs.divTELRef}
               />
             </td>
@@ -145,7 +182,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data.reg_NB || ''}
+                defaultValue={data ? data.reg_NB || '' : ''}
                 ref={inputRefs.regNBRef}
               />
             </td>
@@ -179,7 +216,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data.mas_NM || ''}
+                defaultValue={data ? data.mas_NM || '' : ''}
                 ref={inputRefs.masNMRef}
               />
             </td>
@@ -213,7 +250,7 @@ const WorkPlaceInfoWrapper = ({ data, inputRefs }) => {
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data.div_ADDR}
+                defaultValue={data ? data.div_ADDR || '' : ''}
                 ref={inputRefs.divADDRRef}
               />
             </td>
