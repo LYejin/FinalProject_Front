@@ -9,6 +9,9 @@ const SelectWorkplaceListWrapper = ({
   dataCount,
   data,
   FetchWorkplaceDetailInfo,
+  handleAddClick,
+  setIsAdding,
+  isAdding,
 }) => {
   const selectListWrapper = {
     position: 'relative',
@@ -16,39 +19,39 @@ const SelectWorkplaceListWrapper = ({
     height: '100%',
     border: '1px solid #ebebeb',
   };
-  const [listData, listDataSet] = useState();
-  const asyncRequest = async (url, methodType, data, headers) => {
-    const cookies = document.cookie;
-    const token = cookies.split('=')[1];
-    try {
-      const response = await axios({
-        method: methodType,
-        url: url,
-        data: data,
-        withCredentials: true,
-        headers: { Authorization: token },
-      });
-      console.log(response.data);
+  // const [listData, listDataSet] = useState();
+  // const asyncRequest = async (url, methodType, data, headers) => {
+  //   const cookies = document.cookie;
+  //   const token = cookies.split('=')[1];
+  //   try {
+  //     const response = await axios({
+  //       method: methodType,
+  //       url: url,
+  //       data: data,
+  //       withCredentials: true,
+  //       headers: { Authorization: token },
+  //     });
+  //     console.log(response.data);
 
-      return response;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
+  //     return response;
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw e;
+  //   }
+  // };
 
-  const fetchWorkplaceInfo = async divCd => {
-    try {
-      const response = await asyncRequest(
-        `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
-        'get',
-        null
-      );
-      console.log('Fetched workplace info:', response.data);
-    } catch (error) {
-      console.error('Error fetching workplace info:', error);
-    }
-  };
+  // const fetchWorkplaceInfo = async divCd => {
+  //   try {
+  //     const response = await asyncRequest(
+  //       `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
+  //       'get',
+  //       null
+  //     );
+  //     console.log('Fetched workplace info:', response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching workplace info:', error);
+  //   }
+  // };
 
   return (
     <div style={selectListWrapper}>
@@ -64,12 +67,14 @@ const SelectWorkplaceListWrapper = ({
             leftTop={data.div_CD}
             rightTop={data.co_CD}
             leftBottom={data.div_NM}
-            fetchWorkplaceInfo={fetchWorkplaceInfo}
+            //fetchWorkplaceInfo={fetchWorkplaceInfo}
+            isAdding={isAdding}
+            setIsAdding={setIsAdding}
             handleFetchWorkplaceInfo={FetchWorkplaceDetailInfo}
           />
         ))}
       </div>
-      <div className="footerBox">
+      <div className="footerBox" onClick={handleAddClick}>
         <i className="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
