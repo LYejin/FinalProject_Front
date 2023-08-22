@@ -37,8 +37,8 @@ const WorkplacePage = () => {
   const [selectedCompanyForInsert, setSelectedCompanyForInsert] = useState('');
 
   useEffect(() => {
-    fetchCompanyData();
     fetchWorkplaceData();
+    FetchWorkplaceDetailInfo('001');
   }, []);
 
   const inputRefs = {
@@ -72,18 +72,6 @@ const WorkplacePage = () => {
     }
   };
 
-  // const FetchWorkplaceDetailInfo = async divCd => {
-  //   try {
-  //     const response = await axios.get(
-  //       `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
-  //       { headers: { Authorization: getAccessToken() } }
-  //     );
-  //     setWorkplaceDetailData(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching workplace info:', error);
-  //   }
-  // };
-
   const FetchWorkplaceDetailInfo = async divCd => {
     try {
       const response = await axios.get(
@@ -116,6 +104,7 @@ const WorkplacePage = () => {
 
   const handleAddClick = () => {
     setIsAdding(true);
+    fetchCompanyData();
   };
 
   const createFormData = inputRefs => {
@@ -220,10 +209,6 @@ const WorkplacePage = () => {
     }
   };
 
-  const handleCompanyChangeForInsert = selectedValue => {
-    setSelectedCompanyForInsert(selectedValue);
-  };
-
   return (
     <div className="sb-nav-fixed">
       <Header />
@@ -242,7 +227,7 @@ const WorkplacePage = () => {
             <SelectBox />
             {/* <CheckSelectBox width={"200px"} />
             <PasswordInputBox /> */}
-            <Button data={'퇴사처리'} />
+            <Button data={'검색'} />
           </SelectBoxWrapper>
           <MainContentWrapper>
             <SelectWorkplaceListWrapper
