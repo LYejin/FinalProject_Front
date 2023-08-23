@@ -6,25 +6,23 @@ import 'react-datepicker/dist/react-datepicker.css';
 const WorkPlaceInfoWrapper = ({
   data,
   inputRefs,
-  isAdding,
+  //isAdding,
   companyData,
   onCompanyChange,
   openDate,
   setOpenDate,
   closeDate,
   setCloseDate,
+  handleOpenDateChange,
+  handleCloseDateChange,
+  onChangeOpenPost,
+  address,
+  addressDetail,
 }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
-
-  //console.log('어서와', companyData);
-  // 개업일 선택 시 처리 함수
-  const handleOpenDateChange = date => {
-    setOpenDate(date);
-  };
-
-  const handleCloseDateChange = date => {
-    setCloseDate(date);
-  };
+  console.log(data);
+  console.log('왜웆ㄴ두', address);
+  console.log('OIOIOIOIOI', addressDetail);
 
   const handleCompanyChange = event => {
     setSelectedCompany(event.target.value);
@@ -36,10 +34,11 @@ const WorkPlaceInfoWrapper = ({
       <table className="tableStyle">
         <tbody>
           <tr>
-            <th className="headerCellStyle">회사선택</th>
+            <th className="headerCellStyle2">회사선택</th>
             <td className="cellStyle">
-              {isAdding ? (
+              {data.isAdding ? (
                 <select
+                  className="selectListStyle"
                   id="companySelect"
                   value={selectedCompany}
                   onChange={handleCompanyChange}
@@ -47,7 +46,7 @@ const WorkPlaceInfoWrapper = ({
                   <option value="">선택하세요</option>
                   {companyData.map(company => (
                     <option key={company.value} value={company.value}>
-                      {company.label}
+                      {company.value}. {company.label}
                     </option>
                   ))}
                 </select>
@@ -74,9 +73,9 @@ const WorkPlaceInfoWrapper = ({
             </td>
           </tr>
           <tr>
-            <th className="headerCellStyle">사업장코드</th>
+            <th className="headerCellStyle2">사업장코드</th>
             <td className="cellStyle">
-              {isAdding ? (
+              {data.isAdding ? (
                 <input
                   type="text"
                   className="inputStyle"
@@ -182,7 +181,13 @@ const WorkPlaceInfoWrapper = ({
             </td>
             <th className="headerCellStyle">대표팩스</th>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <input
+                type="text"
+                className="inputStyle"
+                defaultValue={data ? data.div_FAX || '' : ''}
+                key={data.div_FAX}
+                ref={inputRefs.divFAXRef}
+              />
             </td>
           </tr>
           <tr>
@@ -198,7 +203,13 @@ const WorkPlaceInfoWrapper = ({
             </td>
             <th className="headerCellStyle">법인번호</th>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <input
+                type="text"
+                className="inputStyle"
+                defaultValue={data ? data.cop_NB || '' : ''}
+                key={data.cop_NB}
+                ref={inputRefs.copNBRef}
+              />
             </td>
           </tr>
           <tr>
@@ -253,8 +264,20 @@ const WorkPlaceInfoWrapper = ({
                   height: '26px',
                   background: '#fef4f4',
                 }}
+                defaultValue={
+                  address
+                    ? address
+                    : data && data.div_ADDR
+                    ? data.div_ADDR.split('/')[0]
+                    : ''
+                }
+                key={data.div_ADDR}
+                ref={inputRefs.divADDRCodeRef}
               />
-              <ButtonW data={'우편번호'}></ButtonW>
+              <ButtonW
+                data={'우편번호'}
+                onClickEvent={onChangeOpenPost}
+              ></ButtonW>
             </td>
           </tr>
           <tr>
@@ -262,20 +285,34 @@ const WorkPlaceInfoWrapper = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data ? data.div_ADDR || '' : ''}
+                defaultValue={
+                  addressDetail
+                    ? addressDetail
+                    : data && data.div_ADDR
+                    ? data.div_ADDR.split('/')[1]
+                    : ''
+                }
                 key={data.div_ADDR}
                 ref={inputRefs.divADDRRef}
               />
             </td>
             <td className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <input
+                type="text"
+                className="inputStyle"
+                placeholder="직접입력"
+                defaultValue={
+                  data ? (data.div_ADDR ? data.div_ADDR.split('/')[2] : '') : ''
+                }
+                ref={inputRefs.divADDRDetailRef}
+              />
             </td>
           </tr>
 
           <tr>
             <th className="headerCellStyle">정렬</th>
             <td colSpan="3" className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <input type="text" className="inputStyle" disabled />
             </td>
           </tr>
         </tbody>
@@ -335,10 +372,10 @@ const WorkPlaceInfoWrapper = ({
                 }}
               />
               <ButtonW data={'우편번호'}></ButtonW>
-              <SelectBox
+              {/* <SelectBox
                 className="inputStyle"
                 style={{ verticalAlign: 'middle' }}
-              />
+              /> */}
               <input
                 type="text"
                 className="inputStyle"
@@ -443,5 +480,4 @@ const WorkPlaceInfoWrapper = ({
     </div>
   );
 };
-
 export default WorkPlaceInfoWrapper;
