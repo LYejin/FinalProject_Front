@@ -132,3 +132,8 @@
   width: 100%;
   height: calc(100% - 50px);
 }
+
+.selected {
+  background-color: #e6f5ff;
+  border: 1px solid #4aa1f2;
+}

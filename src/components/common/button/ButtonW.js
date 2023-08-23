@@ -18,9 +18,18 @@ const CustomButton = styled(ButtonMUI)({
   },
 });
 
-const ButtonW = ({ data }) => {
+const ButtonW = ({ data, onClickEvent }) => {
+  const onClickEventFunction = () => {
+    console.log('hiii');
+    onClickEvent();
+  };
+
   return (
-    <CustomButton variant="contained" size="small">
+    <CustomButton
+      variant="contained"
+      size="small"
+      onClick={onClickEventFunction}
+    >
       {data}
     </CustomButton>
   );

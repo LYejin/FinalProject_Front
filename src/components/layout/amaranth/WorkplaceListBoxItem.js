@@ -4,25 +4,37 @@ const WorkplaceListBoxItem = ({
   leftTop,
   rightTop,
   leftBottom,
-  //fetchWorkplaceInfo,
   isAdding,
-  setIsAdding,
   handleFetchWorkplaceInfo,
+  selectedItemIndex,
+  setSelectedItemIndex,
+  index,
 }) => {
-  const onClickDetailWorkpInfo = async e => {
-    e.preventDefault(); // 클릭 이벤트의 기본 동작 막음
-    e.stopPropagation(); // 이벤트 전파 중지
-    console.log('onClickDetailWorkpInfo 시작');
+  const isSelected = index === selectedItemIndex;
+
+  const onClickDetailWorkpInfo = async () => {
     if (isAdding) {
-      console.log('isAdding true, setIsAdding(false)');
-      setIsAdding(false);
+      const userConfirmed = window.confirm(
+        '작성중인 내용이 있습니다. 취소하시겠습니까?'
+      );
+      if (userConfirmed) {
+        setSelectedItemIndex(index);
+        handleFetchWorkplaceInfo(leftTop);
+        return;
+      } else {
+        return;
+      }
     }
-    console.log('handleFetchWorkplaceInfo 호출');
+    setSelectedItemIndex(index);
     handleFetchWorkplaceInfo(leftTop);
-    console.log('onClickDetailWorkpInfo 종료');
   };
   return (
-    <div className="listBoxItem" onClick={onClickDetailWorkpInfo}>
+    <div
+      className={`listBoxItem ${isSelected ? 'selected' : ''}`}
+      onClick={() => {
+        onClickDetailWorkpInfo();
+      }}
+    >
       <div className="flexWrapper">
         <span className="leftContent">{leftTop}</span>
         <span className="rightContent">{rightTop}</span>
