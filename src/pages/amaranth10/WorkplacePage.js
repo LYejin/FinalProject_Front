@@ -28,6 +28,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { getAccessToken } from '../../cookie/Cookie';
 import Swal from 'sweetalert2';
+import { parseDateString } from '../../util/time';
 
 const WorkplacePage = () => {
   const [companyData, setCompanyData] = useState([]);
@@ -35,6 +36,8 @@ const WorkplacePage = () => {
   const [workplaceDetailData, setWorkplaceDetailData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [selectedCompanyForInsert, setSelectedCompanyForInsert] = useState('');
+  const [openDate, setOpenDate] = useState(new Date());
+  const [closeDate, setCloseDate] = useState(null);
 
   useEffect(() => {
     fetchWorkplaceData();
@@ -80,6 +83,8 @@ const WorkplacePage = () => {
       );
 
       const fetchedWorkplaceDetailData = response.data;
+      const openDate = parseDateString(fetchedWorkplaceDetailData.open_DT);
+      const closeDate = parseDateString(fetchedWorkplaceDetailData.close_DT);
 
       try {
         const companyResponse = await axios.get(
@@ -94,6 +99,8 @@ const WorkplacePage = () => {
         };
 
         setWorkplaceDetailData(updatedWorkplaceDetailData);
+        setOpenDate(new Date(openDate) || '');
+        setCloseDate(new Date(closeDate) || '');
       } catch (error) {
         console.error('Error fetching company detail:', error);
       }
@@ -105,35 +112,44 @@ const WorkplacePage = () => {
   const handleAddClick = () => {
     setIsAdding(true);
     fetchCompanyData();
+    setOpenDate('');
+    setCloseDate('');
   };
 
-  const createFormData = inputRefs => {
-    const formData = new FormData();
-    formData.append('DIV_NM', inputRefs.divNMRef?.current?.value || '');
-    formData.append('DIV_ADDR', inputRefs.divADDRRef?.current?.value || '');
-    formData.append('DIV_TEL', inputRefs.divTELRef?.current?.value || '');
-    formData.append('REG_NB', inputRefs.regNBRef?.current?.value || '');
-    formData.append('DIV_TO_CD', '121'); // 업태코드 업데이트 필요 시 추가
-    formData.append('DIV_NMK', inputRefs.divNMKRef?.current?.value || '');
-    formData.append('BUSINESS', inputRefs.businessRef?.current?.value || '');
-    formData.append('JONGMOK', inputRefs.jongmokRef?.current?.value || '');
-    formData.append('MAS_NM', inputRefs.masNMRef?.current?.value || '');
-    return formData;
+  const createWorkplaceData = (
+    inputRefs,
+    workplaceDetailData,
+    div_CD,
+    co_CD
+  ) => {
+    return {
+      div_CD: div_CD || '',
+      co_CD: co_CD || '',
+      div_NM: inputRefs.divNMRef?.current?.value || '',
+      div_ADDR: inputRefs.divADDRRef?.current?.value || '',
+      div_TEL: inputRefs.divTELRef?.current?.value || '',
+      reg_NB: inputRefs.regNBRef?.current?.value || '',
+      div_TO_CD: '121', // 업태코드 업데이트 필요 시 추가
+      div_NMK: inputRefs.divNMKRef?.current?.value || '',
+      business: inputRefs.businessRef?.current?.value || '',
+      jongmok: inputRefs.jongmokRef?.current?.value || '',
+      mas_NM: inputRefs.masNMRef?.current?.value || '',
+    };
   };
 
   const handleInsert = async () => {
-    console.log('무엇일까요?', inputRefs.divCDRef.current.value);
-    const formData = createFormData(inputRefs, workplaceDetailData);
-    formData.append('DIV_CD', inputRefs.divCDRef.current.value || '');
-    formData.append('CO_CD', selectedCompanyForInsert || '');
+    const data = createWorkplaceData(
+      inputRefs,
+      workplaceDetailData,
+      inputRefs.divCDRef.current.value,
+      selectedCompanyForInsert
+    );
 
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
+    console.log(data);
     try {
       const response = await axios.post(
         '/system/user/WorkplaceManage/insert',
-        formData,
+        data,
         { headers: { Authorization: getAccessToken() } }
       );
 
@@ -157,13 +173,16 @@ const WorkplacePage = () => {
 
   const handleUpdate = async () => {
     console.log('update 함수 실행!');
-    const formData = createFormData(inputRefs, workplaceDetailData);
-    formData.set('DIV_CD', workplaceDetailData.div_CD || '');
-    formData.set('CO_CD', workplaceDetailData.co_CD || '');
+    const data = createWorkplaceData(
+      inputRefs,
+      workplaceDetailData,
+      workplaceDetailData.div_CD,
+      workplaceDetailData.co_CD
+    );
     try {
       const response = await axios.put(
         '/system/user/WorkplaceManage/update',
-        formData,
+        data,
         { headers: { Authorization: getAccessToken() } }
       );
 
@@ -255,6 +274,10 @@ const WorkplacePage = () => {
                     isAdding={isAdding}
                     companyData={companyData}
                     onCompanyChange={setSelectedCompanyForInsert}
+                    openDate={openDate}
+                    setOpenDate={setOpenDate}
+                    closeDate={closeDate}
+                    setCloseDate={setCloseDate}
                   />
                 )}
               </ScrollWrapper>
