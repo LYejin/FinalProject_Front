@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getNowJoinTime } from '../../../../util/time';
 
 const WorkPlaceInfoWrapper = ({
   data,
@@ -10,19 +9,19 @@ const WorkPlaceInfoWrapper = ({
   isAdding,
   companyData,
   onCompanyChange,
+  openDate,
+  setOpenDate,
+  closeDate,
+  setCloseDate,
 }) => {
-  console.log(data);
-  const [openDate, setOpenDate] = useState(null); // 개업일 선택 상태 관리
-  const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
   const [selectedCompany, setSelectedCompany] = useState('');
 
-  console.log('어서와', companyData);
+  //console.log('어서와', companyData);
   // 개업일 선택 시 처리 함수
   const handleOpenDateChange = date => {
-    setOpenDate(getNowJoinTime(date));
+    setOpenDate(date);
   };
 
-  // 폐업일 선택 시 처리 함수
   const handleCloseDateChange = date => {
     setCloseDate(date);
   };
@@ -31,12 +30,6 @@ const WorkPlaceInfoWrapper = ({
     setSelectedCompany(event.target.value);
     onCompanyChange(event.target.value);
   };
-
-  useEffect(() => {
-    if (isAdding) {
-      setSelectedCompany('');
-    }
-  }, [isAdding]);
 
   return (
     <div className="selectListWrapper">
@@ -58,10 +51,8 @@ const WorkPlaceInfoWrapper = ({
                     </option>
                   ))}
                 </select>
-              ) : data ? (
-                data.co_NM || ''
               ) : (
-                ''
+                data.co_NM || ''
               )}
             </td>
             <th className="headerCellStyle">본점여부</th>
@@ -226,6 +217,7 @@ const WorkPlaceInfoWrapper = ({
                 selected={closeDate}
                 onChange={handleCloseDateChange}
                 dateFormat="yyyy-MM-dd"
+                className="inputStyle"
               />
             </td>
           </tr>
