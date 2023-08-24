@@ -6,7 +6,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 const WorkPlaceInfoWrapper = ({
   data,
   inputRefs,
-  //isAdding,
   companyData,
   onCompanyChange,
   openDate,
@@ -20,9 +19,6 @@ const WorkPlaceInfoWrapper = ({
   addressDetail,
 }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
-  console.log(data);
-  console.log('왜웆ㄴ두', address);
-  console.log('OIOIOIOIOI', addressDetail);
 
   const handleCompanyChange = event => {
     setSelectedCompany(event.target.value);
@@ -93,14 +89,20 @@ const WorkPlaceInfoWrapper = ({
                 className="radioStyle"
                 type="radio"
                 name="status"
-                value="사용"
+                value="1"
+                ref={inputRefs.divYNRef}
+                checked={data.div_YN === '1'}
+                readOnly
               />{' '}
               사용
               <input
                 className="radioStyle"
                 type="radio"
                 name="status"
-                value="미사용"
+                value="0"
+                ref={inputRefs.divYNRef}
+                checked={data.div_YN === '0'}
+                readOnly
               />{' '}
               미사용
             </td>
@@ -264,15 +266,9 @@ const WorkPlaceInfoWrapper = ({
                   height: '26px',
                   background: '#fef4f4',
                 }}
-                defaultValue={
-                  address
-                    ? address
-                    : data && data.div_ADDR
-                    ? data.div_ADDR.split('/')[0]
-                    : ''
-                }
-                key={data.div_ADDR}
-                ref={inputRefs.divADDRCodeRef}
+                defaultValue={address ? address : data.addr_CD}
+                key={address ? address : data.addr_CD}
+                ref={inputRefs.addrCDRef}
               />
               <ButtonW
                 data={'우편번호'}
@@ -285,14 +281,8 @@ const WorkPlaceInfoWrapper = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={
-                  addressDetail
-                    ? addressDetail
-                    : data && data.div_ADDR
-                    ? data.div_ADDR.split('/')[1]
-                    : ''
-                }
-                key={data.div_ADDR}
+                defaultValue={addressDetail ? addressDetail : data.div_ADDR}
+                key={addressDetail ? addressDetail : data.div_ADDR}
                 ref={inputRefs.divADDRRef}
               />
             </td>
@@ -301,10 +291,9 @@ const WorkPlaceInfoWrapper = ({
                 type="text"
                 className="inputStyle"
                 placeholder="직접입력"
-                defaultValue={
-                  data ? (data.div_ADDR ? data.div_ADDR.split('/')[2] : '') : ''
-                }
-                ref={inputRefs.divADDRDetailRef}
+                defaultValue={addressDetail ? '' : data.addr_NUM}
+                key={addressDetail ? '' : data.addr_NUM}
+                ref={inputRefs.addrNUMRef}
               />
             </td>
           </tr>

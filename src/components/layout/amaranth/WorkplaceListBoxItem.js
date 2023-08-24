@@ -30,7 +30,7 @@ const WorkplaceListBoxItem = ({
   };
   return (
     <div
-      className={`listBoxItem ${isSelected ? 'selected' : ''}`}
+      className={` ${isSelected ? 'selected' : 'listBoxItem'}`}
       onClick={() => {
         onClickDetailWorkpInfo();
       }}

@@ -86,9 +86,9 @@ const WorkplacePage = () => {
   const inputRefs = {
     divCDRef: useRef(null),
     divNMRef: useRef(null),
-    divADDRCodeRef: useRef(null),
+    addrCDRef: useRef(null),
     divADDRRef: useRef(null),
-    divADDRDetailRef: useRef(null),
+    addrNUMRef: useRef(null),
     divTELRef: useRef(null),
     regNBRef: useRef(null),
     divTOCDRef: useRef(null),
@@ -98,6 +98,7 @@ const WorkplacePage = () => {
     masNMRef: useRef(null),
     divFAXRef: useRef(null),
     copNBRef: useRef(null),
+    divYNRef: useRef(null),
   };
 
   const fetchWorkplaceData = async () => {
@@ -176,6 +177,8 @@ const WorkplacePage = () => {
     mas_NM: '',
     open_DT: '',
     reg_NB: '',
+    addr_CD: '',
+    addr_NUM: '',
     isAdding: true,
   };
 
@@ -197,9 +200,9 @@ const WorkplacePage = () => {
       div_CD: div_CD || '',
       co_CD: co_CD || '',
       div_NM: inputRefs.divNMRef?.current?.value || '',
-      div_ADDR: `${inputRefs.divADDRCodeRef?.current?.value || ''}/${
-        inputRefs.divADDRRef?.current?.value || ''
-      }/${inputRefs.divADDRDetailRef?.current?.value || ''}`,
+      div_ADDR: inputRefs.divADDRRef?.current?.value || '',
+      addr_CD: inputRefs.addrCDRef?.current?.value || '',
+      addr_NUM: inputRefs.addrNUMRef?.current?.value || '',
       div_TEL: inputRefs.divTELRef?.current?.value || '',
       reg_NB: inputRefs.regNBRef?.current?.value || '',
       div_TO_CD: '121', // 업태코드 업데이트 필요 시 추가
@@ -237,7 +240,7 @@ const WorkplacePage = () => {
         title: '저장 완료',
         text: '작업장 정보가 성공적으로 저장되었습니다.',
       });
-      fetchWorkplaceData();
+      FetchWorkplaceDetailInfo(data.div_CD);
     } catch (error) {
       console.error('Error inserting workplace:', error);
       Swal.fire({
@@ -272,7 +275,7 @@ const WorkplacePage = () => {
           title: '업데이트 완료',
           text: '작업장 정보가 성공적으로 업데이트되었습니다.',
         });
-        fetchWorkplaceData();
+        FetchWorkplaceDetailInfo(data.div_CD);
       } else {
         Swal.fire({
           icon: 'error',
@@ -287,6 +290,31 @@ const WorkplacePage = () => {
         title: '업데이트 실패',
         text: '작업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
       });
+    }
+  };
+
+  const deleteDiv = async () => {
+    try {
+      console.log(workplaceDetailData.div_CD);
+      let DIV_CD = workplaceDetailData.div_CD;
+      const response = await axios.put(
+        `system/user/WorkplaceManage/delete`,
+        { DIV_CD },
+        { headers: { Authorization: getAccessToken() } }
+      );
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: '삭제완료',
+          text: '사업장 정보가 삭제되었습니다.',
+        });
+        FetchWorkplaceDetailInfo(workplaceDetailData.div_CD);
+        console.log('Workplace deleted successfully');
+      } else {
+        console.log('Error deleting workplace');
+      }
+    } catch (error) {
+      console.error('Error deleting workplace:', error);
     }
   };
 
@@ -344,6 +372,7 @@ const WorkplacePage = () => {
                 isAdding={isAdding}
                 onClickInsert={handleInsert}
                 onClickUpdate={handleUpdate}
+                deleteDiv={deleteDiv}
               ></WorkpHeadTitle>
               <ScrollWrapper width={'100%'} height={'100%'}>
                 <WorkPlaceInfoWrapper

@@ -6,6 +6,7 @@ const WorkpHeadTitle = ({
   onClickInsert,
   onClickUpdate,
   isAdding,
+  deleteDiv,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -13,6 +14,10 @@ const WorkpHeadTitle = ({
     } else {
       onClickUpdate();
     }
+  };
+
+  const onClick2 = () => {
+    deleteDiv();
   };
 
   return (
@@ -23,7 +28,10 @@ const WorkpHeadTitle = ({
         <button className="WhiteButton" onClick={onClick}>
           저장
         </button>
-        <button className="WhiteButton">삭제</button>X
+        <button className="WhiteButton" onClick={onClick2}>
+          삭제
+        </button>
+        X
       </div>
     </div>
   );

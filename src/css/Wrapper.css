@@ -135,5 +135,13 @@
 
 .selected {
   background-color: #e6f5ff;
-  border: 1px solid #4aa1f2;
+  border: 3px solid #4aa1f2;
+  width: calc(100% - 26px);
+  height: 77px;
+  margin-bottom: 7px;
+  padding: 20px 6%;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
 }
