@@ -55,7 +55,7 @@ axiosInstance.interceptors.response.use(
 );
 ////////////////////////////////////////////////////////////
 
-//응답 인터셉터
+//요청 인터셉터
 authAxiosInstance.interceptors.request.use(
   async config => {
     const req_url = config.url;
@@ -86,6 +86,59 @@ authAxiosInstance.interceptors.request.use(
 
 //응답 인터셉터
 authAxiosInstance.interceptors.response.use(
+  response => {
+    // accessToken 갱신
+    if (response.headers['authorization'] !== undefined) {
+      setAccessToken(response.headers['authorization']);
+    }
+    return response;
+  },
+  async error => {
+    if (
+      error.response.status === 403 &&
+      error.response.headers['authorization'] === undefined
+    ) {
+      removeAccessToken();
+      window.location.href = '/';
+      alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+    }
+    throw error;
+  }
+);
+
+//////////////////////////////////////////////////////////
+
+//요청 인터셉터
+imageAxiosInstance.interceptors.request.use(
+  async config => {
+    const req_url = config.url;
+    config.headers['Authorization'] = getAccessToken();
+    if (req_url.includes('system')) {
+      await authAxiosInstance('/login').catch(error => {
+        if (
+          error.response.status === 403 &&
+          error.response.headers['authorization'] !== undefined
+        ) {
+          return config;
+        } else if (
+          error.response.status === 404 &&
+          error.response.headers['authorization'] !== undefined
+        ) {
+          setAccessToken(error.response.headers['authorization']);
+          config.headers['Authorization'] =
+            error.response.headers['authorization'];
+        }
+      });
+    }
+    return config;
+  },
+  err => {
+    return Promise.reject(err);
+  }
+);
+
+//응답 인터셉터
+imageAxiosInstance.interceptors.response.use(
   response => {
     // accessToken 갱신
     if (response.headers['authorization'] !== undefined) {
