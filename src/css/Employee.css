@@ -126,6 +126,33 @@
   border-color: #ffdede transparent transparent transparent;
 }
 
+.errorSelectBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -50%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.errorSelectBox::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
 /* .errorWrapper {
   display: relative;
   border: 1px solid blue;
@@ -191,7 +218,7 @@
 .empInfoCompanySelectBox {
   float: left;
   margin-left: -10px;
-  width: 200px;
+  width: 230px;
 }
 
 .empInfoWorkplaceSelectBox {

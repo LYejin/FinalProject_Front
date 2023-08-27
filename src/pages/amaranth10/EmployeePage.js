@@ -41,7 +41,7 @@ const EmployeePage = () => {
     mode: 'onChange',
   }); // react-hook-form 사용
   const [empList, setEmpList] = useState([]); // 사원 리스트
-  const [clickYN, setClickYN] = useState(false); // empBox click 여부
+  const [clickYN, setClickYN] = useState(true); // empBox click 여부
   const [isLoading, setIsLoading] = useState(false); // loading 관리
   const [insertButtonClick, setInsertButtonClick] = useState(false); // insert button click을 했는지 아닌지
   const [openDate, setOpenDate] = useState(new Date()); // 개업일 선택 상태 관리
@@ -59,10 +59,11 @@ const EmployeePage = () => {
   const [imgPriviewFile, setImgPriviewFile] = useState(); // image 미리보기
   const [username, setUsername] = useState(); // update를 위한 username 저장
   const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
-  const [company, setCompany] = useState(''); // Infobox company
-  const [workplace, setWorkplace] = useState(''); // Infobox workplace
+  const [company, setCompany] = useState(''); // Infobox companyList
+  const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
   const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
+  const [workplaceSelect, setWorkplaceSelect] = useState(''); // select box 내 workplace select
 
   // 우편번호
   const onChangeOpenPost = () => {
@@ -206,7 +207,11 @@ const EmployeePage = () => {
       ...changeFormData,
       [e.target.name]: e.target.value,
     }));
+    const { co_CD } = getValues();
+    console.log('Ccccccccc', co_CD);
     console.log(changeFormData);
+    //setError('co_CD', { type: 'manual', message: '회사를 선택해주세요' });
+
     clearErrors();
   };
 
@@ -325,7 +330,22 @@ const EmployeePage = () => {
   };
 
   const onFocusError = e => {
-    setErrorName(e.target.name);
+    const errorList = Object.keys(errors);
+    console.log('zzzzz');
+    console.log(errorList);
+    console.log(errorList.indexOf('emp_CD'));
+    console.log(errorList.indexOf('kor_NM'));
+    if (errorList.indexOf('emp_CD') < 0 && errorList.indexOf('co_CD') > -1) {
+      console.log('hiii');
+      setErrorName('co_CD');
+    } else if (
+      errorList.indexOf('emp_CD') < 0 &&
+      errorList.indexOf('div_CD') > -1
+    ) {
+      setErrorName('div_CD');
+    } else {
+      setErrorName(e.target.name);
+    }
   };
 
   console.log('errrrrrr', errorName);
@@ -383,7 +403,7 @@ const EmployeePage = () => {
               <EmpSelectListWrapper
                 width={'295px'}
                 title={'사용자:'}
-                dataCount={527}
+                dataCount={empList.length}
                 data={empList}
                 clickBoxEvent={onClickDetailEmpInfo}
                 clickInsertBoxEvent={onClickInsertEmpBox}
@@ -409,7 +429,7 @@ const EmployeePage = () => {
                   </div>
                   <ScrollWrapper width={'700px'}>
                     <EmpInfoBox
-                      data={data || null}
+                      data={data || []}
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}
                       setOpenDate={setOpenDate}
@@ -430,7 +450,10 @@ const EmployeePage = () => {
                       handleOpenDateChange={handleOpenDateChange}
                       setCompany={setCompany}
                       company={company}
-                      setWorkplace={setWorkplace}
+                      workplaceList={workplaceList}
+                      setWorkplaceList={setWorkplaceList}
+                      workplaceSelect={workplaceSelect}
+                      setWorkplaceSelect={setWorkplaceSelect}
                     />
                   </ScrollWrapper>
                 </form>

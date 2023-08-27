@@ -29,7 +29,10 @@ const EmpInfoBox = ({
   handleOpenDateChange,
   setCompany,
   company,
-  setWorkplace,
+  workplaceList,
+  setWorkplaceList,
+  workplaceSelect,
+  setWorkplaceSelect,
 }) => {
   const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
@@ -137,15 +140,28 @@ const EmpInfoBox = ({
             <td colSpan="3" className="cellStyle">
               <div className="empInfoCompanySelectBox">
                 <EmpInfoCompanySelectBox
-                  width={200}
+                  width={230}
                   data={companyList}
                   setCompany={setCompany}
                   company={company}
-                  setWorkplace={setWorkplace}
+                  setWorkplaceList={setWorkplaceList}
+                  clickYN={clickYN}
+                  register={register}
+                  errors={errors}
+                  errorName={errorName}
                 />
               </div>
               <div className="empInfoWorkplaceSelectBox">
-                <EmpInfoWorkplaceSelectBox width={400} data={companyList} />
+                <EmpInfoWorkplaceSelectBox
+                  width={495}
+                  data={workplaceList || []}
+                  workplaceSelect={workplaceSelect}
+                  setWorkplaceSelect={setWorkplaceSelect}
+                  clickYN={clickYN}
+                  register={register}
+                  errors={errors}
+                  errorName={errorName}
+                />
               </div>
             </td>
           </tr>

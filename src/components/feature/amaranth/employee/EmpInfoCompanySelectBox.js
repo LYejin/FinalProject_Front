@@ -1,47 +1,76 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
+import { ErrorMessage } from '@hookform/error-message';
 
 const EmpInfoCompanySelectBox = ({
   data,
   width,
   setCompany,
   company,
-  setWorkplace,
+  setWorkplaceList,
+  clickYN,
+  register,
+  errors,
+  errorName,
 }) => {
   const handleChange = event => {
-    console.log('hiiii');
     setCompany(event.target.value);
-    const response = authAxiosInstance(
-      `system/user/WorkplaceManage/getList?CO_CD=11`
-    );
-    console.log(response.data);
+    authAxiosInstance(
+      `system/user/groupManage/employee/getWorkplace?CO_CD=${event.target.value}`
+    ).then(response => {
+      setWorkplaceList(response.data);
+    });
   };
 
-  console.log(data);
-  // console.log(data[0].co_NM);
-
   return (
-    <FormControl sx={{ m: 1, minWidth: width }} size="small">
-      <Select
-        id="demo-select-small"
-        value={company}
-        onChange={handleChange}
-        displayEmpty
+    <div className="errorWrapper">
+      <FormControl
         sx={{
-          height: '28px',
-          fontSize: '0.8rem',
+          m: 1,
+          width: width,
+          backgroundColor: clickYN ? '#f2f2f2' : 'white',
         }}
+        size="small"
+        disabled={clickYN}
       >
-        {data.map(company => (
-          <MenuItem value={company.co_CD} key={company.co_CD}>
-            {company.co_CD}. {company.co_NM}
+        <Select
+          {...register(
+            'co_CD',
+            !clickYN && { required: '회사를 선택해주세요' }
+          )}
+          id="demo-select-small"
+          value={company}
+          onChange={handleChange}
+          displayEmpty
+          sx={{
+            height: '28px',
+            fontSize: '0.8rem',
+            border: errors.co_CD && errorName === 'co_CD' && '1px solid red',
+            backgroundColor: clickYN && '#f2f2f2',
+          }}
+        >
+          <MenuItem value="">
+            <em>회사를 선택해주세요</em>
           </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+          {data.map(company => (
+            <MenuItem value={company.co_CD} key={company.co_CD}>
+              {company.co_CD}. {company.co_NM}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>{' '}
+      {errorName === 'co_CD' && (
+        <ErrorMessage
+          errors={errors}
+          name="co_CD"
+          as="p"
+          className="errorSelectBox"
+        />
+      )}
+    </div>
   );
 };
 
