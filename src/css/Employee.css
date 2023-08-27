@@ -55,7 +55,6 @@
   border: 2px solid #838383;
   width: 87px;
   height: 90px;
-  cursor: pointer;
 }
 
 .imageButtonWrapper {
@@ -77,6 +76,7 @@
   background-color: #8f8f8f;
 }
 
+/* 버튼 */
 .saveButton {
   color: gray;
   font-size: 30px;
@@ -84,4 +84,126 @@
 
 .saveButton:hover {
   color: #d1d1d1;
+}
+
+.textInputBox {
+  border: 1px solid #b6b6b6;
+  width: 200px;
+  height: 29px;
+  border-radius: 3px;
+}
+
+.errorWrapper {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.errorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.errorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+/* .errorWrapper {
+  display: relative;
+  border: 1px solid blue;
+  width: 100%;
+  height: 100%;
+}
+
+.errorBoxWrapper {
+  display: relative;
+  top: -20px;
+  left: 0px;
+  width: 200px;
+  height: 10px;
+}
+
+.errorBox {
+  display: absolute;
+  top: 0px;
+  left: 0px;
+  width: 200px;
+  height: 10px;
+  font-size: 0.7rem;
+  color: red;
+  margin-top: 2px;
+} */
+
+.addrNum {
+  display: relative;
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+.cellEmpAddrStyle {
+  display: relative;
+  padding-left: 7px;
+  padding-top: 7px;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.totalEmpCellStyle {
+  height: 15px;
+}
+
+.defaultTitle {
+  width: 120px;
+}
+
+.buttonWrapper {
+  margin-left: 0px;
+  width: 90%;
+  display: flex;
+  justify-content: end;
+}
+
+.paddingRight {
+  width: 3px;
+}
+
+/* select cell style */
+.empInfoCompanySelectBox {
+  float: left;
+  margin-left: -10px;
+  width: 200px;
+}
+
+.empInfoWorkplaceSelectBox {
+  float: left;
+  margin-left: 7px;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.companyWorkplaceCellStyle {
+  display: relative;
+  border-bottom: 1px solid #ccc;
+  vertical-align: middle;
+  font-size: 13px;
 }

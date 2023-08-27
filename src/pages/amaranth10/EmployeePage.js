@@ -1,18 +1,12 @@
+import { useEffect, useState } from 'react';
 import {
   authAxiosInstance,
   imageAxiosInstance,
 } from '../../axios/axiosInstance';
 import {
-  Button,
-  CheckSelectBox,
   DetailTitle,
-  Header,
-  MainSidebar,
   MainTitle,
   ScrollWrapper,
-  SelectBox,
-  Sidebar,
-  TextFieldBox,
   Title,
 } from '../../components/common/Index';
 import {
@@ -22,25 +16,34 @@ import {
   RightContentWrapper,
   SelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
-import { useEffect, useState } from 'react';
 import EmpSelectListWrapper from './../../components/feature/amaranth/employee/EmpSelectListWrapper';
 import { EmpInfoBox } from '../../components/feature/amaranth/Index';
 import { useForm } from 'react-hook-form';
 import SubmitButton from '../../components/common/button/SubmitButton';
-import { getNowJoinTime } from './../../util/time';
-import { getAccessToken, removeAccessToken } from '../../cookie/Cookie';
-import axios from '../../../node_modules/axios/index';
+import { getNowJoinTime, updateArray } from './../../util/time';
 import CommonLayout from '../../components/common/CommonLayout';
 import DaumPostcode from 'react-daum-postcode';
 import Modal from '../../components/common/modal/Modal';
 import EventButton from '../../components/common/button/EventButton';
+import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
+import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
 
 const EmployeePage = () => {
-  const { register, handleSubmit, reset, getValues } = useForm();
-  const [empList, setEmpList] = useState([]);
-  const [clickYN, setClickYN] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [insertButtonClick, setInsertButtonClick] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+    clearErrors,
+    setError,
+  } = useForm({
+    mode: 'onChange',
+  }); // react-hook-form 사용
+  const [empList, setEmpList] = useState([]); // 사원 리스트
+  const [clickYN, setClickYN] = useState(false); // empBox click 여부
+  const [isLoading, setIsLoading] = useState(false); // loading 관리
+  const [insertButtonClick, setInsertButtonClick] = useState(false); // insert button click을 했는지 아닌지
   const [openDate, setOpenDate] = useState(new Date()); // 개업일 선택 상태 관리
   const [onChangeForm, setChangeForm] = useState(false); // 폼 변경 사항 확인
   const [selectedRadioValue, setSelectedRadioValue] = useState(''); //radio 값
@@ -48,14 +51,25 @@ const EmployeePage = () => {
   const [addressDetail, setAddressDetail] = useState(); // 주소
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
   const [image, setImage] = useState(); // image axios
-  const [imgFile, setImgFile] = useState(); // image 미리보기
+  const [imgFile, setImgFile] = useState(); // 순수 image file
   const [data, setData] = useState({}); // form 데이터들 보관
+  const [companyList, setCompanyList] = useState([]); // select box 내 company list
+  const [enrlList, setEnrlList] = useState([]); // 재직구분 selectbox 값
+  const [errorName, setErrorName] = useState(); // error name 얻기
+  const [imgPriviewFile, setImgPriviewFile] = useState(); // image 미리보기
+  const [username, setUsername] = useState(); // update를 위한 username 저장
+  const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
+  const [company, setCompany] = useState(''); // Infobox company
+  const [workplace, setWorkplace] = useState(''); // Infobox workplace
+  const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
+  const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
 
   // 우편번호
   const onChangeOpenPost = () => {
-    console.log(isOpenPost);
     setIsOpenPost(!isOpenPost);
   };
+
+  console.log(changeFormData);
 
   // 우편번호 검색 시 처리
   const onCompletePost = data => {
@@ -70,14 +84,33 @@ const EmployeePage = () => {
     }
 
     setAddress(data.zonecode);
-    console.log(data.zonecode);
     setAddressDetail(fullAddr);
-    console.log(fullAddr);
+    setChangeFormData({
+      ...changeFormData,
+      zipcode: data.zonecode,
+      addr: fullAddr,
+    });
     setIsOpenPost(false);
   };
 
+  // radio
   const handleRadioChange = e => {
     setSelectedRadioValue(e.target.value);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // 개업일 선택 시 처리 함수
+  const handleOpenDateChange = date => {
+    console.log();
+    console.log(date);
+    setOpenDate(date);
+    setChangeFormData({
+      ...changeFormData,
+      join_DT: getNowJoinTime(date),
+    });
   };
 
   const resetData = () => {
@@ -101,66 +134,87 @@ const EmployeePage = () => {
     });
   };
 
-  const getEmpList = async () => {
-    const response = await axios
-      .post(
-        'system/user/groupManage/employee/getList',
-        {},
-        { headers: { Authorization: getAccessToken() } }
-      )
-      .catch(error => {
-        if (error.response.status === 403) {
-          window.location.href = '/';
-          alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
-        }
-      });
-    console.log(response.data[0]);
-    setData(response.data[0]);
+  // 사원 리스트 얻는 axios
+  const getEmpList = async emp => {
+    const response = await authAxiosInstance(
+      `system/user/groupManage/employee/getList`
+    );
+    console.log(response.data);
+    setData(response.data[0] || resetData());
     setEmpList(response.data);
     setSelectedRadioValue(response.data[0].gender_FG);
   };
 
+  // 회사 리스트 얻는 axios
+  const getCompanyList = async () => {
+    const response = await authAxiosInstance(
+      'system/user/groupManage/employee/getCompanyList'
+    );
+    setCompanyList(response.data);
+  };
+
   useEffect(() => {
     getEmpList();
+    getCompanyList();
   }, []);
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailEmpInfo = async (kor_NM, username) => {
-    try {
-      reset();
-      setAddress();
-      setAddressDetail();
-      if (onChangeForm === true) {
-        alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
-      }
-      setChangeForm(false);
-      setIsLoading(true);
-      setInsertButtonClick(false);
-      setClickYN(true);
-      const response = await authAxiosInstance.post(
-        'system/user/groupManage/employee/empDetail',
-        { kor_NM: kor_NM, username: username }
-      );
-      console.log(response.data);
-      setData(response.data);
-      setSelectedRadioValue(response.data.gender_FG);
-      setOpenDate(new Date(response.data.join_DT) || '');
-      setImgFile(response.data.pic_FILE_ID);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching employee list:', error);
+    setChangeFormData();
+    reset();
+    setImgFile();
+    setImgPriviewFile();
+    setAddress();
+    setAddressDetail();
+    if (onChangeForm === true) {
+      alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
+    setChangeForm(false);
+    setIsLoading(true);
+    setInsertButtonClick(false);
+    setClickYN(true);
+    const response = await authAxiosInstance.post(
+      'system/user/groupManage/employee/empDetail',
+      { kor_NM: kor_NM, username: username }
+    );
+    setData(response.data);
+    console.log(response.data);
+    setSelectedRadioValue(response.data.gender_FG);
+    setOpenDate(new Date(response.data.join_DT) || '');
+    setImgFile(response.data.pic_FILE_ID);
+    setIsLoading(false);
+    setUsername(response.data.username);
   };
 
+  const onClickSearchEmpList = () => {
+    const { name } = getValues();
+    console.log(name);
+    console.log('hiiii');
+
+    authAxiosInstance(
+      `system/user/groupManage/employee/getList?CO_CD=${companySelect}&NAME=${name}&ENRL_FG=${fixEnrlList}`
+    ).then(response => {
+      console.log(response.data);
+      setEmpList(response.data);
+    });
+  };
+
+  // form 상태 change 되었는지 확인
   const onChangeFunction = e => {
-    console.log(e.target.value);
     setChangeForm(true);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
+    console.log(changeFormData);
+    clearErrors();
   };
 
   // 사원 insert 이벤트
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    setImgPriviewFile();
     setOpenDate(new Date());
     setInsertButtonClick(true);
     setClickYN(false);
@@ -177,78 +231,82 @@ const EmployeePage = () => {
       'system/user/groupManage/employee/empRemove',
       { kor_NM: data.kor_NM, username: data.username }
     );
-    console.log('hiii');
+    setEmpList(empList.filter(emp => emp.user_YN !== '0'));
     console.log(response.data);
     setClickYN(false);
+    alert('사원정보가 비활성화되었습니다.');
   };
 
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
+    console.log(changeFormData);
+
     const getJoinDT = getNowJoinTime(openDate);
-    console.log(getJoinDT);
-
     const formData = new FormData();
-
-    const userData = {
-      emp_CD: data.emp_CD || null,
-      username: data.username || null,
-      password: data.password || null,
-      kor_NM: data.kor_NM || null,
-      email_ADD: data.email_ADD || null,
-      tel: data.tel || null,
-      gender_FG: selectedRadioValue,
-      join_DT: getJoinDT || null,
-      enrl_FG: '0',
-      personal_MAIL: data.personal_MAIL || null,
-      personal_MAIL_CP: data.personal_MAIL_CP || null,
-      salary_MAIL: data.salary_MAIL || null,
-      salary_MAIL_CP: data.salary_MAIL_CP || null,
-      home_TEL: data.home_TEL || null,
-      zipcode: data.zipcode || null,
-      addr: data.addr || null,
-      addr_NUM: data.addr_NUM || null,
-    };
-
-    formData.append(
-      'userData',
-      new Blob([JSON.stringify(userData)], {
-        type: 'application/json',
-      })
-    );
+    console.log(image);
     if (image !== null) {
       formData.append('image', image);
     }
-    console.log('hiiiiiiii', formData);
-    for (let key of formData.keys()) {
-      console.log(key, ':', formData.get(key));
-    }
-    for (let value of formData.values()) {
-      console.log(value);
-    }
-    console.log('clickEmpBoxYN', clickYN);
-    console.log('insertButtonClick', insertButtonClick);
+
     // 사원 update 중일 때 저장버튼 기능
     if (clickYN && !insertButtonClick) {
       console.log('update 버튼');
-      console.log(data);
+      console.log(changeFormData);
+
+      formData.append(
+        'userData',
+        new Blob([JSON.stringify({ ...changeFormData, username: username })], {
+          type: 'application/json',
+        })
+      );
       const response = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empUpdate',
         formData
       );
-      console.log('hiii');
       console.log(response.data);
+      alert('사원정보가 수정되었습니다.');
+
+      setChangeForm(false);
+      setChangeFormData();
     }
 
     // 사원 insert 중일 때 저장버튼 기능
     if (!clickYN && insertButtonClick) {
+      const userData = {
+        emp_CD: data.emp_CD || null,
+        co_CD: '1234',
+        div_CD: '001',
+        username: data.username || null,
+        password: data.password || null,
+        kor_NM: data.kor_NM || null,
+        email_ADD: data.email_ADD || null,
+        tel: data.tel || null,
+        gender_FG: selectedRadioValue,
+        join_DT: getJoinDT || null,
+        enrl_FG: '0',
+        personal_MAIL: data.personal_MAIL || null,
+        personal_MAIL_CP: data.personal_MAIL_CP || null,
+        salary_MAIL: data.salary_MAIL || null,
+        salary_MAIL_CP: data.salary_MAIL_CP || null,
+        home_TEL: data.home_TEL || null,
+        zipcode: address || null,
+        addr: addressDetail || null,
+        addr_NUM: data.addr_NUM || null,
+      };
+
+      formData.append(
+        'userData',
+        new Blob([JSON.stringify(userData)], {
+          type: 'application/json',
+        })
+      );
+
       console.log('insert 버튼');
-      console.log(openDate);
       const response = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empInsert',
         formData
       );
       console.log(response.data);
-      console.log(getJoinDT);
       setEmpList([
         ...empList,
         {
@@ -259,8 +317,31 @@ const EmployeePage = () => {
       ]);
       alert('사원이 추가되었습니다.');
       reset();
+      setImgFile();
+      setImgPriviewFile();
+      setChangeForm(false);
+      setChangeFormData();
     }
   };
+
+  const onFocusError = e => {
+    setErrorName(e.target.name);
+  };
+
+  console.log('errrrrrr', errorName);
+
+  //select box event
+  const handleCheckSelectChange = event => {
+    const {
+      target: { value },
+    } = event;
+    setFixEnrlList(typeof value === 'string' ? value.split(',') : value);
+    setEnrlList(typeof value === 'string' ? value.split(',') : value);
+  };
+
+  console.log(errors);
+  console.log(enrlList);
+  console.log(fixEnrlList);
 
   return (
     <>
@@ -271,16 +352,30 @@ const EmployeePage = () => {
           <DetailContentWrapper>
             <SelectBoxWrapper>
               <span className="rightSelectBoxPadding">회사</span>
-              <SelectBox width={200} />
+              <EmpSelectBox
+                width={200}
+                data={companyList}
+                setCompanySelect={setCompanySelect}
+                companySelect={companySelect}
+              />
               <span className="leftSelectBoxPadding">재직구분</span>
-              <CheckSelectBox width={'200px'} />
+              <EmpCheckSelectBox
+                width={'200px'}
+                handleCheckSelectChange={handleCheckSelectChange}
+                enrlList={enrlList}
+              />
               <span className="lastSelectBoxTextPadding">이름/ID/Mail ID</span>
-              <TextFieldBox width={'200px'} />
+              <input
+                type="text"
+                className="textInputBox"
+                {...register('name')}
+              />
               <div className="selectBoxButtonWrapper">
-                <Button
+                <EventButton
                   data={<i className="fa-solid fa-magnifying-glass"></i>}
                   width={'-10px'}
                   height={30}
+                  onClickEvent={onClickSearchEmpList}
                 />
               </div>
             </SelectBoxWrapper>
@@ -300,18 +395,21 @@ const EmployeePage = () => {
                   onChange={onChangeFunction}
                 >
                   <div className="tableHeader">
-                    기본정보{' '}
-                    <SubmitButton data={'저장'} width={'-10px'} height={30} />
-                    <EventButton
-                      data={'삭제'}
-                      width={'-10px'}
-                      height={30}
-                      onClickEvent={onClickButtonRemoveEmp}
-                    />
+                    <div className="defaultTitle">기본정보</div>
+                    <div className="buttonWrapper">
+                      <SubmitButton data={'저장'} width={'-10px'} height={30} />
+                      <div className="paddingRight"></div>
+                      <EventButton
+                        data={'삭제'}
+                        width={'-10px'}
+                        height={30}
+                        onClickEvent={onClickButtonRemoveEmp}
+                      />
+                    </div>
                   </div>
                   <ScrollWrapper width={'700px'}>
                     <EmpInfoBox
-                      data={data}
+                      data={data || null}
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}
                       setOpenDate={setOpenDate}
@@ -322,6 +420,17 @@ const EmployeePage = () => {
                       addressDetail={addressDetail}
                       setImage={setImage}
                       imgFile={imgFile}
+                      companyList={companyList}
+                      errors={errors}
+                      clickYN={clickYN}
+                      onFocusError={onFocusError}
+                      errorName={errorName}
+                      setImgPriviewFile={setImgPriviewFile}
+                      imgPriviewFile={imgPriviewFile}
+                      handleOpenDateChange={handleOpenDateChange}
+                      setCompany={setCompany}
+                      company={company}
+                      setWorkplace={setWorkplace}
                     />
                   </ScrollWrapper>
                 </form>

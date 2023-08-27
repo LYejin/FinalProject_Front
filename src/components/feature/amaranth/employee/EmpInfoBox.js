@@ -1,8 +1,11 @@
 import React, { useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Button } from '../../../common/Index';
 import EventButton from './../../../common/button/EventButton';
+import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
+import { ErrorMessage } from '@hookform/error-message';
+import EmpInfoSelectBox from './EmpInfoCompanySelectBox';
+import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
 
 const EmpInfoBox = ({
   data,
@@ -16,70 +19,21 @@ const EmpInfoBox = ({
   addressDetail,
   setImage,
   imgFile,
+  companyList,
+  errors,
+  clickYN,
+  onFocusError,
+  errorName,
+  imgPriviewFile,
+  setImgPriviewFile,
+  handleOpenDateChange,
+  setCompany,
+  company,
+  setWorkplace,
 }) => {
-const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
+  const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
 
-  // 이미지
-  const [imgPriviewFile, setImgPriviewFile] = useState();
   const imgRef = useRef();
-
-  // 개업일 선택 시 처리 함수
-  const handleOpenDateChange = date => {
-    setOpenDate(date);
-  };
-
-  // 폐업일 선택 시 처리 함수
-  const handleCloseDateChange = date => {
-    setCloseDate(date);
-  };
-
-  // const submitButton = async () => {
-  //   const userInfo = new FormData();
-
-  //   const userData = {
-  //     userId: currnetId,
-  //     id: fixId,
-  //     password: password,
-  //     phoneNumber: phoneNumber,
-  //     address: address,
-  //   };
-
-  //   const blob = new Blob([JSON.stringify(userData)], {
-  //     type: "application/json",
-  //   });
-  //   userInfo.append("request", blob);
-
-  //   await axios
-  //     .patch(`/profile/profile/${userId}`, userInfo, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       removeAccessKey();
-  //       setAccessKey(fixId);
-  //       setUserId(fixId);
-  //       alert("프로필이 수정되었습니다");
-  //       if (res.data.code === "1" && currnetId && fixId && password) {
-  //         removeAccessToken();
-  //         removeRefreshToken();
-  //         axios
-  //           .post("/login", { id: fixId, password: password })
-  //           .then((response) => {
-  //             if (response.data.code === "-1") {
-  //               console.log(response);
-  //               return alert("로그인에 실패했습니다");
-  //             }
-  //             setRefreshToken(response.data.refreshToken);
-  //             setAccessToken(response.data.accessToken);
-  //           })
-  //           .catch((err) => {
-  //             return alert("이미 존재하는 아이디입니다.");
-  //           });
-  //       }
-  //     })
-  //     .catch((err) => alert("프로필 수정 실패"));
-  // };
 
   // // 프로필 이미지 미리보기 기능
   const imgPreview = fileBlob => {
@@ -93,36 +47,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
       };
     });
   };
-
-  // 프로필 이미지 저장 기능
-  // const userImgSubmit = (e) => {
-  //   e.preventDefault();
-  //   const userInfo = new FormData();
-  //   userInfo.append("image", image);
-
-  //   axios
-  //     .patch(`/profile/profile/${userId}`, userInfo, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       alert("프로필 사진이 변경되었습니다");
-  //       if (res.data.code === "1" && currnetId && password) {
-  //         axios
-  //           .post("/login", { id: currnetId, password: password })
-  //           .then((response) => {
-  //             if (response.data.code === "-1") {
-  //               return alert("로그인 실패");
-  //             }
-  //           })
-  //           .catch((err) => {
-  //             return alert("로그인 실패");
-  //           });
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  console.log(errors);
 
   return (
     <div className="selectListWrapper">
@@ -144,27 +69,27 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
                     }}
                     ref={imgRef}
                   />
-                  <label className="userImageLabel" htmlFor="fileImageUpload">
+                  <div className="userImageLabel">
                     {imgPriviewFile ? (
                       <img src={imgPriviewFile} alt="userImage" />
                     ) : (
                       <img
                         src={
                           imgFile
-                            ? `data:image/jpeg;base64,${imgFile}`
+                            ? imgFile
                             : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
                         }
                         alt="userImage"
                       />
                     )}
-                  </label>
-                  <div
+                  </div>
+                  <label
                     id="imageButtonWrapper"
+                    htmlFor="fileImageUpload"
                     className="imageButtonWrapper"
-                    // onClick={userImgSubmit}
                   >
                     <i className="fa-solid fa-paperclip"></i>
-                  </div>
+                  </label>
                 </div>
               </div>
             </td>
@@ -172,53 +97,196 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
           <tr>
             <th className="headerCellStyle">사번</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                {...register('emp_CD')}
-                defaultValue={data.emp_CD}
-              />
+              <div className="errorWrapper">
+                <input
+                  type="text"
+                  className="reqInputStyle"
+                  name="emp_CD"
+                  placeholder="사원번호를 입력해주세요(최대 10글자)"
+                  {...register(
+                    'emp_CD',
+                    !clickYN && {
+                      required: '사번을 입력해주세요.',
+                    }
+                  )}
+                  maxLength="10"
+                  defaultValue={data.emp_CD}
+                  style={{
+                    border:
+                      errors.emp_CD && errorName === 'emp_CD'
+                        ? '1px solid red'
+                        : '1px solid #ccc',
+                    backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
+                  }}
+                  disabled={clickYN}
+                  onFocus={onFocusError}
+                />
+                {errorName === 'emp_CD' && (
+                  <ErrorMessage
+                    errors={errors}
+                    name="emp_CD"
+                    as="p"
+                    className="errorBox"
+                  />
+                )}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th className="headerCellStyle">회사/사업장</th>
+            <td colSpan="3" className="cellStyle">
+              <div className="empInfoCompanySelectBox">
+                <EmpInfoCompanySelectBox
+                  width={200}
+                  data={companyList}
+                  setCompany={setCompany}
+                  company={company}
+                  setWorkplace={setWorkplace}
+                />
+              </div>
+              <div className="empInfoWorkplaceSelectBox">
+                <EmpInfoWorkplaceSelectBox width={400} data={companyList} />
+              </div>
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">이름</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                {...register('kor_NM')}
-                defaultValue={data.kor_NM}
-              />
+              <div className="errorWrapper">
+                <input
+                  type="text"
+                  name="kor_NM"
+                  className="reqInputStyle"
+                  placeholder="사용자 이름을 입력해주세요"
+                  {...register(
+                    'kor_NM',
+                    !clickYN && { required: '이름을 입력해주세요.' }
+                  )}
+                  defaultValue={data.kor_NM}
+                  style={{
+                    border:
+                      errors.kor_NM && errorName === 'kor_NM'
+                        ? '1px solid red'
+                        : '1px solid #ccc',
+                  }}
+                  onFocus={onFocusError}
+                />
+                {errorName === 'kor_NM' && (
+                  <ErrorMessage
+                    errors={errors}
+                    name="kor_NM"
+                    as="p"
+                    className="errorBox"
+                  />
+                )}
+              </div>
             </td>
           </tr>
+
           <tr>
             <th className="headerCellStyle">로그인 ID</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                {...register('username')}
-                defaultValue={data.username}
-              />
+              <div className="errorWrapper">
+                <input
+                  type="text"
+                  className="reqInputStyle"
+                  name="username"
+                  {...register(
+                    'username',
+                    !clickYN && { required: 'ID를 입력해주세요.' }
+                  )}
+                  defaultValue={data.username}
+                  maxLength="16"
+                  style={{
+                    border:
+                      errors.username && errorName === 'username'
+                        ? '1px solid red'
+                        : '1px solid #ccc',
+                    backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
+                  }}
+                  disabled={clickYN}
+                  onFocus={onFocusError}
+                />
+                {errorName === 'username' && (
+                  <ErrorMessage
+                    errors={errors}
+                    name="username"
+                    as="p"
+                    className="errorBox"
+                  />
+                )}
+              </div>
             </td>
             <th className="headerCellStyle">메일 ID</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                {...register('email_ADD')}
-                defaultValue={data.email_ADD}
-              />
+              <div className="errorWrapper">
+                <input
+                  type="text"
+                  name="email_ADD"
+                  className="reqInputStyle"
+                  {...register(
+                    'email_ADD',
+                    !clickYN && {
+                      required: 'ID를 입력해주세요.',
+                      pattern: {
+                        value: /\w+/,
+                        message: '한글을 포함할 수 없습니다.',
+                      },
+                    }
+                  )}
+                  defaultValue={data.email_ADD}
+                  style={{
+                    border:
+                      errors.email_ADD && errorName === 'email_ADD'
+                        ? '1px solid red'
+                        : '1px solid #ccc',
+                    backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
+                  }}
+                  disabled={clickYN}
+                  onFocus={onFocusError}
+                />
+                {errorName === 'email_ADD' && (
+                  <ErrorMessage
+                    errors={errors}
+                    name="email_ADD"
+                    as="p"
+                    className="errorBox"
+                  />
+                )}
+              </div>
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">로그인 비밀번호</th>
             <td className="cellStyle">
-              <input
-                type="password"
-                className="reqInputStyle"
-                {...register('password')}
-              />
+              <div className="errorWrapper">
+                <input
+                  type="password"
+                  name="password"
+                  className="reqInputStyle"
+                  {...register(
+                    'password',
+                    !clickYN && {
+                      required: '비밀번호를 입력해주세요.',
+                    }
+                  )}
+                  style={{
+                    border:
+                      errors.password && errorName === 'password'
+                        ? '1px solid red'
+                        : '1px solid #ccc',
+                  }}
+                  onFocus={onFocusError}
+                />
+                {errorName === 'password' && (
+                  <ErrorMessage
+                    errors={errors}
+                    name="password"
+                    as="p"
+                    className="errorBox"
+                  />
+                )}
+              </div>
             </td>
             <th className="headerCellStyle">결재 비밀번호</th>
             <td className="cellStyle">
@@ -233,6 +301,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
                   <input
                     className="radioStyle"
                     type="radio"
+                    name="gender_FG"
                     value="W"
                     checked={selectedValue === 'W'}
                     onChange={handleRadioChange}
@@ -243,6 +312,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
                   <input
                     className="radioStyle"
                     type="radio"
+                    name="gender_FG"
                     value="M"
                     checked={selectedValue === 'M'}
                     onChange={handleRadioChange}
@@ -262,13 +332,17 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
               <input
                 type="text"
                 className="mailInputStyle"
+                name="personal_MAIL"
                 {...register('personal_MAIL')}
                 defaultValue={data.personal_MAIL}
+                maxLength="32"
               />
               @
               <input
                 type="text"
-                className="mailInputStyle"
+                className="mailInputStyle2"
+                name="personal_MAIL_CP"
+                maxLength="32"
                 {...register('personal_MAIL_CP')}
                 defaultValue={data.personal_MAIL_CP}
               />
@@ -280,13 +354,17 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
               <input
                 type="text"
                 className="mailInputStyle"
+                name="salary_MAIL"
+                maxLength="32"
                 {...register('salary_MAIL')}
                 defaultValue={data.salary_MAIL}
               />
               @
               <input
                 type="text"
-                className="mailInputStyle"
+                className="mailInputStyle2"
+                name="salary_MAIL_CP"
+                maxLength="32"
                 {...register('salary_MAIL_CP')}
                 defaultValue={data.salary_MAIL_CP}
               />
@@ -298,6 +376,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
               <input
                 type="text"
                 className="inputStyle"
+                name="tel"
                 {...register('tel')}
                 defaultValue={data.tel}
               />
@@ -306,20 +385,22 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
             <td className="cellStyle">
               <input
                 type="text"
+                name="home_TEL"
                 className="inputStyle"
                 {...register('home_TEL')}
                 defaultValue={data.home_TEL}
               />
             </td>
           </tr>
-          <tr>
+          <tr className="totalEmpCellStyle">
             <th className="headerCellStyle" rowSpan="2">
               주소
             </th>
-            <td colSpan="3" className="cellStyle">
+            <td colSpan="3" className="cellEmpAddrStyle">
               <input
                 type="text"
                 className="addressInputStyle"
+                name="zipcode"
                 {...register('zipcode')}
                 defaultValue={address ? address : data.zipcode}
               />
@@ -333,7 +414,8 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
             <td colSpan="2" className="cellStyle">
               <input
                 type="text"
-                className="reqInputStyle"
+                className="addrNum"
+                name="addr"
                 {...register('addr')}
                 defaultValue={addressDetail ? addressDetail : data.addr}
               />
@@ -342,6 +424,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
               <input
                 type="text"
                 className="inputStyle"
+                name="addr_NUM"
                 {...register('addr_NUM')}
                 defaultValue={data.addr_NUM}
               />
@@ -352,6 +435,7 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
             <td className="cellStyle">
               <DatePicker
                 selected={openDate}
+                name="join_DT"
                 onChange={handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerStyle"
@@ -359,12 +443,12 @@ const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관
             </td>
             <th className="headerCellStyle">퇴사일</th>
             <td className="cellStyle">
-              <DatePicker
+              {/* <DatePicker
                 selected={closeDate}
                 onChange={handleCloseDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerStyle"
-              />
+              /> */}
             </td>
           </tr>
         </tbody>

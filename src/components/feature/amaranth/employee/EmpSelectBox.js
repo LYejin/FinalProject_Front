@@ -3,18 +3,16 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const EmployeeSelectBox = ({ data, width }) => {
-  const [age, setAge] = React.useState('');
-
+const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
   const handleChange = event => {
-    setAge(event.target.value);
+    setCompanySelect(event.target.value);
   };
 
   return (
     <FormControl sx={{ m: 1, minWidth: width }} size="small">
       <Select
         id="demo-select-small"
-        value={age}
+        value={companySelect}
         onChange={handleChange}
         displayEmpty
         sx={{
@@ -35,4 +33,4 @@ const EmployeeSelectBox = ({ data, width }) => {
   );
 };
 
-export default EmployeeSelectBox;
+export default EmpSelectBox;
