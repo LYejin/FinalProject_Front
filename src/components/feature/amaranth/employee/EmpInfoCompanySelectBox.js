@@ -8,8 +8,8 @@ import { ErrorMessage } from '@hookform/error-message';
 const EmpInfoCompanySelectBox = ({
   data,
   width,
-  setCompany,
   company,
+  setCompany,
   setWorkplaceList,
   clickYN,
   register,

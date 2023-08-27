@@ -24,7 +24,6 @@ const EmpInfoWorkplaceSelectBox = ({
         sx={{
           m: 1,
           width: width,
-          backgroundColor: clickYN ? '#f2f2f2' : 'white',
         }}
         size="small"
       >
@@ -41,7 +40,6 @@ const EmpInfoWorkplaceSelectBox = ({
             height: '28px',
             fontSize: '0.8rem',
             border: errors.div_CD && errorName === 'div_CD' && '1px solid red',
-            backgroundColor: clickYN && '#f2f2f2',
           }}
         >
           <MenuItem value="">

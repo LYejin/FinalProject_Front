@@ -63,14 +63,13 @@ const EmployeePage = () => {
   const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
   const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
-  const [workplaceSelect, setWorkplaceSelect] = useState(''); // select box 내 workplace select
+  const [workplaceSelect, setWorkplaceSelect] = useState(''); // Info box 내 workplace select
+  const [selectBoxData, setSelectBoxData] = useState({}); // select box에서 선택한 data
 
   // 우편번호
   const onChangeOpenPost = () => {
     setIsOpenPost(!isOpenPost);
   };
-
-  console.log(changeFormData);
 
   // 우편번호 검색 시 처리
   const onCompletePost = data => {
@@ -140,7 +139,6 @@ const EmployeePage = () => {
     const response = await authAxiosInstance(
       `system/user/groupManage/employee/getList`
     );
-    console.log(response.data);
     setData(response.data[0] || resetData());
     setEmpList(response.data);
     setSelectedRadioValue(response.data[0].gender_FG);
@@ -185,17 +183,34 @@ const EmployeePage = () => {
     setImgFile(response.data.pic_FILE_ID);
     setIsLoading(false);
     setUsername(response.data.username);
+    setCompany(response.data.co_CD);
+    setWorkplaceSelect(response.data.div_CD);
+    authAxiosInstance(
+      `system/user/groupManage/employee/getWorkplace?CO_CD=${response.data.co_CD}`
+    ).then(response => {
+      setWorkplaceList(response.data);
+    });
   };
 
   const onClickSearchEmpList = () => {
     const { name } = getValues();
-    console.log(name);
-    console.log('hiiii');
+    const params = {};
 
-    authAxiosInstance(
-      `system/user/groupManage/employee/getList?CO_CD=${companySelect}&NAME=${name}&ENRL_FG=${fixEnrlList}`
-    ).then(response => {
-      console.log(response.data);
+    if (name !== '') {
+      params.NAME = name;
+    }
+    if (fixEnrlList.length > 0) {
+      console.log('didididi');
+      params.ENRL_FG = fixEnrlList.join(',');
+    }
+    if (companySelect !== '') {
+      params.CO_CD = companySelect;
+    }
+
+    authAxiosInstance('system/user/groupManage/employee/getList', {
+      params,
+    }).then(response => {
+      console.log('hiiiii', response.data);
       setEmpList(response.data);
     });
   };
@@ -207,11 +222,6 @@ const EmployeePage = () => {
       ...changeFormData,
       [e.target.name]: e.target.value,
     }));
-    const { co_CD } = getValues();
-    console.log('Ccccccccc', co_CD);
-    console.log(changeFormData);
-    //setError('co_CD', { type: 'manual', message: '회사를 선택해주세요' });
-
     clearErrors();
   };
 
@@ -228,27 +238,26 @@ const EmployeePage = () => {
     setAddressDetail();
     setImage();
     setImgFile();
+    setWorkplaceSelect('');
+    setCompany('');
   };
 
   // 사원 remove 이벤트
   const onClickButtonRemoveEmp = async () => {
-    const response = await authAxiosInstance.post(
-      'system/user/groupManage/employee/empRemove',
-      { kor_NM: data.kor_NM, username: data.username }
-    );
+    await authAxiosInstance.post('system/user/groupManage/employee/empRemove', {
+      kor_NM: data.kor_NM,
+      username: data.username,
+    });
     setEmpList(empList.filter(emp => emp.user_YN !== '0'));
-    console.log(response.data);
     setClickYN(false);
     alert('사원정보가 비활성화되었습니다.');
   };
 
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
-    console.log(changeFormData);
-
     const getJoinDT = getNowJoinTime(openDate);
     const formData = new FormData();
-    console.log(image);
+
     if (image !== null) {
       formData.append('image', image);
     }
@@ -278,25 +287,25 @@ const EmployeePage = () => {
     // 사원 insert 중일 때 저장버튼 기능
     if (!clickYN && insertButtonClick) {
       const userData = {
-        emp_CD: data.emp_CD || null,
-        co_CD: '1234',
-        div_CD: '001',
-        username: data.username || null,
-        password: data.password || null,
-        kor_NM: data.kor_NM || null,
-        email_ADD: data.email_ADD || null,
-        tel: data.tel || null,
+        emp_CD: data?.emp_CD,
+        co_CD: company || null,
+        div_CD: workplaceSelect || null,
+        username: data?.username,
+        password: data?.password,
+        kor_NM: data?.kor_NM,
+        email_ADD: data?.email_ADD,
+        tel: data?.tel,
         gender_FG: selectedRadioValue,
         join_DT: getJoinDT || null,
         enrl_FG: '0',
-        personal_MAIL: data.personal_MAIL || null,
-        personal_MAIL_CP: data.personal_MAIL_CP || null,
-        salary_MAIL: data.salary_MAIL || null,
-        salary_MAIL_CP: data.salary_MAIL_CP || null,
-        home_TEL: data.home_TEL || null,
+        personal_MAIL: data?.personal_MAIL,
+        personal_MAIL_CP: data?.personal_MAIL_CP,
+        salary_MAIL: data?.salary_MAIL,
+        salary_MAIL_CP: data?.salary_MAIL_CP,
+        home_TEL: data?.home_TEL,
         zipcode: address || null,
         addr: addressDetail || null,
-        addr_NUM: data.addr_NUM || null,
+        addr_NUM: data?.addr_NUM,
       };
 
       formData.append(
@@ -307,6 +316,7 @@ const EmployeePage = () => {
       );
 
       console.log('insert 버튼');
+      console.log(userData);
       const response = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empInsert',
         formData
@@ -326,17 +336,13 @@ const EmployeePage = () => {
       setImgPriviewFile();
       setChangeForm(false);
       setChangeFormData();
+      setWorkplaceSelect();
     }
   };
 
   const onFocusError = e => {
     const errorList = Object.keys(errors);
-    console.log('zzzzz');
-    console.log(errorList);
-    console.log(errorList.indexOf('emp_CD'));
-    console.log(errorList.indexOf('kor_NM'));
     if (errorList.indexOf('emp_CD') < 0 && errorList.indexOf('co_CD') > -1) {
-      console.log('hiii');
       setErrorName('co_CD');
     } else if (
       errorList.indexOf('emp_CD') < 0 &&
@@ -348,8 +354,6 @@ const EmployeePage = () => {
     }
   };
 
-  console.log('errrrrrr', errorName);
-
   //select box event
   const handleCheckSelectChange = event => {
     const {
@@ -360,8 +364,6 @@ const EmployeePage = () => {
   };
 
   console.log(errors);
-  console.log(enrlList);
-  console.log(fixEnrlList);
 
   return (
     <>
