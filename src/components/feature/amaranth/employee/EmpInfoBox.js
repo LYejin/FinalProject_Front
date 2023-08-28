@@ -4,13 +4,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 import EventButton from './../../../common/button/EventButton';
 import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
 import { ErrorMessage } from '@hookform/error-message';
-import EmpInfoSelectBox from './EmpInfoCompanySelectBox';
 import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
+import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
 
 const EmpInfoBox = ({
   data,
   register,
-  setOpenDate,
   openDate,
   selectedValue,
   handleRadioChange,
@@ -33,9 +32,12 @@ const EmpInfoBox = ({
   setWorkplaceList,
   workplaceSelect,
   setWorkplaceSelect,
+  onChangeTel,
+  onChangeHomeTel,
+  infoBoxEnrlData,
+  setInfoBoxEnrlData,
+  setChangeFormData,
 }) => {
-  const [closeDate, setCloseDate] = useState(null); // 폐업일 선택 상태 관리
-
   const imgRef = useRef();
 
   // // 프로필 이미지 미리보기 기능
@@ -161,6 +163,7 @@ const EmpInfoBox = ({
                   register={register}
                   errors={errors}
                   errorName={errorName}
+                  setChangeFormData={setChangeFormData}
                 />
               </div>
             </td>
@@ -337,9 +340,19 @@ const EmpInfoBox = ({
                 </label>
               </div>
             </td>
-            <th className="headerCellStyle">사용언어</th>
+            <th className="headerCellStyle">재직구분</th>
             <td className="cellStyle">
-              <input type="text" className="reqInputStyle" />
+              <EmpInfoEnrlSelectBox
+                width={230}
+                data={['재직', '휴직', '퇴직']}
+                infoBoxEnrlData={infoBoxEnrlData}
+                setInfoBoxEnrlData={setInfoBoxEnrlData}
+                clickYN={clickYN}
+                register={register}
+                errors={errors}
+                errorName={errorName}
+                setChangeFormData={setChangeFormData}
+              />
             </td>
           </tr>
           <tr>
@@ -394,6 +407,7 @@ const EmpInfoBox = ({
                 className="inputStyle"
                 name="tel"
                 {...register('tel')}
+                onChange={onChangeTel}
                 defaultValue={data.tel}
               />
             </td>
@@ -404,6 +418,7 @@ const EmpInfoBox = ({
                 name="home_TEL"
                 className="inputStyle"
                 {...register('home_TEL')}
+                onChange={onChangeHomeTel}
                 defaultValue={data.home_TEL}
               />
             </td>
