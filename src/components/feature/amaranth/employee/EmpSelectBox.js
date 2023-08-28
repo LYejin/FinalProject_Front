@@ -9,7 +9,7 @@ const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: width }} size="small">
+    <FormControl sx={{ m: 1, width: width }} size="small">
       <Select
         id="demo-select-small"
         value={companySelect}
