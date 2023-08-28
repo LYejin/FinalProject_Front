@@ -13,9 +13,14 @@ const EmpInfoWorkplaceSelectBox = ({
   register,
   errors,
   errorName,
+  setChangeFormData,
 }) => {
-  const handleChange = event => {
-    setWorkplaceSelect(event.target.value);
+  const handleChange = e => {
+    setWorkplaceSelect(e.target.value);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
@@ -33,6 +38,7 @@ const EmpInfoWorkplaceSelectBox = ({
             !clickYN && { required: '사업장을 선택해주세요' }
           )}
           id="demo-select-small"
+          name="div_CD"
           value={workplaceSelect}
           onChange={handleChange}
           displayEmpty
@@ -42,9 +48,11 @@ const EmpInfoWorkplaceSelectBox = ({
             border: errors.div_CD && errorName === 'div_CD' && '1px solid red',
           }}
         >
-          <MenuItem value="">
-            <em>사업장을 선택해주세요</em>
-          </MenuItem>
+          {!clickYN && (
+            <MenuItem value="">
+              <em>사업장을 선택해주세요</em>
+            </MenuItem>
+          )}
           {data.map(company => (
             <MenuItem value={company.div_CD}>
               {company.div_CD} {company.div_NM}

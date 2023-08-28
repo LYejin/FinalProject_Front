@@ -27,6 +27,7 @@ import Modal from '../../components/common/modal/Modal';
 import EventButton from '../../components/common/button/EventButton';
 import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
 import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
+import { onChangePhoneNumber } from '../../util/number';
 
 const EmployeePage = () => {
   const {
@@ -36,6 +37,7 @@ const EmployeePage = () => {
     getValues,
     formState: { errors },
     clearErrors,
+    setValue,
     setError,
   } = useForm({
     mode: 'onChange',
@@ -64,7 +66,7 @@ const EmployeePage = () => {
   const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
   const [workplaceSelect, setWorkplaceSelect] = useState(''); // Info box 내 workplace select
-  const [selectBoxData, setSelectBoxData] = useState({}); // select box에서 선택한 data
+  const [infoBoxEnrlData, setInfoBoxEnrlData] = useState(''); // Info box 내 enrl 재직구분 데이터
 
   // 우편번호
   const onChangeOpenPost = () => {
@@ -168,7 +170,6 @@ const EmployeePage = () => {
     if (onChangeForm === true) {
       alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
-    setChangeForm(false);
     setIsLoading(true);
     setInsertButtonClick(false);
     setClickYN(true);
@@ -184,14 +185,20 @@ const EmployeePage = () => {
     setIsLoading(false);
     setUsername(response.data.username);
     setCompany(response.data.co_CD);
+    setInfoBoxEnrlData(response.data.enrl_FG);
     setWorkplaceSelect(response.data.div_CD);
     authAxiosInstance(
       `system/user/groupManage/employee/getWorkplace?CO_CD=${response.data.co_CD}`
     ).then(response => {
       setWorkplaceList(response.data);
     });
+    response.data.home_TEL &&
+      setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
+    response.data.tel &&
+      setValue('tel', onChangePhoneNumber(response.data.tel));
   };
 
+  // 조건 검색 버튼
   const onClickSearchEmpList = () => {
     const { name } = getValues();
     const params = {};
@@ -210,7 +217,6 @@ const EmployeePage = () => {
     authAxiosInstance('system/user/groupManage/employee/getList', {
       params,
     }).then(response => {
-      console.log('hiiiii', response.data);
       setEmpList(response.data);
     });
   };
@@ -240,6 +246,7 @@ const EmployeePage = () => {
     setImgFile();
     setWorkplaceSelect('');
     setCompany('');
+    setInfoBoxEnrlData('');
   };
 
   // 사원 remove 이벤트
@@ -248,8 +255,9 @@ const EmployeePage = () => {
       kor_NM: data.kor_NM,
       username: data.username,
     });
-    setEmpList(empList.filter(emp => emp.user_YN !== '0'));
-    setClickYN(false);
+    setClickYN(true);
+    setChangeForm(false);
+    getEmpList();
     alert('사원정보가 비활성화되었습니다.');
   };
 
@@ -266,22 +274,28 @@ const EmployeePage = () => {
     if (clickYN && !insertButtonClick) {
       console.log('update 버튼');
       console.log(changeFormData);
-
+      if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
+        changeFormData.home_TEL = changeFormData.home_TEL.replace(/-/g, '');
+      }
+      if (changeFormData && Object.keys(changeFormData).includes('tel')) {
+        changeFormData.tel = changeFormData.tel.replace(/-/g, '');
+      }
       formData.append(
         'userData',
         new Blob([JSON.stringify({ ...changeFormData, username: username })], {
           type: 'application/json',
         })
       );
+
       const response = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empUpdate',
         formData
       );
       console.log(response.data);
-      alert('사원정보가 수정되었습니다.');
-
+      getEmpList();
       setChangeForm(false);
       setChangeFormData();
+      alert('사원정보가 수정되었습니다.');
     }
 
     // 사원 insert 중일 때 저장버튼 기능
@@ -294,15 +308,15 @@ const EmployeePage = () => {
         password: data?.password,
         kor_NM: data?.kor_NM,
         email_ADD: data?.email_ADD,
-        tel: data?.tel,
+        tel: data?.tel.replace(/-/g, ''),
         gender_FG: selectedRadioValue,
         join_DT: getJoinDT || null,
-        enrl_FG: '0',
+        enrl_FG: infoBoxEnrlData || null,
         personal_MAIL: data?.personal_MAIL,
         personal_MAIL_CP: data?.personal_MAIL_CP,
         salary_MAIL: data?.salary_MAIL,
         salary_MAIL_CP: data?.salary_MAIL_CP,
-        home_TEL: data?.home_TEL,
+        home_TEL: data?.home_TEL.replace(/-/g, ''),
         zipcode: address || null,
         addr: addressDetail || null,
         addr_NUM: data?.addr_NUM,
@@ -340,6 +354,7 @@ const EmployeePage = () => {
     }
   };
 
+  // 에러 처리 이벤트
   const onFocusError = e => {
     const errorList = Object.keys(errors);
     if (errorList.indexOf('emp_CD') < 0 && errorList.indexOf('co_CD') > -1) {
@@ -349,6 +364,11 @@ const EmployeePage = () => {
       errorList.indexOf('div_CD') > -1
     ) {
       setErrorName('div_CD');
+    } else if (
+      errorList.indexOf('emp_CD') < 0 &&
+      errorList.indexOf('enrl_FG') > -1
+    ) {
+      setErrorName('enrl_FG');
     } else {
       setErrorName(e.target.name);
     }
@@ -363,7 +383,27 @@ const EmployeePage = () => {
     setEnrlList(typeof value === 'string' ? value.split(',') : value);
   };
 
+  // 전화번호 실시간 010-0000-000 change
+  const onChangeTel = e => {
+    // 입력된 값을 숫자만 남기도록 정제합니다.
+    const tel = e.target.value.replace(/\D/g, '');
+    // 정제된 숫자를 원하는 전화번호 형식으로 변환합니다.
+    const formattedPhoneNumber = onChangePhoneNumber(tel);
+
+    setValue('tel', formattedPhoneNumber);
+  };
+
+  // 전화번호(집) 실시간 010-0000-000 change
+  const onChangeHomeTel = e => {
+    // 입력된 값을 숫자만 남기도록 정제합니다.
+    const tel = e.target.value.replace(/\D/g, '');
+    const formattedPhoneNumber = onChangePhoneNumber(tel);
+
+    setValue('home_TEL', formattedPhoneNumber);
+  };
+
   console.log(errors);
+  console.log(changeFormData);
 
   return (
     <>
@@ -419,14 +459,16 @@ const EmployeePage = () => {
                   <div className="tableHeader">
                     <div className="defaultTitle">기본정보</div>
                     <div className="buttonWrapper">
-                      <SubmitButton data={'저장'} width={'-10px'} height={30} />
-                      <div className="paddingRight"></div>
-                      <EventButton
-                        data={'삭제'}
-                        width={'-10px'}
-                        height={30}
-                        onClickEvent={onClickButtonRemoveEmp}
-                      />
+                      <button type="submit" className="WhiteButton">
+                        저장
+                      </button>
+                      <button
+                        type="button"
+                        className="WhiteButton"
+                        onClick={onClickButtonRemoveEmp}
+                      >
+                        삭제
+                      </button>
                     </div>
                   </div>
                   <ScrollWrapper width={'700px'}>
@@ -456,6 +498,12 @@ const EmployeePage = () => {
                       setWorkplaceList={setWorkplaceList}
                       workplaceSelect={workplaceSelect}
                       setWorkplaceSelect={setWorkplaceSelect}
+                      onChangeTel={onChangeTel}
+                      onChangeHomeTel={onChangeHomeTel}
+                      infoBoxEnrlData={infoBoxEnrlData}
+                      setInfoBoxEnrlData={setInfoBoxEnrlData}
+                      getValues={getValues}
+                      setChangeFormData={setChangeFormData}
                     />
                   </ScrollWrapper>
                 </form>
