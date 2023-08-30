@@ -19,12 +19,35 @@ const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
           height: '28px',
           fontSize: '0.8rem',
         }}
+        MenuProps={{
+          PaperProps: {
+            style: {
+              width: '190px',
+              maxHeight: 250, // 원하는 최대 높이 값으로 변경
+            },
+          },
+        }}
       >
-        <MenuItem value="">
+        <MenuItem
+          value=""
+          style={{
+            fontSize: '0.8rem',
+            fontWeight: 'bold',
+            borderBottom: '1px solid #CCC',
+          }}
+        >
           <em>전체</em>
         </MenuItem>
         {data.map(company => (
-          <MenuItem value={company.co_CD}>
+          <MenuItem
+            value={company.co_CD}
+            key={company.co_CD}
+            style={{
+              fontSize: '0.8rem',
+              fontWeight: 'bold',
+              borderBottom: '1px solid #CCC',
+            }}
+          >
             {company.co_CD} {company.co_NM}
           </MenuItem>
         ))}

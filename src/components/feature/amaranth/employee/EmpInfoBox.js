@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import EventButton from './../../../common/button/EventButton';
@@ -6,6 +6,9 @@ import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
 import { ErrorMessage } from '@hookform/error-message';
 import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
 import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
+import EmpEmailSelectBox from './EmpEmailPersonalSelectBox';
+import EmpEmailPersonalSelectBox from './EmpEmailPersonalSelectBox';
+import EmpEmailSalarySelectBox from './EmpEmailSalarySelectBox';
 
 const EmpInfoBox = ({
   data,
@@ -37,6 +40,13 @@ const EmpInfoBox = ({
   infoBoxEnrlData,
   setInfoBoxEnrlData,
   setChangeFormData,
+  onChangePersonalMAIL,
+  onChangeSalaryMAIL,
+  setEmailPersonalData,
+  emailPersonalData,
+  emailSalaryData,
+  setEmailSalaryData,
+  onChangeDBDataSearch,
 }) => {
   const imgRef = useRef();
 
@@ -99,6 +109,41 @@ const EmpInfoBox = ({
               </div>
             </td>
           </tr>
+
+          <tr>
+            <th className="headerCellStyle">회사/사업장</th>
+            <td colSpan="3" className="cellStyle">
+              <div className="inputWrapperStyle">
+                <div className="empInfoCompanySelectBox">
+                  <EmpInfoCompanySelectBox
+                    width={230}
+                    data={companyList}
+                    setWorkplaceSelect={setWorkplaceSelect}
+                    setCompany={setCompany}
+                    company={company}
+                    setWorkplaceList={setWorkplaceList}
+                    clickYN={clickYN}
+                    register={register}
+                    errors={errors}
+                    errorName={errorName}
+                  />
+                </div>
+                <div className="empInfoWorkplaceSelectBox">
+                  <EmpInfoWorkplaceSelectBox
+                    width={'calc(100% - 7px)'}
+                    data={workplaceList || []}
+                    workplaceSelect={workplaceSelect}
+                    setWorkplaceSelect={setWorkplaceSelect}
+                    clickYN={clickYN}
+                    register={register}
+                    errors={errors}
+                    errorName={errorName}
+                    setChangeFormData={setChangeFormData}
+                  />
+                </div>
+              </div>
+            </td>
+          </tr>
           <tr>
             <th className="headerCellStyle">사번</th>
             <td colSpan="3" className="cellStyle">
@@ -125,6 +170,7 @@ const EmpInfoBox = ({
                   }}
                   disabled={clickYN}
                   onFocus={onFocusError}
+                  onChange={onChangeDBDataSearch}
                 />
                 {errorName === 'emp_CD' && (
                   <ErrorMessage
@@ -134,37 +180,6 @@ const EmpInfoBox = ({
                     className="errorBox"
                   />
                 )}
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle">회사/사업장</th>
-            <td colSpan="3" className="cellStyle">
-              <div className="empInfoCompanySelectBox">
-                <EmpInfoCompanySelectBox
-                  width={230}
-                  data={companyList}
-                  setCompany={setCompany}
-                  company={company}
-                  setWorkplaceList={setWorkplaceList}
-                  clickYN={clickYN}
-                  register={register}
-                  errors={errors}
-                  errorName={errorName}
-                />
-              </div>
-              <div className="empInfoWorkplaceSelectBox">
-                <EmpInfoWorkplaceSelectBox
-                  width={495}
-                  data={workplaceList || []}
-                  workplaceSelect={workplaceSelect}
-                  setWorkplaceSelect={setWorkplaceSelect}
-                  clickYN={clickYN}
-                  register={register}
-                  errors={errors}
-                  errorName={errorName}
-                  setChangeFormData={setChangeFormData}
-                />
               </div>
             </td>
           </tr>
@@ -225,6 +240,7 @@ const EmpInfoBox = ({
                   }}
                   disabled={clickYN}
                   onFocus={onFocusError}
+                  onChange={onChangeDBDataSearch}
                 />
                 {errorName === 'username' && (
                   <ErrorMessage
@@ -263,6 +279,7 @@ const EmpInfoBox = ({
                   }}
                   disabled={clickYN}
                   onFocus={onFocusError}
+                  onChange={onChangeDBDataSearch}
                 />
                 {errorName === 'email_ADD' && (
                   <ErrorMessage
@@ -343,7 +360,7 @@ const EmpInfoBox = ({
             <th className="headerCellStyle">재직구분</th>
             <td className="cellStyle">
               <EmpInfoEnrlSelectBox
-                width={230}
+                width={'calc(100% - 7px)'}
                 data={['재직', '휴직', '퇴직']}
                 infoBoxEnrlData={infoBoxEnrlData}
                 setInfoBoxEnrlData={setInfoBoxEnrlData}
@@ -358,45 +375,61 @@ const EmpInfoBox = ({
           <tr>
             <th className="headerCellStyle">개인메일</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="mailInputStyle"
-                name="personal_MAIL"
-                {...register('personal_MAIL')}
-                defaultValue={data.personal_MAIL}
-                maxLength="32"
-              />
-              @
-              <input
-                type="text"
-                className="mailInputStyle2"
-                name="personal_MAIL_CP"
-                maxLength="32"
-                {...register('personal_MAIL_CP')}
-                defaultValue={data.personal_MAIL_CP}
-              />
+              <div className="inputWrapperStyle">
+                <input
+                  type="text"
+                  className="mailInputStyle"
+                  name="personal_MAIL"
+                  {...register('personal_MAIL')}
+                  defaultValue={data.personal_MAIL}
+                  maxLength="32"
+                />
+                @
+                <input
+                  type="text"
+                  className="mailInputStyle2"
+                  name="personal_MAIL_CP"
+                  maxLength="32"
+                  {...register('personal_MAIL_CP')}
+                  defaultValue={data.personal_MAIL_CP}
+                />
+                <EmpEmailPersonalSelectBox
+                  width={'calc(100% - 300px)'}
+                  onClickEvent={onChangePersonalMAIL}
+                  emailPersonalData={emailPersonalData}
+                  setEmailPersonalData={setEmailPersonalData}
+                />
+              </div>
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">급여메일</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="mailInputStyle"
-                name="salary_MAIL"
-                maxLength="32"
-                {...register('salary_MAIL')}
-                defaultValue={data.salary_MAIL}
-              />
-              @
-              <input
-                type="text"
-                className="mailInputStyle2"
-                name="salary_MAIL_CP"
-                maxLength="32"
-                {...register('salary_MAIL_CP')}
-                defaultValue={data.salary_MAIL_CP}
-              />
+              <div className="inputWrapperStyle">
+                <input
+                  type="text"
+                  className="mailInputStyle"
+                  name="salary_MAIL"
+                  maxLength="32"
+                  {...register('salary_MAIL')}
+                  defaultValue={data.salary_MAIL}
+                />
+                @
+                <input
+                  type="text"
+                  className="mailInputStyle2"
+                  name="salary_MAIL_CP"
+                  maxLength="32"
+                  {...register('salary_MAIL_CP')}
+                  defaultValue={data.salary_MAIL_CP}
+                />
+                <EmpEmailSalarySelectBox
+                  width={'calc(100% - 300px)'}
+                  onClickEvent={onChangeSalaryMAIL}
+                  emailSalaryData={emailSalaryData}
+                  setEmailSalaryData={setEmailSalaryData}
+                />
+              </div>
             </td>
           </tr>
           <tr>
@@ -469,7 +502,7 @@ const EmpInfoBox = ({
                 name="join_DT"
                 onChange={handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
-                className="datePickerStyle"
+                className="datePickerInputStyle"
               />
             </td>
             <th className="headerCellStyle">퇴사일</th>

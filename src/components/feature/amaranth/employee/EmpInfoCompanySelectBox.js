@@ -15,6 +15,7 @@ const EmpInfoCompanySelectBox = ({
   register,
   errors,
   errorName,
+  setWorkplaceSelect,
 }) => {
   const handleChange = event => {
     setCompany(event.target.value);
@@ -22,6 +23,9 @@ const EmpInfoCompanySelectBox = ({
       `system/user/groupManage/employee/getWorkplace?CO_CD=${event.target.value}`
     ).then(response => {
       setWorkplaceList(response.data);
+      setWorkplaceSelect(
+        response.data[0]?.div_CD ? response.data[0]?.div_CD : 0
+      );
     });
   };
 
@@ -48,20 +52,34 @@ const EmpInfoCompanySelectBox = ({
           sx={{
             height: '28px',
             fontSize: '0.8rem',
+            borderRadius: '0',
             border: errors.co_CD && errorName === 'co_CD' && '1px solid red',
             backgroundColor: clickYN && '#f2f2f2',
           }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                width: '230px',
+                maxHeight: 250, // 원하는 최대 높이 값으로 변경
+              },
+            },
+          }}
         >
-          <MenuItem value="">
-            <em>회사를 선택해주세요</em>
-          </MenuItem>
           {data.map(company => (
-            <MenuItem value={company.co_CD} key={company.co_CD}>
+            <MenuItem
+              value={company.co_CD}
+              key={company.co_CD}
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                borderBottom: '1px solid #CCC',
+              }}
+            >
               {company.co_CD}. {company.co_NM}
             </MenuItem>
           ))}
         </Select>
-      </FormControl>{' '}
+      </FormControl>
       {errorName === 'co_CD' && (
         <ErrorMessage
           errors={errors}

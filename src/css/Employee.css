@@ -224,6 +224,7 @@
 .empInfoWorkplaceSelectBox {
   float: left;
   margin-left: 7px;
+  width: 100%;
   vertical-align: middle;
   font-size: 13px;
 }
@@ -233,4 +234,11 @@
   border-bottom: 1px solid #ccc;
   vertical-align: middle;
   font-size: 13px;
+}
+
+.inputWrapperStyle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }

@@ -9,18 +9,14 @@ import { ENRL_FG_LIST } from '../../../../constants/List';
 const ITEM_HEIGHT = 40;
 const ITEM_PADDING_TOP = 1;
 
-const EmpCheckSelectBox = ({
-  width,
-  data,
-  enrlList,
-  handleCheckSelectChange,
-}) => {
+const EmpCheckSelectBox = ({ width, enrlList, handleCheckSelectChange }) => {
   const MenuProps = {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
         width: width,
         fontSize: '0.8rem',
+        maxHeight: 250,
       },
     },
   };
@@ -47,11 +43,17 @@ const EmpCheckSelectBox = ({
               value={name}
               sx={{
                 height: '28px',
-                fontSize: '0.8rem',
+                fontSize: '0.5rem',
               }}
             >
               <Checkbox checked={enrlList.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+              <ListItemText
+                primary={name}
+                sx={{
+                  fontSize: '0.5rem',
+                  fontWeight: 'bold',
+                }}
+              />
             </MenuItem>
           ))}
         </Select>

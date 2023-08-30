@@ -19,7 +19,7 @@
   border-top: 2px solid darkgray;
 }
 
-.headerCellStyle {
+.headerCellCSS {
   background-color: #fafafa;
   padding: 10px;
   font-weight: bold;
@@ -98,14 +98,14 @@
 }
 
 .mailInputStyle {
-  width: 100px;
+  width: 135px;
   height: 26px;
   border: 1px solid #ccc;
   margin-right: 5px;
 }
 
 .mailInputStyle2 {
-  width: 100px;
+  width: 135px;
   height: 26px;
   border: 1px solid #ccc;
   margin-left: 5px;
@@ -117,4 +117,12 @@
   height: 26px;
   border: 1px solid #ccc;
   background: #ffffff;
+}
+
+.datePickerInputStyle {
+  width: 135px;
+  height: 26px;
+  background-color: #fef4f4;
+  border: 1px solid #ccc;
+  margin-right: 5px;
 }
