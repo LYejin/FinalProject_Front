@@ -9,7 +9,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     await axios
       .post(
@@ -20,9 +20,9 @@ const LoginForm = () => {
         },
         {
           headers: { 'Content-type': 'application/json' },
-        },
+        }
       )
-      .then((res) => {
+      .then(res => {
         navigate('/Main');
         console.log(res.headers['authorization']);
       });
@@ -45,7 +45,7 @@ const LoginForm = () => {
                   type="text"
                   name="username"
                   className="form-control"
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={e => setUserId(e.target.value)}
                 />
               </div>
               <div className="input-form-box">
@@ -54,7 +54,7 @@ const LoginForm = () => {
                   type="password"
                   name="password"
                   className="form-control"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </div>
               <div className="button-login-box">
