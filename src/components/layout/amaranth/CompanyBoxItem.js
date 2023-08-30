@@ -1,15 +1,21 @@
-import React from "react";
+import React from 'react';
 
-const CompanyBoxItem = ({ leftTop, rightTop, leftBottom, rightBotton, clickEmp}) => {
-
+const CompanyBoxItem = ({
+  leftTop,
+  rightTop,
+  leftBottom,
+  rightBotton,
+  clickEmp,
+}) => {
+  const focusElement = React.useRef();
   const handleItemClick = () => {
-    clickEmp(leftTop);
+    clickEmp(leftTop, focusElement);
   };
-  
-  
+
+  //const handleItemChange = () => {};
 
   return (
-    <div className="listBoxItem" onClick={handleItemClick}>
+    <div className="listBoxItem" ref={focusElement} onClick={handleItemClick}>
       <div className="flexWrapper">
         <span className="leftContent">{leftTop}</span>
         <span className="rightContent">{rightTop}</span>
