@@ -22,12 +22,13 @@ const EmpInfoEnrlSelectBox = ({
       [e.target.name]: e.target.value,
     }));
   };
+  console.log('##################', infoBoxEnrlData);
   return (
     <div className="errorWrapper">
       <FormControl
         sx={{
           m: 1,
-          width: width,
+          minWidth: width,
         }}
         size="small"
       >
@@ -44,17 +45,30 @@ const EmpInfoEnrlSelectBox = ({
           sx={{
             height: '28px',
             fontSize: '0.8rem',
+            borderRadius: '0',
+            marginLeft: '-9px',
             border:
               errors.enrl_FG && errorName === 'enrl_FG' && '1px solid red',
           }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                width: '230px',
+                maxHeight: 120, // 원하는 최대 높이 값으로 변경
+              },
+            },
+          }}
         >
-          {!clickYN && (
-            <MenuItem value="">
-              <em>재직구분을 선택해주세요</em>
-            </MenuItem>
-          )}
           {data.map((enrl, index) => (
-            <MenuItem value={index} key={index}>
+            <MenuItem
+              value={index}
+              key={index}
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                borderBottom: '1px solid #CCC',
+              }}
+            >
               {enrl}
             </MenuItem>
           ))}
