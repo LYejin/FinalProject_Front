@@ -1,9 +1,15 @@
 import React from 'react';
 import ButtonMUI from '@mui/material/Button';
 
-const Button = ({ data, width, height }) => {
+const EventButton = ({ data, width, height, onClickEvent }) => {
+  const onClickEventFunction = () => {
+    console.log('hiii');
+    onClickEvent();
+  };
+
   return (
     <ButtonMUI
+      onClick={onClickEventFunction}
       variant="contained"
       size="small"
       sx={{
@@ -20,4 +26,4 @@ const Button = ({ data, width, height }) => {
   );
 };
 
-export default Button;
+export default EventButton;
