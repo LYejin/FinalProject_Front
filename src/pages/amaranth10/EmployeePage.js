@@ -19,8 +19,7 @@ import {
 import EmpSelectListWrapper from './../../components/feature/amaranth/employee/EmpSelectListWrapper';
 import { EmpInfoBox } from '../../components/feature/amaranth/Index';
 import { useForm } from 'react-hook-form';
-import SubmitButton from '../../components/common/button/SubmitButton';
-import { getNowJoinTime, updateArray } from './../../util/time';
+import { getNowJoinTime } from './../../util/time';
 import CommonLayout from '../../components/common/CommonLayout';
 import DaumPostcode from 'react-daum-postcode';
 import Modal from '../../components/common/modal/Modal';
@@ -28,6 +27,7 @@ import EventButton from '../../components/common/button/EventButton';
 import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
 import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
 import { onChangePhoneNumber } from '../../util/number';
+import { useRef } from 'react';
 
 const EmployeePage = () => {
   const {
@@ -61,12 +61,15 @@ const EmployeePage = () => {
   const [imgPriviewFile, setImgPriviewFile] = useState(); // image 미리보기
   const [username, setUsername] = useState(); // update를 위한 username 저장
   const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
-  const [company, setCompany] = useState(''); // Infobox companyList
+  const [company, setCompany] = useState(''); // Infobox 내 company select
   const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
   const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
   const [workplaceSelect, setWorkplaceSelect] = useState(''); // Info box 내 workplace select
   const [infoBoxEnrlData, setInfoBoxEnrlData] = useState(''); // Info box 내 enrl 재직구분 데이터
+  const listRef = useRef(null); // list 화면 상하단 이동
+  const [emailPersonalData, setEmailPersonalData] = useState(''); // email drop box 데이터
+  const [emailSalaryData, setEmailSalaryData] = useState(''); // email drop box 데이터
 
   // 우편번호
   const onChangeOpenPost = () => {
@@ -141,13 +144,29 @@ const EmployeePage = () => {
     const response = await authAxiosInstance(
       `system/user/groupManage/employee/getList`
     );
-    setData(response.data[0] || resetData());
+    console.log(response.data);
     setEmpList(response.data);
-    setSelectedRadioValue(response.data[0].gender_FG);
+    if (clickYN && !insertButtonClick) {
+      console.log('^^^^^^^^^^^^^^^^^^^^^^^');
+      setUsername(response.data[0].username);
+      setData(response.data[0] || resetData());
+      setSelectedRadioValue(response.data[0].gender_FG);
+      setCompany(response.data[0].co_CD);
+      setWorkplaceSelect(response.data[0].div_CD);
+    }
+    authAxiosInstance(
+      `system/user/groupManage/employee/getWorkplace?CO_CD=${response.data[0].co_CD}`
+    ).then(response => {
+      setWorkplaceList(response.data);
+      setWorkplaceSelect(
+        response.data[0]?.div_CD ? response.data[0]?.div_CD : 0
+      );
+    });
   };
 
   // 회사 리스트 얻는 axios
   const getCompanyList = async () => {
+    console.log('lllllllllllll');
     const response = await authAxiosInstance(
       'system/user/groupManage/employee/getCompanyList'
     );
@@ -162,6 +181,8 @@ const EmployeePage = () => {
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailEmpInfo = async (kor_NM, username) => {
     setChangeFormData();
+    setEmailPersonalData('');
+    setEmailSalaryData('');
     reset();
     setImgFile();
     setImgPriviewFile();
@@ -170,12 +191,16 @@ const EmployeePage = () => {
     if (onChangeForm === true) {
       alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
+    console.log('kornm : ', kor_NM, 'username : ', username);
     setIsLoading(true);
     setInsertButtonClick(false);
     setClickYN(true);
     const response = await authAxiosInstance.post(
       'system/user/groupManage/employee/empDetail',
-      { kor_NM: kor_NM, username: username }
+      {
+        kor_NM: kor_NM,
+        username: username,
+      }
     );
     setData(response.data);
     console.log(response.data);
@@ -186,10 +211,11 @@ const EmployeePage = () => {
     setUsername(response.data.username);
     setCompany(response.data.co_CD);
     setInfoBoxEnrlData(response.data.enrl_FG);
-    setWorkplaceSelect(response.data.div_CD);
+    setWorkplaceSelect(response.data?.div_CD);
     authAxiosInstance(
       `system/user/groupManage/employee/getWorkplace?CO_CD=${response.data.co_CD}`
     ).then(response => {
+      console.log('%%%%%%%%%%%%', response.data);
       setWorkplaceList(response.data);
     });
     response.data.home_TEL &&
@@ -235,6 +261,9 @@ const EmployeePage = () => {
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    setEmailPersonalData('');
+    setEmailSalaryData('');
+    setCompany(companyList[0].co_CD);
     setImgPriviewFile();
     setOpenDate(new Date());
     setInsertButtonClick(true);
@@ -242,11 +271,12 @@ const EmployeePage = () => {
     setSelectedRadioValue('W');
     setAddress();
     setAddressDetail();
+    setWorkplaceSelect();
     setImage();
     setImgFile();
-    setWorkplaceSelect('');
-    setCompany('');
-    setInfoBoxEnrlData('');
+    console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
+    setInfoBoxEnrlData(0);
+    setUsername('');
   };
 
   // 사원 remove 이벤트
@@ -258,6 +288,12 @@ const EmployeePage = () => {
     setClickYN(true);
     setChangeForm(false);
     getEmpList();
+    setImage();
+    setImgFile();
+    setUsername(empList[0].username);
+    if (listRef.current) {
+      listRef.current.scrollTop = 0;
+    }
     alert('사원정보가 비활성화되었습니다.');
   };
 
@@ -287,14 +323,19 @@ const EmployeePage = () => {
         })
       );
 
-      const response = await imageAxiosInstance.post(
+      const responseUpdate = await imageAxiosInstance.post(
         'system/user/groupManage/employee/empUpdate',
         formData
       );
-      console.log(response.data);
-      getEmpList();
+      console.log(responseUpdate.data);
+      const responseGetList = await authAxiosInstance(
+        `system/user/groupManage/employee/getList`
+      );
+      setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
+      setEmailPersonalData('');
+      setEmailSalaryData('');
       alert('사원정보가 수정되었습니다.');
     }
 
@@ -321,6 +362,10 @@ const EmployeePage = () => {
         addr: addressDetail || null,
         addr_NUM: data?.addr_NUM,
       };
+      setUsername(data?.username);
+      setData(userData);
+      setWorkplaceSelect(workplaceSelect);
+      setCompany(company);
 
       formData.append(
         'userData',
@@ -346,11 +391,20 @@ const EmployeePage = () => {
       ]);
       alert('사원이 추가되었습니다.');
       reset();
+      setEmailPersonalData('');
+      setEmailSalaryData('');
       setImgFile();
       setImgPriviewFile();
       setChangeForm(false);
       setChangeFormData();
-      setWorkplaceSelect();
+      setInsertButtonClick(false);
+      setClickYN(true);
+      console.log(listRef.current.scrollHeight);
+      if (listRef.current) {
+        listRef.current.scrollTop = listRef.current.scrollHeight;
+      }
+      console.log(listRef.current.scrollHeight);
+      console.log(listRef.current.scrollTop);
     }
   };
 
@@ -402,8 +456,65 @@ const EmployeePage = () => {
     setValue('home_TEL', formattedPhoneNumber);
   };
 
+  // drop box 선택시 personal_MAIL_CP 값 변경
+  const onChangePersonalMAIL = value => {
+    value === ''
+      ? setValue('personal_MAIL_CP', '')
+      : setValue('personal_MAIL_CP', value);
+  };
+
+  // drop box 선택시 salary_MAIL_CP 값 변경
+  const onChangeSalaryMAIL = value => {
+    value === ''
+      ? setValue('salary_MAIL_CP', '')
+      : setValue('salary_MAIL_CP', value);
+  };
+
+  // onChange 시 DB 내 동일한 데이터 검사
+  const onChangeDBDataSearch = async e => {
+    let params = {};
+    console.log('=============', changeFormData);
+    if (e.target.name === 'emp_CD') {
+      params.CO_CD = company;
+      params.EMP_CD = e.target.value;
+      await authAxiosInstance(
+        `system/user/groupManage/employee/getEmpCDInWorkplace`,
+        { params }
+      ).then(response => {
+        console.log(response.data);
+        response.data &&
+          setError('emp_CD', { message: '사번이 중복되었습니다.' });
+      });
+    } else if (e.target.name === 'username') {
+      params.USERNAME = e.target.value;
+      await authAxiosInstance(
+        `system/user/groupManage/employee/getUsernameInCompany`,
+        { params }
+      ).then(response => {
+        console.log(response.data);
+        response.data &&
+          setError('username', { message: 'ID가 중복되었습니다.' });
+      });
+    } else if (e.target.name === 'email_ADD') {
+      params.EMAIL_ADD = e.target.value;
+      await authAxiosInstance(
+        `system/user/groupManage/employee/getEmailInCompany`,
+        {
+          params,
+        }
+      ).then(response => {
+        console.log(response.data);
+        response.data &&
+          setError('email_ADD', { message: 'ID가 중복되었습니다.' });
+      });
+    }
+  };
+
   console.log(errors);
   console.log(changeFormData);
+  console.log(data);
+  console.log(onChangeForm);
+  console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
   return (
     <>
@@ -445,7 +556,9 @@ const EmployeePage = () => {
               <EmpSelectListWrapper
                 width={'295px'}
                 title={'사용자:'}
+                listRef={listRef}
                 dataCount={empList.length}
+                clickedBoxID={username}
                 data={empList}
                 clickBoxEvent={onClickDetailEmpInfo}
                 clickInsertBoxEvent={onClickInsertEmpBox}
@@ -471,7 +584,7 @@ const EmployeePage = () => {
                       </button>
                     </div>
                   </div>
-                  <ScrollWrapper width={'700px'}>
+                  <ScrollWrapper width={'900px'}>
                     <EmpInfoBox
                       data={data || []}
                       onChangeOpenPost={onChangeOpenPost}
@@ -504,6 +617,13 @@ const EmployeePage = () => {
                       setInfoBoxEnrlData={setInfoBoxEnrlData}
                       getValues={getValues}
                       setChangeFormData={setChangeFormData}
+                      onChangePersonalMAIL={onChangePersonalMAIL}
+                      onChangeSalaryMAIL={onChangeSalaryMAIL}
+                      setEmailPersonalData={setEmailPersonalData}
+                      emailPersonalData={emailPersonalData}
+                      emailSalaryData={emailSalaryData}
+                      setEmailSalaryData={setEmailSalaryData}
+                      onChangeDBDataSearch={onChangeDBDataSearch}
                     />
                   </ScrollWrapper>
                 </form>
