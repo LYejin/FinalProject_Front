@@ -9,7 +9,6 @@ import {
   EmployeePage,
   WorkplacePage,
 } from '../pages/amaranth10/Index.js';
-import CompanyNameSelect from '../components/feature/amaranth/company/CompanyNameSelect';
 
 const Routers = () => {
   return (
@@ -20,6 +19,9 @@ const Routers = () => {
       <Route path={URL.company} element={<CompanyPage />} />
       <Route path={URL.employee} element={<EmployeePage />} />
       <Route path={URL.workplace} element={<WorkplacePage />} />
+      <Route path={URL.CapitalSubjectSetting} element={<EmployeePage />} />
+      <Route path={URL.FixedCapitalRegistration} element={<EmployeePage />} />
+      <Route path={URL.GeneralVendorRegistration} element={<EmployeePage />} />
     </Routes>
   );
 };

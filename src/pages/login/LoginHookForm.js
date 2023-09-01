@@ -26,6 +26,7 @@ const LoginHookForm = () => {
         if (res.headers['authorization'] != null) {
           setAccessToken(res.headers['authorization']);
         }
+        localStorage.setItem('menu', 'setting');
         navigate('/Employee');
       });
   };
