@@ -26,3 +26,10 @@
   border-color: #000000;
   box-shadow: none;
 }
+
+.amaranth-logo {
+  width: 170px;
+  height: 40px;
+  margin-left: -5px;
+  margin-top: 5px;
+}
