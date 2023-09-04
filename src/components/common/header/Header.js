@@ -1,13 +1,15 @@
-import React from "react";
-import { IoIosMenu } from "react-icons/io";
-import styled from "styled-components";
+import React from 'react';
 
 const Header = () => {
   return (
     <>
-      <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+      <nav class="sb-topnav navbar navbar-expand navbar-dark bg-white">
         <a class="navbar-brand ps-3" href="index.html">
-          Amaranth10
+          <img
+            src={`${process.env.PUBLIC_URL}/image/amaranth10Logo.png`}
+            className="amaranth-logo"
+            alt="React"
+          />
         </a>
         <button
           class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"

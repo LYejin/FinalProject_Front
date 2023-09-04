@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 
-const Sidebar = () => {
+const Sidebar2 = () => {
   return (
     <div>
       <div id="layoutSidenav_nav">
@@ -19,7 +19,7 @@ const Sidebar = () => {
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-columns"></i>
                 </div>
-                조직관리
+                자금관리
                 <div class="sb-sidenav-collapse-arrow">
                   <i class="fas fa-angle-down"></i>
                 </div>
@@ -31,11 +31,11 @@ const Sidebar = () => {
                 data-bs-parent="#sidenavAccordion"
               >
                 <nav class="sb-sidenav-menu-nested nav">
-                  <Link class="nav-link" to="/Company">
-                    회사관리
+                  <Link class="nav-link" to="/CapitalSubjectSetting">
+                    자금과목설정
                   </Link>
-                  <Link class="nav-link" to="/Workplace">
-                    사업장관리
+                  <Link class="nav-link" to="/FixedCapitalRegistration">
+                    고정자금등록
                   </Link>
                 </nav>
               </div>
@@ -50,7 +50,7 @@ const Sidebar = () => {
                 <div class="sb-nav-link-icon">
                   <i class="fas fa-book-open"></i>
                 </div>
-                사원관리
+                회계기초정보관리
                 <div class="sb-sidenav-collapse-arrow">
                   <i class="fas fa-angle-down"></i>
                 </div>
@@ -65,8 +65,8 @@ const Sidebar = () => {
                   class="sb-sidenav-menu-nested nav accordion"
                   id="sidenavAccordionPages"
                 >
-                  <Link class="nav-link" to="/Employee">
-                    상용직관리
+                  <Link class="nav-link" to="/GeneralVendorRegistration">
+                    일반거래처등록
                   </Link>
                 </nav>
               </div>
@@ -90,4 +90,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default Sidebar2;

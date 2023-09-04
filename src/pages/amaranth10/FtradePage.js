@@ -16,10 +16,10 @@ import {
   RightContentWrapper,
   SelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
-import EmpSelectListWrapper from './../../components/feature/amaranth/employee/EmpSelectListWrapper';
+import EmpSelectListWrapper from '../../components/feature/amaranth/employee/EmpSelectListWrapper';
 import { EmpInfoBox } from '../../components/feature/amaranth/Index';
 import { useForm } from 'react-hook-form';
-import { getNowJoinTime } from './../../util/time';
+import { getNowJoinTime } from '../../util/time';
 import CommonLayout from '../../components/common/CommonLayout';
 import DaumPostcode from 'react-daum-postcode';
 import Modal from '../../components/common/modal/Modal';
@@ -28,8 +28,11 @@ import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBo
 import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
+import CommonLayout2 from '../../components/common/CommonLayout2';
+import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
+import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
 
-const EmployeePage = () => {
+const FtradePage = () => {
   const {
     register,
     handleSubmit,
@@ -267,7 +270,7 @@ const EmployeePage = () => {
     setCompany(companyList[0].co_CD);
     setImgPriviewFile();
     setOpenDate(new Date());
-    setInsertButtonClick(true); 
+    setInsertButtonClick(true);
     setClickYN(false);
     setSelectedRadioValue('W');
     setAddress();
@@ -554,26 +557,26 @@ const EmployeePage = () => {
 
   return (
     <>
-      <CommonLayout>
-        <MainTitle mainTitle={'시스템 설정'} />
+      <CommonLayout2>
+        <MainTitle mainTitle={'회계관리'} />
         <ContentWrapper>
-          <Title titleName={'상용직관리'}></Title>
+          <Title titleName={'금융거래처등록'}></Title>
           <DetailContentWrapper>
             <SelectBoxWrapper>
-              <span className="rightSelectBoxPadding">회사</span>
+              <span className="rightSelectBoxPadding">거래처구분</span>
               <EmpSelectBox
                 width={200}
                 data={companyList}
                 setCompanySelect={setCompanySelect}
                 companySelect={companySelect}
               />
-              <span className="leftSelectBoxPadding">재직구분</span>
+              <span className="leftSelectBoxPadding">거래처코드</span>
               <EmpCheckSelectBox
                 width={'200px'}
                 handleCheckSelectChange={handleCheckSelectChange}
                 enrlList={enrlList}
               />
-              <span className="lastSelectBoxTextPadding">이름/ID/Mail ID</span>
+              <span className="lastSelectBoxTextPadding">거래처명</span>
               <input
                 type="text"
                 className="textInputBox"
@@ -600,13 +603,12 @@ const EmployeePage = () => {
                 clickInsertBoxEvent={onClickInsertEmpBox}
               />
               <RightContentWrapper>
-                <DetailTitle detailTitle={'상세정보'}></DetailTitle>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   onChange={onChangeFunction}
                 >
                   <div className="tableHeader">
-                    <div className="defaultTitle">기본정보</div>
+                    <div className="defaultTitle">기본등록사항</div>
                     <div className="buttonWrapper">
                       <button type="submit" className="WhiteButton">
                         저장
@@ -621,7 +623,7 @@ const EmployeePage = () => {
                     </div>
                   </div>
                   <ScrollWrapper width={'900px'}>
-                    <EmpInfoBox
+                    <FtradeInfoBox
                       data={data || []}
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}
@@ -670,7 +672,7 @@ const EmployeePage = () => {
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
-      </CommonLayout>
+      </CommonLayout2>
       {isOpenPost ? (
         <Modal
           width={'560px'}
@@ -685,4 +687,4 @@ const EmployeePage = () => {
   );
 };
 
-export default EmployeePage;
+export default FtradePage;

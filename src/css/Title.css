@@ -1,28 +1,29 @@
 /* MainTitle.js */
 .mainTitleWrapper {
   position: fixed;
-  top: 56px;
+  top: 50px;
   left: 43px;
   display: flex;
   align-items: center;
   min-width: 100px;
   width: calc(100% - 43px);
   height: 45px;
-  background-color: #777777;
+  color: white;
+  background-color: #1c90fb;
 }
 
 .mainTitleWrapper .menuBox {
   display: flex;
   align-items: center;
-  font-size: 1.3rem;
-  padding: 0 10px;
+  font-size: 1rem;
+  padding: 0 13px;
   height: 100%;
-  background-color: #3c3c3c;
+  background-color: #1673c9;
   color: white;
 }
 
 .mainTitleWrapper .titleName {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   min-width: 200px;
   padding-left: 10px;
   font-weight: 600;
@@ -40,7 +41,7 @@
 .titleWrapper .titleName {
   font-size: 1.1rem;
   font-weight: 600;
-  width: 100px;
+  width: 500px;
   padding-left: 10px;
 }
 
@@ -55,4 +56,24 @@
 .detailTitleWrapper .fa-circle {
   font-size: 0.5rem;
   padding: 0 5px;
+}
+
+.WhiteButton {
+  background: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 50px;
+  height: 26px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.WhiteButton:hover {
+  border-color: #000000;
+  box-shadow: none;
 }

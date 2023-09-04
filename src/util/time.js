@@ -28,6 +28,23 @@ export const getJoinTime = data => {
   return data.substr(0, 10);
 };
 
+export const parseDateString = dateString => {
+  if (dateString) {
+    const year = parseInt(dateString.substr(0, 4), 10);
+    const month = parseInt(dateString.substr(4, 2), 10) - 1;
+    const day = parseInt(dateString.substr(6, 2), 10);
+    return new Date(year, month, day);
+  }
+  return null;
+};
+
+export const parseDateToString = date => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}${month}${day}`;
+};
+
 export const updateArray = (myArray, oldValue, newValue) => {
   if (!myArray instanceof Array) return;
   console.log(myArray);
