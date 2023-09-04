@@ -4,7 +4,7 @@
 @import './css/Header.css';
 @import './css/Title.css';
 @import './css/Wrapper.css';
-@import './css/CompanyPage.css';
+/* @import './css/CompanyPage.css'; */
 @import './css/Employee.css';
 @import './css/Box.css';
 @import './css/Workplace.css';
@@ -132,4 +132,8 @@ ul {
 
 a {
   text-decoration: none;
+}
+
+input {
+  padding-left: 5px;
 }
