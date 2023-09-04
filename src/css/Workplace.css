@@ -105,7 +105,7 @@
     border: 1px solid #ccc;
     text-align: center;
     vertical-align: middle;
-    width: 180px;
+    width: 220px;
   }
   
   .cellStyle3 {
@@ -115,13 +115,52 @@
     vertical-align: middle;
   }
   
+  /* .imageCellStyle_Workplace {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 120px;
+    text-align: center;
+    vertical-align :middle;
+  } */
   .imageCellStyle_Workplace {
     padding: 10px;
     border: 1px solid #ccc;
     height: 120px;
+    text-align: center;
+    vertical-align :middle;
+  }
+  .imageContainer {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 120px;
+    text-align: center;
+    display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.3s; /* 배경색 변경에 대한 전환 효과 추가 */
   }
+  
+  .imageContainer:hover {
+    background-color: #f0f0f0; /* 마우스를 올렸을 때 배경색 변경 */
+  }
+  
+  .image {
+    max-width: 70px; /* 이미지 크기를 70x70으로 고정 */
+    max-height: 70px;
+  }
+  
+  .placeholder {
+    width: 70px;
+    height: 70px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  
+  
 
   .headTitleButton{
     margin-left: auto;
@@ -151,11 +190,11 @@
   box-shadow: none;
 }
 
-.errorWrapper {
+/* .errorWrapper {
   position: relative;
   width: 100%;
   display: inline-block;
-}
+} */
 
 /* .errorBox {
   min-width: 150px;
@@ -184,7 +223,7 @@
   border-color: #ffdede transparent transparent transparent;
 } */
 
-.errorWrapper {
+/* .errorWrapper {
   position: relative;
   width: 100%;
   display: inline-block;
@@ -228,4 +267,4 @@
 .inputWrapper {
   position: relative;
   display: inline-block;
-}
+} */

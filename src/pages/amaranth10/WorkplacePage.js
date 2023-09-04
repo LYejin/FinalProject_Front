@@ -467,7 +467,7 @@ const WorkplacePage = () => {
                 onClickUpdate={handleUpdate}
                 deleteDiv={deleteDiv}
               ></WorkpHeadTitle>
-              <ScrollWrapper width={'100%'} height={'100%'}>
+              <ScrollWrapper width={'100%'}>
                 <WorkPlaceInfoWrapper
                   data={workplaceDetailData}
                   inputRefs={inputRefs}

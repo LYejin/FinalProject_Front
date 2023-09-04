@@ -41,6 +41,27 @@ const WorkPlaceInfoWrapper = ({
     onCompanyChange(event.target.value);
   };
 
+  //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleClick = () => {
+    // 이미지 클릭 시 파일 선택 창 다시 열기
+    document.getElementById('imageInput').click();
+  };
+
+  //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
+
   return (
     <div className="selectListWrapper">
       <table className="tableStyle">
@@ -573,17 +594,86 @@ const WorkPlaceInfoWrapper = ({
         </thead>
         <tbody>
           <tr>
-            <td className="imageCellStyle_Wokrplace">
-              <img src="1" alt="Image 1" />
+            <td className="imageCellStyle_Workplace" onClick={handleClick}>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              {selectedImage ? (
+                <div className="imageContainer">
+                  <img
+                    src={selectedImage}
+                    alt="Selected Image"
+                    className="image"
+                  />
+                </div>
+              ) : (
+                <div className="placeholder">70x70</div>
+              )}
             </td>
-            <td className="imageCellStyle_Wokrplace">
-              <img src="1" alt="Image 2" />
+
+            <td className="imageCellStyle_Workplace" onClick={handleClick}>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              {selectedImage ? (
+                <div className="imageContainer">
+                  <img
+                    src={selectedImage}
+                    alt="Selected Image"
+                    className="image"
+                  />
+                </div>
+              ) : (
+                <div className="placeholder">70x70</div>
+              )}
             </td>
-            <td className="imageCellStyle_Wokrplace">
-              <img src="1" alt="Image 3" />
+            <td className="imageCellStyle_Workplace" onClick={handleClick}>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              {selectedImage ? (
+                <div className="imageContainer">
+                  <img
+                    src={selectedImage}
+                    alt="Selected Image"
+                    className="image"
+                  />
+                </div>
+              ) : (
+                <div className="placeholder">70x70</div>
+              )}
             </td>
-            <td className="imageCellStyle_Workplace">
-              <img src="1" alt="Image 4" />
+            <td className="imageCellStyle_Workplace" onClick={handleClick}>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              {selectedImage ? (
+                <div className="imageContainer">
+                  <img
+                    src={selectedImage}
+                    alt="Selected Image"
+                    className="image"
+                  />
+                </div>
+              ) : (
+                <div className="placeholder">70x70</div>
+              )}
             </td>
           </tr>
         </tbody>
