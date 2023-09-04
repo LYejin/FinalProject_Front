@@ -1,14 +1,19 @@
 /* l NAV */
-.l-navbar {
+.navbarStylekkk {
   position: fixed;
   top: 0;
   left: 0;
-  width: var(--nav--width);
+  width: 43px;
   height: 100vh;
   background-color: var(--bg-color);
   color: var(--white-color);
   transition: 0.5s;
   z-index: var(--z-fixed);
+  cursor: pointer;
+}
+
+.navbarStylekkk:hover {
+  width: 200px;
 }
 
 /* NAV */
@@ -52,6 +57,7 @@
 }
 
 .nav__link:hover {
+  width: calc(var(--nav--width) + 9.25rem);
   background-color: var(--first-color);
 }
 

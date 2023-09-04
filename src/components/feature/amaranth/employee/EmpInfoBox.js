@@ -47,6 +47,10 @@ const EmpInfoBox = ({
   emailSalaryData,
   setEmailSalaryData,
   onChangeDBDataSearch,
+  getValues,
+  setError,
+  clearErrors,
+  checkDBErrorYN,
 }) => {
   const imgRef = useRef();
 
@@ -126,6 +130,9 @@ const EmpInfoBox = ({
                     register={register}
                     errors={errors}
                     errorName={errorName}
+                    setError={setError}
+                    getValues={getValues}
+                    clearErrors={clearErrors}
                   />
                 </div>
                 <div className="empInfoWorkplaceSelectBox">
@@ -163,7 +170,8 @@ const EmpInfoBox = ({
                   defaultValue={data.emp_CD}
                   style={{
                     border:
-                      errors.emp_CD && errorName === 'emp_CD'
+                      errors.emp_CD &&
+                      (checkDBErrorYN.emp_CD_ERROR || errorName === 'emp_CD')
                         ? '1px solid red'
                         : '1px solid #ccc',
                     backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
@@ -172,7 +180,7 @@ const EmpInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {errorName === 'emp_CD' && (
+                {(checkDBErrorYN.emp_CD_ERROR || errorName === 'emp_CD') && (
                   <ErrorMessage
                     errors={errors}
                     name="emp_CD"
@@ -233,7 +241,9 @@ const EmpInfoBox = ({
                   maxLength="16"
                   style={{
                     border:
-                      errors.username && errorName === 'username'
+                      errors.username &&
+                      (checkDBErrorYN.username_ERROR ||
+                        errorName === 'username')
                         ? '1px solid red'
                         : '1px solid #ccc',
                     backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
@@ -242,7 +252,8 @@ const EmpInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {errorName === 'username' && (
+                {(checkDBErrorYN.username_ERROR ||
+                  errorName === 'username') && (
                   <ErrorMessage
                     errors={errors}
                     name="username"
@@ -272,7 +283,9 @@ const EmpInfoBox = ({
                   defaultValue={data.email_ADD}
                   style={{
                     border:
-                      errors.email_ADD && errorName === 'email_ADD'
+                      errors.email_ADD &&
+                      (checkDBErrorYN.email_ADD_ERROR ||
+                        errorName === 'email_ADD')
                         ? '1px solid red'
                         : '1px solid #ccc',
                     backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',
@@ -281,7 +294,8 @@ const EmpInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {errorName === 'email_ADD' && (
+                {(checkDBErrorYN.email_ADD_ERROR ||
+                  errorName === 'email_ADD') && (
                   <ErrorMessage
                     errors={errors}
                     name="email_ADD"
