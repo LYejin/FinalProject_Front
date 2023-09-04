@@ -9,13 +9,15 @@ import './CompanyInputBox.css';
 import axios from 'axios';
 import DaumPostcode from 'react-daum-postcode';
 import { getNowJoinTime } from '../../../../util/time';
-import Modal from '../../../common/modal/Modal';
-
+import ComModel from './model/ComModel';
+import CompanyNameSelect from './CompanyNameSelect.js';
 import { Label } from '../../../../../node_modules/@mui/icons-material/index';
-import CompanyNameSelect from './CompanyNameSelect';
+
 import EventButton from './button/EventButton';
 import SubmitButton from './button/SubmitButton';
 import EditButton from './button/EditButton';
+import { clear } from '../../../../../node_modules/@testing-library/user-event/dist/clear';
+import { authAxiosInstance } from '../../../../axios/axiosInstance';
 
 const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   const {
@@ -63,16 +65,17 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     JONGMOK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     REG_NB: [/^\d{3}-\d{2}-\d{5}$/, '000-00-00000형식에 맞춰서 입력하세요'],
     CEO_NM: [/^[가-힣]{3,4}$/, '3~4자리 이내로 입력하세요'],
-    HO_FAX: [/^\d{3}-\d{3,4}-\d{4}$/, '000-0000-000형식에 맞춰 입력하세요'],
+    HO_FAX: [/^\d{3}-\d{3}-\d{4}$/, '000-0000-000형식에 맞춰 입력하세요'],
     CEO_TEL: [/^0\d{2}-\d{3,4}-\d{4}$/, '전화번호 형식에 맞게 입력하세요'],
     PPL_NB: [
       /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])-\d{7}$/,
       '주민번호 형식에 맞게 입력하세요',
     ],
     HO_ZIP: [/^\d{5}$/, '우편번호 형식에 맞게 입력하세요'],
-    HO_ADDR: [/^.{1,}$/, '존재하지 않는 주소입니다'],
+    HO_ADDR: [/[가-힣]+/, '잘못된 주소지 입니다'],
     CO_NB: [/^\d{6}-\d{7}$/, '000000-0000000 형식에 맞게 입력하세요'],
     required: '필수 입력입니다',
+    dup: '이미 존재합니다',
   };
 
   const ACCT_FG_OP = [
@@ -81,13 +84,20 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     '학교(교비)',
     '산학협력단',
   ];
+  const [dupError, setDupError] = useState({
+    CO_CD: false,
+    CEO_TEL: false,
+    PPL_NB: false,
+    REG_NB: false,
+  });
+  const pplBackNumberError = useRef(false);
   const CO_FG_OP = ['개인', '법인'];
   const dupColmn = ['CO_CD', 'CEO_TEL', 'PPL_NB', 'REG_NB'];
   const transformColme = ['REG_NB', 'HO_FAX', 'PPL_NB', 'CO_NB', 'CEO_TEL'];
   const [selectedImage, setSelectedImage] = useState();
   const [ch_formData, setChFormData] = useState({});
   const up_FormData = useRef(); //{ EST_DT: "", OPEN_DT: "", CLOSE_DT: "" }
-  const message = React.useRef();
+
   const [selectedDate, setSelectedDate] = useState();
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
   const [isOpenCompanyName, setIsOpenCompanyName] = useState(false); // 우편번호 모달창
@@ -115,54 +125,97 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         }
       }
       console.log('qudrud', up_FormData);
+      console.log('에러', dupError);
+      console.log('!!!!!!!!!!!!!', ch_formData);
       setSelectedDate(getValues()); //
 
       clearErrors();
     }
   }, [formData]);
 
-  const asyncRequest = async (url, methodType, data, headers) => {
-    console.log(data);
-    const cookies = document.cookie;
-    const token = cookies.split('=')[1];
-    try {
-      const response = await axios({
-        method: methodType,
-        url: url,
-        data: data,
-        withCredentials: true,
+  // const asyncRequest = async (url, methodType, data, headers) => {
+  //   console.log(data);
+  //   const cookies = document.cookie;
+  //   const token = cookies.split('=')[1];
+  //   try {
+  //     const response = await axios({
+  //       method: methodType,
+  //       url: url,
+  //       data: data,
+  //       withCredentials: true,
 
-        headers: { Authorization: token, ...headers },
-      });
+  //       headers: { Authorization: token, ...headers },
+  //     });
 
-      console.log('가져온 값', response.data);
-      return response;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
+  //     console.log('가져온 값', response.data);
+  //     return response;
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw e;
+  //   }
+  // };
 
   const onFocusErrors = e => {
     console.log('------------------------------------');
     console.log(errors[0]?.message);
-    console.log(e.target.name);
+    console.log(errors[e.target.name]);
     console.log(Object.keys(errors).length);
     console.log(errors[e.target.name]?.message);
+    console.log(
+      Object.keys(errors).length >= 0,
+      errors[e.target.name] !== undefined
+    );
+    // if (Object.keys(errors).length >= 0) {
+    //   Object.keys(errors).forEach(errorFieldName => {
+    //     const fieldName = e.target.name;
+    //     console.log('확인!!', errorFieldName, fieldName);
+    //     if (errorFieldName !== fieldName) {
+    //       clearErrors(errorFieldName);
+    //     }
+    //   });
+    // }
 
     if (
-      Object.keys(errors).length >= 0 &&
-      errors[e.target.name] !== undefined
+      !dupError[e.target.name] &&
+      !regexPatterns[e.target.name][0].test(e.target.value)
+    ) {
+      setError(e.target.name, {
+        message: e.target.value
+          ? regexPatterns[e.target.name][1]
+          : regexPatterns.required,
+      });
+    } else if (
+      dupError[e.target.name] &&
+      dupError.hasOwnProperty(e.target.name)
+    ) {
+      setError(e.target.name, {
+        message: regexPatterns.dup,
+      });
+    }
+  };
+  const onEnterKeyDown = e => {
+    console.log('엔터키!!!!!!!!!!!', e.target.value);
+    if (
+      e.key === 'Enter' &&
+      !regexPatterns[e.target.name][0].test(e.target.value)
     ) {
       clearErrors();
       setError(
         e.target.name,
-        { message: errors[e.target.name]?.message } // 에러 메세지
+        {
+          message: e.target.value
+            ? regexPatterns[e.target.name][1]
+            : regexPatterns.required,
+        } // 에러 메세지
       );
+      e.preventDefault();
     }
   };
-  const onBlurClearErrors = () => {
-    clearErrors();
+
+  const onBlurClearErrors = e => {
+    if (!errors['DUP_PPL_NB']) {
+      clearErrors();
+    }
   };
 
   //이미지 데이터 인코딩
@@ -218,6 +271,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       setValue(field.name, field.value);
       onChangeInput({ target: { name: field.name, value: field.value } });
     });
+    setValue('CO_FG', '법인');
   };
   const handleOverlayClick = e => {
     e.stopPropagation(); // 이벤트 전파 중단
@@ -246,7 +300,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   };
 
   const handleImageChange = async e => {
+    console.log('이미지!!!!!!!!!!!!');
     setSelectedImage('');
+
     const imageFile = await blobToByteArray(e.target.files[0]);
     if (imageFile) {
       setSelectedImage(imageFile); // 선택한 이미지 파일의 URL로 업데이트
@@ -254,12 +310,11 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   };
 
   const onSubmit = async (empdata, e) => {
-    const transformColme = ['REG_NB', 'HO_FAX', 'PPL_NB', 'CO_NB', 'CEO_TEL'];
     console.log(empdata);
     console.log(selectedImage);
-    console.log('에러', errors);
+    console.log('에러', dupError, hasValue(dupError));
 
-    if (formData.co_CD === '' && getValues() !== '') {
+    if (formData.co_CD === '' && getValues() !== '' && hasValue(dupError)) {
       try {
         const n_formData = new FormData();
         for (const key in empdata) {
@@ -282,9 +337,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
           console.log(pair[0] + ': ' + pair[1]);
         }
 
-        const response = await asyncRequest(
+        const response = await authAxiosInstance.post(
           'system/admin/groupManage/CompanyInsert',
-          'post',
           n_formData,
           { 'Content-Type': 'multipart/form-data' } // 이부분 코드 확인하기
         );
@@ -295,7 +349,29 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       } catch (error) {
         console.error('데이터 전송 실패:', error);
       }
+    } else {
+      for (const key in dupError) {
+        if (dupError[key]) {
+          console.log(key);
+          setError(key, { message: regexPatterns.dup }, { shouldFocus: true });
+        }
+      }
     }
+  };
+
+  const hasValue = obj => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        // 객체 자체의 프로퍼티인지 확인
+        const value = obj[key];
+
+        if (value) {
+          console.log('★★★★★', value);
+          return false; // 문자열 값 중에서 substring을 포함하는 경우
+        }
+      }
+    }
+    return true;
   };
 
   const onChangeInput = async e => {
@@ -318,6 +394,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       '과거',
       ch_formData[e.target.name]?.length
     );
+    console.log('row:', e.target.rawValue, '그냥:', e.target.Value);
+
     // console.log(
     //   '검사',
     //   regexPatterns[e.target.name][0].test(dup[e.target.name]),
@@ -344,24 +422,49 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         e.target.name === 'PPL_NB' &&
         !etIsRegistFieldRight(dup[e.target.name])
       ) {
+        console.log(
+          '주민번호!!!!:',
+          dup[e.target.name],
+          regexPatterns[e.target.name][1],
+          e.target.name,
+          errors[e.target.name]
+        );
+        console.log('★★★★★', errors[e.target.name]);
+        setError(
+          'DUP_PPL_NB',
+          { message: regexPatterns[e.target.name][1] } // 에러 메세지
+        );
         return;
+      } else {
+        clearErrors('DUP_PPL_NB');
       }
-
       dup[e.target.name] = dup[e.target.name].replace(/-/g, '');
+
       try {
-        const response = await asyncRequest(
+        const formData = new FormData();
+        formData.append(e.target.name, dup[e.target.name]);
+
+        const response = await authAxiosInstance.post(
           'system/admin/groupManage/CompanyDup',
-          'post',
-          dup,
-          { 'Content-Type': 'multipart/form-data' } // 이부분 코드 확인하기
+          formData,
+          { 'Content-Type': 'multipart/form-data' }
         );
 
         if (response.data !== '') {
           setError(
             e.target.name,
-            { message: '이미 존재합니다.' }, // 에러 메세지
+            { message: regexPatterns.dup }, // 에러 메세지
             { shouldFocus: true }
           );
+          setDupError(privDupError => ({
+            ...privDupError,
+            [e.target.name]: true,
+          }));
+        } else if (response.data === '') {
+          setDupError(privDupError => ({
+            ...privDupError,
+            [e.target.name]: false,
+          }));
         }
       } catch (error) {
         console.error('데이터 전송 실패:', error);
@@ -375,6 +478,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     ) {
       hyphenation(dup[e.target.name], e.target.name);
     }
+
     if (ch_formData.CO_CD !== '') {
       setChFormData(prevChFormData => ({
         ...prevChFormData,
@@ -386,6 +490,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         [fieldName]: fieldValue,
       }));
     }
+    console.log('변경이벤트!!!!', ch_formData);
   };
 
   const etIsRegistFieldRight = registNum => {
@@ -418,7 +523,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   const hyphenation = (inputData, type) => {
     const transformPattern = {
       REG_NB: /(\d{3})(?:-?)(\d{0,2})(?:-?)(\d{0,5})/, // 000-00-00000
-      HO_FAX: /(\d{3})(?:-?)(\d{0,4})(?:-?)(\d{0,4})/, // 000-0000-000
+      HO_FAX: /(\d{3})(?:-?)(\d{0,3})(?:-?)(\d{0,4})/, // 000-0000-000
       CO_NB: /(\d{6})(?:-?)(\d{0,7})/, // 000000-0000000
       PPL_NB: /(\d{6})(?:-?)(\d{0,7})/, // 000000-0000000
       CEO_TEL: /(\d{3})(?:-?)(\d{0,4})(?:-?)(\d{0,4})/, // 000-0000-0000
@@ -438,8 +543,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   };
 
   const updateBtnClick = async () => {
+    console.log('변경!!!!!!!!!!!!', ch_formData);
     const isValid = await trigger();
-    if (ch_formData.CO_CD !== '' && isValid) {
+    if (ch_formData.CO_CD !== '' && isValid && hasValue(dupError)) {
       const c_formData = new FormData();
 
       if (ch_formData.PIC_FILE_ID !== '') {
@@ -456,9 +562,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       }
 
       try {
-        const response = await asyncRequest(
+        const response = await authAxiosInstance.put(
           'system/admin/groupManage/CompanyUpdate',
-          'put',
           c_formData,
           { 'Content-Type': 'multipart/form-data' }
         );
@@ -470,21 +575,30 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         console.log(error);
       }
       console.log(ch_formData);
+    } else {
+      for (const key in dupError) {
+        if (dupError[key]) {
+          console.log(key);
+          setError(key, { message: regexPatterns.dup }, { shouldFocus: true });
+        }
+      }
     }
   };
 
   const removeBtnClick = async () => {
     const CO_CD = formData.co_CD;
-    try {
-      const response = await asyncRequest(
-        'system/admin/groupManage/CompanyRemove/' + CO_CD,
-        'put'
-      );
-      if (response.data !== '') {
-        ch_listDataSet(prveData => prveData + 1);
+    if (formData.USE_YN !== '0') {
+      try {
+        const response = await authAxiosInstance.put(
+          'system/admin/groupManage/CompanyRemove/' + CO_CD,
+          'put'
+        );
+        if (response.data !== '') {
+          ch_listDataSet(prveData => prveData + 1);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -507,6 +621,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         onChange={onChangeInput}
         onSubmit={handleSubmit(onSubmit)}
         onBlur={onBlurClearErrors}
+        onKeyDown={onEnterKeyDown}
       >
         <div className="button-container">
           <SubmitButton data={'추가'} width={'-10px'} height={30} />
@@ -526,6 +641,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
             onClickEvent={removeBtnClick}
           />
         </div>
+
         <table className="tableStyle">
           <tbody>
             <tr>
@@ -572,7 +688,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       name={labels.CO_CD}
                       className="companyReqInputStyle"
                       readOnly
-                      style={{ backgroundColor: 'gray' }}
+                      style={{ backgroundColor: '#f2f2f2' }}
                       {...register(labels.CO_CD, {
                         pattern: {
                           value: regexPatterns.CO_CD[0],
@@ -622,7 +738,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     type="text"
                     name={labels.CO_NM}
                     maxlength="17"
-                    className="addressInputStyle"
+                    className="C_addressInputStyle"
                     {...register(labels.CO_NM, {
                       pattern: {
                         value: regexPatterns.CO_NM[0],
@@ -667,11 +783,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
               <th className="headerCellStyle">사업자번호</th>
               <td className="cellStyle">
                 <div className="errorWrapper">
-                  <input
-                    type="text"
-                    name={labels.REG_NB}
-                    maxlength="12"
-                    className="companyReqInputStyle"
+                  <InputMask
+                    mask="999-99-99999"
+                    alwaysShowMask={true}
                     {...register(labels.REG_NB, {
                       pattern: {
                         value: regexPatterns.REG_NB[0],
@@ -680,7 +794,16 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       required: regexPatterns.required,
                     })}
                     onFocus={onFocusErrors}
-                  />
+                  >
+                    {() => (
+                      <input
+                        type="text"
+                        name={labels.REG_NB}
+                        maxlength="13"
+                        className="companyReqInputStyle"
+                      />
+                    )}
+                  </InputMask>
                   {errors[labels.REG_NB] && (
                     <p className="errorBox">{errors?.REG_NB?.message}</p>
                   )}
@@ -689,7 +812,11 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
               <th className="headerCellStyle">법인번호</th>
               <td className="cellStyle">
                 <div className="inline-input-group">
-                  <select name={labels.CO_FG} {...register(labels.CO_FG)}>
+                  <select
+                    className="S_margin"
+                    name={labels.CO_FG}
+                    {...register(labels.CO_FG)}
+                  >
                     {CO_FG_OP.map((option, index) => (
                       <option key={index} value={option}>
                         {option}
@@ -697,11 +824,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     ))}
                   </select>
                   <div className="errorWrapper">
-                    <input
-                      type="text"
-                      name={labels.CO_NB}
-                      maxlength="14"
-                      className="companyReqInputStyle"
+                    <InputMask
+                      mask="999999-9999999"
+                      alwaysShowMask={true}
                       {...register(labels.CO_NB, {
                         pattern: {
                           value: regexPatterns.CO_NB[0],
@@ -710,7 +835,16 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                         required: regexPatterns.required,
                       })}
                       onFocus={onFocusErrors}
-                    />
+                    >
+                      {() => (
+                        <input
+                          type="text"
+                          name={labels.CO_NB}
+                          maxlength="15"
+                          className="companyReqInputStyle"
+                        />
+                      )}
+                    </InputMask>
                     {errors[labels.CO_NB] && (
                       <p className="errorBox">{errors?.CO_NB?.message}</p>
                     )}
@@ -816,7 +950,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
               <td className="cellStyle">
                 <div className="errorWrapper">
                   <InputMask
-                    mask="999999-9999999"
+                    mask="999999-9******"
                     alwaysShowMask={true}
                     onFocus={onFocusErrors}
                     {...register(labels.PPL_NB, {
@@ -836,22 +970,11 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       />
                     )}
                   </InputMask>
-                  {/* <input
-                    type="text"
-                    name={labels.PPL_NB}
-                    maxlength="14"
-                    className="companyReqInputStyle"
-                    {...register(labels.PPL_NB, {
-                      pattern: {
-                        value: regexPatterns.PPL_NB[0],
-                        message: regexPatterns.PPL_NB[1],
-                      },
-                      required: regexPatterns.required,
-                    })}
-                    onFocus={onFocusErrors}
-                  /> */}
                   {errors[labels.PPL_NB] && (
                     <p className="errorBox">{errors?.PPL_NB?.message}</p>
+                  )}
+                  {errors['DUP_PPL_NB'] && (
+                    <p className="errorBox">{errors?.DUP_PPL_NB?.message}</p>
                   )}
                 </div>
               </td>
@@ -860,7 +983,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                 <input
                   type="text"
                   name={labels.HO_FAX}
-                  maxlength="13"
+                  maxlength="12"
                   className="inputStyle"
                   {...register(labels.HO_FAX, {
                     pattern: {
@@ -883,6 +1006,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   }}
                   dateFormat="yyyy-MM-dd"
                   calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
+                  className="C_datePickerReqInputStyle"
                 />
               </td>
               <th className="headerCellStyle">개/폐업일</th>
@@ -896,8 +1020,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     }}
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
+                    className="C_datePickerInputStyle"
                   />
-                  /
+                  <p className="p_margin">/</p>
                   <DatePicker
                     selected={C_selectedDateValue}
                     onChange={date => {
@@ -906,6 +1031,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     }}
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
+                    className="C_datePickerInputStyle"
                   />
                 </div>
               </td>
@@ -915,24 +1041,49 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                 주소
               </th>
               <td colSpan="3" className="cellStyle">
-                <input
-                  type="text"
-                  className="addressInputStyle"
-                  {...register(labels.HO_ZIP)}
-                />
-                <EventButton
-                  data={'우편번호'}
-                  onClickEvent={onChangeOpenPost}
-                ></EventButton>
+                <div className="errorWrapper">
+                  <input
+                    type="text"
+                    className="C_addressInputStyle"
+                    maxlength="5"
+                    {...register(labels.HO_ZIP, {
+                      pattern: {
+                        value: regexPatterns.HO_ZIP[0],
+                        message: regexPatterns.HO_ZIP[1],
+                      },
+                      required: regexPatterns.required,
+                    })}
+                    onFocus={onFocusErrors}
+                  />
+                  <EventButton
+                    data={'우편번호'}
+                    onClickEvent={onChangeOpenPost}
+                  ></EventButton>
+                  {errors[labels.HO_ZIP] && (
+                    <p className="zipErrorBox">{errors?.HO_ZIP?.message}</p>
+                  )}
+                </div>
               </td>
             </tr>
             <tr>
               <td colSpan="2" className="cellStyle">
-                <input
-                  type="text"
-                  className="reqInputStyle"
-                  {...register(labels.HO_ADDR)}
-                />
+                <div className="errorWrapper">
+                  <input
+                    type="text"
+                    className="reqInputStyle"
+                    {...register(labels.HO_ADDR, {
+                      pattern: {
+                        value: regexPatterns.HO_ADDR[0],
+                        message: regexPatterns.HO_ADDR[1],
+                      },
+                      required: regexPatterns.required,
+                    })}
+                    onFocus={onFocusErrors}
+                  />
+                  {errors[labels.HO_ADDR] && (
+                    <p className="addrErrorBox">{errors?.HO_ADDR?.message}</p>
+                  )}
+                </div>
               </td>
               <td className="cellStyle">
                 <input
@@ -958,18 +1109,18 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         </table>
       </form>
       {isOpenPost ? (
-        <Modal
+        <ComModel
           width={'560px'}
           height={'600px'}
           title={'우편번호'}
           onClickEvent={onChangeOpenPost}
         >
           <DaumPostcode autoClose onComplete={onCompletePost} />
-        </Modal>
+        </ComModel>
       ) : null}
 
       {isOpenCompanyName ? (
-        <Modal
+        <ComModel
           width={'560px'}
           height={'600px'}
           title={'회사명검색'}
@@ -981,7 +1132,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
               closeModal={() => setIsOpenCompanyName(false)}
             />
           </div>
-        </Modal>
+        </ComModel>
       ) : null}
     </div>
   );
