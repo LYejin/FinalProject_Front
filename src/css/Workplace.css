@@ -1,88 +1,271 @@
 /* styles.css */
 
 .selectListWrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ffffff;
+  }
+  
+  .tableStyle {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid darkgray;
+  }
+  
+  .headerCellStyle {
+    background-color: #fafafa;
+    padding: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    text-align: right;
+    vertical-align: middle;
+    font-size: 13px;
+    width: 180px;
+    height: 30px;
+    min-width: 150px;
+  }
+
+  .headerCellStyle2 {
+    background-color: #fafafa;
+    padding: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    text-align: right;
+    vertical-align: middle;
+    font-size: 13px;
+    width: 180px;
+    height: 42px;
+    min-width: 150px;
+  }
+  
+  .cellStyle {
+    padding: 7px;
+    border-bottom: 1px solid #ccc;
+    vertical-align: middle;
+    font-size: 13px;
+    min-width: 300px;
+  }
+  
+  .radioStyle {
+    margin-left: 10px;
+    color: blue;
+    vertical-align: middle;
+  }
+  
+  .inputStyle {
+    min-width: 150px;
+    width: 100%;
+    height: 26px;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+  }
+  
+  .reqInputStyle {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #ccc;
+    background: #fef4f4;
+    min-width: 150px;
+    padding-left: 5px;
+  }
+  
+  .postInputStyle {
+    border: 1px solid #ccc;
+    height: 26px;
+    background: #fef4f4;
+  }
+
+  .selectListStyle {
+    height: 26px;
+    width: 300px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+  }
+  .tableStyle2 {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+  }
+  
+  .headerRowStyle {
+    background-color: #f0f0f0;
+    color: black;
+    font-size: 13px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  
+  .cellStyle2 {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+    width: 220px;
+  }
+  
+  .cellStyle3 {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  /* .imageCellStyle_Workplace {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 120px;
+    text-align: center;
+    vertical-align :middle;
+  } */
+  .imageCellStyle_Workplace {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 120px;
+    text-align: center;
+    vertical-align :middle;
+  }
+  .imageContainer {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 120px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s; /* 배경색 변경에 대한 전환 효과 추가 */
+  }
+  
+  .imageContainer:hover {
+    background-color: #f0f0f0; /* 마우스를 올렸을 때 배경색 변경 */
+  }
+  
+  .image {
+    max-width: 70px; /* 이미지 크기를 70x70으로 고정 */
+    max-height: 70px;
+  }
+  
+  .placeholder {
+    width: 70px;
+    height: 70px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  
+  
+
+  .headTitleButton{
+    margin-left: auto;
+  }
+  
+  @media (max-width: 800px) {
+    .tableStyle {
+      width: 100%; /* 테이블 크기 유지 */
+      /* 기타 스타일 조정 */
+    }
+}
+
+.customButton {
+  width: 50px;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  height: 26px;
+}
+
+.customButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
+/* .errorWrapper {
   position: relative;
   width: 100%;
-  border-radius: 8px;
-  background-color: #ffffff;
-}
+  display: inline-block;
+} */
 
-.tableStyle {
-  width: 100%;
-  border-collapse: collapse;
-  border-top: 2px solid darkgray;
-}
-
-.headerCellStyle {
-  background-color: #fafafa;
-  padding: 10px;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-  text-align: right;
-  vertical-align: middle;
-  font-size: 13px;
-  width: 180px;
-}
-
-.cellStyle {
-  padding: 7px;
-  border-bottom: 1px solid #ccc;
-  vertical-align: middle;
-  font-size: 13px;
-}
-
-.radioStyle {
-  margin-left: 10px;
-  color: blue;
-  vertical-align: middle;
-}
-
-.inputStyle {
-  width: 100%;
-  height: 26px;
-  border: 1px solid #ccc;
-}
-
-.reqInputStyle {
-  width: 100%;
-  height: 26px;
-  border: 1px solid #ccc;
-  background: #fef4f4;
-}
-
-.tableStyle2 {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ccc;
-}
-
-.headerRowStyle {
-  background-color: #f0f0f0;
+/* .errorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
   color: black;
-  font-size: 13px;
-  font-weight: bold;
-  vertical-align: middle;
+  font-weight: 600;
+  z-index: 1;
+  top: -50%;
+  left: 50%;
+  margin-left: -60px;
 }
 
-.cellStyle2 {
-  padding: 10px;
-  border: 1px solid #ccc;
+.errorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+} */
+
+/* .errorWrapper {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.errorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: black;
   text-align: center;
-  vertical-align: middle;
-  width: 180px;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  font-weight: 600;
+  z-index: 1;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease;
 }
 
-.cellStyle3 {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-  vertical-align: middle;
+.errorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
 }
 
-.imageCellStyle {
-  padding: 10px;
-  border: 1px solid #ccc;
-  height: 120px;
-  align-items: center;
-  justify-content: center;
+.errorWrapper:hover .errorBox {
+  visibility: visible;
+  opacity: 1;
 }
+
+.inputWrapper {
+  position: relative;
+  display: inline-block;
+} */
+
