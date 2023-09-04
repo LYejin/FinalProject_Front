@@ -61,12 +61,17 @@ const CompanyPage = () => {
           <SelectBoxWrapper>
             <span className="leftSelectBoxPadding">사용여부</span>
             <SelectBox SearchDataSet={SearchDataSet} />
+            <span className="leftSelectBoxPadding">계정유형</span>
+            <SelectBox SearchDataSet={SearchDataSet} />
+            <span className="lastSelectBoxTextPadding">회사코드/회사명</span>
             <TextFieldBox
               width={'200px'}
               SearchDataSet={SearchDataSet}
               searchData={searchData}
             />
-            <EventButton data={'검색'} onClickEvent={searchCompanyOnClick} />
+            <div className="C_eventButton">
+              <EventButton data={'검색'} onClickEvent={searchCompanyOnClick} />
+            </div>
           </SelectBoxWrapper>
           <MainContentWrapper>
             <CompanySelectListWrapper

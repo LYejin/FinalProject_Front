@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import axios from '../../../../node_modules/axios/index';
 import CompanyBoxItem from './CompanyBoxItem';
+import { authAxiosInstance } from '../../../axios/axiosInstance';
 
 const CompanySelectListWrapper = ({
   width,
@@ -45,9 +46,8 @@ const CompanySelectListWrapper = ({
   const clickEmp = async (co_CD, focusElement) => {
     const empData = '';
     try {
-      const empData = await asyncRequest(
-        'system/admin/groupManage/CompanyDetail/' + co_CD,
-        'get'
+      const empData = await authAxiosInstance(
+        'system/admin/groupManage/CompanyDetail/' + co_CD
       );
       formDataSet(empData.data);
       console.log('상세:', empData.data);
@@ -60,9 +60,12 @@ const CompanySelectListWrapper = ({
 
   const clickAddBtn = () => {
     console.log('안녕'.formData);
-    formDataSet(reSetData.current);
-  };
 
+    formDataSet(prevFormData => ({
+      ...prevFormData,
+      ...reSetData.current,
+    }));
+  };
   React.useEffect(() => {
     searchCompanyOnClick();
   }, [ch_listData]);

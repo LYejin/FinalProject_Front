@@ -130,10 +130,17 @@
 
 /*회사 검색 모달창 css*/
 .section-body {
-  overflow: scroll;
+  overflow: auto;
   overflow-x: hidden;
   height: 600px;
+  max-height: 600px;
 }
+.table-container {
+  max-height: 600px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden;
+}
+
 .small-input {
   width: 15%;
 }
@@ -169,6 +176,37 @@
   margin-left: -60px;
 }
 
+.zipErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 11%;
+  margin-left: -60px;
+}
+.addrErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 19%;
+  margin-left: -60px;
+}
+
 .errorBox::after {
   content: '';
   position: absolute;
@@ -181,7 +219,8 @@
 }
 
 /*버튼 css*/
-.WhiteButton {
+
+.comWhiteButton {
   background: linear-gradient(#f9f9f9, #eaeaea);
   border: 1px solid lightgray;
   font-size: 13px;
@@ -189,13 +228,11 @@
   color: #000000;
   transition: border-color 0.3s;
   box-shadow: none;
-  width: 55px;
+  width: 60px;
   height: 26px;
-  margin-bottom: 5px;
-  margin-right: 10px;
   cursor: pointer;
 }
-.WhiteButton:hover {
+.comWhiteButton:hover {
   border-color: #000000;
   box-shadow: none;
 }
@@ -203,4 +240,65 @@
 .button-container {
   display: flex;
   justify-content: flex-end;
+}
+.C_addressInputStyle {
+  width: 185px;
+  margin-right: 5px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #ffffff;
+}
+
+.C_datePickerInputStyle {
+  width: 135px;
+  height: 26px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+.C_datePickerReqInputStyle {
+  width: 135px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #fef4f4;
+  margin-right: 5px;
+}
+
+.p_margin {
+  margin-right: 7px;
+  font-size: 23px;
+}
+
+.S_margin {
+  margin-right: 5px;
+}
+
+.C_eventButton {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 16%;
+  height: 100%;
+  padding-right: 5px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
+.loadingContainer h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*검색창 css*/
+.textInputBox {
+  border: 1px solid #b6b6b6;
+  width: 200px;
+  height: 29px;
+  border-radius: 3px;
 }

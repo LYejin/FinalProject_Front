@@ -12,6 +12,8 @@ import {
 import GtradePage from '../pages/amaranth10/GtradePage';
 import FtradePage from '../pages/amaranth10/FtradePage';
 
+import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
+
 const Routers = () => {
   return (
     <Routes>
