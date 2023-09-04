@@ -12,6 +12,9 @@ import DetailTitle from './title/DetailTitle';
 import MainTitle from './title/MainTitle';
 import Title from './title/Title';
 import WorkpHeadTitle from './title/WorkpHeadTitle';
+import CompSelectBox from './box/workplacebox/CompSelectBox';
+import WorkpTextFieldBox from './box/workplacebox/WorkpTextFieldBox';
+import UseSelectBox from './box/workplacebox/UseSelectBox';
 
 export {
   CheckSelectBox,
@@ -28,4 +31,7 @@ export {
   MainTitle,
   Title,
   WorkpHeadTitle,
+  CompSelectBox,
+  WorkpTextFieldBox,
+  UseSelectBox,
 };

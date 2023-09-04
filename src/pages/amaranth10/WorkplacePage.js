@@ -10,9 +10,11 @@ import {
   ScrollWrapper,
   SelectBox,
   Sidebar,
-  TextFieldBox,
   Title,
   WorkpHeadTitle,
+  CompSelectBox,
+  WorkpTextFieldBox,
+  UseSelectBox,
 } from '../../components/common/Index';
 import {
   ContentWrapper,
@@ -22,6 +24,7 @@ import {
   SelectBoxWrapper,
   SelectWorkplaceListWrapper,
   WorkPlaceInfoWrapper,
+  WorkpSelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
 import axios from '../../../node_modules/axios/index';
 import { useState } from 'react';
@@ -44,10 +47,13 @@ const WorkplacePage = () => {
   const [address, setAddress] = useState('');
   const [addressDetail, setAddressDetail] = useState();
   const [isOpenPost, setIsOpenPost] = useState(false);
-
+  const [SearchCocd, setSearchCocd] = useState('');
+  const [SearchDivYN, setSearchDivYN] = useState('');
+  const [SearchDivInfo, setSearchDivInfo] = useState('');
   useEffect(() => {
     fetchWorkplaceData();
     FetchWorkplaceDetailInfo('001');
+    fetchCompanyData();
   }, []);
 
   // 우편번호
@@ -83,6 +89,8 @@ const WorkplacePage = () => {
     setCloseDate(date);
   };
 
+  const onSearchButtonClick = () => {};
+
   const inputRefs = {
     divCDRef: useRef(null),
     divNMRef: useRef(null),
@@ -102,10 +110,6 @@ const WorkplacePage = () => {
   };
 
   const fetchWorkplaceData = async () => {
-    console.log('데이터를 가져옵니다!');
-    const cookie = document.cookie;
-    const token = cookie.split('=')[1];
-    console.log(token);
     try {
       const response = await axios.get(
         '/system/user/WorkplaceManage/getList',
@@ -119,8 +123,64 @@ const WorkplacePage = () => {
     }
   };
 
+  const SearchWorkplace = async (divCd1, divYn1, coCd1) => {
+    if (divCd1 === '' && divYn1 === '' && coCd1 === '') {
+      try {
+        const response = await axios.get(
+          '/system/user/WorkplaceManage/getList',
+          { headers: { Authorization: getAccessToken() } }
+        );
+        setWorkplaceData(response.data);
+        console.log(response.data.length);
+        if (response.data.length > 0) {
+          const firstDivCd = response.data[0].div_CD;
+          FetchWorkplaceDetailInfo(firstDivCd);
+        } else if ((response.data.length = 0)) {
+          Swal.fire({
+            icon: 'error',
+            title: '검색 실패',
+            text: '조건에 맞는 사업장이 존재하지 않습니다.',
+          });
+        }
+        console.log(workplaceData);
+      } catch (error) {
+        console.error('Error fetching employee list:', error);
+      }
+    } else {
+      const queryParams = new URLSearchParams();
+
+      if (divCd1 !== '') queryParams.append('DIV_CD', divCd1);
+      if (divCd1 !== '') queryParams.append('DIV_NM', divCd1);
+      if (divYn1 !== '') queryParams.append('DIV_YN', divYn1);
+      if (coCd1 !== '') queryParams.append('CO_CD', coCd1);
+
+      try {
+        const response = await axios.get(
+          `/system/user/WorkplaceManage/getList?${queryParams.toString()}`,
+          { headers: { Authorization: getAccessToken() } }
+        );
+        console.log(queryParams.toString());
+        setWorkplaceData(response.data);
+        console.log(response.data, '는 뭘까용?');
+        console.log(response.data.length);
+        if (response.data.length > 0) {
+          const firstDivCd = response.data[0].div_CD;
+          FetchWorkplaceDetailInfo(firstDivCd);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '검색 실패',
+            text: '조건에 맞는 사업장이 존재하지 않습니다.',
+          });
+        }
+        console.log(workplaceData);
+      } catch (error) {
+        console.error('Error fetching employee list:', error);
+      }
+    }
+  };
+
   const FetchWorkplaceDetailInfo = async divCd => {
-    console.log('===나찍혔어요===');
     try {
       const response = await axios.get(
         `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
@@ -190,12 +250,7 @@ const WorkplacePage = () => {
     setCloseDate('');
   };
 
-  const createWorkplaceData = (
-    inputRefs,
-    workplaceDetailData,
-    div_CD,
-    co_CD
-  ) => {
+  const createWorkplaceData = (inputRefs, div_CD, co_CD) => {
     return {
       div_CD: div_CD || '',
       co_CD: co_CD || '',
@@ -220,7 +275,6 @@ const WorkplacePage = () => {
   const handleInsert = async () => {
     const data = createWorkplaceData(
       inputRefs,
-      workplaceDetailData,
       inputRefs.divCDRef.current.value,
       selectedCompanyForInsert
     );
@@ -257,7 +311,6 @@ const WorkplacePage = () => {
     console.log('update 함수 실행!');
     const data = createWorkplaceData(
       inputRefs,
-      workplaceDetailData,
       workplaceDetailData.div_CD,
       workplaceDetailData.co_CD
     );
@@ -275,6 +328,7 @@ const WorkplacePage = () => {
           title: '업데이트 완료',
           text: '작업장 정보가 성공적으로 업데이트되었습니다.',
         });
+        fetchWorkplaceData();
         FetchWorkplaceDetailInfo(data.div_CD);
       } else {
         Swal.fire({
@@ -335,6 +389,30 @@ const WorkplacePage = () => {
     }
   };
 
+  const handleValidationAndShowMessages = () => {
+    let hasError = false;
+
+    // ... (이전 코드 생략)
+
+    if (hasError) {
+      // 에러 발생 시 에러 메시지 표시 및 커서 이동 로직 구현
+      if (!selectedCompanyForInsert) {
+        inputRefs.companyRef.current.focus(); // 회사 선택 필드로 포커스 이동
+        //setCompanyError(true); // 회사 선택 에러 메시지 표시
+      } else if (!inputRefs.divCDRef.current.value) {
+        inputRefs.divCDRef.current.focus(); // div_CD 필드로 포커스 이동
+        //setDivCDError(true); // div_CD 에러 메시지 표시
+      } else if (!inputRefs.divNMRef?.current?.value) {
+        inputRefs.divNMRef.current.focus(); // div_NM 필드로 포커스 이동
+        //setDivNMError(true); // div_NM 에러 메시지 표시
+      }
+
+      // 나머지 필드들에 대해서도 동일한 방식으로 처리 가능
+    }
+
+    return hasError;
+  };
+
   return (
     <div className="sb-nav-fixed">
       <Header />
@@ -344,17 +422,31 @@ const WorkplacePage = () => {
       <ContentWrapper>
         <Title titleName={'사업장관리'}></Title>
         <DetailContentWrapper>
-          <SelectBoxWrapper>
-            회사
-            <SelectBox />
-            사업장
-            <TextFieldBox width={'100px'} />
-            사용여부
-            <SelectBox />
-            {/* <CheckSelectBox width={"200px"} />
-            <PasswordInputBox /> */}
-            <Button data={'검색'} />
-          </SelectBoxWrapper>
+          <WorkpSelectBoxWrapper>
+            <CompSelectBox
+              title={'회사선택'}
+              data={companyData}
+              onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
+            />
+            <WorkpTextFieldBox
+              width={'100px'}
+              title={'사업장'}
+              onInputChange={inputValue => setSearchDivInfo(inputValue)}
+            />
+            <UseSelectBox
+              title={'사용여부'}
+              onChange={selectedValue => setSearchDivYN(selectedValue)}
+              defaultUse={SearchDivYN}
+            />
+            <button
+              onClick={() =>
+                SearchWorkplace(SearchDivInfo, SearchDivYN, SearchCocd)
+              }
+              className="customButton"
+            >
+              검색
+            </button>
+          </WorkpSelectBoxWrapper>
           <MainContentWrapper>
             <SelectWorkplaceListWrapper
               width={'295px'}
@@ -365,6 +457,7 @@ const WorkplacePage = () => {
               handleAddClick={handleAddClick}
               isAdding={isAdding}
               setIsAdding={setIsAdding}
+              onSearchButtonClick={onSearchButtonClick}
             />
             <RightContentWrapper>
               <WorkpHeadTitle

@@ -9,6 +9,7 @@ const WorkplaceListBoxItem = ({
   selectedItemIndex,
   setSelectedItemIndex,
   index,
+  serachButtonClick,
 }) => {
   const isSelected = index === selectedItemIndex;
 
@@ -28,6 +29,7 @@ const WorkplaceListBoxItem = ({
     setSelectedItemIndex(index);
     handleFetchWorkplaceInfo(leftTop);
   };
+
   return (
     <div
       className={` ${isSelected ? 'selected' : 'listBoxItem'}`}

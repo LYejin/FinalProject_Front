@@ -19,6 +19,22 @@ const WorkPlaceInfoWrapper = ({
   addressDetail,
 }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [divCdError, setDivCdError] = useState(null);
+  const [divNameError, setDivNameError] = useState(false);
+  const [businessError, setBusinessError] = useState(false);
+  const [jongmokError, setJongmokError] = useState(false);
+  const [masNMError, setMasNMError] = useState(false);
+  const [addrCDError, setAddrCDError] = useState(false);
+  const [divADDRError, setDivADDRError] = useState(false);
+
+  function handleValidation(inputRef, setErrorState) {
+    const inputValue = inputRef.current.value;
+    if (inputValue.trim() === '') {
+      setErrorState(true);
+    } else {
+      setErrorState(false);
+    }
+  }
 
   const handleCompanyChange = event => {
     setSelectedCompany(event.target.value);
@@ -74,7 +90,7 @@ const WorkPlaceInfoWrapper = ({
               {data.isAdding ? (
                 <input
                   type="text"
-                  className="inputStyle"
+                  className="reqInputStyle"
                   ref={inputRefs.divCDRef}
                 />
               ) : data ? (
@@ -83,6 +99,7 @@ const WorkPlaceInfoWrapper = ({
                 ''
               )}
             </td>
+
             <th className="headerCellStyle">사용여부</th>
             <td className="cellStyle">
               <input
@@ -110,15 +127,33 @@ const WorkPlaceInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">사업장명</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
-                ref={inputRefs.divNMRef}
-                key={data.div_NM}
-              />
+              <div
+                className={`errorWrapper ${divNameError ? 'inputError' : ''}`}
+              >
+                <input
+                  type="text"
+                  className={`reqInputStyle ${
+                    divNameError ? 'inputError' : ''
+                  }`}
+                  defaultValue={data ? data.div_NM || '' : ''}
+                  ref={inputRefs.divNMRef}
+                  key={data.div_NM}
+                  onBlur={() => {
+                    handleValidation(inputRefs.divNMRef, setDivNameError);
+                    if (divNameError && inputRefs.divNMRef.current) {
+                      inputRefs.divNMRef.current.focus();
+                    }
+                  }}
+                />
+                {divNameError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+              </div>
             </td>
           </tr>
+
           <tr>
             <th className="headerCellStyle">사업장 약칭</th>
             <td className="cellStyle">
@@ -151,23 +186,57 @@ const WorkPlaceInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">업태</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                defaultValue={data ? data.business || '' : ''}
-                key={data.business}
-                ref={inputRefs.businessRef}
-              />
+              <div
+                className={`errorWrapper ${businessError ? 'inputError' : ''}`}
+              >
+                <input
+                  type="text"
+                  className={`reqInputStyle ${
+                    businessError ? 'inputError' : ''
+                  }`}
+                  defaultValue={data ? data.business || '' : ''}
+                  key={data.business}
+                  ref={inputRefs.businessRef}
+                  onBlur={() => {
+                    handleValidation(inputRefs.businessRef, setBusinessError);
+                    if (businessError && inputRefs.businessRef.current) {
+                      inputRefs.businessRef.current.focus();
+                    }
+                  }}
+                />
+                {businessError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+              </div>
             </td>
             <th className="headerCellStyle">종목</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                defaultValue={data ? data.jongmok || '' : ''}
-                ref={inputRefs.jongmokRef}
-                key={data.jongmok}
-              />
+              <div
+                className={`errorWrapper ${jongmokError ? 'inputError' : ''}`}
+              >
+                <input
+                  type="text"
+                  className={`reqInputStyle ${
+                    jongmokError ? 'inputError' : ''
+                  }`}
+                  defaultValue={data ? data.jongmok || '' : ''}
+                  ref={inputRefs.jongmokRef}
+                  key={data.jongmok}
+                  onBlur={() => {
+                    handleValidation(inputRefs.jongmokRef, setJongmokError);
+                    if (jongmokError && inputRefs.jongmokRef.current) {
+                      inputRefs.jongmokRef.current.focus();
+                    }
+                  }}
+                />
+                {jongmokError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+              </div>
             </td>
           </tr>
           <tr>
@@ -237,13 +306,26 @@ const WorkPlaceInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">대표자명</th>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                defaultValue={data ? data.mas_NM || '' : ''}
-                key={data.mas_NM}
-                ref={inputRefs.masNMRef}
-              />
+              <div className={`errorWrapper ${masNMError ? 'inputError' : ''}`}>
+                <input
+                  type="text"
+                  className={`reqInputStyle ${masNMError ? 'inputError' : ''}`}
+                  defaultValue={data ? data.mas_NM || '' : ''}
+                  key={data.mas_NM}
+                  ref={inputRefs.masNMRef}
+                  onBlur={() => {
+                    handleValidation(inputRefs.masNMRef, setMasNMError);
+                    if (masNMError && inputRefs.masNMRef.current) {
+                      inputRefs.masNMRef.current.focus();
+                    }
+                  }}
+                />
+                {masNMError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+              </div>
             </td>
             <th className="headerCellStyle">관할세무서</th>
             <td className="cellStyle">
@@ -259,33 +341,65 @@ const WorkPlaceInfoWrapper = ({
               사업장주소
             </th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                style={{
-                  border: '1px solid #ccc',
-                  height: '26px',
-                  background: '#fef4f4',
-                }}
-                defaultValue={address ? address : data.addr_CD}
-                key={address ? address : data.addr_CD}
-                ref={inputRefs.addrCDRef}
-              />
-              <ButtonW
-                data={'우편번호'}
-                onClickEvent={onChangeOpenPost}
-              ></ButtonW>
+              <div
+                className={`errorWrapper ${addrCDError ? 'inputError' : ''}`}
+              >
+                <input
+                  type="text"
+                  className={`postInputStyle ${
+                    addrCDError ? 'inputError' : ''
+                  }`}
+                  defaultValue={address ? address : data.addr_CD}
+                  key={address ? address : data.addr_CD}
+                  ref={inputRefs.addrCDRef}
+                  onBlur={() => {
+                    handleValidation(inputRefs.addrCDRef, setAddrCDError);
+                    if (addrCDError && inputRefs.addrCDRef.current) {
+                      inputRefs.addrCDRef.current.focus();
+                    }
+                  }}
+                />
+                {addrCDError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+
+                <ButtonW
+                  data={'우편번호'}
+                  onClickEvent={onChangeOpenPost}
+                ></ButtonW>
+              </div>
             </td>
           </tr>
           <tr>
             <td colSpan="2" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
-                defaultValue={addressDetail ? addressDetail : data.div_ADDR}
-                key={addressDetail ? addressDetail : data.div_ADDR}
-                ref={inputRefs.divADDRRef}
-              />
+              <div
+                className={`errorWrapper ${divADDRError ? 'inputError' : ''}`}
+              >
+                <input
+                  type="text"
+                  className={`reqInputStyle ${
+                    divADDRError ? 'inputError' : ''
+                  }`}
+                  defaultValue={addressDetail ? addressDetail : data.div_ADDR}
+                  key={addressDetail ? addressDetail : data.div_ADDR}
+                  ref={inputRefs.divADDRRef}
+                  onBlur={() => {
+                    handleValidation(inputRefs.divADDRRef, setDivADDRError);
+                    if (divADDRError && inputRefs.divADDRRef.current) {
+                      inputRefs.divADDRRef.current.focus();
+                    }
+                  }}
+                />
+                {divADDRError && (
+                  <div className="errorBox">
+                    <div className="errorMessage">값을 입력해주세요.</div>
+                  </div>
+                )}
+              </div>
             </td>
+
             <td className="cellStyle">
               <input
                 type="text"
@@ -300,6 +414,13 @@ const WorkPlaceInfoWrapper = ({
 
           <tr>
             <th className="headerCellStyle">정렬</th>
+
+            {/* <th className="headerCellStyle">
+              <div className="tooltip">
+                정렬
+                <span className="tooltiptext">말풍선 텍스트</span>
+              </div>
+            </th> */}
             <td colSpan="3" className="cellStyle">
               <input type="text" className="inputStyle" disabled />
             </td>
@@ -307,6 +428,7 @@ const WorkPlaceInfoWrapper = ({
         </tbody>
       </table>
       <br />
+
       <div>
         <DetailTitle detailTitle={'신고 관련 정보'}></DetailTitle>
       </div>

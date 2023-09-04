@@ -11,6 +11,7 @@ import SelectWorkplaceListWrapper from './SelectWorkplaceListWrapper';
 import CompanySelectListWrapper from './CompanySelectListWrapper';
 import CompanyBoxItem from './CompanyBoxItem';
 import WorkplaceListBoxItem from './WorkplaceListBoxItem';
+import WorkpSelectBoxWrapper from './WorkpSelectBoxWrapper';
 export {
   ContentWrapper,
   DetailContentWrapper,
@@ -25,4 +26,5 @@ export {
   CompanySelectListWrapper,
   CompanyBoxItem,
   WorkplaceListBoxItem,
+  WorkpSelectBoxWrapper,
 };

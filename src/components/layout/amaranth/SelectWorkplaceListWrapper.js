@@ -14,15 +14,19 @@ const SelectWorkplaceListWrapper = ({
 }) => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
+  useEffect(() => {
+    setSelectedItemIndex(0);
+  }, []);
+  
   const selectListWrapper = {
     position: 'relative',
-    width: width,
+    minWidth: width,
     height: '100%',
     border: '1px solid #ebebeb',
   };
 
   const resetSelectedItemIndex = () => {
-    setSelectedItemIndex(-1); // 모든 아이템의 선택 상태를 초기화합니다.
+    setSelectedItemIndex(-1);
   };
 
   return (
@@ -43,7 +47,7 @@ const SelectWorkplaceListWrapper = ({
             handleFetchWorkplaceInfo={FetchWorkplaceDetailInfo}
             selectedItemIndex={selectedItemIndex}
             setSelectedItemIndex={setSelectedItemIndex}
-            index={index} // 아이템의 인덱스를 전달합니다.
+            index={index}
           />
         ))}
       </div>
@@ -51,7 +55,7 @@ const SelectWorkplaceListWrapper = ({
         className="footerBox"
         onClick={() => {
           handleAddClick();
-          resetSelectedItemIndex(); // 추가 버튼을 누르면 선택 상태를 초기화합니다.
+          resetSelectedItemIndex();
         }}
       >
         <i className="fa-solid fa-circle-plus"></i>추가
