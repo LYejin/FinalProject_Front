@@ -2,9 +2,10 @@ import React, { useRef } from 'react';
 
 const TextFieldBox = ({ width, value, SearchDataSet, searchData }) => {
   const TextFieldBoxWrapper = {
-    height: '23px',
-    width: width,
-    fontSize: '0.8rem',
+    border: '1px solid #b6b6b6',
+    width: '200px',
+    height: '29px',
+    borderradius: '3px',
   };
 
   const handlerOnChange = e => {
@@ -42,8 +43,8 @@ const TextFieldBox = ({ width, value, SearchDataSet, searchData }) => {
     <input
       onChange={handlerOnChange}
       style={TextFieldBoxWrapper}
+      className="textInputBox "
       defaultValue={value}
-      Placeholder="회사코드/회사명 입력"
     />
   );
 };

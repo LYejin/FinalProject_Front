@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from '../../../../../node_modules/axios/index';
 import './CompanyInputBox.css';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const CompanyNameSelect = ({
   searchCompanyData,
@@ -24,15 +25,19 @@ const CompanyNameSelect = ({
   const searchOption = ['회사명', '법인번호', '사업자번호'];
   const searchNum = ['3', '2', '1'];
   const [companyData, setCompanyData] = useState([]);
+  let [loading, setLoading] = useState(false);
 
   const headerOnSubmit = async data => {
-    const { key, q, gb, status, ceo, area } = data;
+    const { key, q, gb, status, pagecnt, ceo, area } = data;
     const listData = [];
+
     console.log(data);
     // 쿼리스트링 생성
     let queryString = `?key=${encodeURIComponent(key)}&q=${encodeURIComponent(
       q
-    )}&gb=${encodeURIComponent(gb)}&status=${encodeURIComponent(status)}`;
+    )}&gb=${encodeURIComponent(gb)}&status=${encodeURIComponent(
+      status
+    )}&pagecnt=${encodeURIComponent(pagecnt)}`;
 
     if (data?.ceo) {
       // 사업자번호 검색일 경우
@@ -42,6 +47,7 @@ const CompanyNameSelect = ({
       queryString += `&area=${encodeURIComponent(area)}`;
     }
 
+    setLoading(true);
     try {
       // Axios를 사용하여 GET 요청 보내기
 
@@ -52,9 +58,7 @@ const CompanyNameSelect = ({
       // 응답 데이터 처리
       console.log(response.data);
       response.data.items.forEach(item => {
-        if (item.bsttcd === '01') {
-          listData.push(item);
-        } else if (item.bsttcd === '') {
+        if (item !== null) {
           listData.push(item);
         }
       });
@@ -63,6 +67,8 @@ const CompanyNameSelect = ({
     } catch (error) {
       // 에러 처리
       console.error('에러:', error);
+    } finally {
+      setLoading(false); // 요청 완료 시 로딩 상태를 false로 설정
     }
   };
   const headerOnClick = item => {
@@ -113,6 +119,12 @@ const CompanyNameSelect = ({
           />
           <input
             type="hidden"
+            name="pagecnt"
+            value="100"
+            {...register('pagecnt')}
+          />
+          <input
+            type="hidden"
             name="key"
             value="YXdkcmd5amlsMTk5QG5hdmVyLmNvbSAg"
             {...register('key')}
@@ -132,32 +144,38 @@ const CompanyNameSelect = ({
               <col />
               <col />
             </colgroup>
-            <thead>
-              <tr>
-                <th className="bordered-th">회사명</th>
-                <th className="bordered-th">사업자번호</th>
-                <th className="bordered-th">법인번호</th>
-              </tr>
-            </thead>
-            <tbody>
-              {companyData.map((item, index) => (
-                <tr key={index} onDoubleClick={() => headerOnClick(item)}>
-                  <td align="center" width="50">
-                    {item.company}
-                  </td>
-                  <td align="center" width="50">
-                    {item.bno}
-                  </td>
-                  <td align="center" width="50">
-                    {item.cno}
-                  </td>
+            {!loading && (
+              <thead>
+                <tr>
+                  <th className="bordered-th">회사명</th>
+                  <th className="bordered-th">사업자번호</th>
+                  <th className="bordered-th">법인번호</th>
                 </tr>
-              ))}
+              </thead>
+            )}
+            <tbody>
+              {loading ? (
+                <div className="loadingContainer">
+                  <h2>검색 중입니다. 잠시 기다려주세요</h2>
+                  <BeatLoader color="#010201" />
+                </div>
+              ) : (
+                companyData.map((item, index) => (
+                  <tr key={index} onDoubleClick={() => headerOnClick(item)}>
+                    <td align="center" width="50">
+                      {item.company}
+                    </td>
+                    <td align="center" width="50">
+                      {item.bno}
+                    </td>
+                    <td align="center" width="50">
+                      {item.cno}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
-          <div class="text-center">
-            <div class="meta-pagination"></div>
-          </div>
         </div>
         <div class="section-footer">
           <div class="left"></div>

@@ -9,7 +9,8 @@ import {
   EmployeePage,
   WorkplacePage,
 } from '../pages/amaranth10/Index.js';
-import CompanyNameSelect from '../components/feature/amaranth/company/CompanyNameSelect';
+
+import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
 
 const Routers = () => {
   return (

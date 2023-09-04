@@ -2,6 +2,13 @@ import React, { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { useCallback } from 'react';
 import axios from '../../node_modules/axios/index';
+import { getNowJoinTime } from '../util/time';
+import {
+  getAccessToken,
+  removeAccessToken,
+  setAccessToken,
+} from '../cookie/Cookie';
+import { authAxiosInstance } from '../axios/axiosInstance';
 
 const CompanyModel = () => {
   const [formData, formDataSet] = useState();
@@ -20,7 +27,7 @@ const CompanyModel = () => {
     co_NB: '',
     co_NM: '',
     co_NMK: '',
-    est_DT: '',
+    est_DT: getNowJoinTime(new Date()),
     ho_ADDR: '',
     ho_ADDR1: '',
     ho_FAX: '',
@@ -32,6 +39,7 @@ const CompanyModel = () => {
     reg_NB: '',
     use_YN: '1',
   });
+
   const asyncRequest = async (url, methodType, data, headers) => {
     console.log(data);
     const cookies = document.cookie;
@@ -62,15 +70,13 @@ const CompanyModel = () => {
 
     console.log('adivndnkvskndvknsdvnklsd', searchData);
     try {
-      const response = await asyncRequest(
+      const response = await authAxiosInstance.post(
         'system/admin/groupManage/CompanySelect',
-        'post',
         s_formData,
         { 'Content-Type': 'multipart/form-data' }
       );
-      const first_formData = await asyncRequest(
-        'system/admin/groupManage/CompanyDetail/' + response.data[0].co_CD,
-        'get'
+      const first_formData = await authAxiosInstance(
+        'system/admin/groupManage/CompanyDetail/' + response.data[0].co_CD
       );
 
       if (response.data) {

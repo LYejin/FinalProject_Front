@@ -2,9 +2,21 @@ import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+const ITEM_HEIGHT = 40;
+const ITEM_PADDING_TOP = 1;
 
 const SelectBox = ({ data, width, SearchDataSet }) => {
   const [age, setAge] = React.useState('');
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: width,
+        fontSize: '0.8rem',
+        maxHeight: 250,
+      },
+    },
+  };
 
   const handleChange = event => {
     setAge(event.target.value);
@@ -32,6 +44,7 @@ const SelectBox = ({ data, width, SearchDataSet }) => {
         displayEmpty
         sx={{
           height: '28px',
+          width: '200px',
           fontSize: '0.8rem',
         }}
       >
