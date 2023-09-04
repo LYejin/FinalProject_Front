@@ -1,117 +1,304 @@
 .companySelectListWrapper {
-    position: relative;
-    width: 100%;
-    border-radius: 8px;
-    background-color: #ffffff;
-  }
-  
-  .tableStyle {
-    width: 100%;
-    border-collapse: collapse;
-    border-top: 2px solid darkgray;
-  }
-  
-  .headerCellStyle {
-    background-color: #fafafa;
-    padding: 10px;
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    text-align: right;
-    vertical-align: middle;
-    font-size: 13px;
-    width: 180px;
-  }
-  
-  .cellStyle {
-    padding: 7px;
-    border-bottom: 1px solid #ccc;
-    vertical-align: middle;
-    font-size: 13px;
-  }
-  
-  .radioStyle {
-    margin-left: 10px;
-    color: blue;
-    vertical-align: middle;
-  }
-  
-  .inputStyle {
-    width: 100%;
-    height: 26px;
-    border: 1px solid #ccc;
-  }
-  
-  .companyReqInputStyle {
-    width: 60%;
-    height: 26px;
-    border: 1px solid #ccc;
-    background: #fef4f4;
-  }
-  
-  .tableStyle2 {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ccc;
-  }
-  
-  .headerRowStyle {
-    background-color: #f0f0f0;
-    color: black;
-    font-size: 13px;
-    font-weight: bold;
-    vertical-align: middle;
-  }
-  
-  .cellStyle2 {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle;
-    width: 180px;
-  }
-  
-  .cellStyle3 {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  .imageCellStyle {
-    padding: 10px;
-    border: 1px solid #ccc;
-    height: 120px;
-    align-items: center;
-    justify-content: center;
-  }
-  .headerCellStyle,
-  .cellStyle {
-    width: calc(50% - 2px); /* Subtract 2px for the border */
-  }
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
 
-  
+.tableStyle {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid darkgray;
+}
 
-  /* Wrapper for the entire form */
+.headerCellStyle {
+  background-color: #fafafa;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  text-align: right;
+  vertical-align: middle;
+  font-size: 13px;
+  width: 180px;
+}
 
-  .company-form {
-    margin: 20px;
-  }
-  
-  /* Style for input fields */
-  .form-control-sm {
-    width: 100%;
-    height: 28px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-  }
-  
-  /* Style for radio buttons */
-  .radioStyle {
-    margin-right: 10px;
-    color: blue;
-  }
-  
-  /* Style for submit buttons */
-  .mx-4 {
-    margin: 0 4px;
-  }
+.cellStyle {
+  padding: 7px;
+  border-bottom: 1px solid #ccc;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.radioStyle {
+  margin-left: 10px;
+  color: blue;
+  vertical-align: middle;
+}
+
+.inputStyle {
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+}
+
+.companyReqInputStyle {
+  width: 100%;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #fef4f4;
+}
+
+.tableStyle2 {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+.headerRowStyle {
+  background-color: #f0f0f0;
+  color: black;
+  font-size: 13px;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.cellStyle2 {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  vertical-align: middle;
+  width: 180px;
+}
+
+.cellStyle3 {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.imageCellStyle {
+  padding: 10px;
+  border: 1px solid #ccc;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
+}
+.headerCellStyle,
+.cellStyle {
+  width: calc(50% - 2px); /* Subtract 2px for the border */
+}
+
+/* Wrapper for the entire form */
+
+.company-form {
+  margin: 20px;
+}
+
+/* Style for input fields */
+.form-control-sm {
+  width: 100%;
+  height: 28px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+/* Style for radio buttons */
+.radioStyle {
+  margin-right: 10px;
+  color: blue;
+}
+
+/* Style for submit buttons */
+.mx-4 {
+  margin: 0 4px;
+}
+.corporateNumberContainer {
+  display: flex;
+  align-items: center;
+}
+
+/* CSS classes for 개/폐업일 section */
+.datePickerContainer {
+  display: flex;
+  align-items: center;
+}
+.inline-input-group {
+  display: flex;
+  align-items: center;
+}
+
+/*회사 검색 모달창 css*/
+.section-body {
+  overflow: auto;
+  overflow-x: hidden;
+  height: 600px;
+  max-height: 600px;
+}
+.table-container {
+  max-height: 600px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden;
+}
+
+.small-input {
+  width: 15%;
+}
+
+.small-label {
+  font-size: 14px;
+}
+.bordered-th {
+  border: 2px solid #120d0d;
+  padding: 15px;
+}
+
+/*에러메시지 css*/
+.errorWrapper {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.errorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.zipErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 11%;
+  margin-left: -60px;
+}
+.addrErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 19%;
+  margin-left: -60px;
+}
+
+.errorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+/*버튼 css*/
+
+.comWhiteButton {
+  background: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 60px;
+  height: 26px;
+  cursor: pointer;
+}
+.comWhiteButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+.C_addressInputStyle {
+  width: 185px;
+  margin-right: 5px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #ffffff;
+}
+
+.C_datePickerInputStyle {
+  width: 135px;
+  height: 26px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+.C_datePickerReqInputStyle {
+  width: 135px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #fef4f4;
+  margin-right: 5px;
+}
+
+.p_margin {
+  margin-right: 7px;
+  font-size: 23px;
+}
+
+.S_margin {
+  margin-right: 5px;
+}
+
+.C_eventButton {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 16%;
+  height: 100%;
+  padding-right: 5px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
+.loadingContainer h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*검색창 css*/
+.textInputBox {
+  border: 1px solid #b6b6b6;
+  width: 200px;
+  height: 29px;
+  border-radius: 3px;
+}

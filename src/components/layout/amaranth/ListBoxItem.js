@@ -2,7 +2,6 @@ import React from 'react';
 
 const ListBoxItem = ({ leftTop, rightTop, leftBottom, clickBoxEvent }) => {
   const onClickDetailEmpInfo = () => {
-    console.log(leftTop, leftBottom);
     clickBoxEvent(leftBottom, leftTop);
   };
 

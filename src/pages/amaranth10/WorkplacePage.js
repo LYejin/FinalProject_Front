@@ -375,7 +375,7 @@ const WorkplacePage = () => {
   const fetchCompanyData = async () => {
     try {
       const response = await axios.get(
-        'system/admin/groupManage/CompanySelect',
+        'system/user/groupManage/employee/getCompanyList',
         { headers: { Authorization: getAccessToken() } }
       );
       const mappedCompanyData = response.data.map(company => ({

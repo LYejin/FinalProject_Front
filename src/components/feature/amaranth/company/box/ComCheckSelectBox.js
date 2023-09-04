@@ -8,9 +8,9 @@ import Checkbox from '@mui/material/Checkbox';
 const ITEM_HEIGHT = 40;
 const ITEM_PADDING_TOP = 1;
 
-const names = ['전체', '사용', '퇴직'];
+const names = ['전체', '사용', '미사용'];
 
-const CheckSelectBox = ({ width, data }) => {
+const ComCheckSelectBox = ({ width, data }) => {
   const [personName, setPersonName] = React.useState([]);
 
   const handleChange = event => {
@@ -68,4 +68,4 @@ const CheckSelectBox = ({ width, data }) => {
   );
 };
 
-export default CheckSelectBox;
+export default ComCheckSelectBox;

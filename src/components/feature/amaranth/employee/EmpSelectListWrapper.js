@@ -1,5 +1,5 @@
-import React from "react";
-import ListBoxItem from "../../../layout/amaranth/ListBoxItem";
+import React from 'react';
+import EmpListBoxItem from './EmpListBoxItem';
 
 const EmpSelectListWrapper = ({
   width,
@@ -8,16 +8,18 @@ const EmpSelectListWrapper = ({
   data,
   clickBoxEvent,
   clickInsertBoxEvent,
+  clickedBoxID,
+  listRef,
 }) => {
   const selectListWrapper = {
-    position: "relative",
+    position: 'relative',
     minWidth: width,
-    height: "100%",
-    border: "1px solid #ebebeb",
+    height: '100%',
+    border: '1px solid #ebebeb',
   };
 
-  const onClickInsertEmp = (e) => {
-    console.log("boxclick");
+  const onClickInsertEmp = e => {
+    console.log('boxclick');
     clickInsertBoxEvent(data);
   };
 
@@ -28,19 +30,17 @@ const EmpSelectListWrapper = ({
         <span className="listBoxDataCount">{dataCount}</span>건
         <span className="listBoxSort">정렬순</span>
       </div>
-      <div className="listWrapper">
-        {data.map((info) => (
-          <ListBoxItem
+      <div className="listWrapper" ref={listRef}>
+        {data.map(info => (
+          <EmpListBoxItem
             key={info.username}
+            clickedBoxID={clickedBoxID}
             leftTop={info.username}
-            rightTop={info.join_DT || "5555"}
+            rightTop={info.join_DT || '5555'}
             leftBottom={info.kor_NM}
             clickBoxEvent={clickBoxEvent}
           />
         ))}
-        {/* {data.map((data) => (
-          <ListBoxItem data={data} />
-        ))} */}
       </div>
       <div className="footerBox" onClick={onClickInsertEmp}>
         <i class="fa-solid fa-circle-plus"></i>사원추가

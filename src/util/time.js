@@ -44,3 +44,12 @@ export const parseDateToString = date => {
   const day = date.getDate().toString().padStart(2, '0');
   return `${year}${month}${day}`;
 };
+
+export const updateArray = (myArray, oldValue, newValue) => {
+  if (!myArray instanceof Array) return;
+  console.log(myArray);
+  const index = myArray.indexOf(oldValue);
+  if (index !== -1) {
+    myArray[index] = newValue;
+  }
+};
