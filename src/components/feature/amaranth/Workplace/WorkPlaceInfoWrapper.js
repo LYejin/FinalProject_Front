@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
+import clipImage from './clipBtn.png';
 
 const WorkPlaceInfoWrapper = ({
   data,
@@ -42,7 +43,9 @@ const WorkPlaceInfoWrapper = ({
   };
 
   //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
+
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showUploadDiv, setShowUploadDiv] = useState(false);
 
   const handleImageChange = e => {
     const file = e.target.files[0];
@@ -55,10 +58,32 @@ const WorkPlaceInfoWrapper = ({
     }
   };
 
-  const handleClick = () => {
-    // 이미지 클릭 시 파일 선택 창 다시 열기
-    document.getElementById('imageInput').click();
+  const handleMouseEnter = () => {
+    setShowUploadDiv(true);
   };
+
+  const handleMouseLeave = () => {
+    setShowUploadDiv(false);
+  };
+
+  const handleClick = () => {
+    if (showUploadDiv) {
+      document.getElementById('imageInput').click();
+    }
+  };
+
+  // 이미지 로그
+  // const inputElement = document.getElementById('imageInput');
+
+  // inputElement.addEventListener('change', e => {
+  //   const selectedFile = e.target.files[0];
+
+  //   if (selectedFile) {
+  //     console.log('파일 이름:', selectedFile.name);
+  //     console.log('파일 크기 (바이트):', selectedFile.size);
+  //     console.log('MIME 유형:', selectedFile.type);
+  //   }
+  // });
 
   //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
 
@@ -593,87 +618,42 @@ const WorkPlaceInfoWrapper = ({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
+          <tr className="bodyRowStyle">
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV" onMouseEnter={handleMouseEnter}>
+                {selectedImage ? (
                   <img
                     src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
+                    alt="Selected"
+                    width="70"
+                    height="70"
                   />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+                ) : (
+                  '70x70'
+                )}
+                {showUploadDiv && (
+                  <div className="uploadDiv" onClick={e => e.stopPropagation()}>
+                    {/* 30x30 크기의 div를 클릭하면 파일 선택 창이 열립니다 */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="imageInput"
+                      style={{ display: 'none' }}
+                      onChange={handleImageChange}
+                    />
+                    <img src={clipImage} alt="Clip" onClick={handleClick} />
+                  </div>
+                )}
+              </div>
             </td>
-
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV">70x70</div>
             </td>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV">70x70</div>
             </td>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV2">210x70</div>
             </td>
           </tr>
         </tbody>
