@@ -9,7 +9,7 @@ const CompSelectBox = ({ title, data, width, onSelectChange }) => {
   const handleChange = event => {
     const value = event.target.value;
     setSelectedValue(value);
-    onSelectChange(value); 
+    onSelectChange(value);
   };
 
   return (
@@ -30,6 +30,7 @@ const CompSelectBox = ({ title, data, width, onSelectChange }) => {
             PaperProps: {
               style: {
                 maxHeight: 250, // 원하는 최대 높이 값으로 변경
+                width: ' 200px',
               },
             },
           }}

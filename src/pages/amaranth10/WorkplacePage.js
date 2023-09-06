@@ -50,6 +50,42 @@ const WorkplacePage = () => {
   const [SearchCocd, setSearchCocd] = useState('');
   const [SearchDivYN, setSearchDivYN] = useState('');
   const [SearchDivInfo, setSearchDivInfo] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showUploadDiv, setShowUploadDiv] = useState(true);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+
+  // 이미지 선택 시 실행되는 함수
+  const handleImageSelect = imageData => {
+    setSelectedImage(imageData);
+    setShowUploadDiv(false);
+    setIsImageUploaded(true);
+    console.log('Selected Image Data:', imageData);
+  };
+
+  const handleClick = () => {
+    document.getElementById('imageInput').click();
+  };
+
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        setSelectedImage(e.target.result);
+        setShowUploadDiv(false);
+        setIsImageUploaded(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 이미지 삭제 시 실행되는 함수
+  const deleteImage = () => {
+    setSelectedImage('');
+    setShowUploadDiv(true);
+    setIsImageUploaded(false);
+  };
+
   useEffect(() => {
     fetchWorkplaceData();
     FetchWorkplaceDetailInfo('001');
@@ -203,13 +239,14 @@ const WorkplacePage = () => {
           co_NM: companyData.co_NM,
           isAdding: false,
         };
-
+        deleteImage();
         setWorkplaceDetailData(updatedWorkplaceDetailData);
         setOpenDate(new Date(openDate) || '');
         setCloseDate(new Date(closeDate) || '');
         setIsAdding(false);
         setAddress('');
         setAddressDetail('');
+        handleImageSelect(updatedWorkplaceDetailData.cop_SL);
       } catch (error) {
         console.error('Error fetching company detail:', error);
       }
@@ -248,9 +285,10 @@ const WorkplacePage = () => {
     fetchCompanyData();
     setOpenDate(new Date());
     setCloseDate('');
+    setSelectedImage('');
   };
 
-  const createWorkplaceData = (inputRefs, div_CD, co_CD) => {
+  const createWorkplaceData = (inputRefs, div_CD, co_CD, selectedImage) => {
     return {
       div_CD: div_CD || '',
       co_CD: co_CD || '',
@@ -269,6 +307,7 @@ const WorkplacePage = () => {
       close_DT: parseDateToString(closeDate) || '',
       div_FAX: inputRefs.divFAXRef?.current?.value || '',
       cop_NB: inputRefs.copNBRef?.current?.value || '',
+      cop_SL: selectedImage,
     };
   };
 
@@ -276,7 +315,8 @@ const WorkplacePage = () => {
     const data = createWorkplaceData(
       inputRefs,
       inputRefs.divCDRef.current.value,
-      selectedCompanyForInsert
+      selectedCompanyForInsert,
+      selectedImage
     );
 
     console.log(data);
@@ -312,7 +352,8 @@ const WorkplacePage = () => {
     const data = createWorkplaceData(
       inputRefs,
       workplaceDetailData.div_CD,
-      workplaceDetailData.co_CD
+      workplaceDetailData.co_CD,
+      selectedImage
     );
     try {
       console.log(data);
@@ -330,6 +371,7 @@ const WorkplacePage = () => {
         });
         fetchWorkplaceData();
         FetchWorkplaceDetailInfo(data.div_CD);
+        console.log('이게궁금합니다', data.div_CD);
       } else {
         Swal.fire({
           icon: 'error',
@@ -482,6 +524,14 @@ const WorkplacePage = () => {
                   onChangeOpenPost={onChangeOpenPost}
                   address={address}
                   addressDetail={addressDetail}
+                  onImageSelect={handleImageSelect}
+                  selectedImage={selectedImage}
+                  isImageUploaded={isImageUploaded}
+                  deleteImage={deleteImage}
+                  showUploadDiv={showUploadDiv}
+                  handleImageChange={handleImageChange}
+                  handleClick={handleClick}
+                  setShowUploadDiv={setShowUploadDiv}
                 />
               </ScrollWrapper>
             </RightContentWrapper>
