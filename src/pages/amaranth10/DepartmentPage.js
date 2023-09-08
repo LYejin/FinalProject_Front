@@ -35,7 +35,25 @@ const DepartmentPage = () => {
   const [companyData, setCompanyData] = useState([]);
   const [SearchCocd, setSearchCocd] = useState('');
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchCompanyData();
+  }, []);
+
+  const fetchCompanyData = async () => {
+    try {
+      const response = await authAxiosInstance.get(
+        'system/user/groupManage/employee/getCompanyList'
+      );
+      const mappedCompanyData = response.data.map(company => ({
+        value: company.co_CD,
+        label: company.co_NM,
+      }));
+
+      setCompanyData(mappedCompanyData);
+    } catch (error) {
+      console.error('Error fetching company data:', error);
+    }
+  };
 
   return (
     <>
@@ -44,13 +62,7 @@ const DepartmentPage = () => {
         <ContentWrapper>
           <Title titleName={'부서관리'}></Title>
           <DetailContentWrapper>
-            <DepartmentSelectBoxWrapper>
-              <span>(!!)</span>
-              <span>
-                회사별 조직도(부서)를 등록할 수 있으며, '부서/팀/임시'유형을
-                선택하여 등록할 수 있습니다.
-              </span>
-            </DepartmentSelectBoxWrapper>
+            <DepartmentSelectBoxWrapper />
             <MainContentWrapper>
               <LeftContentWrapper>
                 <DeptSearchWrapper width={'350px'}>
