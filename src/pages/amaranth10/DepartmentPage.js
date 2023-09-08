@@ -9,6 +9,7 @@ import {
   DeptHeadTitle,
   DeptSubTitle,
   CompSelectBox,
+  DeptTextFieldBox,
 } from '../../components/common/Index';
 import {
   ContentWrapper,
@@ -32,10 +33,9 @@ const DepartmentPage = () => {
     mode: 'onChange',
   }); // react-hook-form 사용
   const [companyData, setCompanyData] = useState([]);
+  const [SearchCocd, setSearchCocd] = useState('');
 
-  useEffect(() => {
-    fetchCompanyData();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -55,10 +55,12 @@ const DepartmentPage = () => {
               <LeftContentWrapper>
                 <DeptSearchWrapper width={'350px'}>
                   <CompSelectBox
-                    title={'회사선택'}
                     data={companyData}
+                    height={30}
+                    width={315}
                     onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
                   />
+                  <DeptTextFieldBox width={'100px'} />
                 </DeptSearchWrapper>
                 <DeptShowWrapper width={'350px'} title={'조직도'} />
               </LeftContentWrapper>

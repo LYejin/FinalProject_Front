@@ -468,6 +468,8 @@ const WorkplacePage = () => {
             <CompSelectBox
               title={'회사선택'}
               data={companyData}
+              height={28}
+              width={200}
               onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
             />
             <WorkpTextFieldBox

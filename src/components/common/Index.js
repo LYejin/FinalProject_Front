@@ -17,6 +17,7 @@ import WorkpTextFieldBox from './box/workplacebox/WorkpTextFieldBox';
 import UseSelectBox from './box/workplacebox/UseSelectBox';
 import DeptHeadTitle from './title/DeptHeadTitle';
 import DeptSubTitle from './title/DeptSubTitle';
+import DeptTextFieldBox from './box/workplacebox/DeptTextFieldBox';
 
 export {
   CheckSelectBox,
@@ -38,4 +39,5 @@ export {
   UseSelectBox,
   DeptHeadTitle,
   DeptSubTitle,
+  DeptTextFieldBox,
 };
