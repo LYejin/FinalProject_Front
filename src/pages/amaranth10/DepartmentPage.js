@@ -8,6 +8,7 @@ import {
   MainTitle,
   ScrollWrapper,
   Title,
+  DeptHeadTitle,
 } from '../../components/common/Index';
 import {
   ContentWrapper,
@@ -15,6 +16,11 @@ import {
   MainContentWrapper,
   RightContentWrapper,
   SelectBoxWrapper,
+  SelectWorkplaceListWrapper,
+  DepartmentSelectBoxWrapper,
+  DeptSearchWrapper,
+  LeftContentWrapper,
+  DeptShowWrapper,
 } from '../../components/layout/amaranth/Index';
 import EmpSelectListWrapper from '../../components/feature/amaranth/employee/EmpSelectListWrapper';
 import { EmpInfoBox } from '../../components/feature/amaranth/Index';
@@ -31,8 +37,9 @@ import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
 import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
+import DeptInfoWrapper from '../../components/feature/amaranth/Department/DeptInfoWrapper';
 
-const FtradePage = () => {
+const DepartmentPage = () => {
   const {
     formState: { errors },
   } = useForm({
@@ -45,39 +52,26 @@ const FtradePage = () => {
   return (
     <>
       <CommonLayout2>
-        <MainTitle mainTitle={'회계관리'} />
+        <MainTitle mainTitle={'시스템설정'} />
         <ContentWrapper>
-          <Title titleName={'이게맞냐@!@!@!@!@!!@@!!!'}></Title>
+          <Title titleName={'부서관리'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper>
-              <span className="rightSelectBoxPadding">회계단위</span>
-              <EmpSelectBox
-                width={200}
-                data={companyList}
-                setCompanySelect={setCompanySelect}
-                companySelect={companySelect}
-              />
-              <span className="leftSelectBoxPadding">자금과목</span>
-              <EmpCheckSelectBox width={'200px'} enrlList={enrlList} />
-              <span className="lastSelectBoxTextPadding">거래처</span>
-              <input type="text" className="textInputBox" />
-              <div className="selectBoxButtonWrapper">
-                <EventButton
-                  data={<i className="fa-solid fa-magnifying-glass"></i>}
-                  width={'-10px'}
-                  height={30}
-                />
-              </div>
-            </SelectBoxWrapper>
+            <DepartmentSelectBoxWrapper>
+              <span>(!!)</span>
+              <span>
+                회사별 조직도(부서)를 등록할 수 있으며, '부서/팀/임시'유형을
+                선택하여 등록할 수 있습니다.
+              </span>
+            </DepartmentSelectBoxWrapper>
             <MainContentWrapper>
+              <LeftContentWrapper>
+                <DeptSearchWrapper width={'350px'} />
+                <DeptShowWrapper width={'350px'} title={'조직도'} />
+              </LeftContentWrapper>
               <RightContentWrapper>
-                <form>
-                  <div className="tableHeader">
-                    <div className="defaultTitle">지출 | 수입</div>
-                  </div>
-                  <hr />
-                  <ScrollWrapper width={'900px'}></ScrollWrapper>
-                </form>
+                <DeptHeadTitle titleName={'상세정보'}></DeptHeadTitle>
+                <DeptHeadTitle titleName={'기본정보 | 부서원 정보'}></DeptHeadTitle>
+                <DeptInfoWrapper />
               </RightContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>
@@ -87,4 +81,4 @@ const FtradePage = () => {
   );
 };
 
-export default FtradePage;
+export default DepartmentPage;

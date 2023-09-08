@@ -8,6 +8,7 @@ import {
   CompanyPage,
   EmployeePage,
   WorkplacePage,
+  DepartmentPage,
 } from '../pages/amaranth10/Index.js';
 import GtradePage from '../pages/amaranth10/GtradePage';
 import FtradePage from '../pages/amaranth10/FtradePage';
@@ -26,6 +27,7 @@ const Routers = () => {
       <Route path={URL.CapitalSubjectSetting} element={<GtradePage />} />
       <Route path={URL.FixedCapitalRegistration} element={<FtradePage />} />
       <Route path={URL.GeneralVendorRegistration} element={<EmployeePage />} />
+      <Route path={URL.Department} element={<DepartmentPage />} />
     </Routes>
   );
 };

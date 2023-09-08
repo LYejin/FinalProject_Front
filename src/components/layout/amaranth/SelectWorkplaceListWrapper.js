@@ -17,7 +17,7 @@ const SelectWorkplaceListWrapper = ({
   useEffect(() => {
     setSelectedItemIndex(0);
   }, []);
-  
+
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,
