@@ -20,7 +20,8 @@ export const getNowJoinTime = data => {
     data.getMonth() / 10 === 1
       ? data.getMonth() + 1
       : '0' + (data.getMonth() + 1);
-  let todayDate = data.getDate();
+  let todayDate =
+    data.getDate() / 10 >= 1 ? data.getDate() : '0' + data.getDate();
   return todayYear + '-' + todayMonth + '-' + todayDate;
 };
 
