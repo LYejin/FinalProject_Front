@@ -38,7 +38,7 @@ const DepartmentPage = () => {
 
   useEffect(() => {
     fetchCompanyData();
-    fetchDepartmentData();
+    // fetchDepartmentData(1232);
   }, []);
 
   const fetchCompanyData = async () => {
@@ -57,10 +57,10 @@ const DepartmentPage = () => {
     }
   };
 
-  const fetchDepartmentData = async () => {
+  const fetchDepartmentData = async selectedCoCd => {
     try {
       const response = await authAxiosInstance.get(
-        '/system/user/departments/getDeptList/1232'
+        `/system/user/departments/getDeptList/${selectedCoCd}`
       );
 
       console.log(response.data);
@@ -73,6 +73,9 @@ const DepartmentPage = () => {
   };
 
   const hierarchyData = data => {
+    if (!data || data.length === 0) {
+      return []; // 데이터가 없는 경우 빈 배열 반환
+    }
     const result = [];
 
     const coItem = {
@@ -138,7 +141,10 @@ const DepartmentPage = () => {
                     data={companyData}
                     height={30}
                     width={315}
-                    onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
+                    onSelectChange={selectedCoCd => {
+                      setSearchCocd(selectedCoCd);
+                      fetchDepartmentData(selectedCoCd);
+                    }}
                   />
                   <DeptTextFieldBox width={'100px'} />
                 </DeptSearchWrapper>

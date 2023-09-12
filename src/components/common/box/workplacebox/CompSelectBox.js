@@ -2,7 +2,7 @@ import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-  
+
 const CompSelectBox = ({ title, data, height, width, onSelectChange }) => {
   const [selectedValue, setSelectedValue] = React.useState('');
 
@@ -30,7 +30,7 @@ const CompSelectBox = ({ title, data, height, width, onSelectChange }) => {
           MenuProps={{
             PaperProps: {
               style: {
-                maxHeight: 250, // 원하는 최대 높이 값으로 변경
+                maxHeight: 250,
                 width: width,
               },
             },
