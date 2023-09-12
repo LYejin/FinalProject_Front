@@ -60,7 +60,7 @@ const DepartmentPage = () => {
   const fetchDepartmentData = async () => {
     try {
       const response = await authAxiosInstance.get(
-        '/system/user/departments/getDeptList'
+        '/system/user/departments/getDeptList/1232'
       );
 
       console.log(response.data);
@@ -75,14 +75,11 @@ const DepartmentPage = () => {
   const hierarchyData = data => {
     const result = [];
 
-    // CO_CD를 기준으로 분류
-    const coGroups = data.reduce((acc, curr) => {
-      if (!acc[curr.co_CD]) {
-        acc[curr.co_CD] = [];
-      }
-      acc[curr.co_CD].push(curr);
-      return acc;
-    }, {});
+    const coItem = {
+      co_CD: data[0].co_CD,
+      co_NM: data[0].co_NM,
+      divs: [],
+    };
 
     const findSubDepts = (dept_CD, allDepts) => {
       return allDepts
@@ -93,37 +90,35 @@ const DepartmentPage = () => {
         }));
     };
 
-    for (const co in coGroups) {
-      const coItem = {
-        co_CD: co,
-        divs: [],
+    // DIV_CD를 기준으로 분류
+    const divGroups = data.reduce((acc, curr) => {
+      if (!acc[curr.div_CD]) {
+        acc[curr.div_CD] = {
+          div_NM: curr.div_NM, // DIV_NM 추가
+          depts: [],
+        };
+      }
+      acc[curr.div_CD].depts.push(curr);
+      return acc;
+    }, {});
+
+    for (const div in divGroups) {
+      const deptsForThisDiv = divGroups[div].depts;
+      const topLevelDepts = deptsForThisDiv.filter(dept => !dept.mdept_CD);
+      topLevelDepts.forEach(dept => {
+        dept.subDepts = findSubDepts(dept.dept_CD, deptsForThisDiv);
+      });
+
+      const divItem = {
+        div_CD: div,
+        div_NM: divGroups[div].div_NM,
+        depts: topLevelDepts,
       };
 
-      // DIV_CD를 기준으로 분류
-      const divGroups = coGroups[co].reduce((acc, curr) => {
-        if (!acc[curr.div_CD]) {
-          acc[curr.div_CD] = [];
-        }
-        acc[curr.div_CD].push(curr);
-        return acc;
-      }, {});
-
-      for (const div in divGroups) {
-        const topLevelDepts = divGroups[div].filter(dept => !dept.mdept_CD);
-        topLevelDepts.forEach(dept => {
-          dept.subDepts = findSubDepts(dept.dept_CD, divGroups[div]);
-        });
-
-        const divItem = {
-          div_CD: div,
-          depts: topLevelDepts,
-        };
-
-        coItem.divs.push(divItem);
-      }
-
-      result.push(coItem);
+      coItem.divs.push(divItem);
     }
+
+    result.push(coItem);
 
     return result;
   };
