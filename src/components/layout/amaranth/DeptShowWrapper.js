@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ListBoxItem from './ListBoxItem';
+import DeptSb from '../../common/sidebar/DeptSb';
 import axios from '../../../../node_modules/axios/index';
 import { WorkplaceListBoxItem } from './Index';
+import DepartmentTree from '../../common/sidebar/DepartmentTree';
 
-const DeptShowWrapper = ({
+function DeptShowWrapper({
   width,
   title,
   dataCount,
@@ -11,13 +13,7 @@ const DeptShowWrapper = ({
   FetchWorkplaceDetailInfo,
   handleAddClick,
   isAdding,
-}) => {
-  const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
-
-  useEffect(() => {
-    setSelectedItemIndex(0);
-  }, []);
-
+}) {
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,
@@ -25,9 +21,55 @@ const DeptShowWrapper = ({
     height: '100%',
   };
 
-  const resetSelectedItemIndex = () => {
-    setSelectedItemIndex(-1);
-  };
+  function Company({ data }) {
+    return (
+      <div>
+        <div>{data.co_CD}</div>
+        {data.divs.map(div => (
+          <Division key={div.div_CD} data={div} />
+        ))}
+      </div>
+    );
+  }
+
+  function Division({ data }) {
+    return (
+      <div>
+        <div
+          style={{
+            paddingLeft: '30px',
+            backgroundColor: 'red',
+            border: '1px solid black',
+          }}
+        >
+          {data.div_CD}
+        </div>
+        {data.depts.map(dept => (
+          <Department key={dept.dept_CD} data={dept} />
+        ))}
+      </div>
+    );
+  }
+
+  function Department({ data }) {
+    return (
+      <div>
+        <div
+          style={{
+            paddingLeft: '30px',
+            backgroundColor: 'green',
+            border: '1px solid black',
+          }}
+        >
+          {data.dept_CD}
+        </div>
+        {data.subDepts &&
+          data.subDepts.map(subDept => (
+            <Department key={subDept.dept_CD} data={subDept} />
+          ))}
+      </div>
+    );
+  }
 
   return (
     <div style={selectListWrapper}>
@@ -35,9 +77,13 @@ const DeptShowWrapper = ({
         <span className="deptListBoxtitle">· {title}</span>
         <span className="deptListBoxSort">필터</span>
       </div>
-      <div className="deptListWrapper"></div>
+      <div className="deptListWrapper">
+        {data.map(company => (
+          <Company key={company.co_CD} data={company} />
+        ))}
+      </div>
     </div>
   );
-};
+}
 
 export default DeptShowWrapper;
