@@ -33,10 +33,12 @@ const DepartmentPage = () => {
     mode: 'onChange',
   }); // react-hook-form 사용
   const [companyData, setCompanyData] = useState([]);
+  const [DeptData, setDeptData] = useState([]);
   const [SearchCocd, setSearchCocd] = useState('');
 
   useEffect(() => {
     fetchCompanyData();
+    fetchDepartmentData();
   }, []);
 
   const fetchCompanyData = async () => {
@@ -54,6 +56,23 @@ const DepartmentPage = () => {
       console.error('Error fetching company data:', error);
     }
   };
+
+  const fetchDepartmentData = async () => {
+    try {
+      const response = await authAxiosInstance.get(
+        '/system/user/departments/getDeptList'
+      );
+
+      console.log(response.data);
+      const organizedData = hierarchyData(response.data);
+      setDeptData(organizedData);
+      console.log(organizedData);
+    } catch (error) {
+      console.error('Error fetching department data:', error);
+    }
+  };
+
+  wq
 
   return (
     <>
@@ -74,13 +93,18 @@ const DepartmentPage = () => {
                   />
                   <DeptTextFieldBox width={'100px'} />
                 </DeptSearchWrapper>
-                <DeptShowWrapper width={'350px'} title={'조직도'} />
+                <DeptShowWrapper
+                  width={'350px'}
+                  title={'조직도'}
+                  data={DeptData}
+                />
               </LeftContentWrapper>
               <RightContentWrapper>
                 <DeptHeadTitle titleName={'상세정보'}></DeptHeadTitle>
-                <DeptSubTitle
-                  titleName={'기본정보 | 부서원 정보'}
-                ></DeptSubTitle>
+                <DeptSubTitle>
+                  <div className="subTitleInfo">기본정보</div>
+                  <div className="subTitleInfo2">부서원 정보</div>
+                </DeptSubTitle>
                 <DeptInfoWrapper />
               </RightContentWrapper>
             </MainContentWrapper>
