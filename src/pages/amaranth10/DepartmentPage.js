@@ -72,7 +72,61 @@ const DepartmentPage = () => {
     }
   };
 
-  wq
+  const hierarchyData = data => {
+    const result = [];
+
+    // CO_CD를 기준으로 분류
+    const coGroups = data.reduce((acc, curr) => {
+      if (!acc[curr.co_CD]) {
+        acc[curr.co_CD] = [];
+      }
+      acc[curr.co_CD].push(curr);
+      return acc;
+    }, {});
+
+    const findSubDepts = (dept_CD, allDepts) => {
+      return allDepts
+        .filter(dept => dept.mdept_CD === dept_CD)
+        .map(dept => ({
+          ...dept,
+          subDepts: findSubDepts(dept.dept_CD, allDepts),
+        }));
+    };
+
+    for (const co in coGroups) {
+      const coItem = {
+        co_CD: co,
+        divs: [],
+      };
+
+      // DIV_CD를 기준으로 분류
+      const divGroups = coGroups[co].reduce((acc, curr) => {
+        if (!acc[curr.div_CD]) {
+          acc[curr.div_CD] = [];
+        }
+        acc[curr.div_CD].push(curr);
+        return acc;
+      }, {});
+
+      for (const div in divGroups) {
+        const topLevelDepts = divGroups[div].filter(dept => !dept.mdept_CD);
+        topLevelDepts.forEach(dept => {
+          dept.subDepts = findSubDepts(dept.dept_CD, divGroups[div]);
+        });
+
+        const divItem = {
+          div_CD: div,
+          depts: topLevelDepts,
+        };
+
+        coItem.divs.push(divItem);
+      }
+
+      result.push(coItem);
+    }
+
+    return result;
+  };
 
   return (
     <>
