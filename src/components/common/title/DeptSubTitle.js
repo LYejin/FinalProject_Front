@@ -7,6 +7,7 @@ const DeptSubTitle = ({
   onClickUpdate,
   isAdding,
   deleteDiv,
+  children,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -20,12 +21,7 @@ const DeptSubTitle = ({
     deleteDiv();
   };
 
-  return (
-    <div className="deptSubTitleWrapper">
-      <div className="subTitleInfo">기본정보</div>
-      <div className="subTitleInfo2">부서원 정보</div>
-    </div>
-  );
+  return <div className="deptSubTitleWrapper">{children}</div>;
 };
 
 export default DeptSubTitle;

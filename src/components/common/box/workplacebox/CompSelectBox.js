@@ -2,7 +2,7 @@ import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+  
 const CompSelectBox = ({ title, data, height, width, onSelectChange }) => {
   const [selectedValue, setSelectedValue] = React.useState('');
 

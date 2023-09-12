@@ -20,13 +20,13 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">회사</th>
             <td colSpan="3" className="cellStyle">
-              마이그레이션테스트회사
+              회사이름
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장</th>
             <td colSpan="3" className="cellStyle">
-              부산지점
+              사업장이름
             </td>
           </tr>
           <tr>
@@ -145,7 +145,7 @@ const DeptInfoWrapper = ({
           </tr>
           <tr>
             <th className="headerCellStyle" rowSpan="2">
-              사업장주소
+              부서주소
             </th>
             <td colSpan="3" className="cellStyle">
               <input type="text" className="postInputStyle" />

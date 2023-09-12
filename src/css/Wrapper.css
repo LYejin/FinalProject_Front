@@ -107,9 +107,9 @@
   min-height: 295px;
   height: calc(100% - 50px);
   border: 1px solid lightgray;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  /* display: flex; */
+  /* align-items: center; */
+  /* flex-direction: column; */
   overflow-y: scroll;
 }
 
@@ -195,4 +195,25 @@
   font-weight: 500;
   cursor: pointer;
   border-radius: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+/* 계층 구조 스타일 */
+li > ul {
+  margin-left: 20px;
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+}
+
+/* 마지막 계층의 아이템 스타일 */
+li > ul > li:last-child {
+  border-left: none;
 }

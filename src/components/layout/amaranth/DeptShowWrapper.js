@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ListBoxItem from './ListBoxItem';
-import DeptSb from '../../common/sidebar/DeptSb';
 import axios from '../../../../node_modules/axios/index';
 import { WorkplaceListBoxItem } from './Index';
-import DepartmentTree from '../../common/sidebar/DepartmentTree';
 
 function DeptShowWrapper({
   width,
