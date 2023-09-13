@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const DeptTextFieldBox = ({ width, title, onInputChange }) => {
+const DeptTextFieldBox = ({ width, title, onInputChange, onSearch }) => {
   const [inputValue, setInputValue] = useState('');
 
   const TextFieldBoxWrapper = {
@@ -29,6 +29,12 @@ const DeptTextFieldBox = ({ width, title, onInputChange }) => {
     }
   };
 
+  const handleSearchClick = () => {
+    if (onSearch) {
+      onSearch(inputValue);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <span style={{ marginRight: '8px' }}>{title}</span>
@@ -38,7 +44,9 @@ const DeptTextFieldBox = ({ width, title, onInputChange }) => {
         onChange={handleInputChange}
         placeholder="코드/사업장/부서명을 입력하세요."
       />
-      <button style={SerachButton}>조회</button>
+      <button style={SerachButton} onClick={handleSearchClick}>
+        조회
+      </button>
     </div>
   );
 };
