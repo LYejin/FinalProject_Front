@@ -3,7 +3,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const CompSelectBox = ({ title, data, height, width, onSelectChange }) => {
+const CompSelectBox = ({
+  title,
+  data,
+  height,
+  width,
+  onSelectChange,
+  selectMenu,
+}) => {
   const [selectedValue, setSelectedValue] = React.useState('');
 
   const handleChange = event => {
@@ -36,16 +43,18 @@ const CompSelectBox = ({ title, data, height, width, onSelectChange }) => {
             },
           }}
         >
-          <MenuItem
-            value=""
-            style={{
-              fontSize: '0.8rem',
-              fontWeight: 'bold',
-              borderBottom: '1px solid #CCC',
-            }}
-          >
-            <em>전체</em>
-          </MenuItem>
+          {selectMenu != null && selectMenu !== '' && (
+            <MenuItem
+              value=""
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                borderBottom: '1px solid #CCC',
+              }}
+            >
+              <em>{selectMenu}</em>
+            </MenuItem>
+          )}
           {data.map(company => (
             <MenuItem
               key={company.value}

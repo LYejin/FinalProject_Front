@@ -35,6 +35,11 @@ const DepartmentPage = () => {
   const [companyData, setCompanyData] = useState([]);
   const [DeptData, setDeptData] = useState([]);
   const [SearchCocd, setSearchCocd] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearch = value => {
+    setSearchValue(value);
+  };
 
   useEffect(() => {
     fetchCompanyData();
@@ -146,12 +151,13 @@ const DepartmentPage = () => {
                       fetchDepartmentData(selectedCoCd);
                     }}
                   />
-                  <DeptTextFieldBox width={'100px'} />
+                  <DeptTextFieldBox width={'100px'} onSearch={handleSearch} />
                 </DeptSearchWrapper>
                 <DeptShowWrapper
                   width={'350px'}
                   title={'조직도'}
                   data={DeptData}
+                  searchValue={searchValue}
                 />
               </LeftContentWrapper>
               <RightContentWrapper>

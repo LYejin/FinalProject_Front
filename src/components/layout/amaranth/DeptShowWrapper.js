@@ -9,6 +9,7 @@ function DeptShowWrapper({
   FetchWorkplaceDetailInfo,
   handleAddClick,
   isAdding,
+  searchValue,
 }) {
   const selectListWrapper = {
     position: 'relative',
@@ -25,7 +26,11 @@ function DeptShowWrapper({
       </div>
       <div className="deptListWrapper">
         {data.map(company => (
-          <GetComp key={company.co_CD} data={company} />
+          <GetComp
+            key={company.co_CD}
+            data={company}
+            searchValue={searchValue}
+          />
         ))}
       </div>
     </div>

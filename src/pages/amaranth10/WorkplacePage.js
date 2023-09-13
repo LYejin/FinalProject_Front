@@ -470,6 +470,7 @@ const WorkplacePage = () => {
               data={companyData}
               height={28}
               width={200}
+              selectMenu={'전체'}
               onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
             />
             <WorkpTextFieldBox
