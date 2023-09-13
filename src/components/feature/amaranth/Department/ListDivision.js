@@ -23,7 +23,7 @@ function ListDivision({ data, searchValue }) {
     <div>
       <div
         style={{
-          paddingLeft: '20px',
+          paddingLeft: '15px',
           height: '30px',
           fontSize: '16px',
           display: 'flex',
@@ -31,6 +31,16 @@ function ListDivision({ data, searchValue }) {
           fontWeight: 'bold',
         }}
       >
+        <span
+          onClick={toggleOpen}
+          style={{
+            fontSize: '12px',
+            alignItems: 'center',
+            width: 15,
+          }}
+        >
+          {data.depts && data.depts.length > 0 && (isOpen ? '▼' : '▶')}
+        </span>
         <span
           onClick={toggleOpen}
           style={{

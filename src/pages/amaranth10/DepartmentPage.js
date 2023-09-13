@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   authAxiosInstance,
   imageAxiosInstance,
@@ -131,6 +131,10 @@ const DepartmentPage = () => {
     return result;
   };
 
+  const handleSelectDepartment = dept_CD => {
+    console.log(dept_CD);
+  };
+
   return (
     <>
       <CommonLayout2>
@@ -153,12 +157,14 @@ const DepartmentPage = () => {
                   />
                   <DeptTextFieldBox width={'100px'} onSearch={handleSearch} />
                 </DeptSearchWrapper>
-                <DeptShowWrapper
-                  width={'350px'}
-                  title={'조직도'}
-                  data={DeptData}
-                  searchValue={searchValue}
-                />
+                <DeptContext.Provider value={{ handleSelectDepartment }}>
+                  <DeptShowWrapper
+                    width={'350px'}
+                    title={'조직도'}
+                    data={DeptData}
+                    searchValue={searchValue}
+                  />
+                </DeptContext.Provider>
               </LeftContentWrapper>
               <RightContentWrapper>
                 <DeptHeadTitle titleName={'상세정보'}></DeptHeadTitle>
@@ -175,5 +181,5 @@ const DepartmentPage = () => {
     </>
   );
 };
-
+export const DeptContext = React.createContext();
 export default DepartmentPage;

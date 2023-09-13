@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import deptImg from './deptImg.png';
+import { DeptContext } from '../../../../pages/amaranth10/DepartmentPage';
 
 function ListDept({ data, roof, deptStyle, searchValue }) {
+  const { handleSelectDepartment } = useContext(DeptContext);
+
+  const onDeptClick = () => {
+    handleSelectDepartment(data.dept_CD);
+  };
+
   const localStorageKey = `departmentIsOpen_${data.dept_CD}`;
 
   const [isOpen, setIsOpen] = useState(
@@ -26,7 +33,7 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
     <div>
       <div
         style={{
-          paddingLeft: `${parsedRoof * 20}px`,
+          paddingLeft: `${parsedRoof * 15}px`,
           height: '30px',
           fontSize: '16px',
           display: 'flex',
@@ -37,6 +44,17 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
       >
         <span
           onClick={toggleOpen}
+          style={{
+            fontSize: '12px',
+            alignItems: 'center',
+            width: 15,
+            color: 'black',
+          }}
+        >
+          {data.subDepts && data.subDepts.length > 0 && (isOpen ? '▼' : '▶')}
+        </span>
+        <span
+          onClick={onDeptClick}
           style={{
             ...highlightStyle,
             display: 'inline-block',

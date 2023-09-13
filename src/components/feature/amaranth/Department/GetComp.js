@@ -34,6 +34,16 @@ function GetComp({ data, searchValue }) {
         <span
           onClick={toggleOpen}
           style={{
+            fontSize: '12px',
+            alignItems: 'center',
+            width: 15,
+          }}
+        >
+          {data.divs && data.divs.length > 0 && (isOpen ? '▼' : '▶')}
+        </span>
+        <span
+          onClick={toggleOpen}
+          style={{
             ...highlightStyle,
             display: 'inline-block',
             cursor: 'pointer',
