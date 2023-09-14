@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
+import {
+  ButtonW,
+  DeptSelectBox,
+  DetailTitle,
+  SelectBox,
+  UseSelectBox,
+} from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import EventButton from '../../../common/button/EventButton';
 
 const DeptInfoWrapper = ({
   data,
@@ -12,7 +19,10 @@ const DeptInfoWrapper = ({
   closeDate,
   handleOpenDateChange,
   handleCloseDateChange,
+  register,
 }) => {
+  console.log('데이터', data);
+
   return (
     <div className="selectListWrapper">
       <table className="tableStyle">
@@ -20,13 +30,13 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">회사</th>
             <td colSpan="3" className="cellStyle">
-              회사이름
+              {data.co_NM}
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">사업장</th>
             <td colSpan="3" className="cellStyle">
-              사업장이름
+              {data.div_NM}
             </td>
           </tr>
           <tr>
@@ -35,16 +45,22 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                placeholder="-"
+                defaultValue={data ? data.mdept_CD || '' : ''}
+                {...register('mdept_CD')}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">대내수신여부</th>
             <td colSpan="3" className="cellStyle">
-            <select>
-                <option value="사용">사용</option>
-                <option value="미사용">미사용</option>
+              <select
+                className="deptSelectStyle"
+                defaultValue={data.call_YN}
+                {...register('call_YN')}
+              >
+                <option value={1}>사용</option>
+                <option value={0}>미사용</option>
               </select>
             </td>
           </tr>
@@ -64,7 +80,8 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.call_NM || '' : ''}
+                {...register('call_NM')}
               />
             </td>
           </tr>
@@ -74,18 +91,23 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.dept_CD || '' : ''}
                 placeholder="부서코드를 입력해주세요."
+                {...register('dept_CD')}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">부서유형</th>
             <td colSpan="3" className="cellStyle">
-              <select>
-                <option value="부서">부서</option>
-                <option value="팀">팀</option>
-                <option value="일시">일시</option>
+              <select
+                className="deptSelectStyle "
+                defaultValue={data.dept_CT}
+                {...register('dept_CT')}
+              >
+                <option value={2}>부서</option>
+                <option value={1}>팀</option>
+                <option value={0}>임시</option>
               </select>
             </td>
           </tr>
@@ -95,8 +117,9 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="reqInputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
+                {...register('dept_NM')}
               />
             </td>
           </tr>
@@ -106,7 +129,8 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.dept_NMK || '' : ''}
+                {...register('dept_NMK')}
               />
             </td>
           </tr>
@@ -116,8 +140,9 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.appr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
+                {...register('appr_NM')}
               />
             </td>
           </tr>
@@ -127,8 +152,9 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.mgr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
+                {...register('mgr_NM')}
               />
             </td>
           </tr>
@@ -138,33 +164,46 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
+                defaultValue={data ? data.mgr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
               />
             </td>
           </tr>
+
           <tr>
             <th className="headerCellStyle" rowSpan="2">
-              부서주소
+              주소
             </th>
-            <td colSpan="3" className="cellStyle">
-              <input type="text" className="postInputStyle" />
-
-              <ButtonW data={'우편번호'}></ButtonW>
+            <td colSpan="3" className="cellEmpAddrStyle">
+              <input
+                type="text"
+                className="addressInputStyle"
+                name="zipcode"
+                {...register('zipcode')}
+              />
+              <EventButton data={'우편번호'}></EventButton>
             </td>
           </tr>
           <tr>
             <td colSpan="2" className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <input
+                type="text"
+                className="addrNum"
+                name="addr"
+                {...register('addr')}
+              />
             </td>
             <td className="cellStyle">
               <input
                 type="text"
                 className="inputStyle"
-                placeholder="직접입력"
+                name="addr_NUM"
+                {...register('addr_NUM')}
+                defaultValue={data.addr_NUM}
               />
             </td>
           </tr>
+
           <tr>
             <th className="headerCellStyle">사용여부</th>
             <td className="cellStyle">

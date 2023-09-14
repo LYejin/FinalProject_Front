@@ -10,6 +10,7 @@ import {
   DeptSubTitle,
   CompSelectBox,
   DeptTextFieldBox,
+  ScrollWrapper,
 } from '../../components/common/Index';
 import {
   ContentWrapper,
@@ -28,7 +29,14 @@ import DeptInfoWrapper from '../../components/feature/amaranth/Department/DeptIn
 
 const DepartmentPage = () => {
   const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
     formState: { errors },
+    clearErrors,
+    setValue,
+    setError,
   } = useForm({
     mode: 'onChange',
   }); // react-hook-form 사용
@@ -36,6 +44,8 @@ const DepartmentPage = () => {
   const [DeptData, setDeptData] = useState([]);
   const [SearchCocd, setSearchCocd] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [allDepartmentData, setAllDepartmentData] = useState([]);
+  const [matchingDept, setMatchingDept] = useState([]);
 
   const handleSearch = value => {
     setSearchValue(value);
@@ -72,6 +82,8 @@ const DepartmentPage = () => {
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
       console.log(organizedData);
+
+      setAllDepartmentData(response.data);
     } catch (error) {
       console.error('Error fetching department data:', error);
     }
@@ -133,6 +145,14 @@ const DepartmentPage = () => {
 
   const handleSelectDepartment = dept_CD => {
     console.log(dept_CD);
+    const foundDept = allDepartmentData.find(dept => dept.dept_CD === dept_CD);
+    if (foundDept) {
+      console.log('Found matching department data:', foundDept);
+      setMatchingDept(foundDept);
+      console.log(matchingDept);
+    } else {
+      console.log('No matching department found.');
+    }
   };
 
   return (
@@ -143,7 +163,7 @@ const DepartmentPage = () => {
           <Title titleName={'부서관리'}></Title>
           <DetailContentWrapper>
             <DepartmentSelectBoxWrapper />
-            <MainContentWrapper>
+            <MainContentWrapper state={0}>
               <LeftContentWrapper>
                 <DeptSearchWrapper width={'350px'}>
                   <CompSelectBox
@@ -172,7 +192,11 @@ const DepartmentPage = () => {
                   <div className="subTitleInfo">기본정보</div>
                   <div className="subTitleInfo2">부서원 정보</div>
                 </DeptSubTitle>
-                <DeptInfoWrapper />
+                <form>
+                  <ScrollWrapper width={'900px'} deptH={30}>
+                    <DeptInfoWrapper data={matchingDept} register={register} />
+                  </ScrollWrapper>
+                </form>
               </RightContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>

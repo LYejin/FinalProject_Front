@@ -87,6 +87,13 @@ background-color: #fff;
 color: #333;
 }
 
+.deptSelectListStyle{
+  height: 26px;
+  font-size: 13px;
+  background-color: #fff;
+  color: #333;
+}
+
 .customButton {
   width: 50px;
   background-image: linear-gradient(#f9f9f9, #eaeaea);
@@ -300,6 +307,16 @@ transform: translate(-50%, -50%);
 
 .hovered .deleteButton {
   display: block;
+}
+
+.deptSelectStyle {
+  height: 28px; 
+  width: 150px; 
+  border: 1px solid #ccc; 
+  padding: 4px; 
+  &:focus {
+    border-color: #00a0e4;
+  }
 }
 
 /* .errorWrapper {
