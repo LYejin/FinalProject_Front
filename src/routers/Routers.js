@@ -26,7 +26,7 @@ const Routers = () => {
       <Route path={URL.workplace} element={<WorkplacePage />} />
       <Route path={URL.FundTypeSetting} element={<FundTypePage />} />
       <Route path={URL.FixedCapitalRegistration} element={<FtradePage />} />
-      <Route path={URL.GeneralVendorRegistration} element={<EmployeePage />} />
+      <Route path={URL.GeneralVendorRegistration} element={<GtradePage />} />
       <Route path={URL.Department} element={<DepartmentPage />} />
       <Route path={URL.FixedFund} element={<FixedFundPage />} />
     </Routes>

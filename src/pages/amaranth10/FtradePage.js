@@ -23,7 +23,14 @@ import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 
 const FtradePage = () => {
   const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
     formState: { errors },
+    clearErrors,
+    setValue,
+    setError,
   } = useForm({
     mode: 'onChange',
   }); // react-hook-form 사용
@@ -502,7 +509,7 @@ const FtradePage = () => {
       <CommonLayout2>
         <MainTitle mainTitle={'회계관리'} />
         <ContentWrapper>
-          <Title titleName={'이게맞냐@!@!@!@!@!!@@!!!'}></Title>
+          <Title titleName={'금융거래처등록'}></Title>
           <DetailContentWrapper>
             <SelectBoxWrapper height="50px" width="1200px">
               <span className="rightSelectBoxPadding">거래처코드</span>
@@ -540,6 +547,7 @@ const FtradePage = () => {
                   data={<i className="fa-solid fa-magnifying-glass"></i>}
                   width={'-10px'}
                   height={30}
+                  onClickEvent={onClickSearchEmpList}
                 />
               </div>
             </SelectBoxWrapper>
@@ -565,9 +573,24 @@ const FtradePage = () => {
                 ))}
               </SelectListWrapperCommon>
               <RightContentWrapper>
-                <form>
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  onChange={onChangeFunction}
+                >
                   <div className="tableHeader">
-                    <div className="defaultTitle">지출 | 수입</div>
+                    <div className="defaultTitle">기본등록사항</div>
+                    <div className="buttonWrapper">
+                      <button type="submit" className="WhiteButton">
+                        저장
+                      </button>
+                      <button
+                        type="button"
+                        className="WhiteButton"
+                        onClick={onClickButtonRemoveEmp}
+                      >
+                        삭제
+                      </button>
+                    </div>
                   </div>
                   <ScrollWrapper width={'900px'}>
                     <FtradeInfoBox
@@ -610,6 +633,16 @@ const FtradePage = () => {
           </DetailContentWrapper>
         </ContentWrapper>
       </CommonLayout2>
+      {isOpenPost ? (
+        <Modal
+          width={'560px'}
+          height={'600px'}
+          title={'우편번호'}
+          onClickEvent={onChangeOpenPost}
+        >
+          <DaumPostcode autoClose onComplete={onCompletePost} />
+        </Modal>
+      ) : null}
     </>
   );
 };

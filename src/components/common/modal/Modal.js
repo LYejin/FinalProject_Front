@@ -13,6 +13,10 @@ const Modal = ({ width, height, children, onClickEvent, title, buttonYN }) => {
     zIndex: 10000,
   };
 
+  const onClickEventFunction = () => {
+    onClickEvent();
+  };
+
   return (
     <>
       <div style={modalBox}>
