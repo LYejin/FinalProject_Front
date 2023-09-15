@@ -30,6 +30,7 @@ const FixedFundSelectBoxWrapper = ({ children }) => {
 
   const handleSearchClick = () => {
     setSendInfo(SearchDivInfo);
+    SearchWorkplace();
   };
 
   const getWorkplace = async divCd => {

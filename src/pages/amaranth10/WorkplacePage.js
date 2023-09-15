@@ -35,6 +35,7 @@ import { parseDateString, parseDateToString } from '../../util/time';
 import { useFetcher } from '../../../node_modules/react-router-dom/dist/index';
 import Modal from '../../components/common/modal/Modal';
 import DaumPostcode from 'react-daum-postcode';
+import { authAxiosInstance } from '../../axios/axiosInstance';
 
 const WorkplacePage = () => {
   const [companyData, setCompanyData] = useState([]);
@@ -160,11 +161,11 @@ const WorkplacePage = () => {
   };
 
   const SearchWorkplace = async (divCd1, divYn1, coCd1) => {
+    console.log('부르셨습니까?');
     if (divCd1 === '' && divYn1 === '' && coCd1 === '') {
       try {
-        const response = await axios.get(
-          '/system/user/WorkplaceManage/getList',
-          { headers: { Authorization: getAccessToken() } }
+        const response = await authAxiosInstance.get(
+          '/system/user/WorkplaceManage/getList'
         );
         setWorkplaceData(response.data);
         console.log(response.data.length);
@@ -191,9 +192,8 @@ const WorkplacePage = () => {
       if (coCd1 !== '') queryParams.append('CO_CD', coCd1);
 
       try {
-        const response = await axios.get(
-          `/system/user/WorkplaceManage/getList${queryParams.toString()}`,
-          { headers: { Authorization: getAccessToken() } }
+        const response = await authAxiosInstance.get(
+          `/system/user/WorkplaceManage/getList?${queryParams.toString()}`
         );
         console.log(queryParams.toString());
         setWorkplaceData(response.data);
