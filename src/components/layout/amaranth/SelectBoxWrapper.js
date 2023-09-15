@@ -1,10 +1,16 @@
-import React from "react";
+import React from 'react';
 
-const SelectBoxWrapper = ({ children }) => {
+const SelectBoxWrapper = ({ children, height, width }) => {
   return (
     <div
       className="selectBoxWrapper"
-      style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '10px',
+        height: height,
+        minWidth: width,
+      }}
     >
       {children}
     </div>
