@@ -30,6 +30,9 @@ import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
+import SelectListWrapperCommon from '../../components/layout/amaranth/SelectListWrapperCommon';
+import GtradeListBoxItem from '../../components/feature/amaranth/employee/GtradeListBoxItem';
+import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 
 const GtradePage = () => {
   const {
@@ -49,29 +52,23 @@ const GtradePage = () => {
   const [isLoading, setIsLoading] = useState(false); // loading 관리
   const [insertButtonClick, setInsertButtonClick] = useState(false); // insert button click을 했는지 아닌지
   const [openDate, setOpenDate] = useState(new Date()); // 개업일 선택 상태 관리
+  const [closeDate, setCloseDate] = useState(new Date()); // 개업일 선택 상태 관리
   const [onChangeForm, setChangeForm] = useState(false); // 폼 변경 사항 확인
   const [selectedRadioValue, setSelectedRadioValue] = useState(''); //radio 값
   const [address, setAddress] = useState(''); // 우편 주소
   const [addressDetail, setAddressDetail] = useState(); // 주소
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
-  const [image, setImage] = useState(); // image axios
-  const [imgFile, setImgFile] = useState(); // 순수 image file
   const [data, setData] = useState({}); // form 데이터들 보관
   const [companyList, setCompanyList] = useState([]); // select box 내 company list
-  const [enrlList, setEnrlList] = useState([]); // 재직구분 selectbox 값
   const [errorName, setErrorName] = useState(); // error name 얻기
   const [imgPriviewFile, setImgPriviewFile] = useState(); // image 미리보기
-  const [username, setUsername] = useState(); // update를 위한 username 저장
+  const [tr_CD, setTR_CD] = useState(); // update를 위한 username 저장
   const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
   const [company, setCompany] = useState(''); // Infobox 내 company select
   const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
-  const [fixEnrlList, setFixEnrlList] = useState([]); // 백 전송을 위해 변경된 enrlList
-  const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
-  const [workplaceSelect, setWorkplaceSelect] = useState(''); // Info box 내 workplace select
-  const [infoBoxEnrlData, setInfoBoxEnrlData] = useState(''); // Info box 내 enrl 재직구분 데이터
+  const [useYN, setUseYN] = useState(''); // 사용여부 select box state
+  const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
   const listRef = useRef(null); // list 화면 상하단 이동
-  const [emailPersonalData, setEmailPersonalData] = useState(''); // email drop box 데이터
-  const [emailSalaryData, setEmailSalaryData] = useState(''); // email drop box 데이터
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
@@ -99,7 +96,7 @@ const GtradePage = () => {
     setAddressDetail(fullAddr);
     setChangeFormData({
       ...changeFormData,
-      zipcode: data.zonecode,
+      zip: data.zonecode,
       addr: fullAddr,
     });
     setIsOpenPost(false);
@@ -120,7 +117,17 @@ const GtradePage = () => {
     setOpenDate(date);
     setChangeFormData({
       ...changeFormData,
-      join_DT: getNowJoinTime(date),
+      start_DT: getNowJoinTime(date),
+    });
+  };
+
+  // 폐업일 선택 시 처리 함수
+  const handleCloseDateChange = date => {
+    console.log(date);
+    setCloseDate(date);
+    setChangeFormData({
+      ...changeFormData,
+      end_DT: getNowJoinTime(date),
     });
   };
 
@@ -145,33 +152,20 @@ const GtradePage = () => {
     });
   };
 
-  // Company co_CD 변경 시 Workplace select box 정보 수정
-  useEffect(() => {
-    authAxiosInstance(
-      `system/user/groupManage/employee/getWorkplace?CO_CD=${company}`
-    ).then(response => {
-      setWorkplaceList(response.data);
-      setWorkplaceSelect(
-        response.data[0]?.div_CD ? response.data[0]?.div_CD : null
-      );
-      response.data[0]?.div_CD && setValue('div_CD', response.data[0]?.div_CD);
-    });
-  }, [company]);
-
   // 사원 리스트 얻는 axios
   const getEmpList = async emp => {
     const response = await authAxiosInstance(
-      `system/user/groupManage/employee/getList`
+      `accounting/user/Strade/getSGtradeList`
     );
     console.log(response.data);
-    setEmpList(response.data);
+    setEmpList(response.data || null);
     if (clickYN && !insertButtonClick) {
       console.log('^^^^^^^^^^^^^^^^^^^^^^^');
-      setUsername(response.data[0].username);
-      setData(response.data[0] || resetData());
-      setSelectedRadioValue(response.data[0].gender_FG);
-      setCompany(response.data[0].co_CD);
-      setWorkplaceSelect(response.data[0].div_CD);
+      setTR_CD(response.data[0]?.tr_CD);
+      setUseYN(response.data[0]?.use_YN);
+      setData(response?.data[0] || null);
+      setSelectedRadioValue(response.data[0]?.gender_FG);
+      setCompany(response.data[0]?.co_CD);
     }
   };
 
@@ -180,7 +174,7 @@ const GtradePage = () => {
     const response = await authAxiosInstance(
       'system/user/groupManage/employee/getCompanyList'
     );
-    setCompanyList(response.data);
+    setCompanyList(response?.data);
   };
 
   useEffect(() => {
@@ -190,61 +184,67 @@ const GtradePage = () => {
   }, []);
 
   // click 시 사원 정보 가져오기 이벤트
-  const onClickDetailEmpInfo = async (kor_NM, username) => {
+  const onClickDetailSGtradeInfo = async tr_CD => {
     setChangeForm(false);
     setChangeFormData();
-    setEmailPersonalData('');
-    setEmailSalaryData('');
     reset();
-    setImgFile();
-    setImgPriviewFile();
     setAddress();
     setAddressDetail();
     if (onChangeForm === true) {
       alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
-    console.log('kornm : ', kor_NM, 'username : ', username);
+    console.log('TR_CD : ', tr_CD);
     setIsLoading(true);
     setInsertButtonClick(false);
     setClickYN(true);
-    const response = await authAxiosInstance.post(
-      'system/user/groupManage/employee/empDetail',
+    const params = {};
+    params.TR_CD = tr_CD;
+
+    const response = await authAxiosInstance(
+      'accounting/user/Strade/sgtradeDetail',
       {
-        username: username,
+        params,
       }
     );
     setData(response.data);
-    console.log(response.data);
-    setSelectedRadioValue(response.data.gender_FG);
-    setOpenDate(new Date(response.data.join_DT) || '');
-    setImgFile(response.data.pic_FILE_ID);
+    console.log('Detail : ', response.data);
+    setOpenDate(new Date(response.data?.start_DT) || '');
+    setCloseDate(new Date(response.data?.end_DT) || '');
     setIsLoading(false);
-    setUsername(response.data.username);
-    setCompany(response.data.co_CD);
-    setInfoBoxEnrlData(response.data.enrl_FG);
-    setWorkplaceSelect(response.data?.div_CD);
+    setTR_CD(response.data?.tr_CD);
+    setUseYN(response.data?.use_YN);
     response.data.home_TEL &&
-      setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
+      setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
     response.data.tel &&
-      setValue('tel', onChangePhoneNumber(response.data.tel));
+      setValue('tel', onChangePhoneNumber(response.data?.tel));
   };
 
   // 조건 검색 버튼
   const onClickSearchEmpList = () => {
-    const { name } = getValues();
+    const { select_TR_CD, select_TR_NM, select_REG_NB, select_PPL_NB } =
+      getValues();
+    console.log(select_TR_CD, select_TR_NM, select_REG_NB, select_PPL_NB);
+
+    console.log('selectUseYN : ', selectUseYN);
     const params = {};
 
-    if (name !== '') {
-      params.NAME = name;
+    if (select_TR_CD !== '') {
+      params.TR_CD = select_TR_CD;
     }
-    if (fixEnrlList.length > 0) {
-      params.ENRL_FG = fixEnrlList.join(',');
+    if (select_TR_NM !== '') {
+      params.TR_NM = select_TR_NM;
     }
-    if (companySelect !== '') {
-      params.CO_CD = companySelect;
+    if (select_REG_NB !== '') {
+      params.REG_NB = select_REG_NB;
+    }
+    if (select_PPL_NB !== '') {
+      params.PPL_NB = select_PPL_NB;
+    }
+    if (selectUseYN !== '') {
+      params.USE_YN = selectUseYN;
     }
 
-    authAxiosInstance('system/user/groupManage/employee/getList', {
+    authAxiosInstance('accounting/user/Strade/getSGtradeList', {
       params,
     }).then(response => {
       setEmpList(response.data);
@@ -264,23 +264,18 @@ const GtradePage = () => {
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
-    setEmailPersonalData('');
-    setEmailSalaryData('');
     setCompany(companyList[0].co_CD);
-    setImgPriviewFile();
+    setUseYN('1');
     setOpenDate(new Date());
+    setCloseDate();
     setInsertButtonClick(true);
     setClickYN(false);
     setSelectedRadioValue('W');
     setAddress();
     setAddressDetail();
-    setWorkplaceSelect();
     setWorkplaceList('');
-    setImage();
-    setImgFile();
     console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
-    setInfoBoxEnrlData(0);
-    setUsername('');
+    setTR_CD('');
   };
 
   // 사원 remove 이벤트
@@ -292,9 +287,7 @@ const GtradePage = () => {
     setClickYN(true);
     setChangeForm(false);
     getEmpList();
-    setImage();
-    setImgFile();
-    setUsername(empList[0].username);
+    setTR_CD(empList[0].tr_CD);
     if (listRef.current) {
       listRef.current.scrollTop = 0;
     }
@@ -303,8 +296,9 @@ const GtradePage = () => {
 
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
+    console.log('eeeeeeeeee', openDate);
     const getJoinDT = getNowJoinTime(openDate);
-    const formData = new FormData();
+    console.log('geeeeeee', getJoinDT);
 
     console.log('kkkkkkkkkkkkk');
     console.log(checkDBErrorYN);
@@ -315,101 +309,92 @@ const GtradePage = () => {
     checkDBErrorYN.email_ADD_ERROR &&
       setError('email_ADD', { message: 'ID가 중복되었습니다.' });
 
-    if (image !== null) {
-      formData.append('image', image);
-    }
-
     // 사원 update 중일 때 저장버튼 기능
-    if (clickYN && !insertButtonClick && onChangeForm) {
+    if (
+      clickYN &&
+      !insertButtonClick &&
+      Object.keys(changeFormData).length > 0
+    ) {
       console.log('update 버튼');
-      console.log(changeFormData);
-      if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
-        changeFormData.home_TEL = changeFormData.home_TEL.replace(/-/g, '');
-      }
-      if (changeFormData && Object.keys(changeFormData).includes('tel')) {
-        changeFormData.tel = changeFormData.tel.replace(/-/g, '');
-      }
-      formData.append(
-        'userData',
-        new Blob([JSON.stringify({ ...changeFormData, username: username })], {
-          type: 'application/json',
-        })
-      );
-
-      const responseUpdate = await imageAxiosInstance.post(
-        'system/user/groupManage/employee/empUpdate',
-        formData
+      console.log('changeFormData :', changeFormData);
+      // if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
+      //   changeFormData.home_TEL = changeFormData.home_TEL.replace(/-/g, '');
+      // }
+      // if (changeFormData && Object.keys(changeFormData).includes('tel')) {
+      //   changeFormData.tel = changeFormData.tel.replace(/-/g, '');
+      // }
+      // formData.append(
+      //   'userData',
+      //   new Blob([JSON.stringify({ ...changeFormData, username: username })], {
+      //     type: 'application/json',
+      //   })
+      // );
+      console.log('kkkkkkkkkkkkkk', { ...changeFormData, tr_CD: tr_CD });
+      const responseUpdate = await authAxiosInstance.post(
+        'accounting/user/Strade/stradeUpdate',
+        { ...changeFormData, tr_CD: tr_CD, tr_FG: '1' }
       );
       console.log(responseUpdate.data);
       const responseGetList = await authAxiosInstance(
-        `system/user/groupManage/employee/getList`
+        `accounting/user/Strade/getSGtradeList`
       );
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
-      setEmailPersonalData('');
-      setEmailSalaryData('');
       alert('사원정보가 수정되었습니다.');
-    } else if (clickYN && !insertButtonClick && !onChangeForm) {
+    } else if (
+      clickYN &&
+      !insertButtonClick &&
+      Object.keys(changeFormData).length === 0
+    ) {
       alert('사원정보가 수정된 정보가 없습니다.');
     }
 
     // 사원 insert 중일 때 저장버튼 기능
-    if (!clickYN && insertButtonClick && errors == null) {
+    if (!clickYN && insertButtonClick && Object.keys(errors).length === 0) {
       const userData = {
-        emp_CD: data?.emp_CD,
-        co_CD: company || null,
-        div_CD: workplaceSelect || null,
-        username: data?.username,
-        password: data?.password,
-        kor_NM: data?.kor_NM,
-        email_ADD: data?.email_ADD,
-        tel: data?.tel.replace(/-/g, ''),
-        gender_FG: selectedRadioValue,
-        join_DT: getJoinDT || null,
-        enrl_FG: infoBoxEnrlData || null,
-        personal_MAIL: data?.personal_MAIL,
-        personal_MAIL_CP: data?.personal_MAIL_CP,
-        salary_MAIL: data?.salary_MAIL,
-        salary_MAIL_CP: data?.salary_MAIL_CP,
-        home_TEL: data?.home_TEL.replace(/-/g, ''),
-        zipcode: address || null,
+        tr_CD: data?.tr_CD,
+        tr_NM: data?.tr_NM,
+        tr_FG: '1',
+        use_YN: '1',
+        view_YN: '0',
+        reg_NB: data?.reg_NB,
+        ppl_NB: data?.ppl_NB,
+        ceo_NM: data?.ceo_NM,
+        business: data?.business,
+        jongmok: data?.jongmok,
+        zip: address || null,
         addr: addressDetail || null,
         addr_NUM: data?.addr_NUM,
+        phone_NB: data?.phone_NB.replace(/-/g, ''),
+        fax: data?.fax,
+        website: data?.website,
+        email: data?.email,
+        start_DT: getJoinDT || null,
+        end_DT: getJoinDT || null,
+        for_YN: '0',
+        liq_CD: data?.liq_CD,
       };
-      setUsername(data?.username);
       setData(userData);
-      setWorkplaceSelect(workplaceSelect);
-      setCompany(company);
-
-      formData.append(
-        'userData',
-        new Blob([JSON.stringify(userData)], {
-          type: 'application/json',
-        })
-      );
+      //setCompany(company);
 
       console.log('insert 버튼');
       console.log(userData);
-      const response = await imageAxiosInstance.post(
-        'system/user/groupManage/employee/empInsert',
-        formData
+      const response = await authAxiosInstance.post(
+        'accounting/user/Strade/stradeInsert',
+        userData
       );
       console.log(response.data);
       setEmpList([
         ...empList,
         {
-          join_DT: getJoinDT,
-          username: data.username,
-          kor_NM: data.kor_NM,
+          tr_CD: data?.tr_CD,
+          tr_NM: data?.tr_NM,
+          reg_NB: data?.reg_NB,
         },
       ]);
       alert('사원이 추가되었습니다.');
       reset();
-      setEmailPersonalData('');
-      setEmailSalaryData('');
-      setImgFile();
-      setImgPriviewFile();
       setChangeForm(false);
       setChangeFormData();
       setInsertButtonClick(false);
@@ -420,7 +405,11 @@ const GtradePage = () => {
       }
       console.log(listRef.current.scrollHeight);
       console.log(listRef.current.scrollTop);
-    } else {
+    } else if (
+      !clickYN &&
+      insertButtonClick &&
+      Object.keys(errors).length > 0
+    ) {
       alert('중복된 값이 존재합니다.');
     }
   };
@@ -450,8 +439,6 @@ const GtradePage = () => {
     const {
       target: { value },
     } = event;
-    setFixEnrlList(typeof value === 'string' ? value.split(',') : value);
-    setEnrlList(typeof value === 'string' ? value.split(',') : value);
   };
 
   // 전화번호 실시간 010-0000-000 change
@@ -550,7 +537,7 @@ const GtradePage = () => {
   console.log('errors', errors);
   console.log(changeFormData);
   console.log(checkDBErrorYN);
-  // console.log(data);
+  console.log(data);
   // console.log(onChangeForm);
   // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
@@ -561,25 +548,42 @@ const GtradePage = () => {
         <ContentWrapper>
           <Title titleName={'일반거래처등록'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper>
-              <span className="rightSelectBoxPadding">거래처구분</span>
-              <EmpSelectBox
-                width={200}
-                data={companyList}
-                setCompanySelect={setCompanySelect}
-                companySelect={companySelect}
-              />
+            <SelectBoxWrapper height="80px" width="1200px">
               <span className="leftSelectBoxPadding">거래처코드</span>
-              <EmpCheckSelectBox
-                width={'200px'}
-                handleCheckSelectChange={handleCheckSelectChange}
-                enrlList={enrlList}
+              <input
+                type="text"
+                className="textInputBox"
+                {...register('select_TR_CD')}
               />
               <span className="lastSelectBoxTextPadding">거래처명</span>
               <input
                 type="text"
                 className="textInputBox"
-                {...register('name')}
+                {...register('select_TR_NM')}
+              />
+              <span className="rightSelectBoxPadding">사업자등록번호</span>
+              <input
+                type="text"
+                className="textInputBox"
+                {...register('select_REG_NB')}
+              />
+              <span className="rightSelectBoxPadding">주민등록번호</span>
+              <input
+                type="text"
+                className="textInputBox"
+                {...register('select_PPL_NB')}
+              />
+              <div className="leftSelectBoxPadding">사용여부</div>
+              <SelectBoxUSEYN
+                width={'100px'}
+                state={selectUseYN}
+                setState={setSelectUseYN}
+                clickYN={clickYN}
+                register={register}
+                errors={errors}
+                errorName={errorName}
+                total={true}
+                setChangeFormData={setChangeFormData}
               />
               <div className="selectBoxButtonWrapper">
                 <EventButton
@@ -591,16 +595,26 @@ const GtradePage = () => {
               </div>
             </SelectBoxWrapper>
             <MainContentWrapper>
-              <EmpSelectListWrapper
+              <SelectListWrapperCommon
                 width={'295px'}
                 title={'사용자:'}
                 listRef={listRef}
                 dataCount={empList.length}
-                clickedBoxID={username}
+                clickedBoxID={tr_CD}
                 data={empList}
-                clickBoxEvent={onClickDetailEmpInfo}
                 clickInsertBoxEvent={onClickInsertEmpBox}
-              />
+              >
+                {empList.map(info => (
+                  <GtradeListBoxItem
+                    key={info.tr_CD}
+                    //clickedBoxID={clickedBoxID}
+                    leftTop={info?.tr_CD}
+                    rightTop={info?.tr_NM}
+                    leftBottom={info?.reg_NB}
+                    clickBoxEvent={onClickDetailSGtradeInfo}
+                  />
+                ))}
+              </SelectListWrapperCommon>
               <RightContentWrapper>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
@@ -626,14 +640,11 @@ const GtradePage = () => {
                       data={data || []}
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}
-                      setOpenDate={setOpenDate}
                       openDate={openDate}
                       selectedValue={selectedRadioValue}
                       handleRadioChange={handleRadioChange}
                       address={address}
                       addressDetail={addressDetail}
-                      setImage={setImage}
-                      imgFile={imgFile}
                       companyList={companyList}
                       errors={errors}
                       clickYN={clickYN}
@@ -642,28 +653,19 @@ const GtradePage = () => {
                       setImgPriviewFile={setImgPriviewFile}
                       imgPriviewFile={imgPriviewFile}
                       handleOpenDateChange={handleOpenDateChange}
-                      setCompany={setCompany}
-                      company={company}
-                      workplaceList={workplaceList}
-                      setWorkplaceList={setWorkplaceList}
-                      workplaceSelect={workplaceSelect}
-                      setWorkplaceSelect={setWorkplaceSelect}
+                      handleCloseDateChange={handleCloseDateChange}
+                      closeDate={closeDate}
                       onChangeTel={onChangeTel}
                       onChangeHomeTel={onChangeHomeTel}
-                      infoBoxEnrlData={infoBoxEnrlData}
-                      setInfoBoxEnrlData={setInfoBoxEnrlData}
                       getValues={getValues}
                       setChangeFormData={setChangeFormData}
-                      onChangePersonalMAIL={onChangePersonalMAIL}
-                      onChangeSalaryMAIL={onChangeSalaryMAIL}
-                      setEmailPersonalData={setEmailPersonalData}
-                      emailPersonalData={emailPersonalData}
-                      emailSalaryData={emailSalaryData}
-                      setEmailSalaryData={setEmailSalaryData}
                       onChangeDBDataSearch={onChangeDBDataSearch}
                       setError={setError}
                       clearErrors={clearErrors}
                       checkDBErrorYN={checkDBErrorYN}
+                      setUseYN={setUseYN}
+                      useYN={useYN}
+                      tr_CD={tr_CD}
                     />
                   </ScrollWrapper>
                 </form>

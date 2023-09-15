@@ -263,12 +263,16 @@ function RealGrid({
         itemIndex,
         provider.getRowCount(),
         itemIndex === provider.getRowCount(),
-        grid.getCurrent()
+        grid.getCurrent(),
+        column.fieldName === 'CASH_CD',
+        grid.getValue(itemIndex, 'CASH_CD') !== undefined,
+        grid.getCurrent().dataRow === -1
       );
 
       if (
         column.fieldName === 'CASH_CD' &&
-        grid.getValue(itemIndex, 'CASH_CD') === undefined
+        grid.getValue(itemIndex, 'CASH_CD') !== undefined &&
+        grid.getCurrent().dataRow === -1
       ) {
         console.log('컬럼이다', column.fieldName, value);
         dupDataCheck(value)
@@ -283,6 +287,7 @@ function RealGrid({
               error.level = 'error';
               error.message = '이미 등록된 자금코드입니다';
               alert('이미 등록된 자금코드입니다');
+              console.log('컬럼중복');
               return;
             }
           })

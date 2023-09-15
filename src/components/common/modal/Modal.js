@@ -1,29 +1,42 @@
 import React from 'react';
 import { Title } from '../Index';
 
-const Modal = ({ width, height, children, isOpen, onClose, title }) => {
-  if (!isOpen) return null;
-
+const Modal = ({ width, height, children, onClickEvent, title, buttonYN }) => {
   const modalBox = {
-    position: 'absolute',
+    position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    zIndex: 1,
     width: width,
     height: height,
     backgroundColor: 'white',
+    zIndex: 10000,
+  };
+
+  const onClickEventFunction = () => {
+    onClickEvent();
   };
 
   return (
-    <div className="modalWrapper" onClick={onClose}>
-      <div style={modalBox} onClick={e => e.stopPropagation()}>
-        {' '}
-        {/* 이벤트 버블링 방지 */}
-        <Title titleName={title} />
-        {children}
+    <>
+      <div style={modalBox}>
+        <div className="topModalWrapper">
+          <Title titleName={title}>
+            <i class="fa-solid fa-xmark"></i>
+          </Title>
+          {children}
+        </div>
+        <div className="bottomModalWrapper">
+          {buttonYN && (
+            <>
+              <button className="WhiteButton">취소</button>
+              <button className="BlueButton">확인</button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+      <div className="modalWrapper" onClick={onClickEventFunction}></div>
+    </>
   );
 };
 

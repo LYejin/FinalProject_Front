@@ -34,7 +34,7 @@ const Sidebar2 = () => {
                   <Link class="nav-link" to="/FundTypeSetting">
                     자금과목설정
                   </Link>
-                  <Link class="nav-link" to="/FixedCapitalRegistration">
+                  <Link class="nav-link" to="/Department">
                     고정자금등록
                   </Link>
                 </nav>
@@ -67,6 +67,9 @@ const Sidebar2 = () => {
                 >
                   <Link class="nav-link" to="/GeneralVendorRegistration">
                     일반거래처등록
+                  </Link>
+                  <Link class="nav-link" to="/FixedCapitalRegistration">
+                    금융거래처등록
                   </Link>
                 </nav>
               </div>

@@ -171,6 +171,7 @@ const EmployeePage = () => {
       setCompany(response.data[0].co_CD);
       setWorkplaceSelect(response.data[0].div_CD);
     }
+    setChangeForm(false);
   };
 
   // 회사 리스트 얻는 axios
@@ -262,6 +263,7 @@ const EmployeePage = () => {
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    setInfoBoxEnrlData(0);
     setEmailPersonalData('');
     setEmailSalaryData('');
     setCompany(companyList[0].co_CD);
@@ -277,35 +279,44 @@ const EmployeePage = () => {
     setImage();
     setImgFile();
     console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
-    setInfoBoxEnrlData(0);
     setUsername('');
   };
 
   // 사원 remove 이벤트
   const onClickButtonRemoveEmp = async () => {
-    await authAxiosInstance.post('system/user/groupManage/employee/empRemove', {
-      kor_NM: data.kor_NM,
-      username: data.username,
-    });
-    setClickYN(true);
-    setChangeForm(false);
-    getEmpList();
-    setImage();
-    setImgFile();
-    setUsername(empList[0].username);
-    if (listRef.current) {
-      listRef.current.scrollTop = 0;
+    const { enrl_FG } = getValues();
+    console.log('Eeeeeeeeeee', enrl_FG);
+
+    if (enrl_FG === '2') {
+      alert('이미 삭제처리된 사원입니다.');
+    } else {
+      await authAxiosInstance.post(
+        'system/user/groupManage/employee/empRemove',
+        {
+          kor_NM: data.kor_NM,
+          username: data.username,
+        }
+      );
+      setClickYN(true);
+      setChangeForm(false);
+      getEmpList();
+      setImage();
+      setImgFile();
+      setUsername(empList[0].username);
+      if (listRef.current) {
+        listRef.current.scrollTop = 0;
+      }
+      alert('사원정보가 비활성화되었습니다.');
     }
-    alert('사원정보가 비활성화되었습니다.');
   };
 
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
+    let startTime = new Date().getTime();
+
     const getJoinDT = getNowJoinTime(openDate);
     const formData = new FormData();
 
-    console.log('kkkkkkkkkkkkk');
-    console.log(checkDBErrorYN);
     checkDBErrorYN.emp_CD_ERROR &&
       setError('emp_CD', { message: '사번이 중복되었습니다.' });
     checkDBErrorYN.username_ERROR &&
@@ -318,7 +329,11 @@ const EmployeePage = () => {
     }
 
     // 사원 update 중일 때 저장버튼 기능
-    if (clickYN && !insertButtonClick && onChangeForm) {
+    if (
+      clickYN &&
+      !insertButtonClick &&
+      Object.keys(changeFormData).length > 0
+    ) {
       console.log('update 버튼');
       console.log(changeFormData);
       if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
@@ -348,16 +363,22 @@ const EmployeePage = () => {
       setEmailPersonalData('');
       setEmailSalaryData('');
       alert('사원정보가 수정되었습니다.');
-    } else if (clickYN && !insertButtonClick && !onChangeForm) {
+    } else if (
+      clickYN &&
+      !insertButtonClick &&
+      Object.keys(changeFormData).length === 0
+    ) {
       alert('사원정보가 수정된 정보가 없습니다.');
     }
 
     // 사원 insert 중일 때 저장버튼 기능
-    if (!clickYN && insertButtonClick && errors == null) {
+    if (!clickYN && insertButtonClick && Object.keys(errors).length === 0) {
+      console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiii', infoBoxEnrlData);
       const userData = {
         emp_CD: data?.emp_CD,
         co_CD: company || null,
         div_CD: workplaceSelect || null,
+        dept_CD: 'CN1',
         username: data?.username,
         password: data?.password,
         kor_NM: data?.kor_NM,
@@ -365,7 +386,7 @@ const EmployeePage = () => {
         tel: data?.tel.replace(/-/g, ''),
         gender_FG: selectedRadioValue,
         join_DT: getJoinDT || null,
-        enrl_FG: infoBoxEnrlData || null,
+        enrl_FG: infoBoxEnrlData,
         personal_MAIL: data?.personal_MAIL,
         personal_MAIL_CP: data?.personal_MAIL_CP,
         salary_MAIL: data?.salary_MAIL,
@@ -418,9 +439,15 @@ const EmployeePage = () => {
       }
       console.log(listRef.current.scrollHeight);
       console.log(listRef.current.scrollTop);
-    } else {
+    } else if (
+      !clickYN &&
+      insertButtonClick &&
+      Object.keys(errors).length > 0
+    ) {
       alert('중복된 값이 존재합니다.');
     }
+    let endTime = new Date().getTime();
+    console.log('resulttttttttttttttt :', endTime - startTime);
   };
 
   // 에러 처리 이벤트
@@ -546,7 +573,7 @@ const EmployeePage = () => {
   };
 
   console.log('errors', errors);
-  console.log(changeFormData);
+  console.log('changeFormData : ', changeFormData);
   console.log(checkDBErrorYN);
   // console.log(data);
   // console.log(onChangeForm);
@@ -670,17 +697,18 @@ const EmployeePage = () => {
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
+        {isOpenPost ? (
+          <Modal
+            width={'560px'}
+            height={'600px'}
+            title={'우편번호'}
+            onClickEvent={onChangeOpenPost}
+            buttonYN="true"
+          >
+            <DaumPostcode autoClose onComplete={onCompletePost} />
+          </Modal>
+        ) : null}
       </CommonLayout>
-      {isOpenPost ? (
-        <Modal
-          width={'560px'}
-          height={'600px'}
-          title={'우편번호'}
-          onClickEvent={onChangeOpenPost}
-        >
-          <DaumPostcode autoClose onComplete={onCompletePost} />
-        </Modal>
-      ) : null}
     </>
   );
 };

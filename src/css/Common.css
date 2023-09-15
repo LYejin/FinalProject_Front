@@ -1,12 +1,33 @@
+/* modal */
 .modalWrapper {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vh;
+  z-index: 1;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.topModalWrapper {
+  width: 100%;
+  height: 88%;
+  padding: 20px;
+}
+
+.bottomModalWrapper {
+  width: 100%;
+  height: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+}
+
+/* 버튼 css */
 .WhiteButton {
   background: linear-gradient(#f9f9f9, #eaeaea);
   border: 1px solid lightgray;
@@ -25,6 +46,21 @@
 .WhiteButton:hover {
   border-color: #000000;
   box-shadow: none;
+}
+
+.BlueButton {
+  background: linear-gradient(#5bb3fd, #1f91fb);
+  border: 1px solid #41a4fc;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 50px;
+  height: 26px;
+  margin-bottom: 5px;
+  margin-right: 10px;
 }
 
 .amaranth-logo {

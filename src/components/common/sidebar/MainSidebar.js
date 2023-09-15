@@ -30,9 +30,6 @@ const MainSidebar = () => {
                 class="nav__toggle"
                 id="nav-toggle"
               ></ion-icon>
-              <a href="#" className="nav__logo">
-                Bedimcode
-              </a>
             </div>
             <div className="nav__list">
               <Link

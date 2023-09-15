@@ -9,6 +9,7 @@
 @import './css/Workplace.css';
 @import './css/Common.css';
 @import './css/MainSidebar.css';
+@import './css/RealGrid.css';
 
 :root {
   --bs-blue: #0d6efd;
