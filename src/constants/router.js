@@ -13,4 +13,5 @@ export const URL = {
   FixedCapitalRegistration: '/FixedCapitalRegistration',
   GeneralVendorRegistration: '/GeneralVendorRegistration',
   Department: '/Department',
+  FixedFund: '/FixedFund',
 };

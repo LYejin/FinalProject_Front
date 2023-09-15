@@ -12,6 +12,7 @@ import {
 } from '../pages/amaranth10/Index.js';
 import GtradePage from '../pages/amaranth10/GtradePage';
 import FtradePage from '../pages/amaranth10/FtradePage';
+import FixedFundPage from '../pages/amaranth10/FixedFundPage';
 
 import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
 
@@ -28,6 +29,7 @@ const Routers = () => {
       <Route path={URL.FixedCapitalRegistration} element={<FtradePage />} />
       <Route path={URL.GeneralVendorRegistration} element={<EmployeePage />} />
       <Route path={URL.Department} element={<DepartmentPage />} />
+      <Route path={URL.FixedFund} element={<FixedFundPage />} />
     </Routes>
   );
 };
