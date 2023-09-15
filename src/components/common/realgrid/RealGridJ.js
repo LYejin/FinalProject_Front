@@ -16,9 +16,9 @@ function RealGrid(Workpdata) {
     gridView.setDataSource(dataProvider);
     dataProvider.setFields(fields);
     gridView.setColumns(columns);
-    gridView.showProgress();
 
     if (Workpdata.Workpdata && Workpdata.Workpdata !== '') {
+      gridView.showProgress();
       const queryParams = new URLSearchParams();
       queryParams.append('DIV_CD', Workpdata.Workpdata);
       queryParams.append('DIV_NM', Workpdata.Workpdata);
@@ -36,6 +36,7 @@ function RealGrid(Workpdata) {
           console.error(error);
         });
     } else {
+      gridView.showProgress();
       authAxiosInstance
         .get('/system/user/WorkplaceManage/getList')
         .then(responseData => {

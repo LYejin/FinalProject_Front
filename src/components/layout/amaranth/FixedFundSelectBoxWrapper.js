@@ -83,7 +83,7 @@ const FixedFundSelectBoxWrapper = ({ children }) => {
           />
           <button onClick={handleSearchClick}>검색</button>
         </ModalBoxWrapper>
-        <RealGrid />
+        <RealGrid Workpdata={sendInfo} />
       </Modal>
     </div>
   );
