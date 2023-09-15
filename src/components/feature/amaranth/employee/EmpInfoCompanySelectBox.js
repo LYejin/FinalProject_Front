@@ -16,16 +16,32 @@ const EmpInfoCompanySelectBox = ({
   errors,
   errorName,
   setWorkplaceSelect,
+  setError,
+  getValues,
+  clearErrors,
 }) => {
-  const handleChange = event => {
-    setCompany(event.target.value);
+  const handleChange = e => {
+    setCompany(e.target.value);
     authAxiosInstance(
-      `system/user/groupManage/employee/getWorkplace?CO_CD=${event.target.value}`
+      `system/user/groupManage/employee/getWorkplace?CO_CD=${e.target.value}`
     ).then(response => {
       setWorkplaceList(response.data);
       setWorkplaceSelect(
         response.data[0]?.div_CD ? response.data[0]?.div_CD : 0
       );
+    });
+    let params = {};
+    const { emp_CD } = getValues();
+    console.log('eeeeeeeeeeeeeeeeeeee', emp_CD);
+    params.CO_CD = e.target.value;
+    params.EMP_CD = emp_CD;
+    authAxiosInstance(`system/user/groupManage/employee/getEmpCDInWorkplace`, {
+      params,
+    }).then(response => {
+      console.log(response.data);
+      response.data
+        ? setError('emp_CD', { message: '사번이 중복되었습니다.' })
+        : clearErrors();
     });
   };
 

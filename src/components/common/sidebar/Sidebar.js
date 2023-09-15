@@ -3,7 +3,7 @@ import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 
 const Sidebar = () => {
   return (
-    <div id="layoutSidenav">
+    <div>
       <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
           <div class="sb-sidenav-menu">
