@@ -65,8 +65,11 @@ const Sidebar2 = () => {
                   class="sb-sidenav-menu-nested nav accordion"
                   id="sidenavAccordionPages"
                 >
-                  <Link class="nav-link" to="/GeneralVendorRegistration">
+                  <Link class="nav-link" to="/CapitalSubjectSetting">
                     일반거래처등록
+                  </Link>
+                  <Link class="nav-link" to="/FixedCapitalRegistration">
+                    금융거래처등록
                   </Link>
                 </nav>
               </div>
