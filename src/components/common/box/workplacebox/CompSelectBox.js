@@ -3,13 +3,20 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const CompSelectBox = ({ title, data, width, onSelectChange }) => {
+const CompSelectBox = ({
+  title,
+  data,
+  height,
+  width,
+  onSelectChange,
+  selectMenu,
+}) => {
   const [selectedValue, setSelectedValue] = React.useState('');
 
   const handleChange = event => {
     const value = event.target.value;
     setSelectedValue(value);
-    onSelectChange(value); 
+    onSelectChange(value);
   };
 
   return (
@@ -22,28 +29,32 @@ const CompSelectBox = ({ title, data, width, onSelectChange }) => {
           onChange={handleChange}
           displayEmpty
           sx={{
-            height: '28px',
+            height: height,
             fontSize: '0.8rem',
-            width: ' 200px',
+            width: width,
+            backgroundColor: 'white',
           }}
           MenuProps={{
             PaperProps: {
               style: {
-                maxHeight: 250, // 원하는 최대 높이 값으로 변경
+                maxHeight: 250,
+                width: width,
               },
             },
           }}
         >
-          <MenuItem
-            value=""
-            style={{
-              fontSize: '0.8rem',
-              fontWeight: 'bold',
-              borderBottom: '1px solid #CCC',
-            }}
-          >
-            <em>전체</em>
-          </MenuItem>
+          {selectMenu != null && selectMenu !== '' && (
+            <MenuItem
+              value=""
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: 'bold',
+                borderBottom: '1px solid #CCC',
+              }}
+            >
+              <em>{selectMenu}</em>
+            </MenuItem>
+          )}
           {data.map(company => (
             <MenuItem
               key={company.value}

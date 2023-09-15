@@ -267,7 +267,7 @@ const EmployeePage = () => {
     setCompany(companyList[0].co_CD);
     setImgPriviewFile();
     setOpenDate(new Date());
-    setInsertButtonClick(true); 
+    setInsertButtonClick(true);
     setClickYN(false);
     setSelectedRadioValue('W');
     setAddress();

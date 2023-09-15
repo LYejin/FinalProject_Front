@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ButtonW, DetailTitle, SelectBox } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
+import clipImage from './clipBtn.png';
+import delImage from './deleteBtn.png';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 const WorkPlaceInfoWrapper = ({
   data,
@@ -17,6 +21,13 @@ const WorkPlaceInfoWrapper = ({
   onChangeOpenPost,
   address,
   addressDetail,
+  selectedImage,
+  isImageUploaded,
+  deleteImage,
+  showUploadDiv,
+  handleImageChange,
+  handleClick,
+  setShowUploadDiv,
 }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
   const [divCdError, setDivCdError] = useState(null);
@@ -41,26 +52,11 @@ const WorkPlaceInfoWrapper = ({
     onCompanyChange(event.target.value);
   };
 
-  //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const handleImageChange = e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        setSelectedImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
+  const handleMouseEnter = () => {
+    if (!selectedImage) {
+      setShowUploadDiv(true);
     }
   };
-
-  const handleClick = () => {
-    // 이미지 클릭 시 파일 선택 창 다시 열기
-    document.getElementById('imageInput').click();
-  };
-
-  //////////////////////////////////////////////      이미지넣기       ////////////////////////////////////////////////////////////////
 
   return (
     <div className="selectListWrapper">
@@ -70,19 +66,51 @@ const WorkPlaceInfoWrapper = ({
             <th className="headerCellStyle2">회사선택</th>
             <td className="cellStyle">
               {data.isAdding ? (
-                <select
+                <Select
                   className="selectListStyle"
                   id="companySelect"
                   value={selectedCompany}
                   onChange={handleCompanyChange}
+                  sx={{
+                    height: '28px',
+                    fontSize: '0.8rem',
+                    width: '250px',
+                    fontWeight: 'bold',
+                    borderBottom: '1px solid #CCC',
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 250,
+                        width: '250px',
+                      },
+                    },
+                  }}
                 >
-                  <option value="">선택하세요</option>
+                  <MenuItem
+                    value=""
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 'bold',
+                      borderBottom: '1px solid #CCC',
+                    }}
+                  >
+                    <em>전체</em>
+                  </MenuItem>
                   {companyData.map(company => (
-                    <option key={company.value} value={company.value}>
-                      {company.value}. {company.label}
-                    </option>
+                    <MenuItem
+                      key={company.value}
+                      value={company.value}
+                      style={{
+                        fontSize: '0.8rem',
+                        fontWeight: 'bold',
+                        borderBottom: '1px solid #CCC',
+                      }}
+                    >
+                      {company.value} | {company.label}
+                    </MenuItem>
                   ))}
-                </select>
+                </Select>
               ) : (
                 data.co_NM || ''
               )}
@@ -593,87 +621,48 @@ const WorkPlaceInfoWrapper = ({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+          <tr className="bodyRowStyle">
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV" onMouseEnter={handleMouseEnter}>
+                {selectedImage ? (
+                  <>
+                    <img
+                      src={selectedImage}
+                      alt="Selected"
+                      width="70"
+                      height="70"
+                    />
+                    {isImageUploaded ? (
+                      <div className="deleteButton" onClick={deleteImage}>
+                        <img src={delImage} alt="Delete" />
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  '70x70'
+                )}
+                {showUploadDiv && (
+                  <div className="uploadDiv" onClick={e => e.stopPropagation()}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="imageInput"
+                      style={{ display: 'none' }}
+                      onChange={handleImageChange}
+                    />
+                    <img src={clipImage} alt="Clip" onClick={handleClick} />
+                  </div>
+                )}
+              </div>
             </td>
-
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV">70x70</div>
             </td>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV">70x70</div>
             </td>
-            <td className="imageCellStyle_Workplace" onClick={handleClick}>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-              />
-              {selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Image"
-                    className="image"
-                  />
-                </div>
-              ) : (
-                <div className="placeholder">70x70</div>
-              )}
+            <td className="imageCellStyle_Workplace">
+              <div className="imageDIV2">210x70</div>
             </td>
           </tr>
         </tbody>

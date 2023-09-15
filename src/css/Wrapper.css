@@ -27,6 +27,30 @@
   font-weight: 600;
 }
 
+.deptSelectBoxWrapper {
+  min-width: 1200px;
+  height: 45px;
+  border: 2px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.modalBoxWrapper {
+  min-width: 200px;
+  height: 45px;
+  border: 2px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding-left: 90px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 /* SelectListWrapper.js */
 .listBoxHeader {
   border-top: 1px solid black;
@@ -40,10 +64,25 @@
   background-color: #fafafa;
 }
 
+.deptListBoxHeader {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
 .listBoxtitle {
   width: 60px;
   padding-left: 13px;
 }
+
+.deptListBoxtitle {
+  width: 70px;
+  padding-left: 13px;
+}
+
 
 .listBoxDataCount {
   color: blue;
@@ -56,6 +95,12 @@
   padding-right: 20px;
 }
 
+.deptListBoxSort {
+  width: 75%;
+  display: flex;
+  justify-content: end;
+}
+
 .listWrapper {
   padding: 15px 0;
   width: 100%;
@@ -65,6 +110,18 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  overflow-y: scroll;
+}
+
+.deptListWrapper {
+  padding: 15px 10px;
+  width: 100%;
+  min-height: 295px;
+  height: calc(100% - 50px);
+  border: 1px solid lightgray;
+  /* display: flex; */
+  /* align-items: center; */
+  /* flex-direction: column; */
   overflow-y: scroll;
 }
 
@@ -125,12 +182,28 @@
   float: left;
 }
 
+
+/* LeftContentWrapper.js */
+.leftContentWrapper {
+
+  float: left;
+}
+
 /* MainContentWrapper.js */
 .mainContentWrapper {
   display: flex;
   flex-direction: row;
   width: 100%;
   height: calc(100% - 50px);
+}
+
+/* MainContentWrapper.js */
+.deptContentWrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100% - 140px);
+
 }
 
 .selected {
@@ -144,4 +217,25 @@
   font-weight: 500;
   cursor: pointer;
   border-radius: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+/* 계층 구조 스타일 */
+li > ul {
+  margin-left: 20px;
+  border-left: 1px solid #ccc;
+  padding-left: 10px;
+}
+
+/* 마지막 계층의 아이템 스타일 */
+li > ul > li:last-child {
+  border-left: none;
 }

@@ -12,6 +12,13 @@ import CompanySelectListWrapper from './CompanySelectListWrapper';
 import CompanyBoxItem from './CompanyBoxItem';
 import WorkplaceListBoxItem from './WorkplaceListBoxItem';
 import WorkpSelectBoxWrapper from './WorkpSelectBoxWrapper';
+import DepartmentSelectBoxWrapper from './DepartmentSelectBoxWrapper';
+import DeptSearchWrapper from './DeptSearchWrapper';
+import LeftContentWrapper from './LeftContentWrapper';
+import DeptShowWrapper from './DeptShowWrapper';
+import FixedFundSelectBoxWrapper from './FixedFundSelectBoxWrapper';
+import ModalBoxWrapper from './ModalBoxWrapper';
+
 export {
   ContentWrapper,
   DetailContentWrapper,
@@ -27,4 +34,10 @@ export {
   CompanyBoxItem,
   WorkplaceListBoxItem,
   WorkpSelectBoxWrapper,
+  DepartmentSelectBoxWrapper,
+  DeptSearchWrapper,
+  LeftContentWrapper,
+  DeptShowWrapper,
+  FixedFundSelectBoxWrapper,
+  ModalBoxWrapper,
 };

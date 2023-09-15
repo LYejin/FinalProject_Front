@@ -12,4 +12,6 @@ export const URL = {
   FundTypeSetting: '/FundTypeSetting',
   FixedCapitalRegistration: '/FixedCapitalRegistration',
   GeneralVendorRegistration: '/GeneralVendorRegistration',
+  Department: '/Department',
+  FixedFund: '/FixedFund',
 };

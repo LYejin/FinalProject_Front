@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const UseSelectBox = ({ title, onChange,defaultUse }) => {
+const UseSelectBox = ({ title, onChange, defaultUse }) => {
   const handleChange = event => {
     const selectedValue = event.target.value;
     onChange(selectedValue);

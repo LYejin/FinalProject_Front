@@ -1,14 +1,13 @@
 import React from 'react';
 
-const SelectBoxWrapper = ({ children, width }) => {
+const ModalBoxWrapper = ({ children, width }) => {
   return (
     <div
-      className="selectBoxWrapper"
+      className="modalBoxWrapper"
       style={{
         display: 'flex',
         flexWrap: 'wrap',
         gap: '100px',
-        width: '300px',
       }}
     >
       {children}
@@ -16,4 +15,4 @@ const SelectBoxWrapper = ({ children, width }) => {
   );
 };
 
-export default SelectBoxWrapper;
+export default ModalBoxWrapper;
