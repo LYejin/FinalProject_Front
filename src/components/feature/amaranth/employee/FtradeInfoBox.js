@@ -1,73 +1,50 @@
 import React, { useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import EventButton from '../../../common/button/EventButton';
-import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
-import { ErrorMessage } from '@hookform/error-message';
-import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
-import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
-import EmpEmailSelectBox from './EmpEmailPersonalSelectBox';
-import EmpEmailPersonalSelectBox from './EmpEmailPersonalSelectBox';
-import EmpEmailSalarySelectBox from './EmpEmailSalarySelectBox';
 import { InputMask } from 'react-input-mask';
+import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
+import StradeRollManageRealGrid from './realgrid/StradeRollManage/StradeRollManageRealGrid';
+import { authAxiosInstance } from '../../../../axios/axiosInstance';
+import { useState } from 'react';
 
 const FtradeInfoBox = ({
   data,
   register,
   openDate,
   selectedValue,
-  handleRadioChange,
   onChangeOpenPost,
   address,
   addressDetail,
-  setImage,
-  imgFile,
-  companyList,
   errors,
   clickYN,
   onFocusError,
   errorName,
-  imgPriviewFile,
-  setImgPriviewFile,
   handleOpenDateChange,
-  setCompany,
-  company,
-  workplaceList,
-  setWorkplaceList,
-  workplaceSelect,
-  setWorkplaceSelect,
+  handleCloseDateChange,
+  closeDate,
   onChangeTel,
-  onChangeHomeTel,
-  infoBoxEnrlData,
-  setInfoBoxEnrlData,
-  setChangeFormData,
-  onChangePersonalMAIL,
-  onChangeSalaryMAIL,
-  setEmailPersonalData,
-  emailPersonalData,
-  emailSalaryData,
-  setEmailSalaryData,
   onChangeDBDataSearch,
   getValues,
   setError,
   clearErrors,
+  setChangeFormData,
   checkDBErrorYN,
+  useYN,
+  setUseYN,
+  tr_CD,
 }) => {
-  const imgRef = useRef();
+  const [ftradeGridData, setFtradeGridData] = useState({});
 
-  // // 프로필 이미지 미리보기 기능
-  const imgPreview = fileBlob => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
-    return new Promise(resolve => {
-      reader.onload = () => {
-        setImgPriviewFile(reader.result);
-        console.log('base64:', reader.result);
-        resolve();
-      };
-    });
-  };
-  console.log(errors);
+  // const params = {};
+  // params.TR_CD = tr_CD;
+
+  // const FtradeGridData = authAxiosInstance(
+  //   'accounting/user/Strade/stradeRollManageSearchList',
+  //   {
+  //     params,
+  //   }
+  // ).then(response => console.log(response.data));
+  //console.log('FtradeGridDataaaaaaaaaaaa : ', response.data);
 
   return (
     <div className="selectListWrapper">
@@ -80,10 +57,10 @@ const FtradeInfoBox = ({
               <input
                 type="text"
                 className="inputStyle"
-                name="tel"
-                {...register('tel')}
+                name="tr_CD"
+                {...register('tr_CD')}
                 onChange={onChangeTel}
-                defaultValue={data.tel}
+                defaultValue={data?.tr_CD}
               />
             </td>
             <th className="headerCellStyle">거래처명</th>
@@ -91,10 +68,10 @@ const FtradeInfoBox = ({
               <div className="errorWrapper">
                 <input
                   type="text"
-                  name="email_ADD"
+                  name="tr_NM"
                   className="reqInputStyle"
                   {...register(
-                    'email_ADD',
+                    'tr_NM',
                     !clickYN && {
                       required: 'ID를 입력해주세요.',
                       pattern: {
@@ -103,7 +80,7 @@ const FtradeInfoBox = ({
                       },
                     }
                   )}
-                  defaultValue={data.email_ADD}
+                  defaultValue={data?.tr_NM}
                   style={{
                     border:
                       errors.email_ADD &&
@@ -115,7 +92,7 @@ const FtradeInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {(checkDBErrorYN.email_ADD_ERROR ||
+                {/* {(checkDBErrorYN.email_ADD_ERROR ||
                   errorName === 'email_ADD') && (
                   <ErrorMessage
                     errors={errors}
@@ -123,7 +100,7 @@ const FtradeInfoBox = ({
                     as="p"
                     className="errorBox"
                   />
-                )}
+                )} */}
               </div>
             </td>
           </tr>
@@ -134,10 +111,10 @@ const FtradeInfoBox = ({
                 <input
                   type="text"
                   className="inputStyle"
-                  name="tel"
-                  {...register('tel')}
+                  name="ba_NB_TR"
+                  {...register('ba_NB_TR')}
                   onChange={onChangeTel}
-                  defaultValue={data.tel}
+                  defaultValue={data?.ba_NB_TR}
                 />
               </div>
             </td>
@@ -146,114 +123,47 @@ const FtradeInfoBox = ({
               <div className="errorWrapper">
                 <input
                   type="text"
-                  name="email_ADD"
+                  name="bank_CD"
                   className="reqInputStyle"
-                  {...register(
-                    'email_ADD',
-                    !clickYN && {
-                      required: 'ID를 입력해주세요.',
-                      pattern: {
-                        value: /\w+/,
-                        message: '한글을 포함할 수 없습니다.',
-                      },
-                    }
-                  )}
-                  defaultValue={data.email_ADD}
-                  style={{
-                    border:
-                      errors.email_ADD &&
-                      (checkDBErrorYN.email_ADD_ERROR ||
-                        errorName === 'email_ADD')
-                        ? '1px solid red'
-                        : '1px solid #ccc',
-                  }}
-                  onFocus={onFocusError}
+                  {...register('bank_CD')}
+                  defaultValue={data?.bank_CD}
                   onChange={onChangeDBDataSearch}
                 />
-                {(checkDBErrorYN.email_ADD_ERROR ||
-                  errorName === 'email_ADD') && (
-                  <ErrorMessage
-                    errors={errors}
-                    name="email_ADD"
-                    as="p"
-                    className="errorBox"
-                  />
-                )}
               </div>
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">예금주</th>
             <td className="cellStyle">
-              <div className="errorWrapper">
-                <input
-                  type="password"
-                  name="password"
-                  className="reqInputStyle"
-                  {...register(
-                    'password',
-                    !clickYN && {
-                      required: '비밀번호를 입력해주세요.',
-                    }
-                  )}
-                  style={{
-                    border:
-                      errors.password && errorName === 'password'
-                        ? '1px solid red'
-                        : '1px solid #ccc',
-                  }}
-                  onFocus={onFocusError}
-                />
-                {errorName === 'password' && (
-                  <ErrorMessage
-                    errors={errors}
-                    name="password"
-                    as="p"
-                    className="errorBox"
-                  />
-                )}
-              </div>
+              <input
+                type="text"
+                name="depositor"
+                className="reqInputStyle"
+                {...register('depositor')}
+                defaultValue={data?.depositor}
+              />
             </td>
-            <th className="headerCellStyle">예금종류</th>
+            <th className="headerCellStyle">예금명</th>
             <td className="cellStyle">
-              <input type="password" className="reqInputStyle" />
+              <input
+                type="text"
+                name="deposit_NM"
+                className="reqInputStyle"
+                {...register('deposit_NM')}
+                defaultValue={data?.deposit_NM}
+              />
             </td>
           </tr>
           <tr>
-            <th className="headerCellStyle">예금명</th>
-            <td className="cellStyle">
-              <div className="errorWrapper">
-                <input
-                  type="password"
-                  name="password"
-                  className="reqInputStyle"
-                  {...register(
-                    'password',
-                    !clickYN && {
-                      required: '비밀번호를 입력해주세요.',
-                    }
-                  )}
-                  style={{
-                    border:
-                      errors.password && errorName === 'password'
-                        ? '1px solid red'
-                        : '1px solid #ccc',
-                  }}
-                  onFocus={onFocusError}
-                />
-                {errorName === 'password' && (
-                  <ErrorMessage
-                    errors={errors}
-                    name="password"
-                    as="p"
-                    className="errorBox"
-                  />
-                )}
-              </div>
-            </td>
             <th className="headerCellStyle">계좌개설점</th>
             <td className="cellStyle">
-              <input type="password" className="reqInputStyle" />
+              <input
+                type="text"
+                name="account_OPEN_BN"
+                className="reqInputStyle"
+                {...register('account_OPEN_BN')}
+                defaultValue={data?.account_OPEN_BN}
+              />
             </td>
           </tr>
         </tbody>
@@ -266,21 +176,22 @@ const FtradeInfoBox = ({
       <table className="tableStyle">
         <tbody>
           <tr>
-            <th className="headerCellStyle">입사일</th>
+            <th className="headerCellStyle">계좌개설일</th>
             <td className="cellStyle">
               <DatePicker
                 selected={openDate}
-                name="join_DT"
+                name="fstart_DT"
                 onChange={handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerInputStyle"
               />
             </td>
-            <th className="headerCellStyle">퇴사일</th>
+            <th className="headerCellStyle">거래종료일</th>
             <td className="cellStyle">
               <DatePicker
-                //selected={closeDate}
-                //onChange={handleCloseDateChange}
+                name="fend_DT"
+                selected={closeDate}
+                onChange={handleCloseDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerInputStyle"
               />
@@ -289,11 +200,10 @@ const FtradeInfoBox = ({
           <tr>
             <th className="headerCellStyle">사용여부</th>
             <td className="cellStyle">
-              <EmpInfoEnrlSelectBox
+              <SelectBoxUSEYN
                 width={'calc(100% - 7px)'}
-                data={['재직', '휴직', '퇴직']}
-                infoBoxEnrlData={infoBoxEnrlData}
-                setInfoBoxEnrlData={setInfoBoxEnrlData}
+                state={useYN}
+                setState={setUseYN}
                 clickYN={clickYN}
                 register={register}
                 errors={errors}
@@ -304,11 +214,12 @@ const FtradeInfoBox = ({
           </tr>
 
           <br />
-
-          {/* 거래처 담당자 관리 */}
-          <div>금융거래처 조회권한</div>
         </tbody>
       </table>
+
+      {/* 거래처 담당자 관리 */}
+      <div>금융거래처 조회권한</div>
+      <StradeRollManageRealGrid tr_CD={tr_CD} />
     </div>
   );
 };
