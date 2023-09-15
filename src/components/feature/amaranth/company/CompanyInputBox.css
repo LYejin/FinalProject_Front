@@ -27,6 +27,7 @@
   border-bottom: 1px solid #ccc;
   vertical-align: middle;
   font-size: 13px;
+  height: 40px;
 }
 
 .radioStyle {
@@ -75,6 +76,12 @@
   border: 1px solid #ccc;
   text-align: center;
   vertical-align: middle;
+}
+.selCellStyle{
+  border-bottom: 1px solid #ccc;
+  vertical-align: middle;
+  font-size: 13px;
+  height: 40px;
 }
 
 .imageCellStyle {

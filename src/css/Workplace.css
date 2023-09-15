@@ -1,176 +1,97 @@
 /* styles.css */
 
 .selectListWrapper {
-    position: relative;
-    width: 100%;
-    border-radius: 8px;
-    background-color: #ffffff;
-  }
-  
-  .tableStyle {
-    width: 100%;
-    border-collapse: collapse;
-    border-top: 2px solid darkgray;
-  }
-  
-  .headerCellStyle {
-    background-color: #fafafa;
-    padding: 5px;
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    text-align: right;
-    vertical-align: middle;
-    font-size: 13px;
-    width: 180px;
-    height: 30px;
-    min-width: 150px;
-  }
+position: relative;
+width: 100%;
+border-radius: 8px;
+background-color: #ffffff;
+}
 
-  .headerCellStyle2 {
-    background-color: #fafafa;
-    padding: 5px;
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    text-align: right;
-    vertical-align: middle;
-    font-size: 13px;
-    width: 180px;
-    height: 42px;
-    min-width: 150px;
-  }
-  
-  .cellStyle {
-    padding: 7px;
-    border-bottom: 1px solid #ccc;
-    vertical-align: middle;
-    font-size: 13px;
-    min-width: 300px;
-  }
-  
-  .radioStyle {
-    margin-left: 10px;
-    color: blue;
-    vertical-align: middle;
-  }
-  
-  .inputStyle {
-    min-width: 150px;
-    width: 100%;
-    height: 26px;
-    border: 1px solid #ccc;
-    padding-left: 5px;
-  }
-  
-  .reqInputStyle {
-    width: 100%;
-    height: 26px;
-    border: 1px solid #ccc;
-    background: #fef4f4;
-    min-width: 150px;
-    padding-left: 5px;
-  }
-  
-  .postInputStyle {
-    border: 1px solid #ccc;
-    height: 26px;
-    background: #fef4f4;
-  }
+.tableStyle {
+width: 100%;
+border-collapse: collapse;
+border-top: 2px solid darkgray;
+}
 
-  .selectListStyle {
-    height: 26px;
-    width: 300px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 13px;
-    background-color: #fff;
-    color: #333;
-  }
-  .tableStyle2 {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ccc;
-  }
-  
-  .headerRowStyle {
-    background-color: #f0f0f0;
-    color: black;
-    font-size: 13px;
-    font-weight: bold;
-    vertical-align: middle;
-  }
-  
-  .cellStyle2 {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle;
-    width: 220px;
-  }
-  
-  .cellStyle3 {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  /* .imageCellStyle_Workplace {
-    padding: 10px;
-    border: 1px solid #ccc;
-    height: 120px;
-    text-align: center;
-    vertical-align :middle;
-  } */
-  .imageCellStyle_Workplace {
-    padding: 10px;
-    border: 1px solid #ccc;
-    height: 120px;
-    text-align: center;
-    vertical-align :middle;
-  }
-  .imageContainer {
-    padding: 10px;
-    border: 1px solid #ccc;
-    height: 120px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s; /* 배경색 변경에 대한 전환 효과 추가 */
-  }
-  
-  .imageContainer:hover {
-    background-color: #f0f0f0; /* 마우스를 올렸을 때 배경색 변경 */
-  }
-  
-  .image {
-    max-width: 70px; /* 이미지 크기를 70x70으로 고정 */
-    max-height: 70px;
-  }
-  
-  .placeholder {
-    width: 70px;
-    height: 70px;
-    border: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-  }
-  
-  
-  
+.headerCellStyle {
+background-color: #fafafa;
+padding: 5px;
+font-weight: bold;
+border-bottom: 1px solid #ccc;
+text-align: right;
+vertical-align: middle;
+font-size: 13px;
+width: 180px;
+height: 30px;
+min-width: 150px;
+}
 
-  .headTitleButton{
-    margin-left: auto;
-  }
-  
-  @media (max-width: 800px) {
-    .tableStyle {
-      width: 100%; /* 테이블 크기 유지 */
-      /* 기타 스타일 조정 */
-    }
+.headerCellStyle2 {
+background-color: #fafafa;
+padding: 5px;
+font-weight: bold;
+border-bottom: 1px solid #ccc;
+text-align: right;
+vertical-align: middle;
+font-size: 13px;
+width: 180px;
+height: 42px;
+min-width: 150px;
+}
+
+.cellStyle {
+padding: 7px;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;
+font-size: 13px;
+min-width: 300px;
+}
+
+.radioStyle {
+margin-left: 10px;
+color: blue;
+vertical-align: middle;
+}
+
+.inputStyle {
+min-width: 150px;
+width: 100%;
+height: 29px;
+border: 1px solid #ccc;
+padding-left: 5px;
+}
+
+.reqInputStyle {
+width: 100%;
+height: 29px;
+border: 1px solid #ccc;
+background: #fef4f4;
+min-width: 150px;
+padding-left: 5px;
+}
+
+.postInputStyle {
+border: 1px solid #ccc;
+height: 30px;
+background: #fef4f4;
+}
+
+.selectListStyle {
+height: 26px;
+width: 300px;
+padding: 5px;
+border: 1px solid #ccc;
+border-radius: 4px;
+font-size: 13px;
+background-color: #fff;
+color: #333;
+}
+
+.deptSelectListStyle{
+  height: 26px;
+  font-size: 13px;
+  background-color: #fff;
+  color: #333;
 }
 
 .customButton {
@@ -190,82 +111,290 @@
   box-shadow: none;
 }
 
+.headTitleButton{
+  margin-left: auto;
+}
+
+/* 이미지 테이블 */
+.tableStyle2 {
+width: 100%;
+border-collapse: collapse;
+border: 1px solid #ccc;
+}
+
+.headerRowStyle {
+background-color: #f0f0f0;
+color: black;
+font-size: 13px;
+font-weight: bold;
+vertical-align: middle;
+}
+
+.cellStyle2 {
+padding: 10px;
+text-align: center;
+vertical-align: middle;
+width: 260px;
+}
+
+.cellStyle3 {
+padding: 10px;
+text-align: center;
+vertical-align: middle;
+}
+
+.bodyRowStyle{
+color: black;
+font-size: 13px;
+font-weight: bold;
+vertical-align: middle;
+text-align: center;
+}
+
+.imageCellStyle_Workplace {
+padding: 10px;
+height: 120px;
+text-align: center;
+vertical-align: middle;
+display: table-cell;
+border: 1px solid #ccc;
+position: relative;
+}
+
+.imageDIV {
+width: 76px;
+height: 76px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 14px;
+justify-content: center; 
+position: absolute;
+display: flex;
+align-items: center;
+text-align: center;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+transition: background-color 0.3s;
+background-color: transparent;
+}
+.imageDIV:hover  {
+  background-color: lightgray;
+}
+
+.imageDIV2 {
+width: 210px;
+height: 71px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 14px;
+justify-content: center; 
+position: absolute;
+display: flex;
+align-items: center;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+/* .imageDIV {
+  width: 73px;
+  height: 73px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  justify-content: center; 
+  position: relative; 
+  display: flex;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.8s;
+} */
+
+.uploadDiv {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: #f1f1f1;
+  border: 0.5px solid #ccc;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+  transition: border-color 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.imageDIV:hover .uploadDiv {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.uploadDiv:hover {
+  border-color: black;
+  box-shadow: none;
+}
+
+.hovered .uploadDiv {
+  display: block;
+}
+
+.uploadDiv2 {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: #f1f1f1;
+  border: 0.5px solid #ccc;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+  transition: border-color 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  margin-right: 20px;
+}
+
+.imageDIV:hover .uploadDiv2 {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.uploadDiv2:hover {
+  border-color: black;
+  box-shadow: none;
+}
+
+.hovered .uploadDiv2 {
+  display: block;
+}
+
+.deleteButton {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background-color: #f1f1f1;
+  border: 0.5px solid #ccc;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+  transition: border-color 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  margin-left: 0px;
+}
+
+.imageDIV:hover .deleteButton {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.deleteButton:hover {
+  border-color: black;
+  box-shadow: none;
+}
+
+.hovered .deleteButton {
+  display: block;
+}
+
+.deptSelectStyle {
+  height: 28px; 
+  width: 150px; 
+  border: 1px solid #ccc; 
+  padding: 4px; 
+  &:focus {
+    border-color: #00a0e4;
+  }
+}
+
 /* .errorWrapper {
-  position: relative;
-  width: 100%;
-  display: inline-block;
+position: relative;
+width: 100%;
+display: inline-block;
 } */
 
 /* .errorBox {
-  min-width: 150px;
-  background-color: #ffdede;
-  color: #ffffff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 5px;
-  position: absolute;
-  color: black;
-  font-weight: 600;
-  z-index: 1;
-  top: -50%;
-  left: 50%;
-  margin-left: -60px;
+min-width: 150px;
+background-color: #ffdede;
+color: #ffffff;
+text-align: center;
+border-radius: 6px;
+padding: 5px 5px;
+position: absolute;
+color: black;
+font-weight: 600;
+z-index: 1;
+top: -50%;
+left: 50%;
+margin-left: -60px;
 }
 
 .errorBox::after {
-  content: '';
-  position: absolute;
-  bottom: -40%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #ffdede transparent transparent transparent;
+content: '';
+position: absolute;
+bottom: -40%;
+left: 50%;
+margin-left: -5px;
+border-width: 5px;
+border-style: solid;
+border-color: #ffdede transparent transparent transparent;
 } */
 
 /* .errorWrapper {
-  position: relative;
-  width: 100%;
-  display: inline-block;
+position: relative;
+width: 100%;
+display: inline-block;
 }
 
 .errorBox {
-  min-width: 150px;
-  background-color: #ffdede;
-  color: black;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  font-weight: 600;
-  z-index: 1;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s, opacity 0.2s ease;
+min-width: 150px;
+background-color: #ffdede;
+color: black;
+text-align: center;
+border-radius: 6px;
+padding: 5px;
+position: absolute;
+font-weight: 600;
+z-index: 1;
+top: -30px;
+left: 50%;
+transform: translateX(-50%);
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+visibility: hidden;
+opacity: 0;
+transition: visibility 0s, opacity 0.2s ease;
 }
 
 .errorBox::after {
-  content: '';
-  position: absolute;
-  bottom: -15px;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #ffdede transparent transparent transparent;
+content: '';
+position: absolute;
+bottom: -15px;
+left: 50%;
+margin-left: -5px;
+border-width: 5px;
+border-style: solid;
+border-color: #ffdede transparent transparent transparent;
 }
 
 .errorWrapper:hover .errorBox {
-  visibility: visible;
-  opacity: 1;
+visibility: visible;
+opacity: 1;
 }
 
 .inputWrapper {
-  position: relative;
-  display: inline-block;
+position: relative;
+display: inline-block;
 } */
 
