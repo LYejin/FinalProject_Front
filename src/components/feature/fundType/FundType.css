@@ -1,0 +1,91 @@
+.fundTypeSetting {
+  height: 500px;
+  width: 100%;
+  text-align: center; /* 수평 가운데 정렬 */
+  line-height: 2; /* 수직 가운데 정렬 */
+}
+
+.fundTypeSerrchSetting {
+  height: 500px;
+  width: 100%;
+  text-align: center; /* 수평 가운데 정렬 */
+  line-height: 2; /* 수직 가운데 정렬 */
+}
+
+.custom_none {
+  display: none;
+}
+
+.custom_render_span {
+  flex: 1;
+  text-align: right;
+  overflow: hidden;
+}
+
+.custom_renderer > div {
+  float: right;
+  display: flex;
+  align-items: center;
+}
+
+.custom_renderer .rg-renderer:hover .custom-hover {
+  visibility: visible;
+}
+
+.custom_renderer .rg-renderer .custom-focused {
+  visibility: visible;
+}
+
+/*FundType 모달창 css*/
+.modalWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalWrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.topModalWrapper {
+  width: 100%;
+  height: 88%;
+  padding: 20px;
+}
+
+.bottomModalWrapper {
+  width: 100%;
+  height: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+}
+
+.BlueButton {
+  background: linear-gradient(#5bb3fd, #1f91fb);
+  border: 1px solid #41a4fc;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 50px;
+  height: 26px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+}
