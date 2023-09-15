@@ -61,7 +61,7 @@ authAxiosInstance.interceptors.request.use(
   async config => {
     const req_url = config.url;
     config.headers['Authorization'] = getAccessToken();
-    if (req_url.includes('system')) {
+    if (req_url.includes('system') || req_url.includes('accounting')) {
       await authAxiosInstance('/login').catch(error => {
         if (
           error.response.status === 403 &&
