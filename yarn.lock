@@ -8450,6 +8450,11 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
+realgrid@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/realgrid/-/realgrid-2.7.0.tgz#47927b5861bcd7b133d92051e3c8827517e7aad0"
+  integrity sha512-KAzmRBmEqg++svul4eS1i/etpkLzFYGQ5ky5jz9xd9OMr+jAohao65Kc9mTHwFsxWNoZjbxDTKc5Cgrkz+Vzdg==
+
 rechoir@^0.8.0:
   version "0.8.0"
   resolved "https://registry.npmjs.org/rechoir/-/rechoir-0.8.0.tgz"

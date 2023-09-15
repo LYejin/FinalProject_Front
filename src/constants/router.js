@@ -9,7 +9,7 @@ export const URL = {
   workplace: '/Workplace',
   FinancialManager: '/FinancialManager',
   SystemConfigurer: '/SystemConfigurer',
-  CapitalSubjectSetting: '/CapitalSubjectSetting',
+  FundTypeSetting: '/FundTypeSetting',
   FixedCapitalRegistration: '/FixedCapitalRegistration',
   GeneralVendorRegistration: '/GeneralVendorRegistration',
 };

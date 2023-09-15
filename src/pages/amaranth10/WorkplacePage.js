@@ -352,8 +352,8 @@ const WorkplacePage = () => {
       console.log(workplaceDetailData.div_CD);
       let DIV_CD = workplaceDetailData.div_CD;
       const response = await axios.put(
-        `system/user/WorkplaceManage/delete`,
-        { DIV_CD },
+        `system/user/WorkplaceManage/delete/` + DIV_CD,
+        '',
         { headers: { Authorization: getAccessToken() } }
       );
       if (response.status === 200) {
