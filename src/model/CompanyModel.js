@@ -34,10 +34,10 @@ const CompanyModel = () => {
     ho_ZIP: '',
     jongmok: '',
     open_DT: '',
-    pic_FILE_ID: '',
     ppl_NB: '',
     reg_NB: '',
     use_YN: '1',
+    pic_FILE_ID: '',
   });
 
   const asyncRequest = async (url, methodType, data, headers) => {
