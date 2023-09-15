@@ -192,7 +192,7 @@ const WorkplacePage = () => {
 
       try {
         const response = await axios.get(
-          `/system/user/WorkplaceManage/getList?${queryParams.toString()}`,
+          `/system/user/WorkplaceManage/getList${queryParams.toString()}`,
           { headers: { Authorization: getAccessToken() } }
         );
         console.log(queryParams.toString());

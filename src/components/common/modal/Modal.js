@@ -1,7 +1,9 @@
 import React from 'react';
 import { Title } from '../Index';
 
-const Modal = ({ width, height, children, onClickEvent, title }) => {
+const Modal = ({ width, height, children, isOpen, onClose, title }) => {
+  if (!isOpen) return null;
+
   const modalBox = {
     position: 'absolute',
     top: '50%',
@@ -13,13 +15,11 @@ const Modal = ({ width, height, children, onClickEvent, title }) => {
     backgroundColor: 'white',
   };
 
-  const onClickEventFunction = () => {
-    onClickEvent();
-  };
-
   return (
-    <div className="modalWrapper" onClick={onClickEventFunction}>
-      <div style={modalBox}>
+    <div className="modalWrapper" onClick={onClose}>
+      <div style={modalBox} onClick={e => e.stopPropagation()}>
+        {' '}
+        {/* 이벤트 버블링 방지 */}
         <Title titleName={title} />
         {children}
       </div>

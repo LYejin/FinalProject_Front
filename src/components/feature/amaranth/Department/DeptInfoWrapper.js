@@ -22,6 +22,17 @@ const DeptInfoWrapper = ({
   register,
 }) => {
   console.log('데이터', data);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedDeptCT, setSelectedDeptCT] = useState('');
+
+  // data가 변경될 때마다 선택된 값을 업데이트
+  useEffect(() => {
+    if (data && (data.call_YN === '1' || data.call_YN === '0')) {
+      setSelectedValue(data.call_YN);
+    } else {
+      setSelectedValue(''); // 기본값으로 설정
+    }
+  }, [data]);
 
   return (
     <div className="selectListWrapper">
@@ -56,11 +67,14 @@ const DeptInfoWrapper = ({
             <td colSpan="3" className="cellStyle">
               <select
                 className="deptSelectStyle"
-                defaultValue={data.call_YN}
-                {...register('call_YN')}
+                value={selectedValue}
+                onChange={e => setSelectedValue(e.target.value)}
               >
-                <option value={1}>사용</option>
-                <option value={0}>미사용</option>
+                <option value="" disabled hidden>
+                  선택하세요
+                </option>
+                <option value="1">사용</option>
+                <option value="0">미사용</option>
               </select>
             </td>
           </tr>
@@ -101,13 +115,17 @@ const DeptInfoWrapper = ({
             <th className="headerCellStyle">부서유형</th>
             <td colSpan="3" className="cellStyle">
               <select
-                className="deptSelectStyle "
-                defaultValue={data.dept_CT}
+                className="deptSelectStyle"
+                value={selectedDeptCT}
+                onChange={e => setSelectedDeptCT(e.target.value)}
                 {...register('dept_CT')}
               >
-                <option value={2}>부서</option>
-                <option value={1}>팀</option>
-                <option value={0}>임시</option>
+                <option value="" disabled hidden>
+                  선택하세요
+                </option>
+                <option value="2">부서</option>
+                <option value="1">팀</option>
+                <option value="0">임시</option>
               </select>
             </td>
           </tr>
