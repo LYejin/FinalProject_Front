@@ -274,7 +274,7 @@ function RealGrid({
         grid.getValue(itemIndex, 'CASH_CD') !== undefined &&
         grid.getCurrent().dataRow === -1
       ) {
-        console.log('컬럼이다', column.fieldName, value);
+        console.log('컬럼이다 ', column.fieldName, value);
         dupDataCheck(value)
           .then(dupValue => {
             if (dupValue !== '') {
