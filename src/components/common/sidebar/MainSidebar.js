@@ -46,7 +46,7 @@ const MainSidebar = () => {
                 <span className="nav_name">시스템 설정</span>
               </Link>
               <Link
-                to="/CapitalSubjectSetting"
+                to="/FundTypeSetting"
                 className={
                   clickMenu === 'financial' ? 'nav__link active' : 'nav__link'
                 }

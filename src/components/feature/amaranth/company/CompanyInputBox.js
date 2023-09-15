@@ -105,15 +105,16 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   React.useEffect(() => {
     if (formData) {
       console.log('마운틴', formData);
+
       setSelectedImage(formData.pic_FILE_ID);
 
+      setChFormData();
+      console.log('!!!!!!!!!!!!!', ch_formData);
       setChFormData(prevChFormData => ({
         ...prevChFormData,
         CO_CD: formData.co_CD,
-        CEO_TEL: formData.ceo_TEL,
-        PPL_NB: formData.ppl_NB,
-        CO_NB: formData.co_NB,
       }));
+      console.log('??????????', ch_formData);
 
       for (const key in formData) {
         const uppercaseKey = key.toUpperCase();
@@ -126,7 +127,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       }
       console.log('qudrud', up_FormData);
       console.log('에러', dupError);
-      console.log('!!!!!!!!!!!!!', ch_formData);
+
       setSelectedDate(getValues()); //
 
       clearErrors();
@@ -289,9 +290,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     }
 
     setValue(labels.HO_ZIP, data.zonecode);
-    console.log(data.zonecode);
     setValue(labels.HO_ADDR, fullAddr);
-    console.log(fullAddr);
+    onChangeInput({ target: { name: labels.HO_ZIP, value: data.zonecode } });
+    onChangeInput({ target: { name: labels.HO_ADDR, value: fullAddr } });
     setIsOpenPost(false);
   };
   const onChangeOpenPost = () => {
@@ -301,11 +302,12 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
   const handleImageChange = async e => {
     console.log('이미지!!!!!!!!!!!!');
-    setSelectedImage('');
+    setSelectedImage();
 
     const imageFile = await blobToByteArray(e.target.files[0]);
     if (imageFile) {
       setSelectedImage(imageFile); // 선택한 이미지 파일의 URL로 업데이트
+      onChangeInput({ target: { name: labels.PIC_FILE_ID, value: imageFile } });
     }
   };
 
@@ -381,7 +383,6 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
     const parts = fieldName.split('_'); // "_"를 기준으로 문자열을 나눕니다.
     const transformedString = parts[0].toLowerCase() + '_' + parts[1]; // 첫 번째 부분은 소문자로 변환하고, 두 번째 부분은 소문자로 변환한 후 다시 "_"와 합칩니다.
-
     console.log(transformedString); // "co_CD"
     console.log('타냐?', Object.keys(errors).length);
     console.log('라벨', getValues(e.target.name), 'dup', dup[e.target.name]);
@@ -432,7 +433,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         console.log('★★★★★', errors[e.target.name]);
         setError(
           'DUP_PPL_NB',
-          { message: regexPatterns[e.target.name][1] } // 에러 메세지
+          { message: regexPatterns[e.target.name][1] },
+          { shouldFocus: true }
         );
         return;
       } else {
@@ -479,7 +481,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       hyphenation(dup[e.target.name], e.target.name);
     }
 
-    if (ch_formData.CO_CD !== '') {
+    if (ch_formData.CO_CD !== '' && dup.PIC_FILE_ID !== formData.pic_FILE_ID) {
       setChFormData(prevChFormData => ({
         ...prevChFormData,
         [fieldName]: fieldValue,
@@ -548,10 +550,6 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     if (ch_formData.CO_CD !== '' && isValid && hasValue(dupError)) {
       const c_formData = new FormData();
 
-      if (ch_formData.PIC_FILE_ID !== '') {
-        ch_formData.PIC_FILE_ID = selectedImage;
-      }
-
       for (const key in ch_formData) {
         if (transformColme.includes(key)) {
           ch_formData[key] = ch_formData[key].replace(/-/g, ''); // 하이픈 제거
@@ -574,7 +572,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       } catch (error) {
         console.log(error);
       }
-      console.log(ch_formData);
+      console.log('변경!!!!!!!!!!!?', ch_formData);
     } else {
       for (const key in dupError) {
         if (dupError[key]) {
@@ -587,7 +585,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
   const removeBtnClick = async () => {
     const CO_CD = formData.co_CD;
-    if (formData.USE_YN !== '0') {
+    console.log('삭제', formData.use_YN);
+    if (formData.use_YN !== '0') {
       try {
         const response = await authAxiosInstance.put(
           'system/admin/groupManage/CompanyRemove/' + CO_CD,

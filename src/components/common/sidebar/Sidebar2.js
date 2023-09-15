@@ -31,7 +31,7 @@ const Sidebar2 = () => {
                 data-bs-parent="#sidenavAccordion"
               >
                 <nav class="sb-sidenav-menu-nested nav">
-                  <Link class="nav-link" to="/CapitalSubjectSetting">
+                  <Link class="nav-link" to="/FundTypeSetting">
                     자금과목설정
                   </Link>
                   <Link class="nav-link" to="/FixedCapitalRegistration">

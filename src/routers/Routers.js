@@ -15,6 +15,7 @@ import FtradePage from '../pages/amaranth10/FtradePage';
 import FixedFundPage from '../pages/amaranth10/FixedFundPage';
 
 import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
+import FundTypePage from '../pages/amaranth10/FundTypePage';
 
 const Routers = () => {
   return (
@@ -25,7 +26,7 @@ const Routers = () => {
       <Route path={URL.company} element={<CompanyPage />} />
       <Route path={URL.employee} element={<EmployeePage />} />
       <Route path={URL.workplace} element={<WorkplacePage />} />
-      <Route path={URL.CapitalSubjectSetting} element={<GtradePage />} />
+      <Route path={URL.FundTypeSetting} element={<FundTypePage />} />
       <Route path={URL.FixedCapitalRegistration} element={<FtradePage />} />
       <Route path={URL.GeneralVendorRegistration} element={<EmployeePage />} />
       <Route path={URL.Department} element={<DepartmentPage />} />
