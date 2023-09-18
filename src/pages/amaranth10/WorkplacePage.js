@@ -474,7 +474,7 @@ const WorkplacePage = () => {
               onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
             />
             <WorkpTextFieldBox
-              width={'100px'}
+              width={'300px'}
               title={'사업장'}
               onInputChange={inputValue => setSearchDivInfo(inputValue)}
             />
@@ -489,7 +489,7 @@ const WorkplacePage = () => {
               }
               className="customButton"
             >
-              검색
+              <i className="fa-solid fa-magnifying-glass"></i>
             </button>
           </WorkpSelectBoxWrapper>
           <MainContentWrapper>

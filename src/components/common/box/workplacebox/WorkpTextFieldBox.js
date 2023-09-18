@@ -11,7 +11,7 @@ const WorkpTextFieldBox = ({ width, title, onInputChange }) => {
     paddingLeft: '10px',
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     setInputValue(event.target.value);
     if (onInputChange) {
       onInputChange(event.target.value);
@@ -19,7 +19,7 @@ const WorkpTextFieldBox = ({ width, title, onInputChange }) => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ alignItems: 'center', width: width }}>
       <span style={{ marginRight: '8px' }}>{title}</span>
       <input
         style={TextFieldBoxWrapper}
