@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { InputMask } from 'react-input-mask';
 import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
-import StradeRollManageRealGrid from './realgrid/StradeRollManage/StradeRollManageRealGrid';
+import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGrid';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import { useState } from 'react';
 
@@ -212,8 +212,6 @@ const FtradeInfoBox = ({
               />
             </td>
           </tr>
-
-          <br />
         </tbody>
       </table>
 
