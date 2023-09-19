@@ -97,7 +97,7 @@ authAxiosInstance.interceptors.response.use(
 //////////////////////////////////////////////////////////
 
 //요청 인터셉터
-imageAxiosInstance.interceptors.requestuse(async config => {
+imageAxiosInstance.interceptors.request.use(async config => {
   config.headers['Authorization'] = getAccessToken();
   return config;
 });
