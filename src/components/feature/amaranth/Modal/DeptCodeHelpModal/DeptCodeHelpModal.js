@@ -1,15 +1,18 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GridView, LocalDataProvider } from 'realgrid';
-import { columns, fields, fundTypeLayout } from './EmpCodeHelpRealGridData';
+import {
+  columns,
+  fields,
+  fundTypeLayout,
+} from '../DeptCodeHelpModal/DeptCodeHelpRealGridData';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import Modal from '../../../../common/modal/Modal';
 
-const EmpCodeHelpModal = ({
+const DeptCodeHelpModal = ({
   onChangeModalClose,
+  setDeptMenuButton,
   tr_CD,
-  setEmpMenuButton,
-  setEmpCodeHelpData,
   gridViewStrade,
   cellClickData,
 }) => {
@@ -35,7 +38,7 @@ const EmpCodeHelpModal = ({
     const params = {};
     params.TR_CD = tr_CD;
 
-    authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
+    authAxiosInstance('accounting/user/Strade/deptCodeHelpList', {
       params,
     }).then(response => {
       dataProvider.setRows(response?.data);
@@ -44,10 +47,17 @@ const EmpCodeHelpModal = ({
     //
     gridView.onCellDblClicked = function (grid, index) {
       var current = gridView.getCurrent();
+      console.log(current);
+      console.log('jjjjjjjjjjjjjjjjjjjjjj');
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
+      console.log('jsonData: ' + jsonData.kor_NM);
+      const row = { dept_CD: jsonData.dept_CD, dept_NM: jsonData.dept_NM };
       gridViewStrade.setValues(cellClickData, row, false);
-      setEmpMenuButton(false);
+      //gridViewStrade.setValue(cellClickData, 'emp_CD', jsonData.emp_CD);
+      //gridViewStrade.setValue(cellClickData, 'kor_NM', jsonData.kor_NM);
+      //gridViewStrade.setValue(1, 'kor_NM', '수고');
+      console.log('iijijljlkj', jsonData);
+      setDeptMenuButton(false);
     };
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
@@ -69,10 +79,8 @@ const EmpCodeHelpModal = ({
     gridView.setFooter({ visible: false });
 
     //입력 비활성화
-    gridView.columnByName('emp_CD').editable = false;
-    gridView.columnByName('kor_NM').editable = false;
+    gridView.columnByName('dept_CD').editable = false;
     gridView.columnByName('dept_NM').editable = false;
-    gridView.columnByName('div_NM').editable = false;
 
     //컬럼 너비 자동 조절 설정
     gridView.setDisplayOptions({ fitStyle: 'evenFill' });
@@ -102,13 +110,13 @@ const EmpCodeHelpModal = ({
       gridView.destroy();
       dataProvider.destroy(); // useEffect는 한 번만 실행되도록 빈 배열을 의존성으로 설정합니다.
     };
-  }, [tr_CD]);
+  }, []);
 
   return (
     <Modal
       width={'560px'}
       height={'600px'}
-      title={'사원코드도움'}
+      title={'부서코드도움'}
       onClickEvent={onChangeModalClose}
     >
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
@@ -116,4 +124,4 @@ const EmpCodeHelpModal = ({
   );
 };
 
-export default EmpCodeHelpModal;
+export default DeptCodeHelpModal;

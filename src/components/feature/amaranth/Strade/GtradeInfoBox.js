@@ -2,16 +2,16 @@ import React, { useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import EventButton from '../../../common/button/EventButton';
-import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
+import EmpInfoCompanySelectBox from '../employee/EmpInfoCompanySelectBox';
 import { ErrorMessage } from '@hookform/error-message';
-import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
-import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
-import EmpEmailSelectBox from './EmpEmailPersonalSelectBox';
-import EmpEmailPersonalSelectBox from './EmpEmailPersonalSelectBox';
-import EmpEmailSalarySelectBox from './EmpEmailSalarySelectBox';
+import EmpInfoWorkplaceSelectBox from '../employee/EmpInfoWorkplaceSelectBox';
+import EmpInfoEnrlSelectBox from '../employee/EmpInfoEnrlSelectBox';
+import EmpEmailSelectBox from '../employee/EmpEmailPersonalSelectBox';
+import EmpEmailPersonalSelectBox from '../employee/EmpEmailPersonalSelectBox';
+import EmpEmailSalarySelectBox from '../employee/EmpEmailSalarySelectBox';
 import { InputMask } from 'react-input-mask';
 import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
-import StradeRollManageRealGrid from './realgrid/StradeRollManage/StradeRollManageRealGrid';
+import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGrid';
 
 const GtradeInfoBox = ({
   data,

@@ -29,9 +29,9 @@ import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpChe
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
-import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
+import GtradeInfoBox from '../../components/feature/amaranth/Strade/GtradeInfoBox';
 import SelectListWrapperCommon from '../../components/layout/amaranth/SelectListWrapperCommon';
-import GtradeListBoxItem from '../../components/feature/amaranth/employee/GtradeListBoxItem';
+import GtradeListBoxItem from '../../components/feature/amaranth/Strade/GtradeListBoxItem';
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 
 const GtradePage = () => {

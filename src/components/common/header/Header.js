@@ -3,8 +3,8 @@ import React from 'react';
 const Header = () => {
   return (
     <>
-      <nav class="sb-topnav navbar navbar-expand navbar-dark bg-white">
-        <a class="navbar-brand ps-3" href="index.html">
+      <nav className="sb-topnav navbar navbar-expand navbar-dark bg-white">
+        <a className="navbar-brand ps-3" href="index.html">
           <img
             src={`${process.env.PUBLIC_URL}/image/amaranth10Logo.png`}
             className="amaranth-logo"
@@ -12,57 +12,61 @@ const Header = () => {
           />
         </a>
         <button
-          class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
+          className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
           id="sidebarToggle"
           href="#!"
         >
-          <i class="fas fa-bars"></i>
+          <i className="fas fa-bars"></i>
         </button>
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-          <div class="input-group">
+        <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+          <div className="input-group">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               placeholder="Search for..."
               aria-label="Search for..."
               aria-describedby="btnNavbarSearch"
             />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button">
-              <i class="fas fa-search"></i>
+            <button
+              className="btn btn-primary"
+              id="btnNavbarSearch"
+              type="button"
+            >
+              <i className="fas fa-search"></i>
             </button>
           </div>
         </form>
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-          <li class="nav-item dropdown">
+        <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+          <li className="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              className="nav-link dropdown-toggle"
               id="navbarDropdown"
               href="#"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="fas fa-user fa-fw"></i>
+              <i className="fas fa-user fa-fw"></i>
             </a>
             <ul
-              class="dropdown-menu dropdown-menu-end"
+              className="dropdown-menu dropdown-menu-end"
               aria-labelledby="navbarDropdown"
             >
               <li>
-                <a class="dropdown-item" href="#!">
+                <a className="dropdown-item" href="#!">
                   Settings
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#!">
+                <a className="dropdown-item" href="#!">
                   Activity Log
                 </a>
               </li>
               <li>
-                <hr class="dropdown-divider" />
+                <hr className="dropdown-divider" />
               </li>
               <li>
-                <a class="dropdown-item" href="#!">
+                <a className="dropdown-item" href="#!">
                   Logout
                 </a>
               </li>
