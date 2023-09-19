@@ -1,21 +1,47 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { GridView, LocalDataProvider } from 'realgrid';
-import { columns, fields, fundTypeLayout } from './EmpCodeHelpRealGridData';
+import { columns, fields, fundTypeLayout } from './StradeCodeHelpRealGridData';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import Modal from '../../../../common/modal/Modal';
+import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
+import EventButton from '../../../../common/button/EventButton';
+import StradeCodeHelpUseYNSelectBox from './StradeCodeHelpUseYNSelectBox';
 
-const EmpCodeHelpModal = ({
+const StradeCodeHelpModal = ({
   onChangeModalClose,
-  tr_CD,
-  setEmpMenuButton,
-  setEmpCodeHelpData,
   gridViewStrade,
   cellClickData,
+  tr_FG,
 }) => {
+  const { register, getValues } = useForm({
+    mode: 'onChange',
+  });
   const [dataProviderState, setDataProviderState] = useState(null);
   const [gridViewState, setGridViewState] = useState(null);
+  const [useYNSelectData, setUseYNSelectData] = useState(1);
   const realgridElement = useRef(null);
+
+  const onClickSearchEmpList = () => {
+    const { selectValue } = getValues();
+    const params = {};
+    params.USE_YN = useYNSelectData;
+
+    if (selectValue !== '') {
+      params.VALUE = selectValue;
+    }
+
+    if (tr_FG !== '') {
+      params.TR_FG = tr_FG;
+    }
+
+    authAxiosInstance('accounting/user/Strade/stradeCodeHelpList', {
+      params,
+    }).then(response => {
+      dataProviderState.setRows(response.data);
+    });
+  };
 
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
@@ -28,14 +54,18 @@ const EmpCodeHelpModal = ({
     // 그리드에 데이터 소스를 설정합니다.
     gridView.setDataSource(dataProvider);
 
+    // 처음 List 요청 시 거래처 구분에 따라 요청
+    const params = {};
+
+    if (tr_FG !== '') {
+      params.TR_FG = tr_FG;
+    }
+
     // 필드 및 열 정의를 설정합니다.
     dataProvider.setFields(fields);
     gridView.setColumns(columns);
 
-    const params = {};
-    params.TR_CD = tr_CD;
-
-    authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
+    authAxiosInstance('accounting/user/Strade/stradeCodeHelpList', {
       params,
     }).then(response => {
       dataProvider.setRows(response?.data);
@@ -43,11 +73,16 @@ const EmpCodeHelpModal = ({
 
     //
     gridView.onCellDblClicked = function (grid, index) {
-      var current = gridView.getCurrent();
-      var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
-      gridViewStrade.setValues(cellClickData, row, false);
-      setEmpMenuButton(false);
+      // 주석 부분은 더블 클릭시 입력되어야되는 상황일 떄 사용
+      // var current = gridView.getCurrent();
+      // console.log(current);
+      // var jsonData = dataProvider.getJsonRow(current.itemIndex);
+      // console.log('jsonData: ' + jsonData.kor_NM);
+      // const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
+      // gridViewStrade.setValues(cellClickData, row, false);
+      // console.log('iijijljlkj', jsonData);
+      //setEmpMenuButton(false);
+      onChangeModalClose();
     };
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
@@ -69,10 +104,12 @@ const EmpCodeHelpModal = ({
     gridView.setFooter({ visible: false });
 
     //입력 비활성화
-    gridView.columnByName('emp_CD').editable = false;
-    gridView.columnByName('kor_NM').editable = false;
-    gridView.columnByName('dept_NM').editable = false;
-    gridView.columnByName('div_NM').editable = false;
+    gridView.columnByName('tr_CD').editable = false;
+    gridView.columnByName('tr_NM').editable = false;
+    gridView.columnByName('tr_FG').editable = false;
+    gridView.columnByName('reg_NB').editable = false;
+    gridView.columnByName('ceo_NM').editable = false;
+    gridView.columnByName('ba_NB_TR').editable = false;
 
     //컬럼 너비 자동 조절 설정
     gridView.setDisplayOptions({ fitStyle: 'evenFill' });
@@ -102,18 +139,41 @@ const EmpCodeHelpModal = ({
       gridView.destroy();
       dataProvider.destroy(); // useEffect는 한 번만 실행되도록 빈 배열을 의존성으로 설정합니다.
     };
-  }, [tr_CD]);
+  }, []);
 
   return (
     <Modal
-      width={'560px'}
+      width={'870px'}
       height={'600px'}
-      title={'사원코드도움'}
+      title={'거래처코드도움'}
       onClickEvent={onChangeModalClose}
     >
+      <SelectBoxWrapper>
+        <span className="rightSelectBoxPadding">거래처코드</span>
+        <input
+          type="text"
+          className="textInputBox"
+          {...register('selectValue')}
+        />
+        <span className="rightSelectBoxPadding">사용여부</span>
+        <StradeCodeHelpUseYNSelectBox
+          width={200}
+          register={register}
+          state={useYNSelectData}
+          setState={setUseYNSelectData}
+        />
+        <div className="selectBoxButtonWrapper">
+          <EventButton
+            data={<i className="fa-solid fa-magnifying-glass"></i>}
+            width={'-10px'}
+            height={30}
+            onClickEvent={onClickSearchEmpList}
+          />
+        </div>
+      </SelectBoxWrapper>
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
     </Modal>
   );
 };
 
-export default EmpCodeHelpModal;
+export default StradeCodeHelpModal;
