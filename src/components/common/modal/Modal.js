@@ -22,7 +22,9 @@ const Modal = ({ width, height, children, onClickEvent, title, buttonYN }) => {
       <div style={modalBox}>
         <div className="topModalWrapper">
           <Title titleName={title}>
-            <i class="fa-solid fa-xmark"></i>
+            <div onClick={onClickEventFunction}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
           </Title>
           {children}
         </div>
