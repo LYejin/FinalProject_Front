@@ -17,8 +17,8 @@ import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import SelectListWrapperCommon from '../../components/layout/amaranth/SelectListWrapperCommon';
-import GtradeListBoxItem from '../../components/feature/amaranth/employee/GtradeListBoxItem';
-import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
+import GtradeListBoxItem from '../../components/feature/amaranth/Strade/GtradeListBoxItem';
+import FtradeInfoBox from '../../components/feature/amaranth/Strade/FtradeInfoBox';
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 
 const FtradePage = () => {
