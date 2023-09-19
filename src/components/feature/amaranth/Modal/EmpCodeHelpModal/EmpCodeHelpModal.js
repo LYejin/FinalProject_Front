@@ -44,16 +44,9 @@ const EmpCodeHelpModal = ({
     //
     gridView.onCellDblClicked = function (grid, index) {
       var current = gridView.getCurrent();
-      console.log(current);
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      console.log('jsonData: ' + jsonData.kor_NM);
       const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
       gridViewStrade.setValues(cellClickData, row, false);
-      //gridViewStrade.setValue(cellClickData, 'emp_CD', jsonData.emp_CD);
-      //gridViewStrade.setValue(cellClickData, 'kor_NM', jsonData.kor_NM);
-      //gridViewStrade.setValue(1, 'kor_NM', '수고');
-      console.log('iijijljlkj', jsonData);
-      setEmpCodeHelpData(jsonData);
       setEmpMenuButton(false);
     };
 
@@ -118,7 +111,6 @@ const EmpCodeHelpModal = ({
       title={'사원코드도움'}
       onClickEvent={onChangeModalClose}
     >
-      <selectwrapper></selectwrapper>
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
     </Modal>
   );
