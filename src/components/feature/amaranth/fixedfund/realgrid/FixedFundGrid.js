@@ -24,7 +24,12 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
   };
 
   const rowInsert = rowData => {
+    console.log('아니면 여기니?');
+    rowData['div_CD'] = '001';
+    rowData['disp_SQ'] = DISQ;
+    console.log('로우데이터', rowData);
     return new Promise((resolve, reject) => {
+      console.log('여기니?');
       authAxiosInstance
         .post('system/user/AcashFixManage/insert', rowData)
         .then(response => {
@@ -108,10 +113,11 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
 
     grid.onValidateRow = (grid, itemIndex, dataRow, inserting, values) => {
       const error = {};
-
-      if (values.CASH_CD) {
+      console.log('이게뭘까?', values);
+      if (values.cash_CD) {
         // CASH_CD 값이 있는 경우
         rowInsert(grid.getValues(itemIndex));
+        console.log('왜신남?');
         grid.editOptions.appendable = true;
         grid.editOptions.commitWhenExitLast = true; //Tap, Enter키 입력시 커밋(행이동 or 행 추가) 가능
         grid.editOptions.appendWhenExitLast = true; //Tap, Enter키 입력시 행추가 가능
@@ -125,20 +131,20 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
       return error;
     };
 
-    grid.onEditRowPended = (grid, itemIndex) => {
-      console.log('onEditRowPended event triggered');
-      const item = provider.getItem(itemIndex);
-      if (item && item.CASH_CD) {
-        // CASH_CD 값이 있으면
-        rowInsert(item)
-          .then(response => {
-            // 추가 처리 작업 (예: 요청에 대한 응답 처리)
-          })
-          .catch(error => {
-            console.error('Row insertion failed:', error);
-          });
-      }
-    };
+    // grid.onEditRowPended = (grid, itemIndex) => {
+    //   console.log('onEditRowPended event triggered');
+    //   const item = provider.getItem(itemIndex);
+    //   if (item && item.CASH_CD) {
+    //     // CASH_CD 값이 있으면
+    //     rowInsert(item)
+    //       .then(response => {
+    //         // 추가 처리 작업 (예: 요청에 대한 응답 처리)
+    //       })
+    //       .catch(error => {
+    //         console.error('Row insertion failed:', error);
+    //       });
+    //   }
+    // };
 
     //셀 버튼을 클릭 했을 때 발생하는 이벤트
     grid.onCellButtonClicked = (grid, index, column) => {
