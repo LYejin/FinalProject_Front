@@ -77,13 +77,12 @@
 }
 
 .subTitleInfo{
-  margin-bottom: 10px;
-  height: 15px;
   width: 100px;
-  border-right: 3px solid lightgray;
   text-align: center;
   color: gray;
   font-weight: 800;
+  padding-bottom: 10px;
+
 }
 
 .subTitleInfo2{
@@ -93,6 +92,28 @@
   text-align: center;
   color: gray;
   font-weight: 800;
+}
+
+
+.subTitleInfo.IsSelected {
+  width: 100px;
+  text-align: center;
+  color: #1C90FB;
+  font-weight: 800;
+  padding-bottom: 7px;
+  border-bottom: 3px solid #1C90FB;
+  font-size: 19px;
+}
+
+.subTitleInfo2.IsSelected {
+  padding-left: 10px;
+  padding-bottom: 7px;
+  width: 100px;
+  text-align: center;
+  color: #1C90FB;
+  font-weight: 800;
+  border-bottom: 3px solid #1C90FB;
+  font-size: 19px;
 }
 
 .detailTitleWrapper .fa-circle {

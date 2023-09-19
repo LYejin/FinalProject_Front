@@ -65,14 +65,24 @@ export const columns = [
     name: 'cash_CD',
     fieldName: 'cash_CD',
     width: '60',
+    editor: {
+      type: 'number',
+      maxLength: 4,
+      positiveOnly: true,
+      inputCharacters: '0-9',
+    },
     header: {
       text: '코드',
     },
+    button: 'action',
+    buttonVisibility: 'default',
+    enterKey: true,
   },
   {
     name: 'CASH_NM',
     fieldName: 'CASH_NM',
     width: '150',
+    editable: false,
     header: {
       text: '자금과목',
     },
@@ -89,6 +99,7 @@ export const columns = [
     name: 'TR_NM',
     fieldName: 'TR_NM',
     width: '150',
+    editable: false,
     header: {
       text: '거래처',
     },
@@ -121,6 +132,7 @@ export const columns = [
     name: 'FTR_NM',
     fieldName: 'FTR_NM',
     width: '200',
+    editable: false,
     header: {
       text: '금융거래처',
     },
@@ -129,6 +141,7 @@ export const columns = [
     name: 'BA_NB_TR',
     fieldName: 'BA_NB_TR',
     width: '130',
+    editable: false,
     header: {
       text: '계좌번호',
     },
@@ -137,6 +150,7 @@ export const columns = [
     name: 'bank_CD',
     fieldName: 'bank_CD',
     width: '80',
+    editable: false,
     header: {
       text: '금융기관',
     },
@@ -148,6 +162,20 @@ export const columns = [
     header: {
       text: '시작일',
     },
+    styles: {
+      textAlignment: 'center',
+      datePicker: {
+        // 원하는 대로 datePicker의 스타일과 옵션을 설정할 수 있습니다.
+        yearNavigation: true, // 연도 이동 버튼 표시 여부
+        completeAction: 'commit', // 날짜 선택 후 바로 commit 할지 여부
+        locale: 'ko-KR', // 로캘 설정
+        format: 'yyyy-MM-dd', // 날짜 표시 형식
+      },
+    },
+    editor: {
+      type: 'date', // 열 편집기 유형을 'date'로 설정
+      datetimeFormat: 'yyyy-MM-dd', // 편집기의 날짜 표시 형식
+    },
   },
   {
     name: 'TO_DT',
@@ -156,11 +184,60 @@ export const columns = [
     header: {
       text: '종료일',
     },
+    styles: {
+      textAlignment: 'center',
+      datePicker: {
+        // 원하는 대로 datePicker의 스타일과 옵션을 설정할 수 있습니다.
+        yearNavigation: true, // 연도 이동 버튼 표시 여부
+        completeAction: 'commit', // 날짜 선택 후 바로 commit 할지 여부
+        locale: 'ko-KR', // 로캘 설정
+        format: 'yyyy-MM-dd', // 날짜 표시 형식
+      },
+    },
+    editor: {
+      type: 'date', // 열 편집기 유형을 'date'로 설정
+      datetimeFormat: 'yyyy-MM-dd', // 편집기의 날짜 표시 형식
+    },
   },
   {
     name: 'DEAL_PD',
     fieldName: 'DEAL_PD',
     width: '80',
+    editButtonVisibility: 'visible',
+    values: [
+      '1개월',
+      '2개월',
+      '3개월',
+      '4개월',
+      '5개월',
+      '6개월',
+      '7개월',
+      '8개월',
+      '9개월',
+      '10개월',
+      '11개월',
+      '12개월',
+    ],
+    labels: [
+      '1.1개월',
+      '2.2개월',
+      '3.3개월',
+      '4.4개월',
+      '5.5개월',
+      '6.6개월',
+      '7.7개월',
+      '8.8개월',
+      '9.9개월',
+      '10.10개월',
+      '11.11개월',
+      '12.12개월',
+    ],
+    editor: {
+      type: 'dropdown',
+      dropDownCount: 12,
+      domainOnly: true,
+      partialMatch: true,
+    },
     header: {
       text: '지급주기',
     },
@@ -169,6 +246,78 @@ export const columns = [
     name: 'DEAL_DD',
     fieldName: 'DEAL_DD',
     width: '80',
+    values: [
+      '1일',
+      '2일',
+      '3일',
+      '4일',
+      '5일',
+      '6일',
+      '7일',
+      '8일',
+      '9일',
+      '10일',
+      '11일',
+      '12일',
+      '13일',
+      '14일',
+      '15일',
+      '16일',
+      '17일',
+      '18일',
+      '19일',
+      '20일',
+      '21일',
+      '22일',
+      '23일',
+      '24일',
+      '25일',
+      '26일',
+      '27일',
+      '28일',
+      '29일',
+      '30일',
+      '31일',
+    ],
+    labels: [
+      '1.1일',
+      '2.2일',
+      '3.3일',
+      '4.4일',
+      '5.5일',
+      '6.6일',
+      '7.7일',
+      '8.8일',
+      '9.9일',
+      '10.10일',
+      '11.11일',
+      '12.12일',
+      '13.13일',
+      '14.14일',
+      '15.15일',
+      '16.16일',
+      '17.17일',
+      '18.18일',
+      '19.19일',
+      '20.20일',
+      '21.21일',
+      '22.22일',
+      '23.23일',
+      '24.24일',
+      '25.25일',
+      '26.26일',
+      '27.27일',
+      '28.28일',
+      '29.29일',
+      '30.30일',
+      '31.31일',
+    ],
+    editor: {
+      type: 'dropdown',
+      dropDownCount: 31,
+      domainOnly: true,
+      partialMatch: true,
+    },
     header: {
       text: '지급일',
     },
