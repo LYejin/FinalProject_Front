@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import { GridView, LocalDataProvider, onChangeOpenPost } from 'realgrid';
+import { GridView, LocalDataProvider, onChangeOpenCash } from 'realgrid';
 import {
   columns,
   fields,
@@ -14,7 +14,7 @@ import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 const FundTypeSearchGrid = ({
   loadRowData,
   setCASH_CD,
-  onChangeOpenPost,
+  onChangeOpenCash,
   marsterGrid,
   setMarsterGrid,
 }) => {
@@ -92,16 +92,9 @@ const FundTypeSearchGrid = ({
         cash_NM: clickRowData?.CASH_NM,
       };
 
-      onChangeOpenPost();
+      onChangeOpenCash();
       //마스터 그리드에 자금종목코드 데이터 불러와 저장하기
       marsterGrid.grid.setValues(nowLow, insertData, true);
-      console.log(
-        '검색',
-        insertData,
-        marsterGrid_CASH_CD,
-        nowLow,
-        marsterGrid.grid.getValues(nowLow)
-      );
       marsterGrid.grid.setCurrent({
         itemIndex: nowLow,
         column: 'LOW_YN',

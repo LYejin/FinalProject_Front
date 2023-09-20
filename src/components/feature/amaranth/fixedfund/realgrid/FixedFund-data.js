@@ -39,7 +39,7 @@ export const fields = [
   },
 
   {
-    fieldName: 'bank_CD',
+    fieldName: 'bank_NAME',
     dataType: ValueType.TEXT,
   },
   {
@@ -94,6 +94,9 @@ export const columns = [
     header: {
       text: '코드',
     },
+    button: 'action',
+    buttonVisibility: 'default',
+    enterKey: true,
   },
   {
     name: 'TR_NM',
@@ -127,6 +130,9 @@ export const columns = [
     header: {
       text: '코드',
     },
+    button: 'action',
+    buttonVisibility: 'default',
+    enterKey: true,
   },
   {
     name: 'FTR_NM',
@@ -147,8 +153,8 @@ export const columns = [
     },
   },
   {
-    name: 'bank_CD',
-    fieldName: 'bank_CD',
+    name: 'bank_NAME',
+    fieldName: 'bank_NAME',
     width: '80',
     editable: false,
     header: {

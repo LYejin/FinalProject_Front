@@ -5,7 +5,13 @@ import 'realgrid/dist/realgrid-style.css';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { WorkpTextFieldBox } from '../../../../common/Index';
 
-function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
+function FixedFundGrid({
+  onChangeOpenCash,
+  setMarsterGrid,
+  DISQ,
+  onChangeOpenStrade,
+  setGridViewStrade,
+}) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력 값 관리를 위한 state
@@ -20,16 +26,13 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
     if (!rowData['CASH_CD']) {
       return { CASH_CD: '자금과목코드' };
     }
-    return {}; // CASH_CD 값이 존재하면 빈 객체 반환
+    return {};
   };
 
   const rowInsert = rowData => {
-    console.log('아니면 여기니?');
     rowData['div_CD'] = '001';
     rowData['disp_SQ'] = DISQ;
-    console.log('로우데이터', rowData);
     return new Promise((resolve, reject) => {
-      console.log('여기니?');
       authAxiosInstance
         .post('system/user/AcashFixManage/insert', rowData)
         .then(response => {
@@ -69,6 +72,12 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
 
     //타 컴포넌트에서도 마스터 그리드를 참조(공유) 가능하게 전역 state변수 초기화
     setMarsterGrid(prveData => ({
+      ...prveData,
+      grid: grid,
+      provider: provider,
+    }));
+
+    setGridViewStrade(prveData => ({
       ...prveData,
       grid: grid,
       provider: provider,
@@ -131,25 +140,18 @@ function FixedFundGrid({ onChangeOpenPost, setMarsterGrid, DISQ }) {
       return error;
     };
 
-    // grid.onEditRowPended = (grid, itemIndex) => {
-    //   console.log('onEditRowPended event triggered');
-    //   const item = provider.getItem(itemIndex);
-    //   if (item && item.CASH_CD) {
-    //     // CASH_CD 값이 있으면
-    //     rowInsert(item)
-    //       .then(response => {
-    //         // 추가 처리 작업 (예: 요청에 대한 응답 처리)
-    //       })
-    //       .catch(error => {
-    //         console.error('Row insertion failed:', error);
-    //       });
-    //   }
-    // };
-
-    //셀 버튼을 클릭 했을 때 발생하는 이벤트
+    //버튼을 눌렀을 때, 코드 피커 창 띄우기
     grid.onCellButtonClicked = (grid, index, column) => {
-      grid.setValue(index.itemIndex, 'SUM_CD', '');
-      onChangeOpenPost();
+      if (column.name === 'cash_CD') {
+        //자금과목 선택
+        onChangeOpenCash();
+      } else if (column.name === 'TR_CD') {
+        //일반거래처 선택
+        onChangeOpenStrade(1);
+      } else if (column.name === 'FTR_CD') {
+        //금융거래처 선택
+        onChangeOpenStrade(3);
+      }
     };
 
     // 그리드의 상태 바를 숨깁니다.
