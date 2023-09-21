@@ -140,20 +140,6 @@ export const columns = [
     header: {
       text: '금액',
     },
-    styles: {
-      textAlignment: 'center',
-      datePicker: {
-        // 원하는 대로 datePicker의 스타일과 옵션을 설정할 수 있습니다.
-        yearNavigation: true, // 연도 이동 버튼 표시 여부
-        completeAction: 'commit', // 날짜 선택 후 바로 commit 할지 여부
-        locale: 'ko-KR', // 로캘 설정
-        format: 'yyyy-MM-dd', // 날짜 표시 형식
-      },
-    },
-    editor: {
-      type: 'date', // 열 편집기 유형을 'date'로 설정
-      datetimeFormat: 'yyyy-MM-dd', // 편집기의 날짜 표시 형식
-    },
     footer: {
       numberFormat: '#,##0',
       valueCallback: function (grid, column) {

@@ -30,9 +30,23 @@ function FixedFundGrid({
   //   return {};
   // };
 
+  const formatToSimpleDate = dateStr => {
+    return dateStr.replace(/-/g, '');
+  };
+
+  const formatRowDate = rowData => {
+    if (rowData['fr_DT']) {
+      rowData['fr_DT'] = formatToSimpleDate(rowData['fr_DT']);
+    }
+    if (rowData['to_DT']) {
+      rowData['to_DT'] = formatToSimpleDate(rowData['to_DT']);
+    }
+  };
+
   const rowInsert = rowData => {
-    rowData['div_CD'] = '001';
+    rowData['div_CD'] = values.divCode;
     rowData['disp_SQ'] = DISQ;
+    formatRowDate(rowData);
     console.log('Insert 동작/ 지수 : ', DISQ);
     return new Promise((resolve, reject) => {
       authAxiosInstance
@@ -49,8 +63,10 @@ function FixedFundGrid({
   };
 
   const rowUpdate = rowData => {
-    rowData['div_CD'] = '001';
+    rowData['div_CD'] = values.divCode;
     rowData['disp_SQ'] = DISQ;
+    formatRowDate(rowData);
+    console.log('이게 내 데이터', rowData);
     return new Promise((resolve, reject) => {
       authAxiosInstance
         .put('accounting/user/AcashFixManage/update', rowData)
@@ -152,10 +168,10 @@ function FixedFundGrid({
       queryParams.append('TR_CD', values.gtradeCode);
       queryParams.append('FTR_CD', values.ftradeCode);
       queryParams.append('CASH_CD', values.cashCode);
-      // queryParams.append('FR_DT1', values.startStart);
-      // queryParams.append('FR_DT2', values.startEnd);
-      // queryParams.append('TO_DT1', values.endStart);
-      // queryParams.append('TO_DT2', values.endEnd);
+      queryParams.append('FR_DT1', values.startStart);
+      queryParams.append('FR_DT2', values.startEnd);
+      queryParams.append('TO_DT1', values.endStart);
+      queryParams.append('TO_DT2', values.endEnd);
       authAxiosInstance
         .get(
           `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
@@ -164,6 +180,25 @@ function FixedFundGrid({
           grid.closeProgress();
           console.log('드드드드드드 : ', queryParams.toString());
           console.log('이번에가져온것', responseData.data);
+
+          // yyyymmdd의 형태를 yyyy-mm-dd로 변환하는 함수
+          const formatDate = dateStr => {
+            return `${dateStr.substring(0, 4)}-${dateStr.substring(
+              4,
+              6
+            )}-${dateStr.substring(6, 8)}`;
+          };
+
+          // responseData.data의 각 아이템에 대한 변환 수행
+          responseData.data.forEach(item => {
+            if (item.fr_DT) {
+              item.fr_DT = formatDate(item.fr_DT);
+            }
+            if (item.to_DT) {
+              item.to_DT = formatDate(item.to_DT);
+            }
+          });
+
           provider.fillJsonData(responseData.data, {
             fillMode: 'set',
           });
