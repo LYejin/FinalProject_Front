@@ -11,6 +11,7 @@ function FixedFundGrid({
   DISQ,
   onChangeOpenStrade,
   setGridViewStrade,
+  values,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -18,23 +19,24 @@ function FixedFundGrid({
   const realgridElement = useRef(null);
 
   const queryParams = new URLSearchParams();
-  queryParams.append('DIV_CD', '001');
-  queryParams.append('DISP_SQ', DISQ);
+
+  console.log('그럼 잘와야지?', values);
 
   // 자금과목이 입력되었는지 체크
-  const checkRequireColumn = rowData => {
-    if (!rowData['CASH_CD']) {
-      return { CASH_CD: '자금과목코드' };
-    }
-    return {};
-  };
+  // const checkRequireColumn = rowData => {
+  //   if (!rowData['CASH_CD']) {
+  //     return { CASH_CD: '자금과목코드' };
+  //   }
+  //   return {};
+  // };
 
   const rowInsert = rowData => {
     rowData['div_CD'] = '001';
     rowData['disp_SQ'] = DISQ;
+    console.log('Insert 동작/ 지수 : ', DISQ);
     return new Promise((resolve, reject) => {
       authAxiosInstance
-        .post('system/user/AcashFixManage/insert', rowData)
+        .post('accounting/user/AcashFixManage/insert', rowData)
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
@@ -47,9 +49,11 @@ function FixedFundGrid({
   };
 
   const rowUpdate = rowData => {
+    rowData['div_CD'] = '001';
+    rowData['disp_SQ'] = DISQ;
     return new Promise((resolve, reject) => {
       authAxiosInstance
-        .put('system/user/AcashFixManage/update', rowData)
+        .put('accounting/user/AcashFixManage/update', rowData)
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
@@ -60,6 +64,38 @@ function FixedFundGrid({
         });
     });
   };
+
+  // const searchFixedFundData = async () => {
+  //   const grid = gridRef.current;
+  //   const provider = providerRef.current;
+  //   if (!grid || !provider) return;
+  //   console.log('함수 실행?');
+  //   grid.cancel();
+  //   const queryParams = new URLSearchParams();
+  //   queryParams.append('DISP_SQ', DISQ);
+  //   queryParams.append('DIV_CD', values.divCode);
+  //   queryParams.append('TR_CD', values.gtradeCode);
+  //   queryParams.append('FTR_CD', values.ftradeCode);
+  //   queryParams.append('CASH_CD', values.cashCode);
+  //   // queryParams.append('FR_DT1', values.startStart);
+  //   // queryParams.append('FR_DT2', values.startEnd);
+  //   // queryParams.append('TO_DT1', values.endStart);
+  //   // queryParams.append('TO_DT2', values.endEnd);
+
+  //   try {
+  //     const response = await authAxiosInstance.get(
+  //       `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
+  //     );
+  //     console.log('searchFixedFundData : ', response.data);
+  //     provider.fillJsonData(response.data, {
+  //       fillMode: 'set',
+  //     });
+  //     let lastRowIndex = provider.getRowCount();
+  //     grid.setCurrent({ itemIndex: lastRowIndex });
+  //   } catch (error) {
+  //     console.error('Error fetching searchFixedFundData :', error);
+  //   }
+  // };
 
   useEffect(() => {
     const container = realgridElement.current;
@@ -107,23 +143,77 @@ function FixedFundGrid({
 
     //페이지 로딩시 지출 데이터
     grid.showProgress();
-    authAxiosInstance
-      .get(`/system/user/AcashFixManage/getList?${queryParams.toString()}`)
-      .then(responseData => {
-        grid.closeProgress();
-        console.log('이번에가져온것', responseData.data);
-        provider.fillJsonData(responseData.data, {
-          fillMode: 'set',
+    grid.cancel();
+    if (values.divCode) {
+      const queryParams = new URLSearchParams();
+      queryParams.append('DISP_SQ', DISQ);
+      queryParams.append('DIV_CD', values.divCode);
+      // queryParams.append('DIV_CD', '001');
+      queryParams.append('TR_CD', values.gtradeCode);
+      queryParams.append('FTR_CD', values.ftradeCode);
+      queryParams.append('CASH_CD', values.cashCode);
+      // queryParams.append('FR_DT1', values.startStart);
+      // queryParams.append('FR_DT2', values.startEnd);
+      // queryParams.append('TO_DT1', values.endStart);
+      // queryParams.append('TO_DT2', values.endEnd);
+      authAxiosInstance
+        .get(
+          `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
+        )
+        .then(responseData => {
+          grid.closeProgress();
+          console.log('드드드드드드 : ', queryParams.toString());
+          console.log('이번에가져온것', responseData.data);
+          provider.fillJsonData(responseData.data, {
+            fillMode: 'set',
+          });
+
+          let lastRowIndex = provider.getRowCount();
+          grid.setCurrent({ itemIndex: lastRowIndex });
+        })
+        .catch(error => {
+          console.error(error);
         });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    }
+
+    //페이지 로딩시 지출 데이터 수정중
+    // const searchFixedFundData = async () => {
+    //   console.log('함수 실행?');
+    //   grid.cancel();
+    //   const queryParams = new URLSearchParams();
+    //   queryParams.append('DISP_SQ', DISQ);
+    //   queryParams.append('DIV_CD', values.divCode);
+    //   queryParams.append('TR_CD', values.gtradeCode);
+    //   queryParams.append('FTR_CD', values.ftradeCode);
+    //   queryParams.append('CASH_CD', values.cashCode);
+    //   // queryParams.append('FR_DT1', values.startStart);
+    //   // queryParams.append('FR_DT2', values.startEnd);
+    //   // queryParams.append('TO_DT1', values.endStart);
+    //   // queryParams.append('TO_DT2', values.endEnd);
+    //   grid.showProgress();
+    //   try {
+    //     const response = await authAxiosInstance.get(
+    //       `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
+    //     );
+    //     console.log('searchFixedFundData : ', response.data);
+    //     provider.fillJsonData(response.data, {
+    //       fillMode: 'set',
+    //     });
+    //     let lastRowIndex = provider.getRowCount();
+    //     grid.setCurrent({ itemIndex: lastRowIndex });
+    //   } catch (error) {
+    //     console.error('Error fetching searchFixedFundData :', error);
+    //   }
+    // };
 
     grid.onValidateRow = (grid, itemIndex, dataRow, inserting, values) => {
       const error = {};
       console.log('이게뭘까?', values);
-      if (values.cash_CD) {
+      if (values.sq_NB && values.cash_CD) {
+        // sq_NB 값과 CASH_CD 값 모두 있는 경우
+        rowUpdate(grid.getValues(itemIndex));
+        console.log('rowUpdate 실행');
+      } else if (values.cash_CD) {
         // CASH_CD 값이 있는 경우
         rowInsert(grid.getValues(itemIndex));
         console.log('왜신남?');
@@ -164,11 +254,12 @@ function FixedFundGrid({
     setGridView(grid);
 
     return () => {
+      grid.cancel();
       provider.clearRows();
       grid.destroy();
       provider.destroy();
     };
-  }, [DISQ]);
+  }, [DISQ, values]);
 
   return (
     <div>
