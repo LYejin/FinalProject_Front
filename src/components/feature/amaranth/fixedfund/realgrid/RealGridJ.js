@@ -5,7 +5,7 @@ import 'realgrid/dist/realgrid-style.css';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { WorkpTextFieldBox } from '../../../../common/Index';
 
-function RealGrid() {
+function RealGrid({ onRowSelected, firstRowSelected }) {
   const [chDataProvider, setChDataProvider] = useState(null);
   const [chGridView, setChGridView] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력 값 관리를 위한 state
@@ -72,15 +72,18 @@ function RealGrid() {
     dataProvider.setFields(fields);
     gridView.setColumns(columns);
 
+    //onRowSelected(dataa);
+
     gridView.showProgress();
     authAxiosInstance
       .get('/system/user/WorkplaceManage/getList')
       .then(responseData => {
         gridView.closeProgress();
-        console.log('가져온것', responseData.data);
         dataProvider.fillJsonData(responseData.data, {
           fillMode: 'set',
         });
+        const divData = dataProvider.getJsonRow(0);
+        firstRowSelected(divData);
       })
       .catch(error => {
         console.error(error);
@@ -106,6 +109,12 @@ function RealGrid() {
 
     setChDataProvider(dataProvider);
     setChGridView(gridView);
+
+    gridView.onCurrentRowChanged = (grid, oldRowIndex, newRowIndex) => {
+      const data = dataProvider.getJsonRow(newRowIndex);
+      console.log(data);
+      onRowSelected(data);
+    };
 
     return () => {
       dataProvider.clearRows();

@@ -13,10 +13,10 @@ import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 
 const FundTypeSearchGrid = ({
   loadRowData,
-  setCASH_CD,
   onChangeOpenCash,
   marsterGrid,
-  setMarsterGrid,
+  FixedFuntState,
+  onRowSelected,
 }) => {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -83,6 +83,16 @@ const FundTypeSearchGrid = ({
 
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
+      if (FixedFuntState === 1) {
+        const clickRowData = grid.getValues(clickData.itemIndex);
+        const insertData = {
+          cash_CD: clickRowData?.CASH_CD,
+          cash_NM: clickRowData?.CASH_NM,
+        };
+        onRowSelected(insertData);
+        onChangeOpenCash();
+        return;
+      }
       const nowLow = marsterGrid.grid.getCurrent().itemIndex;
       const marsterGrid_CASH_CD = marsterGrid.grid.getValue(nowLow, 'CASH_CD');
 

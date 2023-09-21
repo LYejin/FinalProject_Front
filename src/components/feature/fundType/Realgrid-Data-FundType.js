@@ -61,16 +61,16 @@ export const columns = [
       text: '수지구분',
     },
     styleCallback: (grid, dataCell) => {
-      console.log(
-        '------------------------------------------------------',
-        '행상태',
-        dataCell.item.rowState,
-        '셀 상태',
-        dataCell.item.itemState,
-        '값 상태',
-        dataCell.value,
-        dataCell.index.itemIndex
-      );
+      // console.log(
+      //   '------------------------------------------------------',
+      //   '행상태',
+      //   dataCell.item.rowState,
+      //   '셀 상태',
+      //   dataCell.item.itemState,
+      //   '값 상태',
+      //   dataCell.value,
+      //   dataCell.index.itemIndex
+      // );
       const ret = {};
       if (
         (dataCell.value === '' || dataCell.value === undefined) &&
@@ -239,16 +239,16 @@ export const s_columns = [
       text: '수지구분',
     },
     styleCallback: (grid, dataCell) => {
-      console.log(
-        '------------------------------------------------------',
-        '행상태',
-        dataCell.item.rowState,
-        '셀 상태',
-        dataCell.item.itemState,
-        '값 상태',
-        dataCell.value,
-        dataCell.index.itemIndex
-      );
+      // console.log(
+      //   '------------------------------------------------------',
+      //   '행상태',
+      //   dataCell.item.rowState,
+      //   '셀 상태',
+      //   dataCell.item.itemState,
+      //   '값 상태',
+      //   dataCell.value,
+      //   dataCell.index.itemIndex
+      // );
       const ret = {};
       if (
         (dataCell.value === '' || dataCell.value === undefined) &&

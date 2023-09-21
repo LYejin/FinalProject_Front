@@ -2,6 +2,10 @@ import { ValueType } from 'realgrid';
 
 export const fields = [
   {
+    fieldName: 'sq_NB',
+    dataType: ValueType.INT,
+  },
+  {
     fieldName: 'cash_CD',
     dataType: ValueType.TEXT,
   },
@@ -62,6 +66,16 @@ export const fields = [
 
 export const columns = [
   {
+    name: 'sq_NB',
+    fieldName: 'sq_NB',
+    width: '40',
+    editable: false,
+    // visible: false,
+    header: {
+      text: '번호',
+    },
+  },
+  {
     name: 'cash_CD',
     fieldName: 'cash_CD',
     width: '60',
@@ -73,6 +87,9 @@ export const columns = [
     },
     header: {
       text: '코드',
+    },
+    footer: {
+      text: '합계',
     },
     button: 'action',
     buttonVisibility: 'default',
@@ -119,8 +136,38 @@ export const columns = [
     name: 'CASH_AM',
     fieldName: 'CASH_AM',
     width: '110',
+    numberFormat: '#,##0',
     header: {
       text: '금액',
+    },
+    styles: {
+      textAlignment: 'center',
+      datePicker: {
+        // 원하는 대로 datePicker의 스타일과 옵션을 설정할 수 있습니다.
+        yearNavigation: true, // 연도 이동 버튼 표시 여부
+        completeAction: 'commit', // 날짜 선택 후 바로 commit 할지 여부
+        locale: 'ko-KR', // 로캘 설정
+        format: 'yyyy-MM-dd', // 날짜 표시 형식
+      },
+    },
+    editor: {
+      type: 'date', // 열 편집기 유형을 'date'로 설정
+      datetimeFormat: 'yyyy-MM-dd', // 편집기의 날짜 표시 형식
+    },
+    footer: {
+      numberFormat: '#,##0',
+      valueCallback: function (grid, column) {
+        var sum = 0;
+        var prod = grid.getDataSource();
+        var cnt = prod.getRowCount();
+
+        for (var i = 0; i < cnt; i++) {
+          if (prod.getValue(i, 'CASH_AM') !== null) {
+            sum += parseInt(prod.getValue(i, 'CASH_AM'));
+          }
+        }
+        return sum;
+      },
     },
   },
   {

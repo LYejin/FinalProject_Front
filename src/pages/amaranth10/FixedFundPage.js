@@ -31,6 +31,7 @@ const FixedFundPage = () => {
   const [isOpenStrade, setIsOpenStrade] = useState(false);
   const [selectedDiv, setSelectedDiv] = useState('1');
   const [TRcode, setTRcode] = useState('');
+  const [searchValues, setSearchValues] = useState({});
   // 모달의 열림/닫힘 상태 관리
   const [isStradeModalOpen, setIsStradeModalOpen] = useState(false);
 
@@ -72,6 +73,21 @@ const FixedFundPage = () => {
     deleteBtnClick,
   } = FundTypeModel();
 
+  const handleValuesChange = values => {
+    const {
+      divCode,
+      cashCode,
+      gtradeCode,
+      ftradeCode,
+      startStart,
+      startEnd,
+      endStart,
+      endEnd,
+    } = values;
+    setSearchValues(values);
+    console.log('버튼을 누른거야?');
+  };
+
   return (
     <>
       <CommonLayout2>
@@ -79,7 +95,7 @@ const FixedFundPage = () => {
         <ContentWrapper>
           <Title titleName={'고정자금등록'}></Title>
           <DetailContentWrapper>
-            <FixedFundSelectBoxWrapper />
+            <FixedFundSelectBoxWrapper onValuesChange={handleValuesChange} />
             <MainContentWrapper state={0}>
               <FullContentWrapper>
                 <DeptSubTitle>
@@ -106,6 +122,7 @@ const FixedFundPage = () => {
                   setMarsterGrid={setMarsterGrid}
                   setGridViewStrade={setGridViewStrade}
                   DISQ={selectedDiv}
+                  values={searchValues}
                 />
               </FullContentWrapper>
             </MainContentWrapper>

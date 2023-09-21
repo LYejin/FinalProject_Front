@@ -61,13 +61,14 @@
 }
 
 .secondDiv {
-  margin-left: 83px;
+  margin-left: 88px;
 }
+
 .inputDivStyle{
   margin-right: 50px;
 }
 .inputDivStyle2{
-  margin-right: 62px;
+  margin-right: 66px;
 }
 
 .inputDivStyle3{
@@ -82,6 +83,7 @@
   outline: none;
   width: 200px;
   padding-right: 35px;
+  padding-left: 5px;
 }
 
 .FFInputIconStyle {
@@ -91,6 +93,7 @@
   transform: translateY(-50%);
   color: darkgray;
 }
+
 .FFInputIconStyle:hover {
   cursor: pointer;
 }
@@ -362,4 +365,15 @@ li > ul {
 /* 마지막 계층의 아이템 스타일 */
 li > ul > li:last-child {
   border-left: none;
+}
+
+.date-picker-container {
+  display: flex;
+  z-index: 9999; /* 충분히 높은 값으로 설정하여 다른 요소 위에 올라오게 합니다. */
+  position: absolute; /* position을 absolute로 설정하여 위치를 조절합니다. */
+  top: 100%; /* input 태그 바로 아래에 위치시킵니다. */
+}
+
+.date-picker {
+  margin-right: 10px; /* DatePicker 사이의 간격을 조절합니다. 마지막 DatePicker에는 margin이 필요 없으므로 이를 제거해야 합니다. */
 }

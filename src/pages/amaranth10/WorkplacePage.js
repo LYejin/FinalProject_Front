@@ -332,7 +332,7 @@ const WorkplacePage = () => {
       Swal.fire({
         icon: 'success',
         title: '저장 완료',
-        text: '작업장 정보가 성공적으로 저장되었습니다.',
+        text: '사업장 정보가 성공적으로 저장되었습니다.',
       });
       FetchWorkplaceDetailInfo(data.div_CD);
     } catch (error) {
@@ -340,7 +340,7 @@ const WorkplacePage = () => {
       Swal.fire({
         icon: 'error',
         title: '저장 실패',
-        text: '작업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
+        text: '사업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
       });
     }
   };
@@ -367,7 +367,7 @@ const WorkplacePage = () => {
         Swal.fire({
           icon: 'success',
           title: '업데이트 완료',
-          text: '작업장 정보가 성공적으로 업데이트되었습니다.',
+          text: '사업장 정보가 성공적으로 업데이트되었습니다.',
         });
         fetchWorkplaceData();
         FetchWorkplaceDetailInfo(data.div_CD);
@@ -376,7 +376,7 @@ const WorkplacePage = () => {
         Swal.fire({
           icon: 'error',
           title: '업데이트 실패',
-          text: '작업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+          text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
         });
       }
     } catch (error) {
@@ -384,7 +384,7 @@ const WorkplacePage = () => {
       Swal.fire({
         icon: 'error',
         title: '업데이트 실패',
-        text: '작업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+        text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
       });
     }
   };
@@ -512,7 +512,7 @@ const WorkplacePage = () => {
                 onClickUpdate={handleUpdate}
                 deleteDiv={deleteDiv}
               ></WorkpHeadTitle>
-              <ScrollWrapper width={'100%'}>
+              <ScrollWrapper width={'100%'} deptH={-40}>
                 <WorkPlaceInfoWrapper
                   data={workplaceDetailData}
                   inputRefs={inputRefs}

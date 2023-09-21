@@ -8,6 +8,7 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import EventButton from '../../../../common/button/EventButton';
 import StradeCodeHelpUseYNSelectBox from './StradeCodeHelpUseYNSelectBox';
+import { json } from '../../../../../../node_modules/react-router-dom/dist/index';
 
 const StradeCodeHelpModal = ({
   onChangeModalClose,
@@ -15,6 +16,8 @@ const StradeCodeHelpModal = ({
   cellClickData,
   tr_FG,
   marsterGrid,
+  onRowSelected,
+  InputState,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
@@ -78,6 +81,14 @@ const StradeCodeHelpModal = ({
 
     //
     gridView.onCellDblClicked = function (grid, clickData) {
+      if (InputState === 1) {
+        var current = gridView.getCurrent();
+        var jsonData = dataProvider.getJsonRow(current.itemIndex);
+        onRowSelected(jsonData);
+        onChangeModalClose();
+        return;
+      }
+
       // 주석 부분은 더블 클릭시 입력되어야되는 상황일 떄 사용
       const cellClickData = gridViewStrade.grid.getCurrent().itemIndex;
       var current = gridView.getCurrent();
@@ -100,7 +111,7 @@ const StradeCodeHelpModal = ({
           tr_NM: jsonData.tr_NM,
         };
         gridViewStrade.grid.setValues(cellClickData, row, false);
-        console.log('iijijljlkj', jsonData);
+        console.log('일반거래처 jsonData', jsonData);
       } else {
         const row = {
           ftr_CD: jsonData.tr_CD,
@@ -109,7 +120,7 @@ const StradeCodeHelpModal = ({
           bank_NAME: jsonData.bank_NAME,
         };
         gridViewStrade.grid.setValues(cellClickData, row, false);
-        console.log('iijijljlkj', jsonData);
+        console.log('금융거래처 jsonData', jsonData);
       }
       //setEmpMenuButton(false);
       gridViewStrade.grid.setFocus();

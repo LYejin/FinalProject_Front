@@ -26,7 +26,7 @@ const FundTypeModel = () => {
       })
         .then(response => {
           const upper_lodaData = uppercase(response.data);
-          console.log('로드?', upper_lodaData);
+          //console.log('로드?', upper_lodaData);
           resolve(upper_lodaData);
         })
         .catch(error => {
