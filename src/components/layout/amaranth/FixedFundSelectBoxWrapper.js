@@ -22,6 +22,8 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const [gtradeValue, setGtradeValue] = useState(''); //거래처 Input 값 설정
   const [ftradeValue, setFtradeValue] = useState(''); //금융거래처 Input 값
   const [TRcode, setTRcode] = useState(''); //거래처 종류 선택
+  const [transmittedValue, setTransmittedValue] = useState(''); // 사업장 input 값 입력
+
   //시작일 선택
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -48,13 +50,13 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   };
 
   const setStartDate1 = data => {
-    console.log('데이트', formatDate(startDate), formatDate(data));
+    // console.log('데이트', formatDate(startDate), formatDate(data));
     setStartStart(formatDate(startDate));
     setStartEnd(formatDate(data));
   };
 
   const setEndDate1 = data => {
-    console.log('데이트2', formatDate(endStartDate), formatDate(data));
+    // console.log('데이트2', formatDate(endStartDate), formatDate(data));
     setEndStart(formatDate(endStartDate));
     setEndEnd(formatDate(data));
   };
@@ -113,9 +115,18 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   // };
 
   //사업장 GRID에서 데이터 Input 에 넣기
+  const handleBlur = () => {
+    setInputValue('');
+    setDivCode('');
+  };
+
   const handleRowSelected = data => {
-    setInputValue(data.div_CD + '. ' + data.div_NM);
-    setDivCode(data.div_CD);
+    setInputValue('');
+    setDivCode('');
+    if (data) {
+      setInputValue(data.div_CD + '. ' + data.div_NM);
+      setDivCode(data.div_CD);
+    }
     handleCloseModal();
   };
 
@@ -161,11 +172,15 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const handleSDateReset = () => {
     setStartDate(null);
     setEndDate(null);
+    setStartStart(null);
+    setStartEnd(null);
   };
 
   const handleDateReset = () => {
     setEndStartDate(null);
     setEndEndDate(null);
+    setEndStart(null);
+    setEndEnd(null);
   };
 
   const sendValuesToParent = () => {
@@ -191,6 +206,13 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
     });
   };
 
+  const handleEnter = () => {
+    // 값이 변경될 때마다 RealGrid 컴포넌트로 값을 전달
+    if (inputValue) {
+      setTransmittedValue(inputValue);
+    }
+  };
+
   return (
     <div className="FPSelectBoxWrapper">
       <div className="firstDiv">
@@ -200,9 +222,12 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
             type="text"
             className="FixedInputStyle"
             placeholder="사업장코드도움"
-            defaultValue={inputValue}
+            value={inputValue} // defaultValue 대신 value를 사용하여 inputValue와 바인딩
+            onChange={e => setInputValue(e.target.value)} // 사용자의 입력을 상태에 반영
+            onBlur={handleBlur} // onBlur 이벤트가 발생할 때 handleBlurOrEnter 함수 실행
+            onKeyDown={e => e.key === 'Enter' && handleEnter()} // onKeyDown 이벤트를 처리
             style={{ backgroundColor: 'pink' }}
-          ></input>
+          />
           <FaRegListAlt
             className="FFInputIconStyle"
             size={20}
@@ -220,6 +245,9 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
           <RealGrid
             onRowSelected={handleRowSelected}
             firstRowSelected={handleFisrtSelected}
+            divInputValue={transmittedValue}
+            onClose={handleCloseModal}
+            onOpen={handleOpenModal}
           />
         </Modal2>
         <div className="inputDivStyle" style={{ position: 'relative' }}>

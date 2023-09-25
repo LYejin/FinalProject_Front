@@ -32,6 +32,15 @@ const DeptInfoWrapper = ({
     } else {
       setSelectedValue(''); // 기본값으로 설정
     }
+
+    if (
+      data &&
+      (data.dept_CT === '1' || data.dept_CT === '0' || data.dept_CT === '2')
+    ) {
+      setSelectedDeptCT(data.dept_CT);
+    } else {
+      setSelectedDeptCT(''); // 기본값으로 설정
+    }
   }, [data]);
 
   return (
@@ -118,7 +127,7 @@ const DeptInfoWrapper = ({
                 className="deptSelectStyle"
                 value={selectedDeptCT}
                 onChange={e => setSelectedDeptCT(e.target.value)}
-                {...register('dept_CT')}
+                // {...register('dept_CT')}
               >
                 <option value="" disabled hidden>
                   선택하세요

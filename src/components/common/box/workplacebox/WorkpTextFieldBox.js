@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-
-const WorkpTextFieldBox = ({ width, title, onInputChange }) => {
-  const [inputValue, setInputValue] = useState('');
+const WorkpTextFieldBox = ({
+  width,
+  title,
+  onInputChange,
+  value,
+  setValue,
+}) => {
+  // Use value and setValue from props instead of local state
+  // const [inputValue, setInputValue] = useState('');
 
   const TextFieldBoxWrapper = {
     height: '28px',
@@ -12,7 +17,7 @@ const WorkpTextFieldBox = ({ width, title, onInputChange }) => {
   };
 
   const handleInputChange = event => {
-    setInputValue(event.target.value);
+    setValue(event.target.value); // Use setValue from props
     if (onInputChange) {
       onInputChange(event.target.value);
     }
@@ -23,7 +28,7 @@ const WorkpTextFieldBox = ({ width, title, onInputChange }) => {
       <span style={{ marginRight: '8px' }}>{title}</span>
       <input
         style={TextFieldBoxWrapper}
-        value={inputValue}
+        value={value} // Use value from props
         onChange={handleInputChange}
         placeholder="사업장코드/사업장명을 입력하세요."
       />

@@ -2,3 +2,13 @@
   height: 350px;
   width: 100%;
 }
+
+/* 오른쪽정렬 */
+.align-right {
+  text-align: right;
+}
+
+/* 왼쪽 정렬 */
+.align-left {
+  text-align: left;
+}

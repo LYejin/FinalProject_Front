@@ -5,10 +5,17 @@ import 'realgrid/dist/realgrid-style.css';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { WorkpTextFieldBox } from '../../../../common/Index';
 
-function RealGrid({ onRowSelected, firstRowSelected }) {
+function RealGrid({
+  onRowSelected,
+  firstRowSelected,
+  divInputValue,
+  onClose,
+  onOpen,
+}) {
   const [chDataProvider, setChDataProvider] = useState(null);
   const [chGridView, setChGridView] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력 값 관리를 위한 state
+
   const realgridElement = useRef(null);
 
   // 입력 값 업데이트 함수
@@ -63,6 +70,34 @@ function RealGrid({ onRowSelected, firstRowSelected }) {
     }
   };
 
+  const fetchDataOnInputChange = async inputValue => {
+    try {
+      const response = await authAxiosInstance.get(
+        '/system/user/WorkplaceManage/getList',
+        {
+          params: {
+            DIV_CD: inputValue,
+            DIV_NM: inputValue,
+          },
+        }
+      );
+
+      if (response.data.length === 0) {
+        onRowSelected('');
+      } else if (response.data.length === 1) {
+        console.log('데이터가 하나 있습니다.', response.data[0]);
+        onRowSelected(response.data[0]); // 데이터가 하나 있는 경우 onRowSelected 호출
+      } else {
+        // 데이터가 여러개 경우 onRowSelected 호출
+        console.log('데이터가 여러 개 있습니다.');
+        onOpen();
+        fetchData(inputValue);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const container = realgridElement.current;
     const dataProvider = new LocalDataProvider(true);
@@ -71,8 +106,6 @@ function RealGrid({ onRowSelected, firstRowSelected }) {
     gridView.setDataSource(dataProvider);
     dataProvider.setFields(fields);
     gridView.setColumns(columns);
-
-    //onRowSelected(dataa);
 
     gridView.showProgress();
     authAxiosInstance
@@ -110,10 +143,12 @@ function RealGrid({ onRowSelected, firstRowSelected }) {
     setChDataProvider(dataProvider);
     setChGridView(gridView);
 
-    gridView.onCurrentRowChanged = (grid, oldRowIndex, newRowIndex) => {
-      const data = dataProvider.getJsonRow(newRowIndex);
-      console.log(data);
-      onRowSelected(data);
+    gridView.onCellDblClicked = (grid, oldRowIndex, newRowIndex) => {
+      var current = gridView.getCurrent();
+      var jsonData = dataProvider.getJsonRow(current.itemIndex);
+      onRowSelected(jsonData);
+      setInputValue('');
+      onClose();
     };
 
     return () => {
@@ -122,6 +157,12 @@ function RealGrid({ onRowSelected, firstRowSelected }) {
       dataProvider.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (divInputValue) {
+      fetchDataOnInputChange(divInputValue);
+    }
+  }, [divInputValue]);
 
   return (
     <div>
@@ -133,6 +174,8 @@ function RealGrid({ onRowSelected, firstRowSelected }) {
           width={'300px'}
           title={'사업장'}
           onInputChange={handleInputChange}
+          value={inputValue}
+          setValue={setInputValue}
         />
         <button className="FFcustomButtonStyle" onClick={handleSearchClick}>
           <i className="fa-solid fa-magnifying-glass"></i>

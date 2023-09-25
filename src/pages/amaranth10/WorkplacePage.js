@@ -54,6 +54,7 @@ const WorkplacePage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [showUploadDiv, setShowUploadDiv] = useState(true);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [inputDivValue, setInputDivValue] = useState('');
 
   // 이미지 선택 시 실행되는 함수
   const handleImageSelect = imageData => {
@@ -369,6 +370,16 @@ const WorkplacePage = () => {
           title: '업데이트 완료',
           text: '사업장 정보가 성공적으로 업데이트되었습니다.',
         });
+
+        Swal.fire({
+          title: '업데이트 완료',
+          text: '사업장 정보가 성공적으로 업데이트되었습니다.',
+          icon: 'success',
+        }).then(result => {
+          if (result.isConfirmed) {
+            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+          }
+        });
         fetchWorkplaceData();
         FetchWorkplaceDetailInfo(data.div_CD);
         console.log('이게궁금합니다', data.div_CD);
@@ -477,6 +488,8 @@ const WorkplacePage = () => {
               width={'300px'}
               title={'사업장'}
               onInputChange={inputValue => setSearchDivInfo(inputValue)}
+              value={inputDivValue}
+              setValue={setInputDivValue}
             />
             <UseSelectBox
               title={'사용여부'}
