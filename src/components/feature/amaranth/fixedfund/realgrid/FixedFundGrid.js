@@ -4,6 +4,7 @@ import { columns, fields, rows } from './FixedFund-data';
 import 'realgrid/dist/realgrid-style.css';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { WorkpTextFieldBox } from '../../../../common/Index';
+import Swal from 'sweetalert2';
 
 function FixedFundGrid({
   onChangeOpenCash,
@@ -12,6 +13,7 @@ function FixedFundGrid({
   onChangeOpenStrade,
   setGridViewStrade,
   values,
+  setHandleDeleteRows,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -21,6 +23,111 @@ function FixedFundGrid({
   const queryParams = new URLSearchParams();
 
   console.log('그럼 잘와야지?', values);
+
+  const createQueryParams = values => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('DISP_SQ', DISQ);
+    queryParams.append('DIV_CD', values.divCode);
+    queryParams.append('TR_CD', values.gtradeCode);
+    queryParams.append('FTR_CD', values.ftradeCode);
+    queryParams.append('CASH_CD', values.cashCode);
+    queryParams.append('FR_DT1', values.startStart);
+    queryParams.append('FR_DT2', values.startEnd);
+    queryParams.append('TO_DT1', values.endStart);
+    queryParams.append('TO_DT2', values.endEnd);
+    return queryParams;
+  };
+
+  const fetchGridData = async () => {
+    console.log('패치함');
+    const queryParams = createQueryParams(values);
+    authAxiosInstance
+      .get(`/accounting/user/AcashFixManage/getList?${queryParams.toString()}`)
+      .then(responseData => {
+        console.log('드드드드드드 : ', queryParams.toString());
+        console.log('이번에가져온것', responseData.data);
+
+        // yyyymmdd의 형태를 yyyy-mm-dd로 변환하는 함수
+        const formatDate = dateStr => {
+          return `${dateStr.substring(0, 4)}-${dateStr.substring(
+            4,
+            6
+          )}-${dateStr.substring(6, 8)}`;
+        };
+
+        // responseData.data의 각 아이템에 대한 변환 수행
+        responseData.data.forEach(item => {
+          if (item.fr_DT) {
+            item.fr_DT = formatDate(item.fr_DT);
+          }
+          if (item.to_DT) {
+            item.to_DT = formatDate(item.to_DT);
+          }
+        });
+
+        dataProvider.fillJsonData(responseData.data, {
+          fillMode: 'set',
+        });
+
+        let lastRowIndex = dataProvider.getRowCount();
+        gridView.setCurrent({ itemIndex: lastRowIndex });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  const handleDeleteRows = async () => {
+    // 체크된 행들의 sq_NB값을 수집
+    gridView.cancel();
+    const checkedRows = gridView.getCheckedItems();
+    console.log('요고얌', checkedRows);
+
+    // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
+    if (checkedRows.length === 0) {
+      alert('삭제할 항목을 선택해주세요.');
+      return;
+    }
+
+    if (checkedRows.length > 20) {
+      alert('한 번에 20개 이하의 항목만 삭제할 수 있습니다.');
+      return;
+    }
+
+    const sqNbsToDelete = checkedRows.map(row => {
+      // 데이터 프로바이더에서 해당 행의 sq_NB 컬럼의 값을 가져옵니다.
+      const sqNbValue = dataProvider.getValue(row, 'sq_NB');
+      return sqNbValue;
+    });
+
+    console.log('여기서확인하래요', sqNbsToDelete);
+    try {
+      // 서버에 삭제 요청
+      const response = await authAxiosInstance.delete(
+        '/accounting/user/AcashFixManage/delete',
+        {
+          params: {
+            DIV_CD: values.divCode,
+          },
+          paramsSerializer: params => {
+            const sqNbQuery = sqNbsToDelete.map(n => `SQ_NB=${n}`).join('&');
+            return `DIV_CD=${params.DIV_CD}&${sqNbQuery}`;
+          },
+        }
+      );
+      fetchGridData();
+
+      // 알림 표시
+      Swal.fire({
+        icon: 'success',
+        title: '성공적으로 삭제되었습니다!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error('Failed to delete rows:', error);
+    }
+  };
 
   // 자금과목이 입력되었는지 체크
   // const checkRequireColumn = rowData => {
@@ -81,39 +188,8 @@ function FixedFundGrid({
     });
   };
 
-  // const searchFixedFundData = async () => {
-  //   const grid = gridRef.current;
-  //   const provider = providerRef.current;
-  //   if (!grid || !provider) return;
-  //   console.log('함수 실행?');
-  //   grid.cancel();
-  //   const queryParams = new URLSearchParams();
-  //   queryParams.append('DISP_SQ', DISQ);
-  //   queryParams.append('DIV_CD', values.divCode);
-  //   queryParams.append('TR_CD', values.gtradeCode);
-  //   queryParams.append('FTR_CD', values.ftradeCode);
-  //   queryParams.append('CASH_CD', values.cashCode);
-  //   // queryParams.append('FR_DT1', values.startStart);
-  //   // queryParams.append('FR_DT2', values.startEnd);
-  //   // queryParams.append('TO_DT1', values.endStart);
-  //   // queryParams.append('TO_DT2', values.endEnd);
-
-  //   try {
-  //     const response = await authAxiosInstance.get(
-  //       `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
-  //     );
-  //     console.log('searchFixedFundData : ', response.data);
-  //     provider.fillJsonData(response.data, {
-  //       fillMode: 'set',
-  //     });
-  //     let lastRowIndex = provider.getRowCount();
-  //     grid.setCurrent({ itemIndex: lastRowIndex });
-  //   } catch (error) {
-  //     console.error('Error fetching searchFixedFundData :', error);
-  //   }
-  // };
-
   useEffect(() => {
+    console.log('useEffect running');
     const container = realgridElement.current;
     const provider = new LocalDataProvider(true);
     const grid = new GridView(container);
@@ -156,22 +232,12 @@ function FixedFundGrid({
       commitLevel: 'error',
       displayEmptyEditRow: true, //비어있는 새로운 행을 나타내도록 설정
     });
+    const queryParams = createQueryParams(values);
 
     //페이지 로딩시 지출 데이터
     grid.showProgress();
     grid.cancel();
     if (values.divCode) {
-      const queryParams = new URLSearchParams();
-      queryParams.append('DISP_SQ', DISQ);
-      queryParams.append('DIV_CD', values.divCode);
-      // queryParams.append('DIV_CD', '001');
-      queryParams.append('TR_CD', values.gtradeCode);
-      queryParams.append('FTR_CD', values.ftradeCode);
-      queryParams.append('CASH_CD', values.cashCode);
-      queryParams.append('FR_DT1', values.startStart);
-      queryParams.append('FR_DT2', values.startEnd);
-      queryParams.append('TO_DT1', values.endStart);
-      queryParams.append('TO_DT2', values.endEnd);
       authAxiosInstance
         .get(
           `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
@@ -209,60 +275,67 @@ function FixedFundGrid({
         .catch(error => {
           console.error(error);
         });
+    } else {
+      grid.closeProgress();
     }
-
-    //페이지 로딩시 지출 데이터 수정중
-    // const searchFixedFundData = async () => {
-    //   console.log('함수 실행?');
-    //   grid.cancel();
-    //   const queryParams = new URLSearchParams();
-    //   queryParams.append('DISP_SQ', DISQ);
-    //   queryParams.append('DIV_CD', values.divCode);
-    //   queryParams.append('TR_CD', values.gtradeCode);
-    //   queryParams.append('FTR_CD', values.ftradeCode);
-    //   queryParams.append('CASH_CD', values.cashCode);
-    //   // queryParams.append('FR_DT1', values.startStart);
-    //   // queryParams.append('FR_DT2', values.startEnd);
-    //   // queryParams.append('TO_DT1', values.endStart);
-    //   // queryParams.append('TO_DT2', values.endEnd);
-    //   grid.showProgress();
-    //   try {
-    //     const response = await authAxiosInstance.get(
-    //       `/accounting/user/AcashFixManage/getList?${queryParams.toString()}`
-    //     );
-    //     console.log('searchFixedFundData : ', response.data);
-    //     provider.fillJsonData(response.data, {
-    //       fillMode: 'set',
-    //     });
-    //     let lastRowIndex = provider.getRowCount();
-    //     grid.setCurrent({ itemIndex: lastRowIndex });
-    //   } catch (error) {
-    //     console.error('Error fetching searchFixedFundData :', error);
-    //   }
-    // };
 
     grid.onValidateRow = (grid, itemIndex, dataRow, inserting, values) => {
       const error = {};
       console.log('이게뭘까?', values);
+
       if (values.sq_NB && values.cash_CD) {
-        // sq_NB 값과 CASH_CD 값 모두 있는 경우
-        rowUpdate(grid.getValues(itemIndex));
-        console.log('rowUpdate 실행');
+        rowUpdate(grid.getValues(itemIndex))
+          .then(() => {
+            console.log('rowUpdate 실행');
+            return fetchDataAndUpdateGrid();
+          })
+          .catch(error => {
+            console.error('Error updating row:', error);
+          });
       } else if (values.cash_CD) {
-        // CASH_CD 값이 있는 경우
-        rowInsert(grid.getValues(itemIndex));
-        console.log('왜신남?');
-        grid.editOptions.appendable = true;
-        grid.editOptions.commitWhenExitLast = true; //Tap, Enter키 입력시 커밋(행이동 or 행 추가) 가능
-        grid.editOptions.appendWhenExitLast = true; //Tap, Enter키 입력시 행추가 가능
-        grid.beginAppendRow();
+        rowInsert(grid.getValues(itemIndex))
+          .then(() => {
+            console.log('rowInsert 실행');
+            return fetchDataAndUpdateGrid();
+          })
+          .catch(error => {
+            console.error('Error inserting row:', error);
+          });
       } else {
         error.level = 'error';
         error.message = '[자금과목코드] 반드시 입력해 주십시요.';
         grid.setCurrent({ itemIndex: itemIndex, column: 'CASH_CD' });
       }
-
       return error;
+    };
+
+    const fetchDataAndUpdateGrid = async () => {
+      try {
+        const response = await authAxiosInstance.get(
+          `/accounting/user/AcashFixManage/getList?${createQueryParams(
+            values
+          ).toString()}`
+        );
+        console.log('Response: ', response.data);
+
+        const formatDate = dateStr =>
+          `${dateStr.substring(0, 4)}-${dateStr.substring(
+            4,
+            6
+          )}-${dateStr.substring(6, 8)}`;
+
+        response.data.forEach(item => {
+          if (item.fr_DT) item.fr_DT = formatDate(item.fr_DT);
+          if (item.to_DT) item.to_DT = formatDate(item.to_DT);
+        });
+        grid.cancel();
+        provider.fillJsonData(response.data, { fillMode: 'set' });
+
+        const lastRowIndex = provider.getRowCount();
+        grid.setCurrent({ itemIndex: lastRowIndex });
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     //버튼을 눌렀을 때, 코드 피커 창 띄우기
@@ -298,6 +371,19 @@ function FixedFundGrid({
 
   return (
     <div>
+      <div
+        style={{
+          marginBottom: '20px',
+          marginLeft: 'auto',
+          marginTop: -50,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          width: 100,
+          height: 30,
+        }}
+      >
+        <button onClick={handleDeleteRows}>행 삭제</button>
+      </div>
       <div
         ref={realgridElement}
         style={{ height: '600px', width: '100%', margin: '0 auto' }}

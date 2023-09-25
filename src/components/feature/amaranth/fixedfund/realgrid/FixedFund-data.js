@@ -27,7 +27,7 @@ export const fields = [
   },
   {
     fieldName: 'cash_AM',
-    dataType: ValueType.TEXT,
+    dataType: ValueType.NUMBER,
   },
   {
     fieldName: 'ftr_CD',
@@ -103,6 +103,7 @@ export const columns = [
     header: {
       text: '자금과목',
     },
+    styleName: 'align-left',
   },
   {
     name: 'TR_CD',
@@ -131,15 +132,17 @@ export const columns = [
     header: {
       text: '적요',
     },
+    styleName: 'align-left',
   },
   {
     name: 'CASH_AM',
     fieldName: 'CASH_AM',
     width: '110',
-    numberFormat: '#,##0',
+    textAlignment: 'far',
     header: {
       text: '금액',
     },
+    styleName: 'align-right',
     footer: {
       numberFormat: '#,##0',
       valueCallback: function (grid, column) {
@@ -148,14 +151,23 @@ export const columns = [
         var cnt = prod.getRowCount();
 
         for (var i = 0; i < cnt; i++) {
-          if (prod.getValue(i, 'CASH_AM') !== null) {
-            sum += parseInt(prod.getValue(i, 'CASH_AM'));
+          var value = prod.getValue(i, 'CASH_AM');
+          if (value !== null && !isNaN(value)) {
+            sum += value;
+            console.log(sum);
           }
         }
         return sum;
       },
     },
+    editor: {
+      type: 'number',
+      textAlignment: 'right',
+      editFormat: '#,##0',
+    },
+    numberFormat: '#,##0',
   },
+
   {
     name: 'FTR_CD',
     fieldName: 'FTR_CD',
@@ -172,6 +184,7 @@ export const columns = [
     fieldName: 'FTR_NM',
     width: '200',
     editable: false,
+    styleName: 'align-left',
     header: {
       text: '금융거래처',
     },
@@ -193,6 +206,7 @@ export const columns = [
     header: {
       text: '금융기관',
     },
+    styleName: 'align-left',
   },
   {
     name: 'FR_DT',
