@@ -237,12 +237,12 @@ const EmpInfoBox = ({
                     'username',
                     !clickYN && { required: 'ID를 입력해주세요.' }
                   )}
-                  defaultValue={data.username}
+                  defaultValue={data?.username}
                   maxLength="16"
                   style={{
                     border:
-                      errors.username &&
-                      (checkDBErrorYN.username_ERROR ||
+                      errors?.username &&
+                      (checkDBErrorYN?.username_ERROR ||
                         errorName === 'username')
                         ? '1px solid red'
                         : '1px solid #ccc',
@@ -252,7 +252,7 @@ const EmpInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {(checkDBErrorYN.username_ERROR ||
+                {(checkDBErrorYN?.username_ERROR ||
                   errorName === 'username') && (
                   <ErrorMessage
                     errors={errors}
@@ -283,8 +283,8 @@ const EmpInfoBox = ({
                   defaultValue={data.email_ADD}
                   style={{
                     border:
-                      errors.email_ADD &&
-                      (checkDBErrorYN.email_ADD_ERROR ||
+                      errors?.email_ADD &&
+                      (checkDBErrorYN?.email_ADD_ERROR ||
                         errorName === 'email_ADD')
                         ? '1px solid red'
                         : '1px solid #ccc',
@@ -294,7 +294,7 @@ const EmpInfoBox = ({
                   onFocus={onFocusError}
                   onChange={onChangeDBDataSearch}
                 />
-                {(checkDBErrorYN.email_ADD_ERROR ||
+                {(checkDBErrorYN?.email_ADD_ERROR ||
                   errorName === 'email_ADD') && (
                   <ErrorMessage
                     errors={errors}
@@ -395,7 +395,7 @@ const EmpInfoBox = ({
                   className="mailInputStyle"
                   name="personal_MAIL"
                   {...register('personal_MAIL')}
-                  defaultValue={data.personal_MAIL}
+                  defaultValue={data?.personal_MAIL}
                   maxLength="32"
                 />
                 @
@@ -405,7 +405,7 @@ const EmpInfoBox = ({
                   name="personal_MAIL_CP"
                   maxLength="32"
                   {...register('personal_MAIL_CP')}
-                  defaultValue={data.personal_MAIL_CP}
+                  defaultValue={data?.personal_MAIL_CP}
                 />
                 <EmpEmailPersonalSelectBox
                   width={'calc(100% - 300px)'}
@@ -426,7 +426,7 @@ const EmpInfoBox = ({
                   name="salary_MAIL"
                   maxLength="32"
                   {...register('salary_MAIL')}
-                  defaultValue={data.salary_MAIL}
+                  defaultValue={data?.salary_MAIL}
                 />
                 @
                 <input
@@ -435,7 +435,7 @@ const EmpInfoBox = ({
                   name="salary_MAIL_CP"
                   maxLength="32"
                   {...register('salary_MAIL_CP')}
-                  defaultValue={data.salary_MAIL_CP}
+                  defaultValue={data?.salary_MAIL_CP}
                 />
                 <EmpEmailSalarySelectBox
                   width={'calc(100% - 300px)'}
@@ -455,7 +455,7 @@ const EmpInfoBox = ({
                 name="tel"
                 {...register('tel')}
                 onChange={onChangeTel}
-                defaultValue={data.tel}
+                defaultValue={data?.tel}
               />
             </td>
             <th className="headerCellStyle">전화번호(집)</th>
@@ -466,7 +466,7 @@ const EmpInfoBox = ({
                 className="inputStyle"
                 {...register('home_TEL')}
                 onChange={onChangeHomeTel}
-                defaultValue={data.home_TEL}
+                defaultValue={data?.home_TEL}
               />
             </td>
           </tr>
@@ -480,7 +480,7 @@ const EmpInfoBox = ({
                 className="addressInputStyle"
                 name="zipcode"
                 {...register('zipcode')}
-                defaultValue={address ? address : data.zipcode}
+                defaultValue={address ? address : data?.zipcode}
               />
               <EventButton
                 data={'우편번호'}
@@ -495,7 +495,7 @@ const EmpInfoBox = ({
                 className="addrNum"
                 name="addr"
                 {...register('addr')}
-                defaultValue={addressDetail ? addressDetail : data.addr}
+                defaultValue={addressDetail ? addressDetail : data?.addr}
               />
             </td>
             <td className="cellStyle">

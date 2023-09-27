@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const GtradeListBoxItem = ({
   leftTop,
   rightTop,
   leftBottom,
   clickBoxEvent,
+  checkItemHandler,
+  isAllChecked,
   //clickedBoxID,
 }) => {
+  const [checked, setChecked] = useState(false); // 하나씩에 대한 체크 여부 판단
+
+  const allCheckHandler = () => setChecked(isAllChecked);
+  useEffect(() => allCheckHandler(), [isAllChecked]);
+
   const onClickDetailEmpInfo = () => {
     clickBoxEvent(leftTop);
+  };
+
+  const checkHandled = ({ target }) => {
+    setChecked(!checked);
+    checkItemHandler(target.id, target.checked);
   };
 
   const empListBoxItemCSS = {
@@ -31,6 +43,12 @@ const GtradeListBoxItem = ({
 
   return (
     <div style={empListBoxItemCSS} onClick={onClickDetailEmpInfo}>
+      <input
+        id={leftTop}
+        type="checkbox"
+        checked={checked}
+        onChange={e => checkHandled(e)}
+      />
       <div className="flexWrapper">
         <span className="leftContent">{leftTop}</span>
         <span className="rightContent">{rightTop}</span>

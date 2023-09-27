@@ -3,14 +3,22 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const SelectBox = ({ data, width, state, setState }) => {
-  const handleChange = event => {
-    setState(event.target.value);
+const StradeCodeHelpUseYNSelectBox = ({
+  width,
+  register,
+  state,
+  setState,
+  setChangeFormData,
+  total,
+}) => {
+  const handleChange = e => {
+    setState(e.target.value);
   };
 
   return (
     <FormControl sx={{ m: 1, width: width }} size="small">
       <Select
+        {...register('use_YN')}
         id="demo-select-small"
         value={state}
         onChange={handleChange}
@@ -30,22 +38,29 @@ const SelectBox = ({ data, width, state, setState }) => {
           },
         }}
       >
-        {data.map((value, index) => (
-          <MenuItem
-            value={index}
-            key={index}
-            style={{
-              fontSize: '0.8rem',
-              fontWeight: 'bold',
-              borderBottom: '1px solid #CCC',
-            }}
-          >
-            {value}
-          </MenuItem>
-        ))}
+        <MenuItem
+          value={1}
+          style={{
+            fontSize: '0.8rem',
+            fontWeight: 'bold',
+            borderBottom: '1px solid #CCC',
+          }}
+        >
+          사용
+        </MenuItem>
+        <MenuItem
+          value={0}
+          style={{
+            fontSize: '0.8rem',
+            fontWeight: 'bold',
+            borderBottom: '1px solid #CCC',
+          }}
+        >
+          전체 (미사용포함)
+        </MenuItem>
       </Select>
     </FormControl>
   );
 };
 
-export default SelectBox;
+export default StradeCodeHelpUseYNSelectBox;

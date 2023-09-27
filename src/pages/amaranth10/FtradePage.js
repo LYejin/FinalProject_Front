@@ -17,8 +17,8 @@ import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import SelectListWrapperCommon from '../../components/layout/amaranth/SelectListWrapperCommon';
-import GtradeListBoxItem from '../../components/feature/amaranth/employee/GtradeListBoxItem';
-import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
+import GtradeListBoxItem from '../../components/feature/amaranth/Strade/GtradeListBoxItem';
+import FtradeInfoBox from '../../components/feature/amaranth/Strade/FtradeInfoBox';
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 
 const FtradePage = () => {
@@ -53,6 +53,10 @@ const FtradePage = () => {
   const [useYN, setUseYN] = useState(''); // 사용여부 select box state
   const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
   const listRef = useRef(null); // list 화면 상하단 이동
+  const [financeCDChangeData, setFinanceChangeCDData] = useState();
+  const [financeCDData, setFinanceCDData] = useState();
+  const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
+  const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
@@ -149,7 +153,7 @@ const FtradePage = () => {
   //   });
   // }, [company]);
 
-  // 사원 리스트 얻는 axios
+  // 거래처 리스트 얻는 axios
   const getEmpList = async emp => {
     const response = await authAxiosInstance(
       'accounting/user/Strade/getSFtradeList'
@@ -161,6 +165,9 @@ const FtradePage = () => {
       setTR_CD(response.data[0]?.tr_CD);
       setData(response?.data[0]);
       setUseYN(response.data[0]?.use_YN);
+      setFinanceCDData(
+        `${response.data[0]?.bank_CD}. ${response.data[0]?.bank_NAME}`
+      );
       setSelectedRadioValue(response.data[0]?.gender_FG);
       setCompany(response.data[0]?.co_CD);
     }
@@ -181,7 +188,6 @@ const FtradePage = () => {
     if (onChangeForm === true) {
       alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
-    console.log('tr_CD : ', tr_CD);
     setIsLoading(true);
     setInsertButtonClick(false);
     setClickYN(true);
@@ -194,12 +200,13 @@ const FtradePage = () => {
         params,
       }
     );
-    setData(response?.data);
     console.log(response.data);
+    setData(response?.data);
     setSelectedRadioValue(response.data?.gender_FG);
     setOpenDate(new Date(response.data?.fstart_DT) || '');
     setCloseDate(new Date(response.data?.fend_DT) || '');
     setIsLoading(false);
+    setFinanceCDData(`${response.data?.bank_CD}. ${response.data?.bank_NAME}`);
     setUseYN(response.data?.use_YN);
     setTR_CD(response.data?.tr_CD);
     setCompany(response.data.co_CD);
@@ -249,6 +256,7 @@ const FtradePage = () => {
     reset();
     resetData();
     setOpenDate(new Date());
+    setFinanceCDData();
     setCloseDate();
     setInsertButtonClick(true);
     setClickYN(false);
@@ -497,12 +505,36 @@ const FtradePage = () => {
     console.log('checkDBErrorYN : ', checkDBErrorYN);
   };
 
-  console.log('errors', errors);
-  console.log(changeFormData);
-  console.log(checkDBErrorYN);
+  //console.log('errors', errors);
+  //console.log(changeFormData);
+  //console.log(checkDBErrorYN);
+  console.log(financeCDData);
+  console.log(financeCDChangeData);
   // console.log(data);
   // console.log(onChangeForm);
   // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
+
+  const checkItemHandler = (id, isChecked) => {
+    if (isChecked) {
+      checkItems.add(id);
+      setCheckItems(checkItems);
+    } else if (!isChecked) {
+      checkItems.delete(id);
+      setCheckItems(checkItems);
+    }
+  };
+
+  const allCheckedHandler = ({ target }) => {
+    if (target.checked) {
+      setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
+      setIsAllChecked(true);
+      Array.from(checkItems);
+    } else {
+      checkItems.clear();
+      setCheckItems(checkItems);
+      setIsAllChecked(false);
+    }
+  };
 
   return (
     <>
@@ -561,14 +593,18 @@ const FtradePage = () => {
                 data={empList}
                 clickInsertBoxEvent={onClickInsertEmpBox}
               >
+                <input type="checkbox" onChange={e => allCheckedHandler(e)} />
+                전체선택
                 {empList.map(info => (
                   <GtradeListBoxItem
                     key={info.tr_CD}
                     //clickedBoxID={clickedBoxID}
+                    isAllChecked={isAllChecked}
                     leftTop={info?.tr_CD}
                     rightTop={info?.tr_NM}
                     leftBottom={info?.ba_NB_TR}
                     clickBoxEvent={onClickDetailSGtradeInfo}
+                    checkItemHandler={checkItemHandler}
                   />
                 ))}
               </SelectListWrapperCommon>
@@ -594,6 +630,10 @@ const FtradePage = () => {
                   </div>
                   <ScrollWrapper width={'900px'}>
                     <FtradeInfoBox
+                      financeCDChangeData={financeCDChangeData}
+                      setFinanceChangeCDData={setFinanceChangeCDData}
+                      financeCDData={financeCDData}
+                      setFinanceCDData={setFinanceCDData}
                       data={data || []}
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}

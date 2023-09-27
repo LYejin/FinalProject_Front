@@ -57,105 +57,79 @@ axiosInstance.interceptors.response.use(
 ////////////////////////////////////////////////////////////
 
 //요청 인터셉터
-authAxiosInstance.interceptors.request.use(
-  async config => {
-    const req_url = config.url;
-    config.headers['Authorization'] = getAccessToken();
-    if (req_url.includes('system') || req_url.includes('accounting')) {
-      await authAxiosInstance('/login').catch(error => {
-        if (
-          error.response.status === 403 &&
-          error.response.headers['authorization'] !== undefined
-        ) {
-          return config;
-        } else if (
-          error.response.status === 404 &&
-          error.response.headers['authorization'] !== undefined
-        ) {
-          setAccessToken(error.response.headers['authorization']);
-          config.headers['Authorization'] =
-            error.response.headers['authorization'];
-        }
-      });
-    }
-    return config;
-  },
-  err => {
-    return Promise.reject(err);
-  }
-);
+authAxiosInstance.interceptors.request.use(async config => {
+  config.headers['Authorization'] = getAccessToken();
+  return config;
+});
 
 //응답 인터셉터
 authAxiosInstance.interceptors.response.use(
-  response => {
-    // accessToken 갱신
-    if (response.headers['authorization'] !== undefined) {
-      setAccessToken(response.headers['authorization']);
-    }
+  async response => {
     return response;
   },
   async error => {
-    if (
-      error.response.status === 403 &&
-      error.response.headers['authorization'] === undefined
-    ) {
-      removeAccessToken();
-      window.location.href = '/';
-      alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+    const { config } = error;
+    if (error.response.status === 403) {
+      const originalRequest = config;
+      await axiosInstance('/account/user/token/getAccessToken')
+        .then(response => {
+          console.log('ㅇㅇㅇㅇ', response);
+          originalRequest.headers.Authorization =
+            response.headers['authorization'];
+          setAccessToken(response.headers['authorization']);
+        })
+        .catch(async err => {
+          if (
+            err.response.data.status === 40300 &&
+            err.response.data.message === 'RefreshToken 만료'
+          ) {
+            removeAccessToken();
+            window.location.href = '/';
+            alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+          }
+        });
+      return axios(originalRequest);
     }
-    throw error;
+    return Promise.reject(error);
   }
 );
 
 //////////////////////////////////////////////////////////
 
 //요청 인터셉터
-imageAxiosInstance.interceptors.request.use(
-  async config => {
-    const req_url = config.url;
-    config.headers['Authorization'] = getAccessToken();
-    if (req_url.includes('system')) {
-      await authAxiosInstance('/login').catch(error => {
-        if (
-          error.response.status === 403 &&
-          error.response.headers['authorization'] !== undefined
-        ) {
-          return config;
-        } else if (
-          error.response.status === 404 &&
-          error.response.headers['authorization'] !== undefined
-        ) {
-          setAccessToken(error.response.headers['authorization']);
-          config.headers['Authorization'] =
-            error.response.headers['authorization'];
-        }
-      });
-    }
-    return config;
-  },
-  err => {
-    return Promise.reject(err);
-  }
-);
+imageAxiosInstance.interceptors.request.use(async config => {
+  config.headers['Authorization'] = getAccessToken();
+  return config;
+});
 
 //응답 인터셉터
 imageAxiosInstance.interceptors.response.use(
-  response => {
-    // accessToken 갱신
-    if (response.headers['authorization'] !== undefined) {
-      setAccessToken(response.headers['authorization']);
-    }
+  async response => {
     return response;
   },
   async error => {
-    if (
-      error.response.status === 403 &&
-      error.response.headers['authorization'] === undefined
-    ) {
-      removeAccessToken();
-      window.location.href = '/';
-      alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+    const { config } = error;
+    if (error.response.status === 403) {
+      const originalRequest = config;
+      await axiosInstance('/account/user/token/getAccessToken')
+        .then(response => {
+          console.log('ㅇㅇㅇㅇ', response);
+          originalRequest.headers.Authorization =
+            response.headers['authorization'];
+          setAccessToken(response.headers['authorization']);
+        })
+        .catch(async err => {
+          if (
+            err.response.data.status === 40300 &&
+            err.response.data.message === 'RefreshToken 만료'
+          ) {
+            removeAccessToken();
+            window.location.href = '/';
+            alert('로그인 시간이 만료되었습니다. 다시 로그인 해주세요.');
+          }
+        });
+      return axios(originalRequest);
     }
-    throw error;
+    return Promise.reject(error);
   }
 );

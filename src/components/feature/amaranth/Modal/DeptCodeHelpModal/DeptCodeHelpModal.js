@@ -2,43 +2,47 @@ import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GridView, LocalDataProvider } from 'realgrid';
-import { columns, fields, fundTypeLayout } from './EmpCodeHelpRealGridData';
+import {
+  columns,
+  fields,
+  fundTypeLayout,
+} from '../DeptCodeHelpModal/DeptCodeHelpRealGridData';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
+import StradeCodeHelpUseYNSelectBox from '../StradeCodeHelpModal/StradeCodeHelpUseYNSelectBox';
 import EventButton from '../../../../common/button/EventButton';
-import SelectBox from './../../../../common/box/SelectBox';
 
-const EmpCodeHelpModal = ({
+const DeptCodeHelpModal = ({
   onChangeModalClose,
+  setDeptMenuButton,
   tr_CD,
-  setEmpMenuButton,
-  setEmpCodeHelpData,
   gridViewStrade,
   cellClickData,
   dataProviderStrade,
-  setEmpCheckDataList,
-  empGridValue,
-  setEmpGridValue,
+  setDeptCheckDataList,
+  deptGridValue,
+  setDeptGridValue,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
   });
   const [dataProviderState, setDataProviderState] = useState(null);
   const [gridViewState, setGridViewState] = useState(null);
-  const [enrlFGSelectData, setEnrlFGSelectData] = useState(0); // select 내 enrl 재직구분 데이터
+  const [useYNSelectData, setUseYNSelectData] = useState(1);
   const realgridElement = useRef(null);
 
   const onClickSearchEmpList = () => {
     const { selectValue } = getValues();
     const params = {};
-    params.ENRL_FG = enrlFGSelectData;
+    params.DEPT_YN = useYNSelectData;
+    params.TR_CD = tr_CD;
 
     if (selectValue !== '') {
       params.VALUE = selectValue;
     }
 
-    authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
+    authAxiosInstance('accounting/user/Strade/deptCodeHelpList', {
       params,
     }).then(response => {
       dataProviderState.setRows(response.data);
@@ -62,40 +66,37 @@ const EmpCodeHelpModal = ({
 
     const params = {};
     params.TR_CD = tr_CD;
-    params.ENRL_FG = enrlFGSelectData;
-    if (empGridValue !== '') {
-      params.VALUE = empGridValue;
+    params.DEPT_YN = useYNSelectData;
+    if (deptGridValue !== '') {
+      params.VALUE = deptGridValue;
     }
 
-    authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
+    authAxiosInstance('accounting/user/Strade/deptCodeHelpList', {
       params,
     }).then(response => {
       dataProvider.setRows(response?.data);
     });
+    setDeptGridValue('');
 
-    setEmpGridValue('');
     //
     gridView.onCellDblClicked = function (grid, index) {
       var current = gridView.getCurrent();
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
       const stradeRows = dataProviderStrade.getJsonRows(0, -1); // 마지막행 row
-      const row = {
-        emp_CD: jsonData.emp_CD,
-        kor_NM: jsonData.kor_NM,
-      };
+      const row = { dept_CD: jsonData.dept_CD, dept_NM: jsonData.dept_NM };
       gridViewStrade.setCurrent({
         itemIndex: Object.keys(stradeRows).length,
         column: 'note',
       });
       gridViewStrade.setValues(cellClickData, row, false);
-      setEmpMenuButton(false);
+      setDeptMenuButton(false);
     };
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
     gridView.setColumnLayout(fundTypeLayout);
 
     // 그리드의 상태 바를 숨깁니다.
-    //gridView.setStateBar({ visible: false });
+    gridView.setStateBar({ visible: false });
 
     // 그리드의 고정 옵션을 설정합니다.
     gridView.setFixedOptions({});
@@ -110,10 +111,8 @@ const EmpCodeHelpModal = ({
     gridView.setFooter({ visible: false });
 
     //입력 비활성화
-    gridView.columnByName('emp_CD').editable = false;
-    gridView.columnByName('kor_NM').editable = false;
+    gridView.columnByName('dept_CD').editable = false;
     gridView.columnByName('dept_NM').editable = false;
-    gridView.columnByName('div_NM').editable = false;
 
     //컬럼 너비 자동 조절 설정
     gridView.setDisplayOptions({ fitStyle: 'evenFill' });
@@ -137,9 +136,6 @@ const EmpCodeHelpModal = ({
     setDataProviderState(dataProvider);
     setGridViewState(gridView);
 
-    gridView.commit();
-    gridView.cancel();
-
     // 컴포넌트가 언마운트될 때 정리 작업을 수행합니다.
     return () => {
       dataProvider.clearRows();
@@ -156,53 +152,49 @@ const EmpCodeHelpModal = ({
       var data = dataProviderState.getJsonRow(checkRows[i]);
       let rowData = {
         tr_CD: tr_CD,
-        roll_FG: 2,
-        emp_CD: data.emp_CD,
-        kor_NM: data.kor_NM,
+        roll_FG: 1,
+        dept_CD: data.dept_CD,
+        dept_NM: data.dept_NM,
       };
+      dataProviderStrade.addRow(rowData);
 
       gridViewStrade.commit();
       gridViewStrade.cancel();
-      // 아예 insert 하는 방법?
-
       rowDatas.push(rowData);
     }
-
     authAxiosInstance
-      .post('accounting/user/Strade/stradeRollInEmpInsert', rowDatas)
+      .post('accounting/user/Strade/stradeRollInDeptInsert', rowDatas)
       .then(response => {
         console.log(response?.data);
       });
-
-    setEmpCheckDataList(rowDatas);
-
+    setDeptCheckDataList(rowDatas);
     alert(JSON.stringify(rowDatas));
     onChangeModalClose();
   };
 
   return (
     <Modal
-      width={'600px'}
+      width={'560px'}
       height={'600px'}
-      title={'사원코드도움'}
+      title={'부서코드도움'}
       onClickEvent={onChangeModalClose}
       buttonYN={true}
       onClickBottomButtonEvent={onClickBottomButtonEvent}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">사원코드</span>
+        <span className="rightSelectBoxPadding">부서코드</span>
         <input
           type="text"
           className="textInputBox"
           {...register('selectValue')}
-          defaultValue={empGridValue && empGridValue}
+          defaultValue={deptGridValue && deptGridValue}
         />
-        <span className="rightSelectBoxPadding">재직여부</span>
-        <SelectBox
-          width={'100px'}
-          data={['재직', '휴직', '퇴직']}
-          state={enrlFGSelectData}
-          setState={setEnrlFGSelectData}
+        <span className="rightSelectBoxPadding">사용여부</span>
+        <StradeCodeHelpUseYNSelectBox
+          width={200}
+          register={register}
+          state={useYNSelectData}
+          setState={setUseYNSelectData}
         />
         <div className="selectBoxButtonWrapper">
           <EventButton
@@ -218,4 +210,4 @@ const EmpCodeHelpModal = ({
   );
 };
 
-export default EmpCodeHelpModal;
+export default DeptCodeHelpModal;

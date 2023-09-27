@@ -165,11 +165,11 @@ const EmployeePage = () => {
     setEmpList(response.data);
     if (clickYN && !insertButtonClick) {
       console.log('^^^^^^^^^^^^^^^^^^^^^^^');
-      setUsername(response.data[0].username);
-      setData(response.data[0] || resetData());
-      setSelectedRadioValue(response.data[0].gender_FG);
-      setCompany(response.data[0].co_CD);
-      setWorkplaceSelect(response.data[0].div_CD);
+      setUsername(response.data[0]?.username);
+      setData(response?.data[0] || resetData());
+      setSelectedRadioValue(response.data[0]?.gender_FG);
+      setCompany(response.data[0]?.co_CD);
+      setWorkplaceSelect(response.data[0]?.div_CD);
     }
     setChangeForm(false);
   };
@@ -357,12 +357,13 @@ const EmployeePage = () => {
       const responseGetList = await authAxiosInstance(
         `system/user/groupManage/employee/getList`
       );
+
+      alert('사원정보가 수정되었습니다.');
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
       setEmailPersonalData('');
       setEmailSalaryData('');
-      alert('사원정보가 수정되었습니다.');
     } else if (
       clickYN &&
       !insertButtonClick &&
@@ -419,8 +420,8 @@ const EmployeePage = () => {
         ...empList,
         {
           join_DT: getJoinDT,
-          username: data.username,
-          kor_NM: data.kor_NM,
+          username: data?.username,
+          kor_NM: data?.kor_NM,
         },
       ]);
       alert('사원이 추가되었습니다.');

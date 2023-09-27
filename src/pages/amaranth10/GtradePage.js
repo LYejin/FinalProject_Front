@@ -29,10 +29,11 @@ import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpChe
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
-import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
+import GtradeInfoBox from '../../components/feature/amaranth/Strade/GtradeInfoBox';
 import SelectListWrapperCommon from '../../components/layout/amaranth/SelectListWrapperCommon';
-import GtradeListBoxItem from '../../components/feature/amaranth/employee/GtradeListBoxItem';
+import GtradeListBoxItem from '../../components/feature/amaranth/Strade/GtradeListBoxItem';
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
+import Swal from 'sweetalert2';
 
 const GtradePage = () => {
   const {
@@ -69,6 +70,8 @@ const GtradePage = () => {
   const [useYN, setUseYN] = useState(''); // 사용여부 select box state
   const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
   const listRef = useRef(null); // list 화면 상하단 이동
+  const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
+  const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
@@ -541,6 +544,36 @@ const GtradePage = () => {
   // console.log(onChangeForm);
   // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
+  const checkItemHandler = (id, isChecked) => {
+    if (isChecked) {
+      checkItems.add(id);
+      setCheckItems(checkItems);
+    } else if (!isChecked) {
+      checkItems.delete(id);
+      setCheckItems(checkItems);
+    }
+  };
+
+  const allCheckedHandler = ({ target }) => {
+    if (target.checked) {
+      setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
+      setIsAllChecked(true);
+      Array.from(checkItems);
+    } else {
+      checkItems.clear();
+      setCheckItems(checkItems);
+      setIsAllChecked(false);
+    }
+  };
+
+  const removeStradelist = () => {
+    authAxiosInstance.delete('accounting/user/Strade/stradeDelete', {
+      data: { tr_CD: Array.from(checkItems), tr_FG: '1' },
+    });
+  };
+
+  console.log(Array.from(checkItems));
+
   return (
     <>
       <CommonLayout2>
@@ -604,14 +637,18 @@ const GtradePage = () => {
                 data={empList}
                 clickInsertBoxEvent={onClickInsertEmpBox}
               >
+                <input type="checkbox" onChange={e => allCheckedHandler(e)} />
+                전체선택
                 {empList.map(info => (
                   <GtradeListBoxItem
                     key={info.tr_CD}
                     //clickedBoxID={clickedBoxID}
+                    isAllChecked={isAllChecked}
                     leftTop={info?.tr_CD}
                     rightTop={info?.tr_NM}
                     leftBottom={info?.reg_NB}
                     clickBoxEvent={onClickDetailSGtradeInfo}
+                    checkItemHandler={checkItemHandler}
                   />
                 ))}
               </SelectListWrapperCommon>
@@ -623,6 +660,13 @@ const GtradePage = () => {
                   <div className="tableHeader">
                     <div className="defaultTitle">기본등록사항</div>
                     <div className="buttonWrapper">
+                      <button
+                        type="button"
+                        className="WhiteButton"
+                        onClick={removeStradelist}
+                      >
+                        L삭제
+                      </button>
                       <button type="submit" className="WhiteButton">
                         저장
                       </button>
