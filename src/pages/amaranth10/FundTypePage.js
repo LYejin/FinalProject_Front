@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import JSZip from 'jszip';
-import * as XLSX from 'xlsx';
 import {
   authAxiosInstance,
   imageAxiosInstance,
@@ -33,7 +31,7 @@ import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 
 import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
-import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModel';
+import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
 import FundTypeSelectBoxUSEYN from '../../components/feature/amaranth/fundType/Box/FundTypeSelectBoxUSEYN';
 import FundTypeSelectBoxWrapper from '../../components/feature/amaranth/fundType/Box/SelectBoxWrapper';
 import FundTypeRidoButton from '../../components/feature/amaranth/fundType/Box/FundTypeRidoButton';

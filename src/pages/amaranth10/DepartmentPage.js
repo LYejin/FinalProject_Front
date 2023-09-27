@@ -26,6 +26,10 @@ import { useForm } from 'react-hook-form';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import DeptInfoWrapper from '../../components/feature/amaranth/Department/DeptInfoWrapper';
+import selectDeptImg from '../../components/feature/amaranth/Department/deptSelect.png';
+import Modal from '../../components/common/modal/Modal';
+import DaumPostcode from 'react-daum-postcode';
+import { setDate } from 'date-fns';
 
 const DepartmentPage = () => {
   const {
@@ -45,16 +49,100 @@ const DepartmentPage = () => {
   const [SearchCocd, setSearchCocd] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [allDepartmentData, setAllDepartmentData] = useState([]);
-  const [matchingDept, setMatchingDept] = useState([]);
+  const [data, setData] = useState({});
+  const [selectedDept, setSelectedDept] = useState('1');
+  const [selectedRadioValue, setSelectedRadioValue] = useState(''); //radio 값
+  const [showRadioValue, setShowRadioValue] = useState(''); //radio 값
+  const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
+  const [isVisible, setVisible] = useState(false);
+  const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
+  const [addressDetail, setAddressDetail] = useState(); // 주소
+  const [address, setAddress] = useState(''); // 우편 주소
+  const [useCoCd, setUseCoCd] = useState(''); // 현재 선택된 회사
+  const [useDivCd, setUseDivCd] = useState(''); // 현재 선택된 사업장
+
+  // 우편번호
+  const onChangeOpenPost = () => {
+    setIsOpenPost(!isOpenPost);
+  };
+
+  // 우편번호 검색 시 처리
+  const onCompletePost = data => {
+    let fullAddr = data.address;
+    let extraAddr = '';
+
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddr += data.bname;
+      }
+      fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
+    }
+
+    setAddress(data.zonecode);
+    setAddressDetail(fullAddr);
+    setChangeFormData({
+      ...changeFormData,
+      zipcode: data.zonecode,
+      addr: fullAddr,
+    });
+    setIsOpenPost(false);
+  };
+
+  const handleDivClick = value => {
+    setSelectedDept(value);
+  };
 
   const handleSearch = value => {
     setSearchValue(value);
   };
 
   useEffect(() => {
-    fetchCompanyData();
-    // fetchDepartmentData(1232);
+    const initialDataFetch = async () => {
+      try {
+        const response = await authAxiosInstance.get(
+          'system/user/groupManage/employee/getCompanyList'
+        );
+        const mappedCompanyData = response.data.map(company => ({
+          value: company.co_CD,
+          label: company.co_NM,
+        }));
+        setCompanyData(mappedCompanyData);
+
+        // 첫번째 데이터의 co_CD를 가지고 fetchDepartmentData를 호출
+        if (response.data.length > 0) {
+          fetchDepartmentData(response.data[0].co_CD);
+          setUseCoCd(response.data[0].co_CD);
+        }
+      } catch (error) {
+        console.error('Error fetching company data:', error);
+      }
+    };
+
+    initialDataFetch();
   }, []);
+
+  const resetData = () => {
+    setData({
+      // co_CD: '',
+      // div_CD: '',
+      co_NM: '',
+      dept_CD: '',
+      dept_CT: '',
+      dept_NM: '',
+      dept_NMK: '',
+      dept_YN: '',
+      call_NM: '',
+      call_YN: '',
+      div_NM: '',
+      mdept_CD: '',
+      mgr_NM: '',
+      show_YN: '',
+      sort_YN: '',
+      addr: '',
+      addr_CD: '',
+      addr_NUM: '',
+    });
+  };
 
   const fetchCompanyData = async () => {
     try {
@@ -65,7 +153,6 @@ const DepartmentPage = () => {
         value: company.co_CD,
         label: company.co_NM,
       }));
-
       setCompanyData(mappedCompanyData);
     } catch (error) {
       console.error('Error fetching company data:', error);
@@ -77,13 +164,10 @@ const DepartmentPage = () => {
       const response = await authAxiosInstance.get(
         `/system/user/departments/getDeptList/${selectedCoCd}`
       );
-
-      console.log(response.data);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
-      console.log(organizedData);
-
       setAllDepartmentData(response.data);
+      setUseCoCd(selectedCoCd); //현재 선택된 회사코드
     } catch (error) {
       console.error('Error fetching department data:', error);
     }
@@ -143,16 +227,76 @@ const DepartmentPage = () => {
     return result;
   };
 
-  const handleSelectDepartment = dept_CD => {
-    console.log(dept_CD);
-    const foundDept = allDepartmentData.find(dept => dept.dept_CD === dept_CD);
-    if (foundDept) {
-      console.log('Found matching department data:', foundDept);
-      setMatchingDept(foundDept);
-      console.log(matchingDept);
-    } else {
-      console.log('No matching department found.');
+  // const handleSelectDepartment = async dept_CD => {
+  //   console.log(dept_CD);
+  //   try {
+  //     const response = await authAxiosInstance.get(
+  //       `system/user/WorkplaceManage/getWorkpInfo/${dept_CD}`
+  //     );
+  //     const foundDept = allDepartmentData.find(
+  //       dept => dept.dept_CD === dept_CD
+  //     );
+  //     if (foundDept) {
+  //       console.log('Found matching department data:', foundDept);
+  //       if (!isVisible) {
+  //         setVisible(true);
+  //       }
+  //       setMatchingDept(foundDept);
+  //       setSelectedRadioValue(response.data.call_YN);
+  //       setShowRadioValue(response.data.show_YN);
+  //     } else {
+  //       console.log('No matching department found.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching department data:', error);
+  //   }
+  // };
+
+  const handleSelectDepartment = async (dept_CD, div_CD) => {
+    try {
+      const response = await authAxiosInstance.get(
+        `system/user/departments/getDeptInfo/${dept_CD}`,
+        {
+          params: {
+            divCd: div_CD,
+            coCd: useCoCd,
+          },
+        }
+      );
+
+      const foundDept = allDepartmentData.find(
+        dept => dept.dept_CD === dept_CD
+      );
+      if (foundDept) {
+        console.log('Found matching department data:', foundDept);
+        if (!isVisible) {
+          setVisible(true);
+        }
+        setData(foundDept);
+        setSelectedRadioValue(response.data.call_YN);
+        setShowRadioValue(response.data.show_YN);
+      } else {
+        console.log('No matching department found.');
+      }
+    } catch (error) {
+      console.error('Error fetching department data:', error);
     }
+  };
+
+  const handleRadioChange = e => {
+    setSelectedRadioValue(e.target.value);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleShowRadioChange = e => {
+    setShowRadioValue(e.target.value);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
@@ -189,18 +333,62 @@ const DepartmentPage = () => {
               <RightContentWrapper>
                 <DeptHeadTitle titleName={'상세정보'}></DeptHeadTitle>
                 <DeptSubTitle>
-                  <div className="subTitleInfo">기본정보</div>
-                  <div className="subTitleInfo2">부서원 정보</div>
+                  <div
+                    className={`subTitleInfo ${
+                      selectedDept === '1' ? 'IsSelected' : ''
+                    }`}
+                    onClick={() => handleDivClick('1')}
+                  >
+                    기본정보
+                  </div>
+                  <div
+                    className={`subTitleInfo2 ${
+                      selectedDept === '0' ? 'IsSelected' : ''
+                    }`}
+                    onClick={() => handleDivClick('0')}
+                  >
+                    부서원 정보
+                  </div>
                 </DeptSubTitle>
-                <form>
-                  <ScrollWrapper width={'900px'} deptH={30}>
-                    <DeptInfoWrapper data={matchingDept} register={register} />
-                  </ScrollWrapper>
-                </form>
+
+                <ScrollWrapper width={'900px'} deptH={30}>
+                  <div style={{ display: isVisible ? 'block' : 'none' }}>
+                    <form>
+                      <DeptInfoWrapper
+                        data={data}
+                        register={register}
+                        selectedRadioValue={selectedRadioValue}
+                        showRadioValue={showRadioValue}
+                        handleRadioChange={handleRadioChange}
+                        handleShowRadioChange={handleShowRadioChange}
+                        onChangeOpenPost={onChangeOpenPost}
+                        address={address}
+                        addressDetail={addressDetail}
+                      />
+                    </form>
+                  </div>
+                  <div
+                    className="selectDeptImg"
+                    style={{ display: isVisible ? 'none' : 'flex' }}
+                  >
+                    <img src={selectDeptImg} alt="부서선택" />
+                  </div>
+                </ScrollWrapper>
               </RightContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
+        {isOpenPost ? (
+          <Modal
+            width={'560px'}
+            height={'600px'}
+            title={'우편번호'}
+            onClickEvent={onChangeOpenPost}
+            buttonYN="true"
+          >
+            <DaumPostcode autoClose onComplete={onCompletePost} />
+          </Modal>
+        ) : null}
       </CommonLayout2>
     </>
   );

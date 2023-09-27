@@ -653,6 +653,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     <input
                       type="file"
                       id="fileImageUpload"
+                      accept="image/*"
                       className="userImage"
                       accept="image/*"
                       name={labels.PIC_FILE_ID}

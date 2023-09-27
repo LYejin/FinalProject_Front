@@ -37,6 +37,149 @@
   font-weight: 600;
 }
 
+.FPSelectBoxWrapper{
+  min-width: 1330px;
+  height: 90px;
+  border: 2px solid #e6e6e6;
+  display: flex;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  justify-content: center; 
+  flex-direction: column;
+}
+
+.FPSelectBoxWrapper > div {
+  display: flex;
+
+  align-items: center; 
+}
+
+.firstDiv {
+  padding-right: 10px;
+  margin-left: 70px;
+}
+
+.secondDiv {
+  margin-left: 88px;
+}
+
+.inputDivStyle{
+  margin-right: 50px;
+}
+.inputDivStyle2{
+  margin-right: 66px;
+}
+
+.inputDivStyle3{
+  margin-right: 10px;
+}
+
+.FixedInputStyle {
+  margin-left: 5px;
+  height: 30px;
+  border: 1px solid lightgray; 
+  border-radius: 0; 
+  outline: none;
+  width: 200px;
+  padding-right: 35px;
+  padding-left: 5px;
+}
+
+.FFInputIconStyle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: darkgray;
+}
+
+.FFInputIconStyle:hover {
+  cursor: pointer;
+}
+
+.FixedInputStyle2 {
+  margin-left: 5px;
+  height: 30px;
+  border: 1px solid lightgray; 
+  border-radius: 0; 
+  outline: none;
+  width: 200px;
+  padding-right: 35px;
+}
+
+.FPSelectBoxWrapper > div:not(:last-child) {
+  margin-bottom: 10px;  
+}
+
+.FFSelectBoxWrapper {
+  width: 460px;
+  height: 45px;
+  border: 2px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.FFcustomButton {
+  width: 30px;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  color: darkgray;
+  transition: border-color 0.3s;
+  vertical-align: middle;
+  box-shadow: none;
+  height: 30px;
+  margin-left: auto;
+}
+
+.FFcustomButton:hover {
+  border-color: #000000;
+  cursor: pointer;
+}
+
+.DPcustomButton {
+  margin-left: 5px;
+  height: 30px;
+  width: 30px;
+  border: 2px solid darkgray;
+  border-radius: 3px;
+  margin-top: -3px;
+  color: darkgray;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border-radius: 3px;
+}
+
+.DPcustomButton:hover {
+  border-color: #000000;
+  cursor: pointer;
+  color: black;
+}
+
+.FFcustomButtonStyle {
+  width: 30px;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  color: darkgray;
+  transition: border-color 0.3s;
+  vertical-align: middle;
+  box-shadow: none;
+  height: 30px;
+}
+
+.FFcustomButtonStyle:hover {
+  border-color: #000000;
+}
+
 .modalBoxWrapper {
   min-width: 200px;
   height: 45px;
@@ -171,7 +314,12 @@
   display: flex;
   justify-content: end;
 }
-
+/* FullContentWrapper */
+.fullContentWrapper {
+  flex: 1;
+  height: 105%;
+  float: left;
+}
 /* RightContentWrapper.js */
 .rightContentWrapper {
   margin-left: 20px;
@@ -236,4 +384,15 @@ li > ul {
 /* 마지막 계층의 아이템 스타일 */
 li > ul > li:last-child {
   border-left: none;
+}
+
+.date-picker-container {
+  display: flex;
+  z-index: 9999; /* 충분히 높은 값으로 설정하여 다른 요소 위에 올라오게 합니다. */
+  position: absolute; /* position을 absolute로 설정하여 위치를 조절합니다. */
+  top: 100%; /* input 태그 바로 아래에 위치시킵니다. */
+}
+
+.date-picker {
+  margin-right: 10px; /* DatePicker 사이의 간격을 조절합니다. 마지막 DatePicker에는 margin이 필요 없으므로 이를 제거해야 합니다. */
 }
