@@ -26,10 +26,8 @@ import {
   WorkPlaceInfoWrapper,
   WorkpSelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
-import axios from '../../../node_modules/axios/index';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { getAccessToken } from '../../cookie/Cookie';
 import Swal from 'sweetalert2';
 import { parseDateString, parseDateToString } from '../../util/time';
 import { useFetcher } from '../../../node_modules/react-router-dom/dist/index';
@@ -149,13 +147,11 @@ const WorkplacePage = () => {
 
   const fetchWorkplaceData = async () => {
     try {
-      const response = await axios.get(
-        '/system/user/WorkplaceManage/getList',
-
-        { headers: { Authorization: getAccessToken() } }
+      const response = await authAxiosInstance.get(
+        '/system/user/WorkplaceManage/getList'
       );
       setWorkplaceData(response.data);
-      console.log(workplaceData);
+      console.log('데이터입니다', workplaceData);
     } catch (error) {
       console.error('Error fetching employee list:', error);
     }
@@ -221,14 +217,13 @@ const WorkplacePage = () => {
 
   const FetchWorkplaceDetailInfo = async (divCd, coCd) => {
     try {
-      const response = await axios.get(
+      const response = await authAxiosInstance.get(
         `system/user/WorkplaceManage/getWorkpInfo`,
         {
           params: {
             divCd: divCd,
             coCd: coCd,
           },
-          headers: { Authorization: getAccessToken() },
         }
       );
 
@@ -237,9 +232,8 @@ const WorkplacePage = () => {
       const closeDate = parseDateString(fetchedWorkplaceDetailData.close_DT);
 
       try {
-        const companyResponse = await axios.get(
-          `system/admin/groupManage/CompanyDetail/${fetchedWorkplaceDetailData.co_CD}`,
-          { headers: { Authorization: getAccessToken() } }
+        const companyResponse = await authAxiosInstance.get(
+          `system/admin/groupManage/CompanyDetail/${fetchedWorkplaceDetailData.co_CD}`
         );
 
         const companyData = companyResponse.data;
@@ -330,10 +324,9 @@ const WorkplacePage = () => {
 
     console.log(data);
     try {
-      const response = await axios.post(
+      const response = await authAxiosInstance.post(
         '/system/user/WorkplaceManage/insert',
-        data,
-        { headers: { Authorization: getAccessToken() } }
+        data
       );
 
       console.log('Insert response:', response.data);
@@ -366,10 +359,9 @@ const WorkplacePage = () => {
     );
     try {
       console.log(data);
-      const response = await axios.put(
+      const response = await authAxiosInstance.put(
         '/system/user/WorkplaceManage/update',
-        data,
-        { headers: { Authorization: getAccessToken() } }
+        data
       );
 
       if (response.status === 200) {
@@ -411,10 +403,9 @@ const WorkplacePage = () => {
   const deleteDiv = async () => {
     try {
       const { div_CD, co_CD } = workplaceDetailData;
-      const response = await axios.put(
+      const response = await authAxiosInstance.put(
         `system/user/WorkplaceManage/delete/${div_CD}/${co_CD}`,
-        null,
-        { headers: { Authorization: getAccessToken() } }
+        null
       );
       if (response.status === 200) {
         Swal.fire({
@@ -437,9 +428,8 @@ const WorkplacePage = () => {
 
   const fetchCompanyData = async () => {
     try {
-      const response = await axios.get(
-        'system/user/groupManage/employee/getCompanyList',
-        { headers: { Authorization: getAccessToken() } }
+      const response = await authAxiosInstance.get(
+        'system/user/groupManage/employee/getCompanyList'
       );
       const mappedCompanyData = response.data.map(company => ({
         value: company.co_CD,
