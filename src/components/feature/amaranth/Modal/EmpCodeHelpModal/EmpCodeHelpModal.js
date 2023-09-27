@@ -1,9 +1,13 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { GridView, LocalDataProvider } from 'realgrid';
 import { columns, fields, fundTypeLayout } from './EmpCodeHelpRealGridData';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import Modal from '../../../../common/modal/Modal';
+import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
+import EventButton from '../../../../common/button/EventButton';
+import SelectBox from './../../../../common/box/SelectBox';
 
 const EmpCodeHelpModal = ({
   onChangeModalClose,
@@ -12,10 +16,34 @@ const EmpCodeHelpModal = ({
   setEmpCodeHelpData,
   gridViewStrade,
   cellClickData,
+  dataProviderStrade,
+  setEmpCheckDataList,
+  empGridValue,
+  setEmpGridValue,
 }) => {
+  const { register, getValues } = useForm({
+    mode: 'onChange',
+  });
   const [dataProviderState, setDataProviderState] = useState(null);
   const [gridViewState, setGridViewState] = useState(null);
+  const [enrlFGSelectData, setEnrlFGSelectData] = useState(0); // select 내 enrl 재직구분 데이터
   const realgridElement = useRef(null);
+
+  const onClickSearchEmpList = () => {
+    const { selectValue } = getValues();
+    const params = {};
+    params.ENRL_FG = enrlFGSelectData;
+
+    if (selectValue !== '') {
+      params.VALUE = selectValue;
+    }
+
+    authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
+      params,
+    }).then(response => {
+      dataProviderState.setRows(response.data);
+    });
+  };
 
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
@@ -34,6 +62,10 @@ const EmpCodeHelpModal = ({
 
     const params = {};
     params.TR_CD = tr_CD;
+    params.ENRL_FG = enrlFGSelectData;
+    if (empGridValue !== '') {
+      params.VALUE = empGridValue;
+    }
 
     authAxiosInstance('accounting/user/Strade/empCodeHelpList', {
       params,
@@ -41,11 +73,20 @@ const EmpCodeHelpModal = ({
       dataProvider.setRows(response?.data);
     });
 
+    setEmpGridValue('');
     //
     gridView.onCellDblClicked = function (grid, index) {
       var current = gridView.getCurrent();
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
+      const stradeRows = dataProviderStrade.getJsonRows(0, -1); // 마지막행 row
+      const row = {
+        emp_CD: jsonData.emp_CD,
+        kor_NM: jsonData.kor_NM,
+      };
+      gridViewStrade.setCurrent({
+        itemIndex: Object.keys(stradeRows).length,
+        column: 'note',
+      });
       gridViewStrade.setValues(cellClickData, row, false);
       setEmpMenuButton(false);
     };
@@ -54,7 +95,7 @@ const EmpCodeHelpModal = ({
     gridView.setColumnLayout(fundTypeLayout);
 
     // 그리드의 상태 바를 숨깁니다.
-    gridView.setStateBar({ visible: false });
+    //gridView.setStateBar({ visible: false });
 
     // 그리드의 고정 옵션을 설정합니다.
     gridView.setFixedOptions({});
@@ -96,21 +137,82 @@ const EmpCodeHelpModal = ({
     setDataProviderState(dataProvider);
     setGridViewState(gridView);
 
+    gridView.commit();
+    gridView.cancel();
+
     // 컴포넌트가 언마운트될 때 정리 작업을 수행합니다.
     return () => {
       dataProvider.clearRows();
       gridView.destroy();
       dataProvider.destroy(); // useEffect는 한 번만 실행되도록 빈 배열을 의존성으로 설정합니다.
     };
-  }, [tr_CD]);
+  }, []);
+
+  const onClickBottomButtonEvent = () => {
+    var rowDatas = [];
+    const checkRows = gridViewState.getCheckedRows();
+    const stradeRows = dataProviderState.getJsonRows(0, -1);
+    for (var i in checkRows) {
+      var data = dataProviderState.getJsonRow(checkRows[i]);
+      let rowData = {
+        tr_CD: tr_CD,
+        roll_FG: 2,
+        emp_CD: data.emp_CD,
+        kor_NM: data.kor_NM,
+      };
+
+      gridViewStrade.commit();
+      gridViewStrade.cancel();
+      // 아예 insert 하는 방법?
+
+      rowDatas.push(rowData);
+    }
+
+    authAxiosInstance
+      .post('accounting/user/Strade/stradeRollInEmpInsert', rowDatas)
+      .then(response => {
+        console.log(response?.data);
+      });
+
+    setEmpCheckDataList(rowDatas);
+
+    alert(JSON.stringify(rowDatas));
+    onChangeModalClose();
+  };
 
   return (
     <Modal
-      width={'560px'}
+      width={'600px'}
       height={'600px'}
       title={'사원코드도움'}
       onClickEvent={onChangeModalClose}
+      buttonYN={true}
+      onClickBottomButtonEvent={onClickBottomButtonEvent}
     >
+      <SelectBoxWrapper>
+        <span className="rightSelectBoxPadding">사원코드</span>
+        <input
+          type="text"
+          className="textInputBox"
+          {...register('selectValue')}
+          defaultValue={empGridValue && empGridValue}
+        />
+        <span className="rightSelectBoxPadding">재직여부</span>
+        <SelectBox
+          width={'100px'}
+          data={['재직', '휴직', '퇴직']}
+          state={enrlFGSelectData}
+          setState={setEnrlFGSelectData}
+        />
+        <div className="selectBoxButtonWrapper">
+          <EventButton
+            data={<i className="fa-solid fa-magnifying-glass"></i>}
+            width={'-10px'}
+            height={30}
+            onClickEvent={onClickSearchEmpList}
+          />
+        </div>
+      </SelectBoxWrapper>
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
     </Modal>
   );
