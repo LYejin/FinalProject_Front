@@ -1,10 +1,10 @@
-import Routers from "./routers/Routers";
-import { Reset } from "styled-reset";
+import Routers from './routers/Routers';
+import { Reset } from 'styled-reset';
 
 function App() {
   return (
     <>
-      <Reset />
+      {/* <Reset /> */}
       <Routers />
     </>
   );

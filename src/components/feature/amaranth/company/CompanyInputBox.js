@@ -195,9 +195,11 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     }
   };
   const onEnterKeyDown = e => {
-    console.log('엔터키!!!!!!!!!!!', e.target.value);
+    console.log('엔터키!!!!!!!!!!!', e.target.name);
     if (
       e.key === 'Enter' &&
+      e.target.name !== '' &&
+      e.target.name !== undefined &&
       !regexPatterns[e.target.name][0].test(e.target.value)
     ) {
       clearErrors();
@@ -652,6 +654,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       type="file"
                       id="fileImageUpload"
                       className="userImage"
+                      accept="image/*"
                       name={labels.PIC_FILE_ID}
                       onChange={handleImageChange}
                     />
