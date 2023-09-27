@@ -31,8 +31,6 @@ import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpChe
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
-import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
-import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
 
 import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
 import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModel';
