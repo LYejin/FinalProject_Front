@@ -1,9 +1,9 @@
 import React from 'react';
 
-const SelectBoxWrapper = ({ children, height, width }) => {
+const SelectBoxWrapper = ({ children, height, width, className }) => {
   return (
     <div
-      className="selectBoxWrapper"
+      className={'selectBoxWrapper'}
       style={{
         display: 'flex',
         flexWrap: 'wrap',
