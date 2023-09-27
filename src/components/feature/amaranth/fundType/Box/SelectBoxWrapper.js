@@ -1,9 +1,9 @@
 import React from 'react';
 
-const SelectBoxWrapper = ({ children, height, width, className }) => {
+const FundTypeSelectBoxWrapper = ({ children, height, width, className }) => {
   return (
     <div
-      className={'selectBoxWrapper'}
+      className={'searchModalselectBoxWrapper'}
       style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -17,4 +17,4 @@ const SelectBoxWrapper = ({ children, height, width, className }) => {
   );
 };
 
-export default SelectBoxWrapper;
+export default FundTypeSelectBoxWrapper;
