@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { GridView, LocalDataProvider } from 'realgrid';
 import {
   columns,
@@ -8,6 +9,9 @@ import {
 } from '../DeptCodeHelpModal/DeptCodeHelpRealGridData';
 import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import Modal from '../../../../common/modal/Modal';
+import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
+import StradeCodeHelpUseYNSelectBox from '../StradeCodeHelpModal/StradeCodeHelpUseYNSelectBox';
+import EventButton from '../../../../common/button/EventButton';
 
 const DeptCodeHelpModal = ({
   onChangeModalClose,
@@ -15,10 +19,35 @@ const DeptCodeHelpModal = ({
   tr_CD,
   gridViewStrade,
   cellClickData,
+  dataProviderStrade,
+  setDeptCheckDataList,
+  deptGridValue,
+  setDeptGridValue,
 }) => {
+  const { register, getValues } = useForm({
+    mode: 'onChange',
+  });
   const [dataProviderState, setDataProviderState] = useState(null);
   const [gridViewState, setGridViewState] = useState(null);
+  const [useYNSelectData, setUseYNSelectData] = useState(1);
   const realgridElement = useRef(null);
+
+  const onClickSearchEmpList = () => {
+    const { selectValue } = getValues();
+    const params = {};
+    params.DEPT_YN = useYNSelectData;
+    params.TR_CD = tr_CD;
+
+    if (selectValue !== '') {
+      params.VALUE = selectValue;
+    }
+
+    authAxiosInstance('accounting/user/Strade/deptCodeHelpList', {
+      params,
+    }).then(response => {
+      dataProviderState.setRows(response.data);
+    });
+  };
 
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
@@ -37,26 +66,29 @@ const DeptCodeHelpModal = ({
 
     const params = {};
     params.TR_CD = tr_CD;
+    params.DEPT_YN = useYNSelectData;
+    if (deptGridValue !== '') {
+      params.VALUE = deptGridValue;
+    }
 
     authAxiosInstance('accounting/user/Strade/deptCodeHelpList', {
       params,
     }).then(response => {
       dataProvider.setRows(response?.data);
     });
+    setDeptGridValue('');
 
     //
     gridView.onCellDblClicked = function (grid, index) {
       var current = gridView.getCurrent();
-      console.log(current);
-      console.log('jjjjjjjjjjjjjjjjjjjjjj');
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      console.log('jsonData: ' + jsonData.kor_NM);
+      const stradeRows = dataProviderStrade.getJsonRows(0, -1); // 마지막행 row
       const row = { dept_CD: jsonData.dept_CD, dept_NM: jsonData.dept_NM };
+      gridViewStrade.setCurrent({
+        itemIndex: Object.keys(stradeRows).length,
+        column: 'note',
+      });
       gridViewStrade.setValues(cellClickData, row, false);
-      //gridViewStrade.setValue(cellClickData, 'emp_CD', jsonData.emp_CD);
-      //gridViewStrade.setValue(cellClickData, 'kor_NM', jsonData.kor_NM);
-      //gridViewStrade.setValue(1, 'kor_NM', '수고');
-      console.log('iijijljlkj', jsonData);
       setDeptMenuButton(false);
     };
 
@@ -112,13 +144,67 @@ const DeptCodeHelpModal = ({
     };
   }, []);
 
+  const onClickBottomButtonEvent = () => {
+    var rowDatas = [];
+    const checkRows = gridViewState.getCheckedRows();
+    const stradeRows = dataProviderState.getJsonRows(0, -1);
+    for (var i in checkRows) {
+      var data = dataProviderState.getJsonRow(checkRows[i]);
+      let rowData = {
+        tr_CD: tr_CD,
+        roll_FG: 1,
+        dept_CD: data.dept_CD,
+        dept_NM: data.dept_NM,
+      };
+      dataProviderStrade.addRow(rowData);
+
+      gridViewStrade.commit();
+      gridViewStrade.cancel();
+      rowDatas.push(rowData);
+    }
+    authAxiosInstance
+      .post('accounting/user/Strade/stradeRollInDeptInsert', rowDatas)
+      .then(response => {
+        console.log(response?.data);
+      });
+    setDeptCheckDataList(rowDatas);
+    alert(JSON.stringify(rowDatas));
+    onChangeModalClose();
+  };
+
   return (
     <Modal
       width={'560px'}
       height={'600px'}
       title={'부서코드도움'}
       onClickEvent={onChangeModalClose}
+      buttonYN={true}
+      onClickBottomButtonEvent={onClickBottomButtonEvent}
     >
+      <SelectBoxWrapper>
+        <span className="rightSelectBoxPadding">부서코드</span>
+        <input
+          type="text"
+          className="textInputBox"
+          {...register('selectValue')}
+          defaultValue={deptGridValue && deptGridValue}
+        />
+        <span className="rightSelectBoxPadding">사용여부</span>
+        <StradeCodeHelpUseYNSelectBox
+          width={200}
+          register={register}
+          state={useYNSelectData}
+          setState={setUseYNSelectData}
+        />
+        <div className="selectBoxButtonWrapper">
+          <EventButton
+            data={<i className="fa-solid fa-magnifying-glass"></i>}
+            width={'-10px'}
+            height={30}
+            onClickEvent={onClickSearchEmpList}
+          />
+        </div>
+      </SelectBoxWrapper>
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
     </Modal>
   );
