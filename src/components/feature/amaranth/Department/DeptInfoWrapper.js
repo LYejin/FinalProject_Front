@@ -20,8 +20,16 @@ const DeptInfoWrapper = ({
   handleOpenDateChange,
   handleCloseDateChange,
   register,
+  selectedRadioValue,
+  showRadioValue,
+  handleRadioChange,
+  handleShowRadioChange,
+  address,
+  addressDetail,
+  onChangeOpenPost,
 }) => {
-  console.log('데이터', data);
+  // console.log('바든데이터', data);
+  // console.log('과자과', data.mdept_CD);
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedDeptCT, setSelectedDeptCT] = useState('');
 
@@ -65,9 +73,9 @@ const DeptInfoWrapper = ({
               <input
                 type="text"
                 className="inputStyle"
-                placeholder="-"
                 defaultValue={data ? data.mdept_CD || '' : ''}
                 {...register('mdept_CD')}
+                readOnly
               />
             </td>
           </tr>
@@ -85,16 +93,6 @@ const DeptInfoWrapper = ({
                 <option value="1">사용</option>
                 <option value="0">미사용</option>
               </select>
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle">행정표준코드</th>
-            <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                defaultValue={data ? data.div_NM || '' : ''}
-              />
             </td>
           </tr>
           <tr>
@@ -162,18 +160,6 @@ const DeptInfoWrapper = ({
             </td>
           </tr>
           <tr>
-            <th className="headerCellStyle">결재관리자</th>
-            <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                defaultValue={data ? data.appr_NM || '' : ''}
-                placeholder="사용자 이름을 입력해주세요."
-                {...register('appr_NM')}
-              />
-            </td>
-          </tr>
-          <tr>
             <th className="headerCellStyle">부서관리자</th>
             <td colSpan="3" className="cellStyle">
               <input
@@ -186,18 +172,6 @@ const DeptInfoWrapper = ({
             </td>
           </tr>
           <tr>
-            <th className="headerCellStyle">조직장</th>
-            <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                defaultValue={data ? data.mgr_NM || '' : ''}
-                placeholder="사용자 이름을 입력해주세요."
-              />
-            </td>
-          </tr>
-
-          <tr>
             <th className="headerCellStyle" rowSpan="2">
               주소
             </th>
@@ -207,8 +181,12 @@ const DeptInfoWrapper = ({
                 className="addressInputStyle"
                 name="zipcode"
                 {...register('zipcode')}
+                defaultValue={address ? address : data.zipcode}
               />
-              <EventButton data={'우편번호'}></EventButton>
+              <EventButton
+                data={'우편번호'}
+                onClickEvent={onChangeOpenPost}
+              ></EventButton>
             </td>
           </tr>
           <tr>
@@ -218,6 +196,7 @@ const DeptInfoWrapper = ({
                 className="addrNum"
                 name="addr"
                 {...register('addr')}
+                defaultValue={addressDetail ? addressDetail : data.addr}
               />
             </td>
             <td className="cellStyle">
@@ -238,55 +217,46 @@ const DeptInfoWrapper = ({
                 className="radioStyle"
                 type="radio"
                 name="display"
-                value="사용"
+                value="1"
+                checked={selectedRadioValue === '1'}
+                onChange={handleRadioChange}
               />{' '}
               사용
               <input
                 className="radioStyle"
                 type="radio"
                 name="display"
-                value="미사용"
+                value="0"
+                checked={selectedRadioValue === '0'}
+                onChange={handleRadioChange}
               />{' '}
               미사용
             </td>
-            <th className="headerCellStyle">관리부서</th>
-            <td className="cellStyle">
-              <input
-                className="radioStyle"
-                type="radio"
-                name="display"
-                value="표시"
-              />{' '}
-              신청
-              <input
-                className="radioStyle"
-                type="radio"
-                name="display"
-                value="미표시"
-              />{' '}
-              미신청
-            </td>
-          </tr>
-          <tr>
             <th className="headerCellStyle">조직도표시</th>
             <td className="cellStyle">
               <input
                 className="radioStyle"
                 type="radio"
-                name="display"
-                value="사용"
+                name="show"
+                value="Y"
+                checked={showRadioValue === 'Y'}
+                onChange={handleShowRadioChange}
               />{' '}
               표시
               <input
                 className="radioStyle"
                 type="radio"
-                name="display"
-                value="미사용"
+                name="show"
+                value="N"
+                checked={showRadioValue === 'N'}
+                onChange={handleShowRadioChange}
               />{' '}
               미표시
             </td>
+          </tr>
+          <tr>
             <th className="headerCellStyle">정렬</th>
-            <td className="cellStyle">
+            <td colSpan="3" className="cellStyle">
               <input type="text" className="inputStyle" />
             </td>
           </tr>
