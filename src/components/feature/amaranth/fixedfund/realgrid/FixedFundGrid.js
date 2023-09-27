@@ -115,8 +115,8 @@ function FixedFundGrid({
           },
         }
       );
-      fetchGridData();
-
+      //삭제된 데이터만 안보이게
+      dataProvider.removeRows(checkedRows);
       // 알림 표시
       Swal.fire({
         icon: 'success',
@@ -296,7 +296,7 @@ function FixedFundGrid({
         rowInsert(grid.getValues(itemIndex))
           .then(() => {
             console.log('rowInsert 실행');
-            return fetchDataAndUpdateGrid();
+            return fetchDataAndUpdateGrid(1);
           })
           .catch(error => {
             console.error('Error inserting row:', error);
@@ -309,7 +309,7 @@ function FixedFundGrid({
       return error;
     };
 
-    const fetchDataAndUpdateGrid = async () => {
+    const fetchDataAndUpdateGrid = async state => {
       try {
         const response = await authAxiosInstance.get(
           `/accounting/user/AcashFixManage/getList?${createQueryParams(
@@ -332,7 +332,9 @@ function FixedFundGrid({
         provider.fillJsonData(response.data, { fillMode: 'set' });
 
         const lastRowIndex = provider.getRowCount();
-        grid.setCurrent({ itemIndex: lastRowIndex });
+        if (state === 1) {
+          grid.setCurrent({ itemIndex: lastRowIndex });
+        }
       } catch (error) {
         console.error(error);
       }

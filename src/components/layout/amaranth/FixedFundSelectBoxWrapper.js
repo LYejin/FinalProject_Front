@@ -34,6 +34,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const [isEndOpen, setIsEndOpen] = useState(false);
 
   const [divCode, setDivCode] = useState(null);
+  const [divName, setDivName] = useState(null);
   const [cashCode, setCashCode] = useState(null);
   const [gtradeCode, setGtradeCode] = useState(null);
   const [ftradeCode, setFtradeCode] = useState(null);
@@ -87,7 +88,6 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
     if (divCode !== null && !hasSent.current) {
       // divCode가 초기값(null)이 아니고, 아직 sendValuesToParent를 호출하지 않았을 때
       sendValuesToParent();
-      console.log('실행했니?????????');
       hasSent.current = true; // 함수를 호출했으므로 flag를 true로 설정
     }
   }, [divCode]);
@@ -95,6 +95,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const handleFisrtSelected = data => {
     setInputValue(data.div_CD + '. ' + data.div_NM);
     setDivCode(data.div_CD);
+    setDivName(data.div_NM);
   };
 
   //사업장 모달창
@@ -116,8 +117,12 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
 
   //사업장 GRID에서 데이터 Input 에 넣기
   const handleBlur = () => {
-    setInputValue('');
-    setDivCode('');
+    if (divCode === '') {
+      setInputValue('');
+      setDivCode('');
+    } else {
+      setInputValue(divCode + '. ' + divName);
+    }
   };
 
   const handleRowSelected = data => {
@@ -126,6 +131,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
     if (data) {
       setInputValue(data.div_CD + '. ' + data.div_NM);
       setDivCode(data.div_CD);
+      setDivName(data.div_NM);
     }
     handleCloseModal();
   };
@@ -211,6 +217,10 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
     if (inputValue) {
       setTransmittedValue(inputValue);
     }
+    //div_CD가 없는 경우는 없으니 이렇게 설정
+    // if (inputValue === '') {
+    //   setDivCode('');
+    // }
   };
 
   return (

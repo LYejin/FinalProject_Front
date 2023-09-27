@@ -80,18 +80,36 @@
   width: 100px;
   text-align: center;
   color: gray;
-  font-weight: 800;
-  padding-bottom: 10px;
-
+  font-weight: 600;
+  font-size: 18px;
+  padding-bottom: 7px;
 }
 
 .subTitleInfo2{
-  padding-left: 10px;
-  padding-bottom: 10px;
-  width: 100px;
+  width: 120px;
   text-align: center;
   color: gray;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 600;
+  padding-bottom: 7px;
+}
+
+.subTitleInfo:hover {
+  color: #1C90FB;
+  cursor: pointer;
+  font-weight: 600;
+}
+.subTitleInfo2:hover {
+  color: #1C90FB;
+  cursor: pointer;
+  font-weight: 600;
+}
+.selectDeptImg{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center; 
+  height: 600px;
 }
 
 
@@ -100,20 +118,21 @@
   text-align: center;
   color: #1C90FB;
   font-weight: 800;
-  padding-bottom: 7px;
+  padding-bottom: 800;
   border-bottom: 3px solid #1C90FB;
-  font-size: 19px;
+  font-size: 18px;
+  padding-bottom: 4px;
 }
 
 .subTitleInfo2.IsSelected {
-  padding-left: 10px;
-  padding-bottom: 7px;
-  width: 100px;
+  width: 120px;
   text-align: center;
   color: #1C90FB;
+  align-items: center;
   font-weight: 800;
   border-bottom: 3px solid #1C90FB;
-  font-size: 19px;
+  font-size: 18px;
+  padding-bottom: 4px;
 }
 
 .detailTitleWrapper .fa-circle {
@@ -139,4 +158,15 @@
 .WhiteButton:hover {
   border-color: #000000;
   box-shadow: none;
+}
+
+.slideForm {
+  visibility: hidden;
+  position: absolute;
+  transition: left 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.slideForm.isVisible {
+  visibility: visible;
+  left: 0;
 }

@@ -90,7 +90,7 @@ const WorkplacePage = () => {
 
   useEffect(() => {
     fetchWorkplaceData();
-    FetchWorkplaceDetailInfo('001');
+    FetchWorkplaceDetailInfo('002', '1232');
     fetchCompanyData();
   }, []);
 
@@ -172,7 +172,8 @@ const WorkplacePage = () => {
         console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
-          FetchWorkplaceDetailInfo(firstDivCd);
+          const firstCoCd = response.data[0].co_CD;
+          FetchWorkplaceDetailInfo(firstDivCd, firstCoCd);
         } else if ((response.data.length = 0)) {
           Swal.fire({
             icon: 'error',
@@ -202,7 +203,8 @@ const WorkplacePage = () => {
         console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
-          FetchWorkplaceDetailInfo(firstDivCd);
+          const firstCoCd = response.data[0].co_CD;
+          FetchWorkplaceDetailInfo(firstDivCd, firstCoCd);
         } else {
           Swal.fire({
             icon: 'error',
@@ -217,11 +219,17 @@ const WorkplacePage = () => {
     }
   };
 
-  const FetchWorkplaceDetailInfo = async divCd => {
+  const FetchWorkplaceDetailInfo = async (divCd, coCd) => {
     try {
       const response = await axios.get(
-        `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
-        { headers: { Authorization: getAccessToken() } }
+        `system/user/WorkplaceManage/getWorkpInfo`,
+        {
+          params: {
+            divCd: divCd,
+            coCd: coCd,
+          },
+          headers: { Authorization: getAccessToken() },
+        }
       );
 
       const fetchedWorkplaceDetailData = response.data;
@@ -335,7 +343,7 @@ const WorkplacePage = () => {
         title: '저장 완료',
         text: '사업장 정보가 성공적으로 저장되었습니다.',
       });
-      FetchWorkplaceDetailInfo(data.div_CD);
+      FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
     } catch (error) {
       console.error('Error inserting workplace:', error);
       Swal.fire({
@@ -381,7 +389,7 @@ const WorkplacePage = () => {
           }
         });
         fetchWorkplaceData();
-        FetchWorkplaceDetailInfo(data.div_CD);
+        FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
         console.log('이게궁금합니다', data.div_CD);
       } else {
         Swal.fire({
@@ -402,11 +410,10 @@ const WorkplacePage = () => {
 
   const deleteDiv = async () => {
     try {
-      console.log(workplaceDetailData.div_CD);
-      let DIV_CD = workplaceDetailData.div_CD;
+      const { div_CD, co_CD } = workplaceDetailData;
       const response = await axios.put(
-        `system/user/WorkplaceManage/delete/` + DIV_CD,
-        '',
+        `system/user/WorkplaceManage/delete/${div_CD}/${co_CD}`,
+        null,
         { headers: { Authorization: getAccessToken() } }
       );
       if (response.status === 200) {
@@ -415,7 +422,10 @@ const WorkplacePage = () => {
           title: '삭제완료',
           text: '사업장 정보가 삭제되었습니다.',
         });
-        FetchWorkplaceDetailInfo(workplaceDetailData.div_CD);
+        FetchWorkplaceDetailInfo(
+          workplaceDetailData.div_CD,
+          workplaceDetailData.co_CD
+        );
         console.log('Workplace deleted successfully');
       } else {
         console.log('Error deleting workplace');

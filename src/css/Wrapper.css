@@ -141,6 +141,25 @@
 
 .FFcustomButton:hover {
   border-color: #000000;
+  cursor: pointer;
+}
+
+.DPcustomButton {
+  margin-left: 5px;
+  height: 30px;
+  width: 30px;
+  border: 2px solid darkgray;
+  border-radius: 3px;
+  margin-top: -3px;
+  color: darkgray;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border-radius: 3px;
+}
+
+.DPcustomButton:hover {
+  border-color: #000000;
+  cursor: pointer;
+  color: black;
 }
 
 .FFcustomButtonStyle {
