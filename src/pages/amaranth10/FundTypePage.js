@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import {
   authAxiosInstance,
   imageAxiosInstance,
@@ -29,13 +31,17 @@ import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpChe
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
-// import GtradeInfoBox from '../../components/feature/amaranth/employee/GtradeInfoBox';
-// import FtradeInfoBox from '../../components/feature/amaranth/employee/FtradeInfoBox';
-import RealGrid from '../../components/feature/fundType/FuntTypeRealGrid';
 
-import FundTypeSearch from '../../components/feature/fundType/FundTypeSearch';
-import FundTypeModel from '../../components/feature/fundType/model/FundTypeModel';
-import FundTypeModal from '../../components/feature/fundType/Modal/FundTypeModel';
+import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
+import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModel';
+import FundTypeSelectBoxUSEYN from '../../components/feature/amaranth/fundType/Box/FundTypeSelectBoxUSEYN';
+import FundTypeSelectBoxWrapper from '../../components/feature/amaranth/fundType/Box/SelectBoxWrapper';
+import FundTypeRidoButton from '../../components/feature/amaranth/fundType/Box/FundTypeRidoButton';
+import SubmitButton from '../../components/common/button/SubmitButton';
+import FundTypeSelectCashFG from '../../components/feature/amaranth/fundType/Box/FundTypeSelectCashFG';
+import RealGrid from '../../components/feature/amaranth/fundType/FuntTypeRealGrid';
+import FundTypeWidthView from '../../components/feature/amaranth/fundType/FundTypeWidthView';
+import FundTypeSearch from '../../components/feature/amaranth/fundType/FundTypeSearch';
 
 const FundTypePage = () => {
   const {
@@ -83,26 +89,127 @@ const FundTypePage = () => {
     username_ERROR: false,
     email_ADD_ERROR: false,
   }); // check db error YN
-
+  const [selectUseYN, setSelectUseYN] = useState('여'); // 사용여부 select box state
+  const [selectCashFG, setSelectCashFG] = useState(''); // 사용여부 select box state
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedViewOption, setSelectedViewOption] = useState('세로형태조회');
   const {
     loadRowData,
     CASH_CD,
     setCASH_CD,
+    LEVEL_CD,
+    setLEVEL_CD,
     marsterGrid,
     setMarsterGrid,
+    searchGrid,
+    setSearchGrid,
     checkList,
     setCheckList,
     deleteBtnClick,
+    excelExport,
+    excelImport,
+    setMenuGrid,
+    inputData,
+    setInputData,
+    loadTreeRowData,
   } = FundTypeModel();
 
-  const handleOverlayClick = e => {
-    console.log('dididididiidi');
-    e.stopPropagation(); // 이벤트 전파 중단
+  React.useEffect(() => {
+    setValue('USE_YN', '');
+    setValue('CASH_FG', '');
+    setValue('CASH_CD', '');
+    setValue('searchData', '');
+    setValue('TYPE_NM', '');
+
+    const marsterRowValues = marsterGrid?.grid.getValues(
+      marsterGrid?.grid.getCurrent().itemIndex
+    );
+    if (
+      marsterRowValues?.SUM_CD === undefined &&
+      marsterRowValues?.SUM_NM === undefined &&
+      !isOpenPost
+    ) {
+      marsterGrid?.grid.setCurrent({
+        dataRow: marsterGrid?.grid.getCurrent().dataRow,
+        column: 'SUM_CD',
+      });
+      marsterGrid?.grid.setFocus();
+    }
+  }, [isOpenPost]);
+
+  const handleOptionChange = option => {
+    console.log('라디오', option);
+    setSelectedOption(option);
+  };
+
+  const handleViewOptionChange = option => {
+    setSelectedViewOption(option);
+  };
+
+  const onMasterGridSubmit = async SearchData => {
+    console.log('마스터서브밋', SearchData);
+
+    marsterGrid.grid.showProgress(); //데이터 로딩바 생성
+    marsterGrid.grid.cancel();
+    marsterGrid.provider.clearRows();
+    marsterGrid.grid.resetCurrent();
+    marsterGrid.grid.cancel();
+    loadRowData(SearchData)
+      .then(lodaData => {
+        marsterGrid.grid.closeProgress(); // 서버 데이터 로드 완료시 로딩바 제거
+        marsterGrid.provider.fillJsonData(lodaData, {
+          fillMode: 'set',
+        });
+        //마지막행에 항상 빈 행을 추가하는 기능
+        marsterGrid.grid.setEditOptions({ displayEmptyEditRow: true });
+        //뷰 마운트 시 커서 포커스를 마지막 행 첫번째 셀에 위치하게 설정
+        marsterGrid.grid.setCurrent({
+          itemIndex: marsterGrid.provider.getRowCount(),
+          column: 'CASH_FG',
+        });
+        marsterGrid.grid.setFocus();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+  const onSearchGridSubmit = async SearchData => {
+    SearchData.CASH_FG = selectedOption;
+    console.log('라디오', SearchData, selectUseYN);
+    searchGrid.grid.showProgress(); //데이터 로딩바 생성
+    searchGrid.grid.cancel();
+    searchGrid.provider.clearRows();
+    searchGrid.grid.resetCurrent();
+    searchGrid.grid.cancel();
+    loadRowData(SearchData)
+      .then(loadData => {
+        console.log('검색전', CASH_CD, loadData);
+        if (CASH_CD !== undefined) {
+          loadData = loadData.filter(item => CASH_CD !== item.CASH_CD);
+        }
+        console.log('검색후', CASH_CD, loadData);
+        searchGrid.grid.closeProgress(); // 서버 데이터 로드 완료시 로딩바 제거
+        searchGrid.provider.fillJsonData(loadData, {
+          fillMode: 'set',
+        });
+        //마지막행에 항상 빈 행을 추가하는 기능
+        searchGrid.grid.setEditOptions({ displayEmptyEditRow: true });
+        //뷰 마운트 시 커서 포커스를 마지막 행 첫번째 셀에 위치하게 설정
+        searchGrid.grid.setCurrent({
+          itemIndex: 0,
+          column: 'CASH_FG',
+        });
+        searchGrid.grid.setFocus();
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   // 우편번호
   const onChangeOpenPost = () => {
     setIsOpenPost(!isOpenPost);
+    setSelectUseYN('여');
   };
 
   // 우편번호 검색 시 처리
@@ -168,34 +275,8 @@ const FundTypePage = () => {
   };
 
   // Company co_CD 변경 시 Workplace select box 정보 수정
-  useEffect(() => {
-    authAxiosInstance(
-      `system/user/groupManage/employee/getWorkplace?CO_CD=${company}`
-    ).then(response => {
-      setWorkplaceList(response.data);
-      setWorkplaceSelect(
-        response.data[0]?.div_CD ? response.data[0]?.div_CD : null
-      );
-      response.data[0]?.div_CD && setValue('div_CD', response.data[0]?.div_CD);
-    });
-  }, [company]);
 
   // 사원 리스트 얻는 axios
-  const getEmpList = async emp => {
-    const response = await authAxiosInstance(
-      `system/user/groupManage/employee/getList`
-    );
-    console.log(response.data);
-    setEmpList(response.data);
-    if (clickYN && !insertButtonClick) {
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^');
-      setUsername(response.data[0].username);
-      setData(response.data[0] || resetData());
-      setSelectedRadioValue(response.data[0].gender_FG);
-      setCompany(response.data[0].co_CD);
-      setWorkplaceSelect(response.data[0].div_CD);
-    }
-  };
 
   // 회사 리스트 얻는 axios
   const getCompanyList = async () => {
@@ -204,12 +285,6 @@ const FundTypePage = () => {
     );
     setCompanyList(response.data);
   };
-
-  useEffect(() => {
-    getEmpList();
-    getCompanyList();
-    setChangeForm(false);
-  }, []);
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailEmpInfo = async (kor_NM, username) => {
@@ -303,148 +378,6 @@ const FundTypePage = () => {
     console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
     setInfoBoxEnrlData(0);
     setUsername('');
-  };
-
-  // 사원 remove 이벤트
-  const onClickButtonRemoveEmp = async () => {
-    await authAxiosInstance.post('system/user/groupManage/employee/empRemove', {
-      kor_NM: data.kor_NM,
-      username: data.username,
-    });
-    setClickYN(true);
-    setChangeForm(false);
-    getEmpList();
-    setImage();
-    setImgFile();
-    setUsername(empList[0].username);
-    if (listRef.current) {
-      listRef.current.scrollTop = 0;
-    }
-    alert('사원정보가 비활성화되었습니다.');
-  };
-
-  // 사원 submit button(update, insert) 이벤트
-  const onSubmit = async data => {
-    const getJoinDT = getNowJoinTime(openDate);
-    const formData = new FormData();
-
-    console.log('kkkkkkkkkkkkk');
-    console.log(checkDBErrorYN);
-    checkDBErrorYN.emp_CD_ERROR &&
-      setError('emp_CD', { message: '사번이 중복되었습니다.' });
-    checkDBErrorYN.username_ERROR &&
-      setError('username', { message: 'ID가 중복되었습니다.' });
-    checkDBErrorYN.email_ADD_ERROR &&
-      setError('email_ADD', { message: 'ID가 중복되었습니다.' });
-
-    if (image !== null) {
-      formData.append('image', image);
-    }
-
-    // 사원 update 중일 때 저장버튼 기능
-    if (clickYN && !insertButtonClick && onChangeForm) {
-      console.log('update 버튼');
-      console.log(changeFormData);
-      if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
-        changeFormData.home_TEL = changeFormData.home_TEL.replace(/-/g, '');
-      }
-      if (changeFormData && Object.keys(changeFormData).includes('tel')) {
-        changeFormData.tel = changeFormData.tel.replace(/-/g, '');
-      }
-      formData.append(
-        'userData',
-        new Blob([JSON.stringify({ ...changeFormData, username: username })], {
-          type: 'application/json',
-        })
-      );
-
-      const responseUpdate = await imageAxiosInstance.post(
-        'system/user/groupManage/employee/empUpdate',
-        formData
-      );
-      console.log(responseUpdate.data);
-      const responseGetList = await authAxiosInstance(
-        `system/user/groupManage/employee/getList`
-      );
-      setEmpList(responseGetList.data);
-      setChangeForm(false);
-      setChangeFormData();
-      setEmailPersonalData('');
-      setEmailSalaryData('');
-      alert('사원정보가 수정되었습니다.');
-    } else if (clickYN && !insertButtonClick && !onChangeForm) {
-      alert('사원정보가 수정된 정보가 없습니다.');
-    }
-
-    // 사원 insert 중일 때 저장버튼 기능
-    if (!clickYN && insertButtonClick && errors == null) {
-      const userData = {
-        emp_CD: data?.emp_CD,
-        co_CD: company || null,
-        div_CD: workplaceSelect || null,
-        username: data?.username,
-        password: data?.password,
-        kor_NM: data?.kor_NM,
-        email_ADD: data?.email_ADD,
-        tel: data?.tel.replace(/-/g, ''),
-        gender_FG: selectedRadioValue,
-        join_DT: getJoinDT || null,
-        enrl_FG: infoBoxEnrlData || null,
-        personal_MAIL: data?.personal_MAIL,
-        personal_MAIL_CP: data?.personal_MAIL_CP,
-        salary_MAIL: data?.salary_MAIL,
-        salary_MAIL_CP: data?.salary_MAIL_CP,
-        home_TEL: data?.home_TEL.replace(/-/g, ''),
-        zipcode: address || null,
-        addr: addressDetail || null,
-        addr_NUM: data?.addr_NUM,
-      };
-      setUsername(data?.username);
-      setData(userData);
-      setWorkplaceSelect(workplaceSelect);
-      setCompany(company);
-
-      formData.append(
-        'userData',
-        new Blob([JSON.stringify(userData)], {
-          type: 'application/json',
-        })
-      );
-
-      console.log('insert 버튼');
-      console.log(userData);
-      const response = await imageAxiosInstance.post(
-        'system/user/groupManage/employee/empInsert',
-        formData
-      );
-      console.log(response.data);
-      setEmpList([
-        ...empList,
-        {
-          join_DT: getJoinDT,
-          username: data.username,
-          kor_NM: data.kor_NM,
-        },
-      ]);
-      alert('사원이 추가되었습니다.');
-      reset();
-      setEmailPersonalData('');
-      setEmailSalaryData('');
-      setImgFile();
-      setImgPriviewFile();
-      setChangeForm(false);
-      setChangeFormData();
-      setInsertButtonClick(false);
-      setClickYN(true);
-      console.log(listRef.current.scrollHeight);
-      if (listRef.current) {
-        listRef.current.scrollTop = 3000;
-      }
-      console.log(listRef.current.scrollHeight);
-      console.log(listRef.current.scrollTop);
-    } else {
-      alert('중복된 값이 존재합니다.');
-    }
   };
 
   // 에러 처리 이벤트
@@ -589,142 +522,154 @@ const FundTypePage = () => {
               height={30}
               onClickEvent={deleteBtnClick}
             />
+            <EventButton
+              data={'저장하기'}
+              width={'-10px'}
+              height={30}
+              onClickEvent={excelExport}
+            />
+            <input
+              type="file"
+              name="excelFile"
+              id="xlf"
+              onChange={excelImport}
+            />
           </Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper>
-              <span className="rightSelectBoxPadding">수지구분</span>
-              <EmpSelectBox
-                width={200}
-                data={companyList}
-                setCompanySelect={setCompanySelect}
-                companySelect={companySelect}
-              />
-              <span className="leftSelectBoxPadding">용도</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('name')}
-              />
-              <span className="lastSelectBoxTextPadding">자금조회방식</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('name')}
-              />
-              <div className="selectBoxButtonWrapper">
-                <EventButton
-                  data={<i className="fa-solid fa-magnifying-glass"></i>}
-                  width={'-10px'}
-                  height={30}
-                  onClickEvent={onClickSearchEmpList}
+            <form
+              onSubmit={handleSubmit(onMasterGridSubmit)}
+              onChange={onChangeFunction}
+            >
+              <SelectBoxWrapper>
+                <span className="searchModalSelectBoxPadding">수지구분</span>
+                <FundTypeSelectCashFG
+                  width={'calc(0% - -100px)'}
+                  state={selectCashFG}
+                  setState={setSelectCashFG}
+                  clickYN={clickYN}
+                  register={register}
+                  errors={errors}
+                  errorName={errorName}
+                  total={true}
+                  setChangeFormData={setChangeFormData}
                 />
-              </div>
-            </SelectBoxWrapper>
-            <MainContentWrapper>
-              {/* <EmpSelectListWrapper
-                width={'295px'}
-                title={'사용자:'}
-                listRef={listRef}
-                dataCount={empList.length}
-                clickedBoxID={username}
-                data={empList}
-                clickBoxEvent={onClickDetailEmpInfo}
-                clickInsertBoxEvent={onClickInsertEmpBox}
-              /> */}
+                <span className="leftSelectBoxPadding">용도</span>
+                {selectedViewOption === '세로형태조회' ? (
+                  <input
+                    type="text"
+                    className="textInputBox"
+                    {...register('TYPE_NM')}
+                  />
+                ) : (
+                  <input type="text" className="textInputBox" disabled />
+                )}
 
-              {/* <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  onChange={onChangeFunction}
-                >
-                  <div className="tableHeader">
-                    <div className="defaultTitle">기본등록사항</div>
-                    <div className="buttonWrapper">
-                      <button type="submit" className="WhiteButton">
-                        저장
-                      </button>
-                      <button
-                        type="button"
-                        className="WhiteButton"
-                        onClick={onClickButtonRemoveEmp}
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                  <ScrollWrapper width={'900px'}>
-                    <FtradeInfoBox
-                      data={data || []}
-                      onChangeOpenPost={onChangeOpenPost}
-                      register={register}
-                      setOpenDate={setOpenDate}
-                      openDate={openDate}
-                      selectedValue={selectedRadioValue}
-                      handleRadioChange={handleRadioChange}
-                      address={address}
-                      addressDetail={addressDetail}
-                      setImage={setImage}
-                      imgFile={imgFile}
-                      companyList={companyList}
-                      errors={errors}
-                      clickYN={clickYN}
-                      onFocusError={onFocusError}
-                      errorName={errorName}
-                      setImgPriviewFile={setImgPriviewFile}
-                      imgPriviewFile={imgPriviewFile}
-                      handleOpenDateChange={handleOpenDateChange}
-                      setCompany={setCompany}
-                      company={company}
-                      workplaceList={workplaceList}
-                      setWorkplaceList={setWorkplaceList}
-                      workplaceSelect={workplaceSelect}
-                      setWorkplaceSelect={setWorkplaceSelect}
-                      onChangeTel={onChangeTel}
-                      onChangeHomeTel={onChangeHomeTel}
-                      infoBoxEnrlData={infoBoxEnrlData}
-                      setInfoBoxEnrlData={setInfoBoxEnrlData}
-                      getValues={getValues}
-                      setChangeFormData={setChangeFormData}
-                      onChangePersonalMAIL={onChangePersonalMAIL}
-                      onChangeSalaryMAIL={onChangeSalaryMAIL}
-                      setEmailPersonalData={setEmailPersonalData}
-                      emailPersonalData={emailPersonalData}
-                      emailSalaryData={emailSalaryData}
-                      setEmailSalaryData={setEmailSalaryData}
-                      onChangeDBDataSearch={onChangeDBDataSearch}
-                      setError={setError}
-                      clearErrors={clearErrors}
-                      checkDBErrorYN={checkDBErrorYN}
-                    />
-                  </ScrollWrapper>
-                </form> */}
-              <RealGrid
-                onChangeOpenPost={onChangeOpenPost}
-                loadRowData={loadRowData}
-                CASH_CD={CASH_CD}
-                setMarsterGrid={setMarsterGrid}
-                setCheckList={setCheckList}
-                deleteBtnClick={deleteBtnClick}
-              />
+                <span className="lastSelectBoxTextPadding">자금조회방식</span>
+                <FundTypeRidoButton
+                  options={['세로형태조회', '가로형태조회']}
+                  selectedOption={selectedViewOption}
+                  onOptionChange={handleViewOptionChange}
+                  register={register}
+                />
+                <div className="selectBoxButtonWrapper">
+                  <SubmitButton
+                    data={<i className="fa-solid fa-magnifying-glass" />}
+                    width={'-10px'}
+                    height={30}
+                  />
+                </div>
+              </SelectBoxWrapper>
+            </form>
+            <MainContentWrapper>
+              {selectedViewOption === '세로형태조회' ? (
+                <RealGrid
+                  onChangeOpenPost={onChangeOpenPost}
+                  loadRowData={loadRowData}
+                  setCASH_CD={setCASH_CD}
+                  setLEVEL_CD={setLEVEL_CD}
+                  setMarsterGrid={setMarsterGrid}
+                  setCheckList={setCheckList}
+                  deleteBtnClick={deleteBtnClick}
+                  excelExport={excelExport}
+                  excelImport={excelImport}
+                  setMenuGrid={setMenuGrid}
+                  setInputData={setInputData}
+                />
+              ) : (
+                <FundTypeWidthView
+                  loadTreeRowData={loadTreeRowData}
+                  excelExport={excelExport}
+                  excelImport={excelImport}
+                  setMenuGrid={setMenuGrid}
+                />
+              )}
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
       </CommonLayout2>
       {isOpenPost ? (
-        <FundTypeModal
-          width={'700px'}
-          height={'750px'}
-          title={'자금과목코드도움'}
-          onClickEvent={onChangeOpenPost}
-          buttonYN="true"
-        >
-          <FundTypeSearch
-            loadRowData={loadRowData}
-            setCASH_CD={setCASH_CD}
-            onChangeOpenPost={onChangeOpenPost}
-            marsterGrid={marsterGrid}
-            setMarsterGrid={setMarsterGrid}
-          />
-        </FundTypeModal>
+        <div className="ModalContainer">
+          <FundTypeModal
+            width={'720px'}
+            height={'750px'}
+            title={'자금과목코드도움'}
+            onClickEvent={onChangeOpenPost}
+            buttonYN="true"
+          >
+            <form
+              onSubmit={handleSubmit(onSearchGridSubmit)}
+              onChange={onChangeFunction}
+            >
+              <FundTypeSelectBoxWrapper>
+                <FundTypeSelectBoxUSEYN
+                  width={'calc(0% - -100px)'}
+                  state={selectUseYN}
+                  setState={setSelectUseYN}
+                  clickYN={clickYN}
+                  register={register}
+                  errors={errors}
+                  errorName={errorName}
+                  total={true}
+                  setChangeFormData={setChangeFormData}
+                />
+                <input
+                  type="text"
+                  className="searchModalTextInputBox "
+                  Placeholder="검색어 입력"
+                  {...register('searchData')}
+                />
+                <span className="searchModalSelectBoxPadding">수지구분</span>
+                <FundTypeRidoButton
+                  options={['', '지출', '수입']}
+                  defultValue={'전체'}
+                  selectedOption={selectedOption}
+                  onOptionChange={handleOptionChange}
+                  register={register}
+                />
+                <div className="selectBoxButtonWrapper">
+                  <SubmitButton
+                    data={<i className="fa-solid fa-magnifying-glass" />}
+                    width={'-10px'}
+                    height={30}
+                  />
+                </div>
+              </FundTypeSelectBoxWrapper>
+            </form>
+            <FundTypeSearch
+              loadRowData={loadRowData}
+              LEVEL_CD={LEVEL_CD}
+              CASH_CD={CASH_CD}
+              onChangeOpenPost={onChangeOpenPost}
+              marsterGrid={marsterGrid}
+              setMarsterGrid={setMarsterGrid}
+              setSearchGrid={setSearchGrid}
+              excelExport={excelExport}
+              excelImport={excelImport}
+              setMenuGrid={setMenuGrid}
+              inputData={inputData}
+            />
+          </FundTypeModal>
+        </div>
       ) : null}
     </>
   );

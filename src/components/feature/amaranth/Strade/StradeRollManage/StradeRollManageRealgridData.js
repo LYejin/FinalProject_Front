@@ -2,6 +2,10 @@ import { ValueType } from 'realgrid';
 
 export const fields = [
   {
+    fieldName: 'trmg_SQ',
+    dataType: ValueType.TEXT,
+  },
+  {
     fieldName: 'roll_FG',
     dataType: ValueType.TEXT,
   },
@@ -27,12 +31,20 @@ export const fields = [
   },
   {
     fieldName: 'insert_DT',
-    dataType: 'datetime',
-    datetimeFormat: 'yyyyMMdd',
+    dataType: ValueType.TEXT,
   },
 ];
 
 export const columns = [
+  {
+    name: 'trmg_SQ',
+    fieldName: 'trmg_SQ',
+    width: '200',
+    //visible: false,
+    header: {
+      text: '거래처순번',
+    },
+  },
   {
     name: 'roll_FG',
     fieldName: 'roll_FG',
@@ -49,28 +61,6 @@ export const columns = [
     header: {
       text: '권한구분',
     },
-    // styleCallback: (grid, dataCell) => {
-    //   console.log(
-    //     '------------------------------------------------------',
-    //     '행상태',
-    //     dataCell.item.rowState,
-    //     '셀 상태',
-    //     dataCell.item.itemState,
-    //     '값 상태',
-    //     dataCell.value,
-    //     dataCell.index.itemIndex
-    //   );
-    //   const ret = {};
-    //   if (
-    //     (dataCell.value === '' || dataCell.value === undefined) &&
-    //     dataCell.item.rowState === 'none'
-    //   ) {
-    //     ret.editable = true;
-    //   } else {
-    //     ret.editable = false;
-    //   }
-    //   return ret;
-    // },
   },
   {
     name: 'dept_CD',
@@ -81,25 +71,15 @@ export const columns = [
     header: {
       text: '부서코드',
     },
-    // styleCallback: (grid, dataCell) => {
-    //   console.log(
-    //     '------------------------------------------------------',
-    //     '행상태',
-    //     dataCell.item.rowState,
-    //     '셀 상태',
-    //     dataCell.item.itemState,
-    //     '값 상태',
-    //     dataCell.value,
-    //     dataCell.index.itemIndex
-    //   );
-    //   const ret = {};
-    //   if (dataCell.item.rowState === 'updated') {
-    //     grid.setColumnProperty('dept_CD', 'button', 'none');
-    //   } else {
-    //     grid.setColumnProperty('dept_CD', 'button', 'action');
-    //   }
-    //   return ret;
-    // },
+    styleCallback: (grid, dataCell) => {
+      const ret = {};
+      if (dataCell.item.rowState === 'updated') {
+        grid.setColumnProperty('dept_CD', 'button', 'none');
+      } else {
+        grid.setColumnProperty('dept_CD', 'button', 'action');
+      }
+      return ret;
+    },
   },
   {
     name: 'dept_NM',
@@ -118,25 +98,15 @@ export const columns = [
     header: {
       text: '사원코드',
     },
-    // styleCallback: (grid, dataCell) => {
-    //   console.log(
-    //     '------------------------------------------------------',
-    //     '행상태',
-    //     dataCell.item.rowState,
-    //     '셀 상태',
-    //     dataCell.item.itemState,
-    //     '값 상태',
-    //     dataCell.value,
-    //     dataCell.index.itemIndex
-    //   );
-    //   const ret = {};
-    //   if (dataCell.item.rowState === 'updated') {
-    //     grid.setColumnProperty('emp_CD', 'button', 'none');
-    //   } else {
-    //     grid.setColumnProperty('emp_CD', 'button', 'action');
-    //   }
-    //   return ret;
-    // },
+    styleCallback: (grid, dataCell) => {
+      const ret = {};
+      if (dataCell.item.rowState === 'updated') {
+        grid.setColumnProperty('emp_CD', 'button', 'none');
+      } else {
+        grid.setColumnProperty('emp_CD', 'button', 'action');
+      }
+      return ret;
+    },
   },
   {
     name: 'kor_NM',
@@ -153,6 +123,13 @@ export const columns = [
     header: {
       text: '비고',
     },
+    styleCallback: (grid, dataCell) => {
+      const ret = {};
+      if (dataCell.item.rowState === 'updated') {
+        ret.editable = true;
+      }
+      return ret;
+    },
   },
   {
     name: 'insert_DT',
@@ -161,11 +138,18 @@ export const columns = [
     header: {
       text: '등록일',
     },
-    editor: {
-      datetimeFormat: 'yyyy-MM-dd',
-    },
     styles: {
-      datetimeFormat: 'yyyy-MM-dd',
+      textAlignment: 'center',
+      datePicker: {
+        // 원하는 대로 datePicker의 스타일과 옵션을 설정할 수 있습니다.
+        yearNavigation: true, // 연도 이동 버튼 표시 여부
+        completeAction: 'commit', // 날짜 선택 후 바로 commit 할지 여부
+        locale: 'ko-KR', // 로캘 설정
+        format: 'yyyy-MM-dd', // 날짜 표시 형식
+      },
+    },
+    editor: {
+      datetimeFormat: 'yyyy-MM-dd', // 편집기의 날짜 표시 형식
     },
   },
 ];

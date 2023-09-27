@@ -24,7 +24,7 @@ const StradeCodeHelpModal = ({
   });
   const [dataProviderState, setDataProviderState] = useState(null);
   const [gridViewState, setGridViewState] = useState(null);
-  const [useYNSelectData, setUseYNSelectData] = useState(1);
+  const [useYNSelectData, setUseYNSelectData] = useState(1); // selectbox 사용여부
   const realgridElement = useRef(null);
 
   const onClickSearchEmpList = () => {
@@ -43,7 +43,9 @@ const StradeCodeHelpModal = ({
     authAxiosInstance('accounting/user/Strade/stradeCodeHelpList', {
       params,
     }).then(response => {
-      dataProviderState.setRows(response.data);
+      if (response.data !== null && Object.keys(response.data).length > 0) {
+        dataProviderState.setRows(response.data);
+      }
     });
   };
 
@@ -74,9 +76,16 @@ const StradeCodeHelpModal = ({
     authAxiosInstance('accounting/user/Strade/stradeCodeHelpList', {
       params,
     }).then(response => {
+      //문제가 생겼다면 지워도 무방해요
       dataProvider.setRows(response?.data);
       console.log('설마?', response.data);
       responseData = response.data;
+      ///////////////
+      //수신변경사항
+      if (response.data !== null && Object.keys(response.data).length > 0) {
+        dataProvider.setRows(response?.data);
+      }
+      /////////////
     });
 
     //

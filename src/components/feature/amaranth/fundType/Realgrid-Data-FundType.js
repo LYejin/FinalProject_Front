@@ -39,7 +39,7 @@ export const fields = [
   },
   {
     fieldName: 'DISP_SQ',
-    dataType: ValueType.NUMVER, // 데이터 유형에 따라 수정
+    dataType: ValueType.NUMBER, // 데이터 유형에 따라 수정
   },
 ];
 
@@ -48,6 +48,7 @@ export const columns = [
     name: 'CASH_FG',
     fieldName: 'CASH_FG',
     width: '130',
+    styleName: 'left-column',
     editButtonVisibility: 'visible', // 드롭다운 버튼 표시 여부
     values: ['수입', '지출', '대체'],
     labels: ['1.수입', '2.지출', '3.대체'],
@@ -59,8 +60,10 @@ export const columns = [
     },
     header: {
       text: '수지구분',
+      styleName: 'left-column ',
     },
     styleCallback: (grid, dataCell) => {
+<<<<<<< HEAD:src/components/feature/fundType/Realgrid-Data-FundType.js
       // console.log(
       //   '------------------------------------------------------',
       //   '행상태',
@@ -71,6 +74,8 @@ export const columns = [
       //   dataCell.value,
       //   dataCell.index.itemIndex
       // );
+=======
+>>>>>>> 36b67139931507389480ed3de0877c33e4e571ca:src/components/feature/amaranth/fundType/Realgrid-Data-FundType.js
       const ret = {};
       if (
         (dataCell.value === '' || dataCell.value === undefined) &&
@@ -87,6 +92,7 @@ export const columns = [
     name: 'LEVEL_CD',
     fieldName: 'LEVEL_CD',
     width: '130',
+    styleName: 'left-column ',
     editor: {
       type: 'number',
       maxLength: 1, //최대 입력 수
@@ -95,12 +101,14 @@ export const columns = [
     },
     header: {
       text: 'LEVEL',
+      styleName: 'left-column ',
     },
   },
   {
     name: 'CASH_CD',
     fieldName: 'CASH_CD',
     width: '80',
+    styleName: 'left-column ',
     editor: {
       type: 'number',
       maxLength: 4,
@@ -109,12 +117,14 @@ export const columns = [
     },
     header: {
       text: '자금코드',
+      styleName: 'left-column ',
     },
   },
   {
     name: 'CASH_NM',
     fieldName: 'CASH_NM',
     width: '134',
+    styleName: 'left-column',
     header: {
       text: '과목명',
     },
@@ -123,14 +133,17 @@ export const columns = [
     name: 'TYPE_NM',
     fieldName: 'TYPE_NM',
     width: '200', // 너비 수정
+    styleName: 'left-column ',
     header: {
       text: '용도', // 열 헤더 텍스트 수정
+      styleName: 'left-column ',
     },
   },
   {
     name: 'SUM_CD',
     fieldName: 'SUM_CD',
     width: '80', // 너비 수정
+    styleName: 'left-column ',
     editor: {
       type: 'number',
       maxLength: 4, //최대 입력 수
@@ -139,39 +152,27 @@ export const columns = [
     },
     header: {
       text: '상위과목코드', // 열 헤더 텍스트 수정
+      styleName: 'left-column ',
     },
     button: 'action',
-    buttonVisibility: 'default',
-    // button: 'image',
-    // imageButtons: {
-    //   imageWidth: 16, // 없으면 기본값
-    //   height: 13, // 없으면 기본값
-    //   margin: 2, // Cell Border와의 간격
-    //   imageGap: 2, // 이미지 버튼간 간격
-    //   images: [
-    //     {
-    //       name: 'button1',
-    //       up: `/resource/image/btnImages/icosearch.png`,
-    //       hover: `/resource/image/btnImages/icosearch.png`,
-    //       down: `/resource/image/btnImages/icosearch.png`,
-    //       width: 45,
-    //     },
-    //   ],
-    // },
+    buttonVisibility: 'visible',
     enterKey: true,
   },
   {
     name: 'SUM_NM',
     fieldName: 'SUM_NM',
     width: '134', // 너비 수정
+    styleName: 'left-column ',
     header: {
       text: '상위과목명', // 열 헤더 텍스트 수정
+      styleName: 'left-column rg-header ',
     },
   },
   {
     name: 'LOW_YN',
     fieldName: 'LOW_YN',
     width: '140', // 너비 수정
+    styleName: 'left-column ',
     editButtonVisibility: 'visible', // 드롭다운 버튼 표시 여부
     values: ['여', '부'],
     labels: ['1.여', '2.부'],
@@ -183,12 +184,14 @@ export const columns = [
     },
     header: {
       text: '최하위여부', // 열 헤더 텍스트 수정
+      styleName: 'left-column ',
     },
   },
   {
     name: 'USE_YN',
     fieldName: 'USE_YN',
     width: '140', // 너비 수정
+    styleName: 'left-column ',
     editButtonVisibility: 'visible', // 드롭다운 버튼 표시 여부
     values: ['여', '부'],
     labels: ['1.여', '2.부'],
@@ -200,12 +203,14 @@ export const columns = [
     },
     header: {
       text: '사용여부', // 열 헤더 텍스트 수정
+      styleName: 'left-column  ',
     },
   },
   {
     name: 'DISP_SQ',
     fieldName: 'DISP_SQ',
     width: '140', // 너비 수정
+    styleName: 'left-column ',
     editor: {
       type: 'number',
       editFormat: '#,##0',
@@ -217,6 +222,7 @@ export const columns = [
     numberFormat: '#,##0',
     header: {
       text: '정렬구분', // 열 헤더 텍스트 수정
+<<<<<<< HEAD:src/components/feature/fundType/Realgrid-Data-FundType.js
     },
   },
 ];
@@ -298,6 +304,9 @@ export const s_columns = [
     width: '185', // 너비 수정
     header: {
       text: '상위과목명', // 열 헤더 텍스트 수정
+=======
+      styleName: 'left-column ',
+>>>>>>> 36b67139931507389480ed3de0877c33e4e571ca:src/components/feature/amaranth/fundType/Realgrid-Data-FundType.js
     },
   },
 ];
@@ -315,6 +324,7 @@ export const fundTypeLayout = [
     ],
     header: {
       text: '자금과목', // 그룹 헤더 텍스트
+      styleName: 'left-column rg-header',
     },
   },
   'TYPE_NM',
@@ -328,6 +338,7 @@ export const fundTypeLayout = [
     ],
     header: {
       text: '상위자금과목', // 그룹 헤더 텍스트
+      styleName: 'left-column rg-header',
     },
   },
   'LOW_YN',
@@ -337,31 +348,196 @@ export const fundTypeLayout = [
 
 export const fundTypeSearchLayout = [
   'CASH_FG',
+  'LEVEL_CD',
   'CASH_CD',
   'CASH_NM',
   'TYPE_NM',
   'SUM_NM',
 ];
 
-export const rows = [
+export const WidthFields = [
   {
-    CASH_FG: '수지',
-    LEVEL_CD: 1,
-    CASH_CD: '1',
-    CASH_NM: 'Arcu Et Pede Incorporated',
+    fieldName: 'CASH_FG',
+    dataType: ValueType.TEXT,
   },
   {
-    CASH_FG: '지출',
-    LEVEL_CD: 2,
-    CASH_CD: '1',
-    CASH_NM: 'Aliquam Tincidunt Ltd',
+    fieldName: 'CASH_CD_L1',
+    dataType: ValueType.INT,
   },
   {
-    CASH_FG: '지출',
-    LEVEL_CD: 2,
-    CASH_CD: '1',
-    CASH_NM: 'Aliquam Tincidunt Ltd',
+    fieldName: 'CASH_NM_L1',
+    dataType: ValueType.TEXT,
   },
+  {
+    fieldName: 'CASH_CD_L2',
+    dataType: ValueType.INT,
+  },
+  {
+    fieldName: 'CASH_NM_L2',
+    dataType: ValueType.TEXT,
+  },
+  {
+    fieldName: 'CASH_CD_L3',
+    dataType: ValueType.INT,
+  },
+  {
+    fieldName: 'CASH_NM_L3',
+    dataType: ValueType.TEXT,
+  },
+  {
+    fieldName: 'LOW_YN',
+    dataType: ValueType.TEXT, // 데이터 유형에 따라 수정
+  },
+  {
+    fieldName: 'USE_YN',
+    dataType: ValueType.TEXT, // 데이터 유형에 따라 수정
+  },
+  {
+    fieldName: 'DISP_SQ',
+    dataType: ValueType.NUMBER, // 데이터 유형에 따라 수정
+  },
+];
+export const WidthColumns = [
+  {
+    name: 'CASH_FG',
+    fieldName: 'CASH_FG',
+    width: '80',
+    styleName: 'left-column',
+    header: {
+      text: '수지구분',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_CD_L1',
+    fieldName: 'CASH_CD_L1',
+    width: '80',
+    styleName: 'left-column ',
+    editor: {
+      type: 'number',
+      maxLength: 4,
+      positiveOnly: true,
+      inputCharacters: '0-9',
+    },
+    header: {
+      text: '자금코드(레벨1)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_NM_L1',
+    fieldName: 'CASH_NM_L1',
+    width: '80',
+    styleName: 'left-column',
+    header: {
+      text: '과목명(레벨1)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_CD_L2',
+    fieldName: 'CASH_CD_L2',
+    width: '80',
+    styleName: 'left-column ',
+    editor: {
+      type: 'number',
+      maxLength: 4,
+      positiveOnly: true,
+      inputCharacters: '0-9',
+    },
+    header: {
+      text: '자금코드(레벨2)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_NM_L2',
+    fieldName: 'CASH_NM_L2',
+    width: '80',
+    styleName: 'left-column',
+    header: {
+      text: '과목명(레벨2)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_CD_L3',
+    fieldName: 'CASH_CD_L3',
+    width: '80',
+    styleName: 'left-column ',
+    editor: {
+      type: 'number',
+      maxLength: 4,
+      positiveOnly: true,
+      inputCharacters: '0-9',
+    },
+    header: {
+      text: '자금코드(레벨3)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'CASH_NM_L3',
+    fieldName: 'CASH_NM_L3',
+    width: '80',
+    styleName: 'left-column',
+    header: {
+      text: '과목명(레벨3)',
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'LOW_YN',
+    fieldName: 'LOW_YN',
+    width: '100', // 너비 수정
+    styleName: 'left-column ',
+    header: {
+      text: '최하위여부', // 열 헤더 텍스트 수정
+      styleName: 'left-column ',
+    },
+  },
+  {
+    name: 'USE_YN',
+    fieldName: 'USE_YN',
+    width: '100', // 너비 수정
+    styleName: 'left-column ',
+    header: {
+      text: '사용여부', // 열 헤더 텍스트 수정
+      styleName: 'left-column  ',
+    },
+  },
+  {
+    name: 'DISP_SQ',
+    fieldName: 'DISP_SQ',
+    width: '100', // 너비 수정
+    styleName: 'left-column ',
+    editor: {
+      type: 'number',
+      editFormat: '#,##0',
+      maxLength: 5,
+      positiveOnly: true,
+      includedFormat: true,
+      maxLengthExceptComma: true,
+    },
+    numberFormat: '#,##0',
+    header: {
+      text: '정렬구분', // 열 헤더 텍스트 수정
+      styleName: 'left-column ',
+    },
+  },
+];
+
+export const fundTypeWidthViewLayout = [
+  'CASH_FG',
+  'CASH_CD_L1',
+  'CASH_NM_L1',
+  'CASH_CD_L2',
+  'CASH_NM_L2',
+  'CASH_CD_L3',
+  'CASH_NM_L3',
+  'LOW_YN',
+  'DISP_SQ',
+  'USE_YN',
 ];
 
 export const option = {
