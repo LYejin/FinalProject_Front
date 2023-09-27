@@ -63,19 +63,6 @@ export const columns = [
       styleName: 'left-column ',
     },
     styleCallback: (grid, dataCell) => {
-<<<<<<< HEAD:src/components/feature/fundType/Realgrid-Data-FundType.js
-      // console.log(
-      //   '------------------------------------------------------',
-      //   '행상태',
-      //   dataCell.item.rowState,
-      //   '셀 상태',
-      //   dataCell.item.itemState,
-      //   '값 상태',
-      //   dataCell.value,
-      //   dataCell.index.itemIndex
-      // );
-=======
->>>>>>> 36b67139931507389480ed3de0877c33e4e571ca:src/components/feature/amaranth/fundType/Realgrid-Data-FundType.js
       const ret = {};
       if (
         (dataCell.value === '' || dataCell.value === undefined) &&
@@ -222,91 +209,7 @@ export const columns = [
     numberFormat: '#,##0',
     header: {
       text: '정렬구분', // 열 헤더 텍스트 수정
-<<<<<<< HEAD:src/components/feature/fundType/Realgrid-Data-FundType.js
-    },
-  },
-];
-
-export const s_columns = [
-  {
-    name: 'CASH_FG',
-    fieldName: 'CASH_FG',
-    width: '100',
-    editButtonVisibility: 'visible', // 드롭다운 버튼 표시 여부
-    values: ['수입', '지출', '대체'],
-    labels: ['1.수입', '2.지출', '3.대체'],
-    editor: {
-      type: 'dropdown',
-      dropDownCount: 3, //항목 수
-      domainOnly: true, //목록에 있는 값들만 선택
-      textReadOnly: true, //키보드 입력이 안되게
-    },
-    header: {
-      text: '수지구분',
-    },
-    styleCallback: (grid, dataCell) => {
-      // console.log(
-      //   '------------------------------------------------------',
-      //   '행상태',
-      //   dataCell.item.rowState,
-      //   '셀 상태',
-      //   dataCell.item.itemState,
-      //   '값 상태',
-      //   dataCell.value,
-      //   dataCell.index.itemIndex
-      // );
-      const ret = {};
-      if (
-        (dataCell.value === '' || dataCell.value === undefined) &&
-        dataCell.item.rowState === 'none'
-      ) {
-        ret.editable = true;
-      } else {
-        ret.editable = false;
-      }
-      return ret;
-    },
-  },
-
-  {
-    name: 'CASH_CD',
-    fieldName: 'CASH_CD',
-    width: '80',
-    editor: {
-      type: 'number',
-      maxLength: 4,
-      positiveOnly: true,
-      inputCharacters: '0-9',
-    },
-    header: {
-      text: '자금코드',
-    },
-  },
-  {
-    name: 'CASH_NM',
-    fieldName: 'CASH_NM',
-    width: '134',
-    header: {
-      text: '과목명',
-    },
-  },
-  {
-    name: 'TYPE_NM',
-    fieldName: 'TYPE_NM',
-    width: '160', // 너비 수정
-    header: {
-      text: '용도', // 열 헤더 텍스트 수정
-    },
-  },
-  {
-    name: 'SUM_NM',
-    fieldName: 'SUM_NM',
-    width: '185', // 너비 수정
-    header: {
-      text: '상위과목명', // 열 헤더 텍스트 수정
-=======
       styleName: 'left-column ',
->>>>>>> 36b67139931507389480ed3de0877c33e4e571ca:src/components/feature/amaranth/fundType/Realgrid-Data-FundType.js
     },
   },
 ];

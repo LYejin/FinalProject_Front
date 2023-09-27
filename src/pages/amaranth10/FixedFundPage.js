@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  authAxiosInstance,
-  imageAxiosInstance,
-} from '../../axios/axiosInstance';
-import {
-  MainTitle,
-  Title,
-  DeptSubTitle,
-  ScrollWrapper,
-} from '../../components/common/Index';
+import { MainTitle, Title, DeptSubTitle } from '../../components/common/Index';
 import {
   ContentWrapper,
   DetailContentWrapper,
@@ -19,11 +10,12 @@ import {
 } from '../../components/layout/amaranth/Index';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 import FixedFundGrid from '../../components/feature/amaranth/fixedfund/realgrid/FixedFundGrid';
-import FundTypeModal from '../../components/feature/fundType/Modal/FundTypeModel';
-import FundTypeSearch from '../../components/feature/fundType/FundTypeSearch';
-import FundTypeModel from '../../components/feature/fundType/model/FundTypeModel';
+
+// import FundTypeSearch from '../../components/feature/fundType/FundTypeSearch';
 import FundTypeSearchGrid from '../../components/feature/amaranth/fixedfund/realgrid/FixedTypeSearchGrid';
 import StradeCodeHelpModal from '../../components/feature/amaranth/Modal/StradeCodeHelpModal/StradeCodeHelpModal';
+import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
+import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
 
 const FixedFundPage = () => {
   useEffect(() => {}, []);

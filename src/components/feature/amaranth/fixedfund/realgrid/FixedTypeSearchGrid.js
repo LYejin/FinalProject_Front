@@ -7,9 +7,7 @@ import {
   columns,
   fields,
   fundTypeSearchLayout,
-  s_columns,
-} from '../../../fundType/Realgrid-Data-FundType';
-import { authAxiosInstance } from '../../../../../axios/axiosInstance';
+} from '../../fundType/Realgrid-Data-FundType';
 
 const FundTypeSearchGrid = ({
   loadRowData,

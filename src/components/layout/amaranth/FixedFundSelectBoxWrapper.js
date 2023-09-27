@@ -6,12 +6,13 @@ import RealGrid from '../../feature/amaranth/fixedfund/realgrid/RealGridJ';
 import { useEffect } from 'react';
 import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import StradeCodeHelpModal from '../../feature/amaranth/Modal/StradeCodeHelpModal/StradeCodeHelpModal';
-import FundTypeModal from '../../feature/fundType/Modal/FundTypeModel';
+
 import FundTypeSearchGrid from '../../feature/amaranth/fixedfund/realgrid/FixedTypeSearchGrid';
-import FundTypeModel from '../../feature/fundType/model/FundTypeModel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useRef } from 'react';
+import FundTypeModal from '../../feature/amaranth/fundType/Modal/FundTypeModal';
+import FundTypeModel from '../../feature/amaranth/fundType/model/FundTypeModel';
 
 const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
