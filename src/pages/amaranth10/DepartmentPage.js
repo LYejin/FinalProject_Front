@@ -164,6 +164,8 @@ const DepartmentPage = () => {
       const response = await authAxiosInstance.get(
         `/system/user/departments/getDeptList/${selectedCoCd}`
       );
+      setVisible(false);
+      console.log('이짓거리', response.data);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
       setAllDepartmentData(response.data);
@@ -173,57 +175,111 @@ const DepartmentPage = () => {
     }
   };
 
+  // const hierarchyData = data => {
+  //   if (!data || data.length === 0) {
+  //     return []; // 데이터가 없는 경우 빈 배열 반환
+  //   }
+  //   const result = [];
+
+  //   const coItem = {
+  //     co_CD: data[0].co_CD,
+  //     co_NM: data[0].co_NM,
+  //     divs: [],
+  //   };
+
+  //   const findSubDepts = (dept_CD, allDepts) => {
+  //     return allDepts
+  //       .filter(dept => dept.mdept_CD === dept_CD)
+  //       .map(dept => ({
+  //         ...dept,
+  //         subDepts: findSubDepts(dept.dept_CD, allDepts),
+  //       }));
+  //   };
+
+  //   // DIV_CD를 기준으로 분류
+  //   const divGroups = data.reduce((acc, curr) => {
+  //     if (!acc[curr.div_CD]) {
+  //       acc[curr.div_CD] = {
+  //         div_NM: curr.div_NM, // DIV_NM 추가
+  //         depts: [],
+  //       };
+  //     }
+  //     acc[curr.div_CD].depts.push(curr);
+  //     return acc;
+  //   }, {});
+
+  //   for (const div in divGroups) {
+  //     const deptsForThisDiv = divGroups[div].depts;
+  //     const topLevelDepts = deptsForThisDiv.filter(dept => !dept.mdept_CD);
+  //     topLevelDepts.forEach(dept => {
+  //       dept.subDepts = findSubDepts(dept.dept_CD, deptsForThisDiv);
+  //     });
+
+  //     const divItem = {
+  //       div_CD: div,
+  //       div_NM: divGroups[div].div_NM,
+  //       depts: topLevelDepts,
+  //     };
+
+  //     coItem.divs.push(divItem);
+  //   }
+
+  //   result.push(coItem);
+
+  //   return result;
+  // };
+
   const hierarchyData = data => {
     if (!data || data.length === 0) {
-      return []; // 데이터가 없는 경우 빈 배열 반환
+      return [];
     }
     const result = [];
-
     const coItem = {
-      co_CD: data[0].co_CD,
-      co_NM: data[0].co_NM,
+      co_CD: data[0].co_CD || '', // co_CD가 없는 경우에 대비
+      co_NM: data[0].co_NM || '', // co_NM이 없는 경우에 대비
       divs: [],
     };
 
     const findSubDepts = (dept_CD, allDepts) => {
-      return allDepts
-        .filter(dept => dept.mdept_CD === dept_CD)
+      return (allDepts || [])
+        .filter(dept => dept && dept.mdept_CD === dept_CD) // dept와 mdept_CD가 있는지 확인
         .map(dept => ({
           ...dept,
-          subDepts: findSubDepts(dept.dept_CD, allDepts),
+          subDepts: findSubDepts(dept.dept_CD || '', allDepts), // dept_CD가 있는지 확인
         }));
     };
 
-    // DIV_CD를 기준으로 분류
-    const divGroups = data.reduce((acc, curr) => {
-      if (!acc[curr.div_CD]) {
-        acc[curr.div_CD] = {
-          div_NM: curr.div_NM, // DIV_NM 추가
+    const divGroups = (data || []).reduce((acc, curr) => {
+      const div_CD = curr?.div_CD || ''; // div_CD가 있는지 확인
+      const div_NM = curr?.div_NM || ''; // div_NM이 있는지 확인
+      if (!div_CD) return acc; // div_CD가 없으면 현재의 accumulator 반환
+      if (!acc[div_CD]) {
+        acc[div_CD] = {
+          div_NM: div_NM,
           depts: [],
         };
       }
-      acc[curr.div_CD].depts.push(curr);
+      acc[div_CD].depts.push(curr);
       return acc;
     }, {});
 
     for (const div in divGroups) {
-      const deptsForThisDiv = divGroups[div].depts;
-      const topLevelDepts = deptsForThisDiv.filter(dept => !dept.mdept_CD);
-      topLevelDepts.forEach(dept => {
-        dept.subDepts = findSubDepts(dept.dept_CD, deptsForThisDiv);
+      const deptsForThisDiv = divGroups[div].depts || [];
+      const topLevelDepts = (deptsForThisDiv || []).filter(
+        dept => dept && !dept.mdept_CD
+      ); // dept와 mdept_CD가 있는지 확인
+      (topLevelDepts || []).forEach(dept => {
+        dept.subDepts = findSubDepts(dept.dept_CD || '', deptsForThisDiv); // dept_CD가 있는지 확인
       });
 
       const divItem = {
         div_CD: div,
-        div_NM: divGroups[div].div_NM,
+        div_NM: divGroups[div].div_NM || '', // div_NM이 있는지 확인
         depts: topLevelDepts,
       };
-
       coItem.divs.push(divItem);
     }
-
     result.push(coItem);
-
     return result;
   };
 
@@ -272,7 +328,12 @@ const DepartmentPage = () => {
         if (!isVisible) {
           setVisible(true);
         }
-        setData(foundDept);
+        console.log(response.data);
+        setData({
+          ...response.data,
+          co_NM: foundDept.co_NM,
+          div_NM: foundDept.div_NM,
+        });
         setSelectedRadioValue(response.data.call_YN);
         setShowRadioValue(response.data.show_YN);
       } else {
@@ -318,6 +379,8 @@ const DepartmentPage = () => {
                       setSearchCocd(selectedCoCd);
                       fetchDepartmentData(selectedCoCd);
                     }}
+                    useInitialValue={true}
+                    state={0}
                   />
                   <DeptTextFieldBox width={'100px'} onSearch={handleSearch} />
                 </DeptSearchWrapper>

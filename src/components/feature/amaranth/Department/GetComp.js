@@ -39,7 +39,10 @@ function GetComp({ data, searchValue }) {
             width: 15,
           }}
         >
-          {data.divs && data.divs.length > 0 && (isOpen ? '▼' : '▶')}
+          {data.divs &&
+            data.divs.length > 0 &&
+            data.divs.some(div => div && div.div_CD) &&
+            (isOpen ? '▼' : '▶')}
         </span>
         <span
           onClick={toggleOpen}

@@ -4,16 +4,16 @@ import { DeptContext } from '../../../../pages/amaranth10/DepartmentPage';
 
 function ListDept({ data, roof, deptStyle, searchValue }) {
   const { handleSelectDepartment } = useContext(DeptContext);
+  const localStorageKey = `departmentIsOpen_${data.dept_CD}`;
+  const [isOpen, setIsOpen] = useState(
+    localStorage.getItem(localStorageKey) === 'true' || false
+  );
 
   const onDeptClick = () => {
     handleSelectDepartment(data.dept_CD, data.div_CD);
   };
 
-  const localStorageKey = `departmentIsOpen_${data.dept_CD}`;
-
-  const [isOpen, setIsOpen] = useState(
-    localStorage.getItem(localStorageKey) === 'true' || false
-  );
+  if (!data || !data.dept_CD) return null;
 
   const toggleOpen = () => {
     const newIsOpen = !isOpen;

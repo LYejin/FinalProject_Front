@@ -39,7 +39,10 @@ function ListDivision({ data, searchValue }) {
             width: 15,
           }}
         >
-          {data.depts && data.depts.length > 0 && (isOpen ? '▼' : '▶')}
+          {data.depts &&
+            data.depts.length > 0 &&
+            data.depts.some(dept => dept && dept.dept_CD) &&
+            (isOpen ? '▼' : '▶')}
         </span>
         <span
           onClick={toggleOpen}
