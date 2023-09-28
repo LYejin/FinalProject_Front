@@ -10,6 +10,7 @@ const CompSelectBox = ({
   width,
   onSelectChange,
   selectMenu,
+  state,
 }) => {
   const [selectedValue, setSelectedValue] = React.useState(
     data.length > 0 ? data[0].value : ''
@@ -20,7 +21,18 @@ const CompSelectBox = ({
       setSelectedValue(data[0].value);
       onSelectChange(data[0].value); // 초기에 첫번째 항목에 대한 onSelectChange 호출
     }
+    if (data.length > 0 && state === 1) {
+      setSelectedValue('');
+      onSelectChange('');
+    }
   }, [data]);
+
+  // useEffect(() => {
+  //   if (data.length > 0) {
+  //     setSelectedValue(0);
+  //     onSelectChange(); // 초기에 첫번째 항목에 대한 onSelectChange 호출
+  //   }
+  // }, []);
 
   const handleChange = event => {
     const value = event.target.value;

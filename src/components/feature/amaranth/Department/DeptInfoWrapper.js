@@ -6,6 +6,7 @@ import {
   DetailTitle,
   SelectBox,
   UseSelectBox,
+  InfoInput,
 } from '../../../common/Index';
 import 'react-datepicker/dist/react-datepicker.css';
 import MenuItem from '@mui/material/MenuItem';
@@ -70,11 +71,10 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">상위부서</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
+              <InfoInput
                 defaultValue={data ? data.mdept_CD || '' : ''}
                 {...register('mdept_CD')}
+                maxLength={10}
                 readOnly
               />
             </td>
@@ -98,23 +98,23 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">발신인명</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
+              <InfoInput
                 defaultValue={data ? data.call_NM || '' : ''}
                 {...register('call_NM')}
+                maxLength={10}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">부서코드</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
+              <InfoInput
+                type={1}
                 defaultValue={data ? data.dept_CD || '' : ''}
-                placeholder="부서코드를 입력해주세요."
                 {...register('dept_CD')}
+                valid={'number'}
+                placeholder="부서코드를 입력해주세요."
+                maxLength={10}
               />
             </td>
           </tr>
@@ -139,32 +139,29 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">부서명</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="reqInputStyle"
+              <InfoInput
+                valid={'text'}
                 defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
                 {...register('dept_NM')}
+                maxLength={20}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">부서약칭</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
+              <InfoInput
                 defaultValue={data ? data.dept_NMK || '' : ''}
                 {...register('dept_NMK')}
+                maxLength={20}
               />
             </td>
           </tr>
           <tr>
             <th className="headerCellStyle">부서관리자</th>
             <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
+              <InfoInput
                 defaultValue={data ? data.mgr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
                 {...register('mgr_NM')}
@@ -176,36 +173,36 @@ const DeptInfoWrapper = ({
               주소
             </th>
             <td colSpan="3" className="cellEmpAddrStyle">
-              <input
-                type="text"
-                className="addressInputStyle"
-                name="zipcode"
-                {...register('zipcode')}
-                defaultValue={address ? address : data.zipcode}
-              />
-              <EventButton
-                data={'우편번호'}
-                onClickEvent={onChangeOpenPost}
-              ></EventButton>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <InfoInput
+                  name="zipcode"
+                  {...register('addr_CD')}
+                  defaultValue={address ? address : data.zipcode}
+                  style={{ width: '150px' }}
+                  maxLength={5}
+                />
+                <EventButton
+                  data={'우편번호'}
+                  onClickEvent={onChangeOpenPost}
+                />
+              </div>
             </td>
           </tr>
           <tr>
             <td colSpan="2" className="cellStyle">
-              <input
-                type="text"
-                className="addrNum"
+              <InfoInput
                 name="addr"
                 {...register('addr')}
                 defaultValue={addressDetail ? addressDetail : data.addr}
+                maxLength={60}
               />
             </td>
             <td className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
+              <InfoInput
                 name="addr_NUM"
                 {...register('addr_NUM')}
                 defaultValue={data.addr_NUM}
+                maxLength={40}
               />
             </td>
           </tr>
@@ -257,7 +254,7 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">정렬</th>
             <td colSpan="3" className="cellStyle">
-              <input type="text" className="inputStyle" />
+              <InfoInput />
             </td>
           </tr>
         </tbody>
