@@ -146,8 +146,8 @@ const StradeRollManageRealGrid = ({ tr_CD }) => {
       alert('onRowInserting ');
       let editItem = gridView.getEditingItem();
       if (
-        editItem?.values.dept_CD !== undefined &&
-        editItem?.values.emp_CD !== undefined
+        editItem?.values.dept_CD === undefined &&
+        editItem?.values.emp_CD === undefined
       ) {
         return false;
       } else if (

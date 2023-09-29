@@ -167,11 +167,11 @@ const EmpInfoBox = ({
                     }
                   )}
                   maxLength="10"
-                  defaultValue={data.emp_CD}
+                  defaultValue={data?.emp_CD}
                   style={{
                     border:
-                      errors.emp_CD &&
-                      (checkDBErrorYN.emp_CD_ERROR || errorName === 'emp_CD')
+                      errors?.emp_CD &&
+                      (checkDBErrorYN?.emp_CD_ERROR || errorName === 'emp_CD')
                         ? '1px solid red'
                         : '1px solid #ccc',
                     backgroundColor: clickYN ? '#f2f2f2' : '#fef4f4',

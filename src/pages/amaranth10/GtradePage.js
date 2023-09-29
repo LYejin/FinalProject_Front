@@ -108,6 +108,7 @@ const GtradePage = () => {
   // radio
   const handleRadioChange = e => {
     setSelectedRadioValue(e.target.value);
+    setValue('tr_CD', '');
     setChangeFormData(changeFormData => ({
       ...changeFormData,
       [e.target.name]: e.target.value,
@@ -136,22 +137,21 @@ const GtradePage = () => {
 
   const resetData = () => {
     setData({
-      username: '',
-      password: '',
-      kor_NM: '',
+      tr_CD: '',
       email_ADD: '',
-      gender_FG: '',
-      emp_CD: '',
-      enrl_FG: '',
-      join_DT: '',
-      personal_MAIL: '',
-      personal_MAIL_CP: '',
-      salary_MAIL: '',
-      tel: '',
-      home_TEL: '',
-      zipcode: '',
+      reg_NB: '',
+      ppl_NB: '',
+      ceo_NM: '',
+      business: '',
+      jongmok: '',
+      zip: '',
       addr: '',
       addr_NUM: '',
+      phone_NB: '',
+      fax: '',
+      website: '',
+      email: '',
+      liq_CD: '',
     });
   };
 
@@ -165,6 +165,8 @@ const GtradePage = () => {
     if (clickYN && !insertButtonClick) {
       console.log('^^^^^^^^^^^^^^^^^^^^^^^');
       setTR_CD(response.data[0]?.tr_CD);
+      setValue('reg_NB', response.data[0]?.reg_NB);
+      setValue('ppl_NB', response.data[0]?.ppl_NB);
       setUseYN(response.data[0]?.use_YN);
       setData(response?.data[0] || null);
       setSelectedRadioValue(response.data[0]?.gender_FG);
@@ -209,8 +211,10 @@ const GtradePage = () => {
         params,
       }
     );
-    setData(response.data);
+    setData(response?.data);
     console.log('Detail : ', response.data);
+    setValue('reg_NB', response.data?.reg_NB);
+    setValue('ppl_NB', response.data?.ppl_NB);
     setOpenDate(new Date(response.data?.start_DT) || '');
     setCloseDate(new Date(response.data?.end_DT) || '');
     setIsLoading(false);
@@ -273,7 +277,7 @@ const GtradePage = () => {
     setCloseDate();
     setInsertButtonClick(true);
     setClickYN(false);
-    setSelectedRadioValue('W');
+    setSelectedRadioValue('auto');
     setAddress();
     setAddressDetail();
     setWorkplaceList('');
@@ -305,12 +309,23 @@ const GtradePage = () => {
 
     console.log('kkkkkkkkkkkkk');
     console.log(checkDBErrorYN);
-    checkDBErrorYN.emp_CD_ERROR &&
-      setError('emp_CD', { message: '사번이 중복되었습니다.' });
-    checkDBErrorYN.username_ERROR &&
-      setError('username', { message: 'ID가 중복되었습니다.' });
-    checkDBErrorYN.email_ADD_ERROR &&
-      setError('email_ADD', { message: 'ID가 중복되었습니다.' });
+    if (checkDBErrorYN.tr_CD_ERROR) {
+      setError('tr_CD', { message: '거래처가 중복되었습니다.' });
+      alert('중복된 값이 존재합니다.');
+      return;
+    }
+
+    if (checkDBErrorYN.reg_NB_ERROR) {
+      setError('reg_NB', { message: '000-00-0000형식을 맞춰서 입력하세요.' });
+      alert('000-00-0000형식을 맞춰서 입력하세요.');
+      return;
+    }
+
+    if (checkDBErrorYN.ppl_NB_ERROR) {
+      setError('ppl_NB', { message: '주민번호 형식에 맞게 입력하세요.' });
+      alert('주민번호 형식에 맞게 입력하세요.');
+      return;
+    }
 
     // 사원 update 중일 때 저장버튼 기능
     if (
@@ -358,6 +373,7 @@ const GtradePage = () => {
       const userData = {
         tr_CD: data?.tr_CD,
         tr_NM: data?.tr_NM,
+        tr_MA: selectedRadioValue,
         tr_FG: '1',
         use_YN: '1',
         view_YN: '0',
@@ -391,7 +407,7 @@ const GtradePage = () => {
       setEmpList([
         ...empList,
         {
-          tr_CD: data?.tr_CD,
+          tr_CD: response.data,
           tr_NM: data?.tr_NM,
           reg_NB: data?.reg_NB,
         },
@@ -418,23 +434,63 @@ const GtradePage = () => {
   };
 
   // 에러 처리 이벤트
-  const onFocusError = e => {
-    const errorList = Object.keys(errors);
-    if (errorList.indexOf('emp_CD') < 0 && errorList.indexOf('co_CD') > -1) {
-      setErrorName('co_CD');
-    } else if (
-      errorList.indexOf('emp_CD') < 0 &&
-      errorList.indexOf('div_CD') > -1
-    ) {
-      setErrorName('div_CD');
-    } else if (
-      errorList.indexOf('emp_CD') < 0 &&
-      errorList.indexOf('enrl_FG') > -1
-    ) {
-      setErrorName('enrl_FG');
-    } else {
-      setErrorName(e.target.name);
+  const onFocusError = async e => {
+    if (e.target.name === 'reg_NB') {
+      const regNbRegExp = /^\d{3}-\d{2}-\d{5}$/;
+      if (!regNbRegExp.test(e.target.value)) {
+        setError('reg_NB', {
+          message: `000-00-0000형식을 맞춰서 입력하세요.`,
+        });
+        setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_ERROR: true });
+        return; // 에러 계속 뜨게 할 건지 고민
+      } else {
+        delete errors.reg_NB;
+        await authAxiosInstance(`accounting/user/Strade/regNbVal`, {
+          params: { REG_NB: e.target.value },
+        }).then(response => {
+          if (response.data) {
+            alert(
+              `거래처코드 [${tr_CD}]에 동일 사업자등록번호로 등록된 거래처가 존재합니다. 등록하시겠습니까?`
+            );
+          }
+          console.log(response.data);
+        });
+      }
+      setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_ERROR: false });
     }
+
+    if (e.target.name === 'ppl_NB') {
+      const pplNbRegExp =
+        /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])-\d{7}$/;
+      if (!pplNbRegExp.test(e.target.value)) {
+        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: true });
+        setError('ppl_NB', {
+          message: `주민번호 형식에 맞게 입력하세요.`,
+        });
+        return;
+      } else {
+        delete errors.ppl_NB;
+        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: true });
+        await authAxiosInstance(`accounting/user/Strade/pplNbVal`, {
+          params: { PPL_NB: e.target.value },
+        }).then(response => {
+          if (response.data) {
+            setError('ppl_NB', {
+              message: `중복된 주민등록번호가 존재합니다.`,
+            });
+          }
+          console.log(response.data);
+          return;
+        });
+        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: false });
+      }
+    }
+
+    const errorList = Object.keys(errors);
+    if (errorList.indexOf('tr_CD') > -1) {
+      setErrorName('tr_CD');
+    }
+    setErrorName(e.target.name);
   };
 
   //select box event
@@ -442,6 +498,24 @@ const GtradePage = () => {
     const {
       target: { value },
     } = event;
+  };
+
+  // 사업자등록번호 유효성
+  const onCompleteRegNb = async e => {
+    let params = {};
+    params.REG_NB = e.target.value;
+    await authAxiosInstance(`accounting/user/Strade/regNbVal`, {
+      params,
+    }).then(response => {
+      console.log(response.data);
+    });
+  };
+
+  // 주민등록번호 유효성
+  const onCompletePplNb = e => {
+    // if (e.target.value.length === 12) {
+    alert('hiiii');
+    // }
   };
 
   // 전화번호 실시간 010-0000-000 change
@@ -481,63 +555,64 @@ const GtradePage = () => {
   const onChangeDBDataSearch = async e => {
     let params = {};
     console.log('=============', changeFormData);
-    if (e.target.name === 'emp_CD') {
+    if (e.target.name === 'tr_CD') {
       params.CO_CD = company;
-      params.EMP_CD = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getEmpCDInWorkplace`,
-        { params }
-      ).then(response => {
+      params.TR_CD = e.target.value;
+      await authAxiosInstance(`accounting/user/Strade/trCdVal`, {
+        params,
+      }).then(response => {
         console.log(response.data);
         response.data &&
-          setError('emp_CD', { message: '사번이 중복되었습니다.' });
+          setError('tr_CD', { message: `거래처 코드가 중복되었습니다.` });
         if (response.data) {
           console.log('hiiiiiiii');
-          setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: true });
+          setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: true });
         } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: false });
-          delete errors.emp_CD;
-        }
-      });
-    } else if (e.target.name === 'username') {
-      params.USERNAME = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getUsernameInCompany`,
-        { params }
-      ).then(response => {
-        console.log(response.data);
-        response.data &&
-          setError('username', { message: 'ID가 중복되었습니다.' });
-        if (response.data) {
-          setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });
-        } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: false });
-          delete errors.username;
-        }
-      });
-    } else if (e.target.name === 'email_ADD') {
-      params.EMAIL_ADD = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getEmailInCompany`,
-        {
-          params,
-        }
-      ).then(response => {
-        console.log(response.data);
-        response.data &&
-          setError('email_ADD', { message: 'ID가 중복되었습니다.' });
-        if (response.data) {
-          setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: true });
-        } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: false });
-          delete errors.email_ADD;
+          setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: false });
+          delete errors.tr_CD;
         }
       });
     }
+    // } else if (e.target.name === 'username') {
+    //   params.USERNAME = e.target.value;
+    //   await authAxiosInstance(
+    //     `system/user/groupManage/employee/getUsernameInCompany`,
+    //     { params }
+    //   ).then(response => {
+    //     console.log(response.data);
+    //     response.data &&
+    //       setError('username', { message: 'ID가 중복되었습니다.' });
+    //     if (response.data) {
+    //       setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });
+    //     } else {
+    //       setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: false });
+    //       delete errors.username;
+    //     }
+    //   });
+    // } else if (e.target.name === 'email_ADD') {
+    //   params.EMAIL_ADD = e.target.value;
+    //   await authAxiosInstance(
+    //     `system/user/groupManage/employee/getEmailInCompany`,
+    //     {
+    //       params,
+    //     }
+    //   ).then(response => {
+    //     console.log(response.data);
+    //     response.data &&
+    //       setError('email_ADD', { message: 'ID가 중복되었습니다.' });
+    //     if (response.data) {
+    //       setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: true });
+    //     } else {
+    //       setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: false });
+    //       delete errors.email_ADD;
+    //     }
+    //   });
+    // }
     console.log('checkDBErrorYN : ', checkDBErrorYN);
   };
 
   console.log('errors', errors);
+  console.log('errorName', errorName);
   console.log(changeFormData);
   console.log(checkDBErrorYN);
   console.log(data);
@@ -685,6 +760,7 @@ const GtradePage = () => {
                       onChangeOpenPost={onChangeOpenPost}
                       register={register}
                       openDate={openDate}
+                      insertButtonClick={insertButtonClick}
                       selectedValue={selectedRadioValue}
                       handleRadioChange={handleRadioChange}
                       address={address}
@@ -708,6 +784,8 @@ const GtradePage = () => {
                       clearErrors={clearErrors}
                       checkDBErrorYN={checkDBErrorYN}
                       setUseYN={setUseYN}
+                      onCompleteRegNb={onCompleteRegNb}
+                      onCompletePplNb={onCompletePplNb}
                       useYN={useYN}
                       tr_CD={tr_CD}
                     />
