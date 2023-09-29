@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ListDept from './ListDept';
 import workpImg from './workpImg.png';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 
 function ListDivision({ data, searchValue }) {
   const [isOpen, setIsOpen] = useState(
@@ -16,7 +17,7 @@ function ListDivision({ data, searchValue }) {
   const highlightStyle =
     searchValue &&
     (data.div_CD.includes(searchValue) || data.div_NM.includes(searchValue))
-      ? { border: '1px solid blue', backgroundColor: '#D3FFFF' }
+      ? { border: '2px solid green' }
       : {};
 
   return (
@@ -29,6 +30,7 @@ function ListDivision({ data, searchValue }) {
           display: 'flex',
           alignItems: 'center',
           fontWeight: 'bold',
+          margin: '3px 3px',
         }}
       >
         <span
@@ -42,7 +44,7 @@ function ListDivision({ data, searchValue }) {
           {data.depts &&
             data.depts.length > 0 &&
             data.depts.some(dept => dept && dept.dept_CD) &&
-            (isOpen ? '▼' : '▶')}
+            (isOpen ? <FaAngleDown /> : <FaAngleRight />)}
         </span>
         <span
           onClick={toggleOpen}

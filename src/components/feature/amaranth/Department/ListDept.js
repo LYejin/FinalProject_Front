@@ -1,16 +1,27 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import deptImg from './deptImg.png';
 import { DeptContext } from '../../../../pages/amaranth10/DepartmentPage';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 
 function ListDept({ data, roof, deptStyle, searchValue }) {
-  const { handleSelectDepartment } = useContext(DeptContext);
+  const { handleSelectDepartment, selectedDeptCd, setSelectedDeptCd } =
+    useContext(DeptContext);
   const localStorageKey = `departmentIsOpen_${data.dept_CD}`;
   const [isOpen, setIsOpen] = useState(
     localStorage.getItem(localStorageKey) === 'true' || false
   );
 
+  useEffect(() => {
+    if (searchValue) {
+      setSelectedDeptCd(searchValue);
+    }
+  }, [searchValue]);
+
+  console.log('드루와', searchValue);
+
   const onDeptClick = () => {
     handleSelectDepartment(data.dept_CD, data.div_CD);
+    setSelectedDeptCd(data.dept_CD);
   };
 
   if (!data || !data.dept_CD) return null;
@@ -24,9 +35,8 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
   const parsedRoof = parseInt(roof, 10);
 
   const highlightStyle =
-    searchValue &&
-    (data.dept_CD.includes(searchValue) || data.dept_NM.includes(searchValue))
-      ? { border: '1px solid blue', backgroundColor: '#D3FFFF' }
+    selectedDeptCd === data.dept_CD
+      ? { border: '2px solid blue', backgroundColor: '#D3FFFF' }
       : {};
 
   return (
@@ -39,6 +49,7 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
           display: 'flex',
           alignItems: 'center',
           color: 'blue',
+          margin: '3px 3px',
           fontWeight: deptStyle,
         }}
       >
@@ -51,7 +62,9 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
             color: 'black',
           }}
         >
-          {data.subDepts && data.subDepts.length > 0 && (isOpen ? '▼' : '▶')}
+          {data.subDepts &&
+            data.subDepts.length > 0 &&
+            (isOpen ? <FaAngleDown /> : <FaAngleRight />)}
         </span>
         <span
           onClick={onDeptClick}

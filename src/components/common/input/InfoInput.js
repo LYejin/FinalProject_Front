@@ -1,4 +1,5 @@
 import React, { useState, forwardRef } from 'react';
+import { authAxiosInstance } from '../../../axios/axiosInstance';
 import '../../../css/CustomInput.css';
 
 const InfoInput = forwardRef(({ valid, maxLength, type, ...props }, ref) => {

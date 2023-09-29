@@ -175,9 +175,8 @@ const DeptInfoWrapper = ({
             <td colSpan="3" className="cellEmpAddrStyle">
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <InfoInput
-                  name="zipcode"
                   {...register('addr_CD')}
-                  defaultValue={address ? address : data.zipcode}
+                  defaultValue={address ? address : data.addr_CD}
                   style={{ width: '150px' }}
                   maxLength={5}
                 />
@@ -191,7 +190,6 @@ const DeptInfoWrapper = ({
           <tr>
             <td colSpan="2" className="cellStyle">
               <InfoInput
-                name="addr"
                 {...register('addr')}
                 defaultValue={addressDetail ? addressDetail : data.addr}
                 maxLength={60}

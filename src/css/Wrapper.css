@@ -162,6 +162,28 @@
   color: black;
 }
 
+.DPcustomButtonNext {
+  margin-left: 5px;
+  height: 30px;
+  width: 30px;
+  border: 2px solid darkgray;
+  border-radius: 3px;
+  margin-top: -3px;
+  color: darkgray;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border-radius: 3px;
+  display: flex; /* 부모 요소를 flex 컨테이너로 설정 */
+  align-items: center; /* 수직 정렬을 가운데로 설정 */
+  justify-content: center; /* 수평 정렬을 가운데로 설정 */
+  margin-right: 15px;
+}
+
+.DPcustomButtonNext:hover {
+  border-color: #000000;
+  cursor: pointer;
+  color: black;
+}
+
 .FFcustomButtonStyle {
   width: 30px;
   background-image: linear-gradient(#f9f9f9, #eaeaea);

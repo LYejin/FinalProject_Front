@@ -59,7 +59,12 @@ const DepartmentPage = () => {
   const [addressDetail, setAddressDetail] = useState(); // 주소
   const [address, setAddress] = useState(''); // 우편 주소
   const [useCoCd, setUseCoCd] = useState(''); // 현재 선택된 회사
-  const [useDivCd, setUseDivCd] = useState(''); // 현재 선택된 사업장
+  const [selectedDeptCd, setSelectedDeptCd] = useState(null);
+
+  const deptValue = {
+    selectedDeptCd,
+    setSelectedDeptCd,
+  };
 
   // 우편번호
   const onChangeOpenPost = () => {
@@ -94,6 +99,12 @@ const DepartmentPage = () => {
 
   const handleSearch = value => {
     setSearchValue(value);
+    const foundDept = allDepartmentData.find(dept => dept.dept_CD === value);
+    if (foundDept) {
+      handleSelectDepartment(value, foundDept.div_CD);
+    } else {
+      setVisible(false);
+    }
   };
 
   useEffect(() => {
@@ -144,21 +155,6 @@ const DepartmentPage = () => {
     });
   };
 
-  const fetchCompanyData = async () => {
-    try {
-      const response = await authAxiosInstance.get(
-        'system/user/groupManage/employee/getCompanyList'
-      );
-      const mappedCompanyData = response.data.map(company => ({
-        value: company.co_CD,
-        label: company.co_NM,
-      }));
-      setCompanyData(mappedCompanyData);
-    } catch (error) {
-      console.error('Error fetching company data:', error);
-    }
-  };
-
   const fetchDepartmentData = async selectedCoCd => {
     try {
       const response = await authAxiosInstance.get(
@@ -174,60 +170,6 @@ const DepartmentPage = () => {
       console.error('Error fetching department data:', error);
     }
   };
-
-  // const hierarchyData = data => {
-  //   if (!data || data.length === 0) {
-  //     return []; // 데이터가 없는 경우 빈 배열 반환
-  //   }
-  //   const result = [];
-
-  //   const coItem = {
-  //     co_CD: data[0].co_CD,
-  //     co_NM: data[0].co_NM,
-  //     divs: [],
-  //   };
-
-  //   const findSubDepts = (dept_CD, allDepts) => {
-  //     return allDepts
-  //       .filter(dept => dept.mdept_CD === dept_CD)
-  //       .map(dept => ({
-  //         ...dept,
-  //         subDepts: findSubDepts(dept.dept_CD, allDepts),
-  //       }));
-  //   };
-
-  //   // DIV_CD를 기준으로 분류
-  //   const divGroups = data.reduce((acc, curr) => {
-  //     if (!acc[curr.div_CD]) {
-  //       acc[curr.div_CD] = {
-  //         div_NM: curr.div_NM, // DIV_NM 추가
-  //         depts: [],
-  //       };
-  //     }
-  //     acc[curr.div_CD].depts.push(curr);
-  //     return acc;
-  //   }, {});
-
-  //   for (const div in divGroups) {
-  //     const deptsForThisDiv = divGroups[div].depts;
-  //     const topLevelDepts = deptsForThisDiv.filter(dept => !dept.mdept_CD);
-  //     topLevelDepts.forEach(dept => {
-  //       dept.subDepts = findSubDepts(dept.dept_CD, deptsForThisDiv);
-  //     });
-
-  //     const divItem = {
-  //       div_CD: div,
-  //       div_NM: divGroups[div].div_NM,
-  //       depts: topLevelDepts,
-  //     };
-
-  //     coItem.divs.push(divItem);
-  //   }
-
-  //   result.push(coItem);
-
-  //   return result;
-  // };
 
   const hierarchyData = data => {
     if (!data || data.length === 0) {
@@ -283,32 +225,11 @@ const DepartmentPage = () => {
     return result;
   };
 
-  // const handleSelectDepartment = async dept_CD => {
-  //   console.log(dept_CD);
-  //   try {
-  //     const response = await authAxiosInstance.get(
-  //       `system/user/WorkplaceManage/getWorkpInfo/${dept_CD}`
-  //     );
-  //     const foundDept = allDepartmentData.find(
-  //       dept => dept.dept_CD === dept_CD
-  //     );
-  //     if (foundDept) {
-  //       console.log('Found matching department data:', foundDept);
-  //       if (!isVisible) {
-  //         setVisible(true);
-  //       }
-  //       setMatchingDept(foundDept);
-  //       setSelectedRadioValue(response.data.call_YN);
-  //       setShowRadioValue(response.data.show_YN);
-  //     } else {
-  //       console.log('No matching department found.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching department data:', error);
-  //   }
-  // };
-
   const handleSelectDepartment = async (dept_CD, div_CD) => {
+    setSearchValue(dept_CD);
+    reset();
+    setAddress();
+    setAddressDetail();
     try {
       const response = await authAxiosInstance.get(
         `system/user/departments/getDeptInfo/${dept_CD}`,
@@ -382,9 +303,20 @@ const DepartmentPage = () => {
                     useInitialValue={true}
                     state={0}
                   />
-                  <DeptTextFieldBox width={'100px'} onSearch={handleSearch} />
+                  <DeptTextFieldBox
+                    width={'100px'}
+                    onSearch={handleSearch}
+                    allDepartmentData={allDepartmentData}
+                  />
                 </DeptSearchWrapper>
-                <DeptContext.Provider value={{ handleSelectDepartment }}>
+                <DeptContext.Provider
+                  value={{
+                    selectedDeptCd,
+                    setSelectedDeptCd,
+                    handleSelectDepartment,
+                    searchValue,
+                  }}
+                >
                   <DeptShowWrapper
                     width={'350px'}
                     title={'조직도'}
