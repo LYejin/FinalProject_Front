@@ -12,9 +12,14 @@ import EmpCodeHelpModal from '../../Modal/EmpCodeHelpModal/EmpCodeHelpModal';
 import DeptCodeHelpModal from '../../Modal/DeptCodeHelpModal/DeptCodeHelpModal';
 import Swal from 'sweetalert2';
 
-const StradeRollManageRealGrid = ({ tr_CD }) => {
-  const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
-  const [dataProviderStrade, setDataProviderStrade] = useState(null); // DataProvider 저장
+const StradeRollManageRealGrid = ({
+  tr_CD,
+  gridViewStrade,
+  setGridViewStrade,
+  dataProviderStrade,
+  setDataProviderStrade,
+  setDeleteCheck,
+}) => {
   const [empMenuButton, setEmpMenuButton] = useState(false);
   const [empGridValue, setEmpGridValue] = useState(false);
   const [deptMenuButton, setDeptMenuButton] = useState(false); // deptCodeHelp modal 클릭 상태
@@ -143,7 +148,6 @@ const StradeRollManageRealGrid = ({ tr_CD }) => {
 
     // onRowInserting insert 전 확인 과정
     dataProvider.onRowInserting = function (provider, row, values) {
-      alert('onRowInserting ');
       let editItem = gridView.getEditingItem();
       if (
         editItem?.values.dept_CD === undefined &&
@@ -188,6 +192,7 @@ const StradeRollManageRealGrid = ({ tr_CD }) => {
           .then(response => {
             console.log('hiiiiiiiiii:', response.data);
           });
+        gridView.commit();
       }
     };
 
@@ -380,6 +385,16 @@ const StradeRollManageRealGrid = ({ tr_CD }) => {
       }
     };
 
+    // check button click 시 삭제 우선 그리드로 변경
+    gridView.onItemChecked = () => {
+      const checkedRows = gridView.getCheckedItems();
+      if (checkedRows.length > 0) {
+        setDeleteCheck('gridDelete');
+      } else {
+        setDeleteCheck('');
+      }
+    };
+
     gridView.onColumnPropertyChanged = function (
       grid,
       column,
@@ -490,52 +505,8 @@ const StradeRollManageRealGrid = ({ tr_CD }) => {
     //gridViewStrade.checkRows(rows, false);
   };
 
-  const handleDeleteRows = async () => {
-    // 체크된 행들의 sq_NB값을 수집
-    gridViewStrade.cancel();
-    const checkedRows = gridViewStrade.getCheckedItems(); // 실제 메소드 이름은 realgrid 문서를 참고해주세요.
-    console.log('요고얌', checkedRows);
-
-    // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
-    if (checkedRows.length === 0) {
-      alert('삭제할 항목을 선택해주세요.');
-      return;
-    }
-    if (checkedRows.length > 20) {
-      alert('한 번에 20개 이하의 항목만 삭제할 수 있습니다.');
-      return;
-    }
-    const sqNbsToDelete = checkedRows.map(row => {
-      // 데이터 프로바이더에서 해당 행의 sq_NB 컬럼의 값을 가져옵니다.
-      const sqNbValue = dataProviderStrade.getValue(row, 'trmg_SQ');
-      return sqNbValue;
-    });
-
-    console.log('여기서확인하래요', sqNbsToDelete); // 이 부분에서 제대로 된 sq_NB 값들이 출력되는지 확인하세요.
-    try {
-      // 서버에 삭제 요청
-      const response = await authAxiosInstance.delete(
-        'accounting/user/Strade/stradeRollManageDelete',
-        { data: { trmg_SQ: sqNbsToDelete, tr_CD: tr_CD } }
-      );
-      // 알림 표시
-      Swal.fire({
-        icon: 'success',
-        title: '성공적으로 삭제되었습니다!',
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      dataProviderStrade.removeRows(checkedRows);
-    } catch (error) {
-      console.error('Failed to delete rows:', error);
-    }
-  };
-
   return (
     <>
-      <button onClick={handleDeleteRows} type="button">
-        삭제
-      </button>
       <div ref={realgridElement} className="StradeRealGridCSS"></div>
       {empMenuButton && (
         <EmpCodeHelpModal

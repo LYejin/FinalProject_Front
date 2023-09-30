@@ -55,8 +55,11 @@ const FtradePage = () => {
   const listRef = useRef(null); // list 화면 상하단 이동
   const [financeCDChangeData, setFinanceChangeCDData] = useState();
   const [financeCDData, setFinanceCDData] = useState();
+  const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
+  const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
+  const [dataProviderStrade, setDataProviderStrade] = useState(null); // DataProvider 저장
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
@@ -665,6 +668,11 @@ const FtradePage = () => {
                       useYN={useYN}
                       setUseYN={setUseYN}
                       tr_CD={tr_CD}
+                      gridViewStrade={gridViewStrade}
+                      setGridViewStrade={setGridViewStrade}
+                      dataProviderStrade={dataProviderStrade}
+                      setDataProviderStrade={setDataProviderStrade}
+                      setDeleteCheck={setDeleteCheck}
                     />
                   </ScrollWrapper>
                 </form>

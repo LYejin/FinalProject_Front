@@ -39,6 +39,11 @@ const FtradeInfoBox = ({
   financeCDData,
   financeCDChangeData,
   setFinanceChangeCDData,
+  gridViewStrade,
+  setGridViewStrade,
+  dataProviderStrade,
+  setDataProviderStrade,
+  setDeleteCheck,
 }) => {
   const [trCDModal, setTrCDModal] = useState(false);
   const [financeCDModal, setFinanceCDModal] = useState(false);
@@ -250,7 +255,14 @@ const FtradeInfoBox = ({
 
         {/* 거래처 담당자 관리 */}
         <div>금융거래처 조회권한</div>
-        <StradeRollManageRealGrid tr_CD={tr_CD} />
+        <StradeRollManageRealGrid
+          tr_CD={tr_CD}
+          gridViewStrade={gridViewStrade}
+          setGridViewStrade={setGridViewStrade}
+          dataProviderStrade={dataProviderStrade}
+          setDataProviderStrade={setDataProviderStrade}
+          setDeleteCheck={setDeleteCheck}
+        />
       </div>
       {trCDModal && (
         <StradeCodeHelpModal

@@ -40,6 +40,11 @@ const GtradeInfoBox = ({
   insertButtonClick,
   onCompleteRegNb,
   onCompletePplNb,
+  gridViewStrade,
+  setGridViewStrade,
+  dataProviderStrade,
+  setDataProviderStrade,
+  setDeleteCheck,
 }) => {
   const [trCDModal, setTrCDModal] = useState(false);
   const [liquorCDModal, setLiquorCDModal] = useState(false);
@@ -436,7 +441,14 @@ const GtradeInfoBox = ({
 
         {/* 거래처 담당자 관리 */}
         <div>관리 담당자</div>
-        <StradeRollManageRealGrid tr_CD={tr_CD} />
+        <StradeRollManageRealGrid
+          tr_CD={tr_CD}
+          gridViewStrade={gridViewStrade}
+          setGridViewStrade={setGridViewStrade}
+          dataProviderStrade={dataProviderStrade}
+          setDataProviderStrade={setDataProviderStrade}
+          setDeleteCheck={setDeleteCheck}
+        />
       </div>
       {trCDModal && (
         <StradeCodeHelpModal

@@ -44,6 +44,7 @@ const GtradePage = () => {
     formState: { errors },
     clearErrors,
     setValue,
+    setFocus,
     setError,
   } = useForm({
     mode: 'onChange',
@@ -59,6 +60,11 @@ const GtradePage = () => {
   const [address, setAddress] = useState(''); // 우편 주소
   const [addressDetail, setAddressDetail] = useState(); // 주소
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
+  const [deleteListModal, setDeleteListModal] = useState(false); // 거래처 삭제 정보 모달창
+  const [deleteListCount, setDeleteListCount] = useState(''); // 거래처 삭제 정보 모달창
+  const [deleteStradeInfo, setDeleteStradeInfo] = useState([
+    { count: '', tr_CD: '' },
+  ]); // 거래처 삭제 정보
   const [data, setData] = useState({}); // form 데이터들 보관
   const [companyList, setCompanyList] = useState([]); // select box 내 company list
   const [errorName, setErrorName] = useState(); // error name 얻기
@@ -72,15 +78,22 @@ const GtradePage = () => {
   const listRef = useRef(null); // list 화면 상하단 이동
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
+  const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
+  const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
+  const [dataProviderStrade, setDataProviderStrade] = useState(null); // DataProvider 저장
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
     email_ADD_ERROR: false,
   }); // check db error YN
 
-  // 우편번호
+  // 우편번호 모달창 닫기
   const onChangeOpenPost = () => {
     setIsOpenPost(!isOpenPost);
+  };
+
+  const onChangeDeleteListModal = () => {
+    setDeleteListModal(!deleteListModal);
   };
 
   // 우편번호 검색 시 처리
@@ -275,6 +288,8 @@ const GtradePage = () => {
     setUseYN('1');
     setOpenDate(new Date());
     setCloseDate();
+    setValue('reg_NB', '');
+    setValue('ppl_NB', '');
     setInsertButtonClick(true);
     setClickYN(false);
     setSelectedRadioValue('auto');
@@ -317,6 +332,7 @@ const GtradePage = () => {
 
     if (checkDBErrorYN.reg_NB_ERROR) {
       setError('reg_NB', { message: '000-00-0000형식을 맞춰서 입력하세요.' });
+      setFocus('reg_NB');
       alert('000-00-0000형식을 맞춰서 입력하세요.');
       return;
     }
@@ -335,9 +351,12 @@ const GtradePage = () => {
     ) {
       console.log('update 버튼');
       console.log('changeFormData :', changeFormData);
-      // if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
-      //   changeFormData.home_TEL = changeFormData.home_TEL.replace(/-/g, '');
-      // }
+      if (changeFormData && changeFormData.reg_NB === '___-__-_____') {
+        changeFormData.reg_NB = '';
+      }
+      if (changeFormData && changeFormData.ppl_NB === '______-_______') {
+        changeFormData.ppl_NB = '';
+      }
       // if (changeFormData && Object.keys(changeFormData).includes('tel')) {
       //   changeFormData.tel = changeFormData.tel.replace(/-/g, '');
       // }
@@ -377,8 +396,8 @@ const GtradePage = () => {
         tr_FG: '1',
         use_YN: '1',
         view_YN: '0',
-        reg_NB: data?.reg_NB,
-        ppl_NB: data?.ppl_NB,
+        reg_NB: data?.reg_NB === '___-__-_____' ? null : data?.reg_NB,
+        ppl_NB: data?.ppl_NB === '______-_______' ? null : data?.ppl_NB,
         ceo_NM: data?.ceo_NM,
         business: data?.business,
         jongmok: data?.jongmok,
@@ -436,6 +455,11 @@ const GtradePage = () => {
   // 에러 처리 이벤트
   const onFocusError = async e => {
     if (e.target.name === 'reg_NB') {
+      if (e.target.value === '___-__-_____') {
+        setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_ERROR: false });
+        delete errors.reg_NB;
+        return;
+      }
       const regNbRegExp = /^\d{3}-\d{2}-\d{5}$/;
       if (!regNbRegExp.test(e.target.value)) {
         setError('reg_NB', {
@@ -449,9 +473,10 @@ const GtradePage = () => {
           params: { REG_NB: e.target.value },
         }).then(response => {
           if (response.data) {
-            alert(
-              `거래처코드 [${tr_CD}]에 동일 사업자등록번호로 등록된 거래처가 존재합니다. 등록하시겠습니까?`
-            );
+            setError('reg_NB', {
+              message: `중복된 사업자등록번호가 존재합니다.`,
+            });
+            setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_DD_ERROR: true });
           }
           console.log(response.data);
         });
@@ -460,6 +485,11 @@ const GtradePage = () => {
     }
 
     if (e.target.name === 'ppl_NB') {
+      if (e.target.value === '______-_______') {
+        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: false });
+        delete errors.ppl_NB;
+        return;
+      }
       const pplNbRegExp =
         /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])-\d{7}$/;
       if (!pplNbRegExp.test(e.target.value)) {
@@ -470,7 +500,7 @@ const GtradePage = () => {
         return;
       } else {
         delete errors.ppl_NB;
-        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: true });
+        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_DD_ERROR: true });
         await authAxiosInstance(`accounting/user/Strade/pplNbVal`, {
           params: { PPL_NB: e.target.value },
         }).then(response => {
@@ -627,10 +657,16 @@ const GtradePage = () => {
       checkItems.delete(id);
       setCheckItems(checkItems);
     }
+    if (checkItems.size > 0) {
+      setDeleteCheck('listDelete');
+    } else {
+      setDeleteCheck('');
+    }
   };
 
   const allCheckedHandler = ({ target }) => {
     if (target.checked) {
+      setDeleteCheck('listDelete');
       setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
       setIsAllChecked(true);
       Array.from(checkItems);
@@ -641,13 +677,87 @@ const GtradePage = () => {
     }
   };
 
-  const removeStradelist = () => {
-    authAxiosInstance.delete('accounting/user/Strade/stradeDelete', {
-      data: { tr_CD: Array.from(checkItems), tr_FG: '1' },
-    });
-  };
+  // list 삭제 이벤트
+  const removeStradelist = async () => {
+    if (deleteCheck === 'listDelete') {
+      const response = await authAxiosInstance.delete(
+        'accounting/user/Strade/stradeDelete',
+        {
+          data: { tr_CD: Array.from(checkItems), tr_FG: '1' },
+        }
+      );
+      setDeleteListCount(Array.from(checkItems).length);
+      setDeleteStradeInfo(response.data);
+      Swal.fire({
+        title: `체크된 데이터 : ${Array.from(checkItems).length}건`,
+        text: '체크된 데이터를 모두 삭제하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(result => {
+        if (result.isConfirmed) {
+          setDeleteListModal(true);
+        }
+      });
+    } else if (deleteCheck === 'gridDelete') {
+      // 체크된 행들의 sq_NB값을 수집
+      gridViewStrade.cancel();
+      const checkedRows = gridViewStrade.getCheckedItems(); // 실제 메소드 이름은 realgrid 문서를 참고해주세요.
+      console.log('요고얌', checkedRows);
 
-  console.log(Array.from(checkItems));
+      // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
+      if (checkedRows.length === 0) {
+        alert('삭제할 항목을 선택해주세요.');
+        return;
+      }
+
+      if (checkedRows.length > 20) {
+        alert('한 번에 20개 이하의 항목만 삭제할 수 있습니다.');
+        return;
+      }
+
+      Swal.fire({
+        title: `체크된 데이터 : ${checkedRows.length}건`,
+        text: '체크된 데이터를 모두 삭제하시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(result => {
+        if (result.isConfirmed) {
+          const sqNbsToDelete = checkedRows.map(row => {
+            // 데이터 프로바이더에서 해당 행의 sq_NB 컬럼의 값을 가져옵니다.
+            const sqNbValue = dataProviderStrade.getValue(row, 'trmg_SQ');
+            return sqNbValue;
+          });
+
+          console.log('여기서확인하래요', sqNbsToDelete); // 이 부분에서 제대로 된 sq_NB 값들이 출력되는지 확인하세요.
+          try {
+            // 서버에 삭제 요청
+            authAxiosInstance.delete(
+              'accounting/user/Strade/stradeRollManageDelete',
+              { data: { trmg_SQ: sqNbsToDelete, tr_CD: tr_CD } }
+            );
+            // 알림 표시
+            Swal.fire({
+              icon: 'success',
+              title: '성공적으로 삭제되었습니다!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            dataProviderStrade.removeRows(checkedRows);
+          } catch (error) {
+            console.error('Failed to delete rows:', error);
+          }
+        }
+      });
+    }
+  };
 
   return (
     <>
@@ -711,9 +821,9 @@ const GtradePage = () => {
                 clickedBoxID={tr_CD}
                 data={empList}
                 clickInsertBoxEvent={onClickInsertEmpBox}
+                allCheckedHandler={allCheckedHandler}
+                checkTotalList={true}
               >
-                <input type="checkbox" onChange={e => allCheckedHandler(e)} />
-                전체선택
                 {empList.map(info => (
                   <GtradeListBoxItem
                     key={info.tr_CD}
@@ -786,6 +896,11 @@ const GtradePage = () => {
                       setUseYN={setUseYN}
                       onCompleteRegNb={onCompleteRegNb}
                       onCompletePplNb={onCompletePplNb}
+                      gridViewStrade={gridViewStrade}
+                      setGridViewStrade={setGridViewStrade}
+                      dataProviderStrade={dataProviderStrade}
+                      setDataProviderStrade={setDataProviderStrade}
+                      setDeleteCheck={setDeleteCheck}
                       useYN={useYN}
                       tr_CD={tr_CD}
                     />
@@ -806,6 +921,34 @@ const GtradePage = () => {
           <DaumPostcode autoClose onComplete={onCompletePost} />
         </Modal>
       ) : null}
+      {deleteListModal && (
+        <Modal
+          width={'560px'}
+          height={'600px'}
+          title={'거래처'}
+          onClickEvent={onChangeDeleteListModal}
+        >
+          <div>일반거래처 삭제 요청이 완료되었습니다.</div>
+          <br />
+          <div>
+            <span>요청 {deleteListCount}건</span>
+            <span>성공 {deleteListCount - deleteStradeInfo.length}건</span>
+            <span>실패 {deleteStradeInfo.length}건</span>
+          </div>
+          <br />
+          {deleteStradeInfo.map((info, index) => (
+            <>
+              <div>
+                {index + 1}. 거래처 코드 {info.tr_CD}
+              </div>
+              <div>
+                고정자금등록에 {info.count}건 등록된 데이터가 존재하여 삭제할 수
+                없습니다.
+              </div>
+            </>
+          ))}
+        </Modal>
+      )}
     </>
   );
 };
