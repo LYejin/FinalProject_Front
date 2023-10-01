@@ -8,12 +8,16 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import EventButton from '../../../../common/button/EventButton';
 import StradeCodeHelpUseYNSelectBox from './StradeCodeHelpUseYNSelectBox';
+import { json } from '../../../../../../node_modules/react-router-dom/dist/index';
 
 const StradeCodeHelpModal = ({
   onChangeModalClose,
   gridViewStrade,
   cellClickData,
   tr_FG,
+  marsterGrid,
+  onRowSelected,
+  InputState,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
@@ -45,6 +49,8 @@ const StradeCodeHelpModal = ({
     });
   };
 
+  let responseData = [];
+
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
     const container = realgridElement.current;
@@ -70,22 +76,63 @@ const StradeCodeHelpModal = ({
     authAxiosInstance('accounting/user/Strade/stradeCodeHelpList', {
       params,
     }).then(response => {
+      //문제가 생겼다면 지워도 무방해요
+      dataProvider.setRows(response?.data);
+      console.log('설마?', response.data);
+      responseData = response.data;
+      ///////////////
+      //수신변경사항
       if (response.data !== null && Object.keys(response.data).length > 0) {
         dataProvider.setRows(response?.data);
       }
+      /////////////
     });
 
     //
-    gridView.onCellDblClicked = function (grid, index) {
+    gridView.onCellDblClicked = function (grid, clickData) {
+      if (InputState === 1) {
+        var current = gridView.getCurrent();
+        var jsonData = dataProvider.getJsonRow(current.itemIndex);
+        onRowSelected(jsonData);
+        onChangeModalClose();
+        return;
+      }
+
       // 주석 부분은 더블 클릭시 입력되어야되는 상황일 떄 사용
-      // var current = gridView.getCurrent();
-      // console.log(current);
-      // var jsonData = dataProvider.getJsonRow(current.itemIndex);
-      // console.log('jsonData: ' + jsonData.kor_NM);
-      // const row = { emp_CD: jsonData.emp_CD, kor_NM: jsonData.kor_NM };
-      // gridViewStrade.setValues(cellClickData, row, false);
-      // console.log('iijijljlkj', jsonData);
+      const cellClickData = gridViewStrade.grid.getCurrent().itemIndex;
+      var current = gridView.getCurrent();
+      console.log(current);
+      var jsonData = dataProvider.getJsonRow(current.itemIndex);
+      console.log('jsonData: ' + jsonData.tr_cd);
+
+      //BANK_NAME을 JsonData에 넣어주기
+      const matchedData = responseData.find(
+        item => item.tr_CD === jsonData.tr_CD
+      );
+
+      if (matchedData) {
+        jsonData.bank_NAME = matchedData.bank_NAME;
+      }
+
+      if (tr_FG === 1) {
+        const row = {
+          tr_CD: jsonData.tr_CD,
+          tr_NM: jsonData.tr_NM,
+        };
+        gridViewStrade.grid.setValues(cellClickData, row, false);
+        console.log('일반거래처 jsonData', jsonData);
+      } else {
+        const row = {
+          ftr_CD: jsonData.tr_CD,
+          ftr_NM: jsonData.tr_NM,
+          ba_NB_TR: jsonData.ba_NB_TR,
+          bank_NAME: jsonData.bank_NAME,
+        };
+        gridViewStrade.grid.setValues(cellClickData, row, false);
+        console.log('금융거래처 jsonData', jsonData);
+      }
       //setEmpMenuButton(false);
+      gridViewStrade.grid.setFocus();
       onChangeModalClose();
     };
 

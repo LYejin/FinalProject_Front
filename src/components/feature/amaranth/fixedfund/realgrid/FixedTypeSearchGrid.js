@@ -2,21 +2,19 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import { GridView, LocalDataProvider, onChangeOpenPost } from 'realgrid';
+import { GridView, LocalDataProvider, onChangeOpenCash } from 'realgrid';
 import {
   columns,
   fields,
   fundTypeSearchLayout,
-  s_columns,
-} from './Realgrid-Data-FundType';
-import { authAxiosInstance } from '../../../axios/axiosInstance';
+} from '../../fundType/Realgrid-Data-FundType';
 
-const FundTypeSearch = ({
+const FundTypeSearchGrid = ({
   loadRowData,
-  setCASH_CD,
-  onChangeOpenPost,
+  onChangeOpenCash,
   marsterGrid,
-  setMarsterGrid,
+  FixedFuntState,
+  onRowSelected,
 }) => {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -83,42 +81,34 @@ const FundTypeSearch = ({
 
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
+      if (FixedFuntState === 1) {
+        const clickRowData = grid.getValues(clickData.itemIndex);
+        const insertData = {
+          cash_CD: clickRowData?.CASH_CD,
+          cash_NM: clickRowData?.CASH_NM,
+        };
+        onRowSelected(insertData);
+        onChangeOpenCash();
+        return;
+      }
       const nowLow = marsterGrid.grid.getCurrent().itemIndex;
       const marsterGrid_CASH_CD = marsterGrid.grid.getValue(nowLow, 'CASH_CD');
 
-      if (clickData.cellType !== 'gridEmpty') {
-        if (marsterGrid_CASH_CD !== undefined) {
-          const clickRowData = grid.getValues(clickData.itemIndex);
-          const insertData = {
-            SUM_CD: clickRowData?.CASH_CD,
-            SUM_NM: clickRowData?.CASH_NM,
-          };
+      const clickRowData = grid.getValues(clickData.itemIndex);
+      const insertData = {
+        cash_CD: clickRowData?.CASH_CD,
+        cash_NM: clickRowData?.CASH_NM,
+      };
 
-          onChangeOpenPost();
-          //마스터 그리드에 자금종목코드 데이터 불러와 저장하기
-          marsterGrid.grid.setValues(nowLow, insertData, true);
-          console.log(
-            '검색',
-            insertData,
-            marsterGrid_CASH_CD,
-            nowLow,
-            marsterGrid.grid.getValues(nowLow)
-          );
-          marsterGrid.grid.setCurrent({
-            itemIndex: nowLow,
-            column: 'LOW_YN',
-          });
-          marsterGrid.grid.setFocus();
-        } else {
-          alert('자금과목을 먼저 입력해주세요.');
-          marsterGrid.grid.setCurrent({
-            itemIndex: nowLow,
-            column: 'CASH_CD',
-          });
-          marsterGrid.grid.setFocus();
-          onChangeOpenPost();
-        }
-      }
+      onChangeOpenCash();
+      //마스터 그리드에 자금종목코드 데이터 불러와 저장하기
+      marsterGrid.grid.setValues(nowLow, insertData, true);
+      marsterGrid.grid.setCurrent({
+        itemIndex: nowLow,
+        column: 'LOW_YN',
+      });
+      marsterGrid.grid.setFocus();
+
       marsterGrid.grid.setEditOptions({
         commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
         appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
@@ -141,4 +131,4 @@ const FundTypeSearch = ({
   return <div ref={realgridElement} className="fundTypeSerrchSetting"></div>;
 };
 
-export default FundTypeSearch;
+export default FundTypeSearchGrid;

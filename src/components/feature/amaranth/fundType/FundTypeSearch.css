@@ -1,0 +1,143 @@
+.custom_none {
+  display: none;
+}
+
+.custom_render_span {
+  flex: 1;
+  text-align: right;
+  overflow: hidden;
+}
+
+.custom_renderer > div {
+  float: right;
+  display: flex;
+  align-items: center;
+}
+
+.custom_renderer .rg-renderer:hover .custom-hover {
+  visibility: visible;
+}
+
+.custom_renderer .rg-renderer .custom-focused {
+  visibility: visible;
+}
+
+/*FundType 모달창 css*/
+.modalWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalWrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.topModalWrapper {
+  width: 100%;
+  height: 88%;
+  padding: 20px;
+}
+
+.bottomModalWrapper {
+  width: 100%;
+  height: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+}
+
+.BlueButton {
+  background: linear-gradient(#5bb3fd, #1f91fb);
+  border: 1px solid #41a4fc;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 50px;
+  height: 26px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+}
+
+/*텍스트박스 크기*/
+.searchModalSelectBoxPadding {
+  margin-left: 15px;
+  width: 60px;
+}
+
+.searchModalTextInputBox {
+  border: 1px solid #b6b6b6;
+  width: 130px;
+  height: 25px;
+}
+
+.searchModalselectBoxWrapper {
+  border: 2px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.radio-label {
+  margin-right: 10px;
+}
+
+.ModalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* 배경에 투명한 검정색을 적용하여 모달 외부를 가려줍니다. */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 더 높은 z-index 값을 설정합니다. */
+}
+
+/* 모달 창의 스타일을 조정합니다. */
+.FundTypeModal {
+  position: relative;
+  background-color: white;
+  width: 700px;
+  height: 750px;
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 1001; /* 모달 창은 배경보다 더 높은 z-index 값을 가집니다. */
+}
+
+.fundTypeSerrchSetting {
+  height: 500px;
+  width: 100%;
+  text-align: center; /* 수평 가운데 정렬 */
+  line-height: 2; /* 수직 가운데 정렬 */
+}
+
+.fundTypeSerrchSetting .rg-focused-row {
+  background: #eff7ff !important;
+}

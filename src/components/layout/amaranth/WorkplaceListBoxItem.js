@@ -20,14 +20,14 @@ const WorkplaceListBoxItem = ({
       );
       if (userConfirmed) {
         setSelectedItemIndex(index);
-        handleFetchWorkplaceInfo(leftTop);
+        handleFetchWorkplaceInfo(leftTop, rightTop);
         return;
       } else {
         return;
       }
     }
     setSelectedItemIndex(index);
-    handleFetchWorkplaceInfo(leftTop);
+    handleFetchWorkplaceInfo(leftTop, rightTop);
   };
 
   return (

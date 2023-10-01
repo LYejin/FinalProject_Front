@@ -15,7 +15,8 @@ export const columns = [
   {
     name: 'div_CD',
     fieldName: 'div_CD',
-    width: '150',
+    width: '228',
+    editable: false,
     header: {
       text: '사업장명',
     },
@@ -23,7 +24,8 @@ export const columns = [
   {
     name: 'div_NM',
     fieldName: 'div_NM',
-    width: '150',
+    width: '230',
+    editable: false,
     header: {
       text: '사업장코드',
     },

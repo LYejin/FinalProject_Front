@@ -1,5 +1,5 @@
 import React from 'react';
-import { Title } from '../../../common/Index';
+import { Title } from '../../../../common/Index';
 
 const FundTypeModal = ({
   width,

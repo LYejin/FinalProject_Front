@@ -1,159 +1,83 @@
 import React, { useEffect, useState } from 'react';
-import {
-  authAxiosInstance,
-  imageAxiosInstance,
-} from '../../axios/axiosInstance';
-import {
-  MainTitle,
-  Title,
-  DeptHeadTitle,
-  DeptSubTitle,
-  CompSelectBox,
-  DeptTextFieldBox,
-  ScrollWrapper,
-} from '../../components/common/Index';
+import { MainTitle, Title, DeptSubTitle } from '../../components/common/Index';
 import {
   ContentWrapper,
   DetailContentWrapper,
   MainContentWrapper,
   RightContentWrapper,
   FixedFundSelectBoxWrapper,
-  DepartmentSelectBoxWrapper,
-  DeptSearchWrapper,
-  LeftContentWrapper,
-  DeptShowWrapper,
+  FullContentWrapper,
 } from '../../components/layout/amaranth/Index';
-import { useForm } from 'react-hook-form';
-import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
-import DeptInfoWrapper from '../../components/feature/amaranth/Department/DeptInfoWrapper';
+import FixedFundGrid from '../../components/feature/amaranth/fixedfund/realgrid/FixedFundGrid';
+
+// import FundTypeSearch from '../../components/feature/fundType/FundTypeSearch';
+import FundTypeSearchGrid from '../../components/feature/amaranth/fixedfund/realgrid/FixedTypeSearchGrid';
+import StradeCodeHelpModal from '../../components/feature/amaranth/Modal/StradeCodeHelpModal/StradeCodeHelpModal';
+import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
+import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
 
 const FixedFundPage = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    formState: { errors },
-    clearErrors,
-    setValue,
-    setError,
-  } = useForm({
-    mode: 'onChange',
-  }); // react-hook-form 사용
-  const [companyData, setCompanyData] = useState([]);
-  const [DeptData, setDeptData] = useState([]);
-  const [SearchCocd, setSearchCocd] = useState('');
-  const [searchValue, setSearchValue] = useState('');
-  const [allDepartmentData, setAllDepartmentData] = useState([]);
-  const [matchingDept, setMatchingDept] = useState([]);
+  useEffect(() => {}, []);
+  const [isOpenCash, setIsOpenCash] = useState(false);
+  const [isOpenStrade, setIsOpenStrade] = useState(false);
+  const [selectedDiv, setSelectedDiv] = useState('1');
+  const [TRcode, setTRcode] = useState('');
+  const [searchValues, setSearchValues] = useState({});
+  // 모달의 열림/닫힘 상태 관리
+  const [isStradeModalOpen, setIsStradeModalOpen] = useState(false);
 
-  const handleSearch = value => {
-    setSearchValue(value);
+  // 모달 닫기 함수
+  const onChangeModalClose = () => {
+    setIsOpenStrade(false);
   };
 
-  useEffect(() => {
-    fetchCompanyData();
-    // fetchDepartmentData(1232);
-  }, []);
+  // 기타 필요한 상태 및 함수
+  const [setDeptMenuButton, setSetDeptMenuButton] = useState(null);
+  const [gridViewStrade, setGridViewStrade] = useState();
+  const [cellClickData, setCellClickData] = useState(null);
 
-  const fetchCompanyData = async () => {
-    try {
-      const response = await authAxiosInstance.get(
-        'system/user/groupManage/employee/getCompanyList'
-      );
-      const mappedCompanyData = response.data.map(company => ({
-        value: company.co_CD,
-        label: company.co_NM,
-      }));
-
-      setCompanyData(mappedCompanyData);
-    } catch (error) {
-      console.error('Error fetching company data:', error);
-    }
+  const onChangeOpenCash = () => {
+    setIsOpenCash(!isOpenCash);
   };
 
-  const fetchDepartmentData = async selectedCoCd => {
-    try {
-      const response = await authAxiosInstance.get(
-        `/system/user/departments/getDeptList/${selectedCoCd}`
-      );
-
-      console.log(response.data);
-      const organizedData = hierarchyData(response.data);
-      setDeptData(organizedData);
-      console.log(organizedData);
-
-      setAllDepartmentData(response.data);
-    } catch (error) {
-      console.error('Error fetching department data:', error);
-    }
-  };
-
-  const hierarchyData = data => {
-    if (!data || data.length === 0) {
-      return []; // 데이터가 없는 경우 빈 배열 반환
-    }
-    const result = [];
-
-    const coItem = {
-      co_CD: data[0].co_CD,
-      co_NM: data[0].co_NM,
-      divs: [],
-    };
-
-    const findSubDepts = (dept_CD, allDepts) => {
-      return allDepts
-        .filter(dept => dept.mdept_CD === dept_CD)
-        .map(dept => ({
-          ...dept,
-          subDepts: findSubDepts(dept.dept_CD, allDepts),
-        }));
-    };
-
-    // DIV_CD를 기준으로 분류
-    const divGroups = data.reduce((acc, curr) => {
-      if (!acc[curr.div_CD]) {
-        acc[curr.div_CD] = {
-          div_NM: curr.div_NM, // DIV_NM 추가
-          depts: [],
-        };
-      }
-      acc[curr.div_CD].depts.push(curr);
-      return acc;
-    }, {});
-
-    for (const div in divGroups) {
-      const deptsForThisDiv = divGroups[div].depts;
-      const topLevelDepts = deptsForThisDiv.filter(dept => !dept.mdept_CD);
-      topLevelDepts.forEach(dept => {
-        dept.subDepts = findSubDepts(dept.dept_CD, deptsForThisDiv);
-      });
-
-      const divItem = {
-        div_CD: div,
-        div_NM: divGroups[div].div_NM,
-        depts: topLevelDepts,
-      };
-
-      coItem.divs.push(divItem);
-    }
-
-    result.push(coItem);
-
-    return result;
-  };
-
-  const handleSelectDepartment = dept_CD => {
-    console.log(dept_CD);
-    const foundDept = allDepartmentData.find(dept => dept.dept_CD === dept_CD);
-    if (foundDept) {
-      console.log('Found matching department data:', foundDept);
-      setMatchingDept(foundDept);
-      console.log(matchingDept);
+  const onChangeOpenStrade = value => {
+    setIsOpenStrade(!isOpenStrade);
+    if (value === 1) {
+      setTRcode(1);
     } else {
-      console.log('No matching department found.');
+      setTRcode(3);
     }
+  };
+
+  // 수입/지출 선택
+  const handleDivClick = value => {
+    setSelectedDiv(value);
+  };
+
+  const {
+    loadRowData,
+    CASH_CD,
+    setCASH_CD,
+    marsterGrid,
+    setMarsterGrid,
+    setCheckList,
+    deleteBtnClick,
+  } = FundTypeModel();
+
+  const handleValuesChange = values => {
+    const {
+      divCode,
+      cashCode,
+      gtradeCode,
+      ftradeCode,
+      startStart,
+      startEnd,
+      endStart,
+      endEnd,
+    } = values;
+    setSearchValues(values);
+    console.log('버튼을 누른거야?');
   };
 
   return (
@@ -163,23 +87,67 @@ const FixedFundPage = () => {
         <ContentWrapper>
           <Title titleName={'고정자금등록'}></Title>
           <DetailContentWrapper>
-            <FixedFundSelectBoxWrapper />
+            <FixedFundSelectBoxWrapper onValuesChange={handleValuesChange} />
             <MainContentWrapper state={0}>
-              <RightContentWrapper>
+              <FullContentWrapper>
                 <DeptSubTitle>
-                  <div className="subTitleInfo">기본정보</div>
-                  <div className="subTitleInfo2">부서원 정보</div>
+                  <div
+                    className={`subTitleInfo ${
+                      selectedDiv === '1' ? 'IsSelected' : ''
+                    }`}
+                    onClick={() => handleDivClick('1')}
+                  >
+                    지출
+                  </div>
+                  <div
+                    className={`subTitleInfo2 ${
+                      selectedDiv === '0' ? 'IsSelected' : ''
+                    }`}
+                    onClick={() => handleDivClick('0')}
+                  >
+                    수입
+                  </div>
                 </DeptSubTitle>
-                <form>
-                  <ScrollWrapper width={'900px'} deptH={30}>
-                    고정자금
-                  </ScrollWrapper>
-                </form>
-              </RightContentWrapper>
+                <FixedFundGrid
+                  onChangeOpenCash={onChangeOpenCash}
+                  onChangeOpenStrade={onChangeOpenStrade}
+                  setMarsterGrid={setMarsterGrid}
+                  setGridViewStrade={setGridViewStrade}
+                  DISQ={selectedDiv}
+                  values={searchValues}
+                />
+              </FullContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
       </CommonLayout2>
+      {isOpenCash ? (
+        <FundTypeModal
+          width={'700px'}
+          height={'750px'}
+          title={'자금과목코드도움'}
+          onClickEvent={onChangeOpenCash}
+          buttonYN="true"
+        >
+          <FundTypeSearchGrid
+            loadRowData={loadRowData}
+            setCASH_CD={setCASH_CD}
+            onChangeOpenCash={onChangeOpenCash}
+            marsterGrid={marsterGrid}
+            setMarsterGrid={setMarsterGrid}
+          />
+        </FundTypeModal>
+      ) : null}
+      {isOpenStrade && (
+        <StradeCodeHelpModal
+          onChangeModalClose={onChangeModalClose}
+          setDeptMenuButton={setDeptMenuButton}
+          tr_FG={TRcode}
+          marsterGrid={marsterGrid}
+          gridViewStrade={gridViewStrade}
+          cellClickData={cellClickData}
+        />
+      )}
     </>
   );
 };

@@ -17,7 +17,7 @@ import DeptSearchWrapper from './DeptSearchWrapper';
 import LeftContentWrapper from './LeftContentWrapper';
 import DeptShowWrapper from './DeptShowWrapper';
 import FixedFundSelectBoxWrapper from './FixedFundSelectBoxWrapper';
-import ModalBoxWrapper from './ModalBoxWrapper';
+import FullContentWrapper from './FullContentWrapper';
 
 export {
   ContentWrapper,
@@ -39,5 +39,5 @@ export {
   LeftContentWrapper,
   DeptShowWrapper,
   FixedFundSelectBoxWrapper,
-  ModalBoxWrapper,
+  FullContentWrapper,
 };
