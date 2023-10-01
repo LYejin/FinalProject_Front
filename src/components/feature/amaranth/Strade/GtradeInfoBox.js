@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import EventButton from '../../../common/button/EventButton';
@@ -9,43 +9,20 @@ import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGri
 import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import LiquorcodeModal from '../Modal/LiquorcodeModal/LiquorcodeModal';
 import SelectBox from './../../../common/box/SelectBox';
+import GtradeModel from '../../../../model/GtradeModel';
 
 const GtradeInfoBox = ({
-  data,
   register,
-  openDate,
-  selectedValue,
-  onChangeOpenPost,
-  address,
-  addressDetail,
-  errors,
-  clickYN,
-  onFocusError,
-  errorName,
-  handleOpenDateChange,
-  handleCloseDateChange,
-  closeDate,
-  onChangeTel,
-  onChangeHomeTel,
-  setChangeFormData,
-  onChangeDBDataSearch,
+  handleSubmit,
+  reset,
   getValues,
-  setError,
+  errors,
   clearErrors,
-  checkDBErrorYN,
-  setUseYN,
-  useYN,
-  tr_CD,
-  handleRadioChange,
-  selectedRadioValue,
-  insertButtonClick,
-  onCompleteRegNb,
-  onCompletePplNb,
-  gridViewStrade,
-  setGridViewStrade,
-  dataProviderStrade,
-  setDataProviderStrade,
-  setDeleteCheck,
+  setValue,
+  setFocus,
+  setError,
+  state,
+  actions,
 }) => {
   const [trCDModal, setTrCDModal] = useState(false);
   const [liquorCDModal, setLiquorCDModal] = useState(false);
@@ -58,8 +35,6 @@ const GtradeInfoBox = ({
   const liquorCDModalButton = () => {
     setLiquorCDModal(!liquorCDModal);
   };
-
-  console.log('kkk', liquorCDModal);
 
   return (
     <>
@@ -77,28 +52,32 @@ const GtradeInfoBox = ({
                     name="tr_CD"
                     {...register(
                       'tr_CD',
-                      selectedValue !== 'auto' &&
-                        !clickYN && {
+                      state.selectedRadioValue !== 'auto' &&
+                        !state.clickYN && {
                           required: '거래처코드를 입력해주세요.',
                         }
                     )}
                     style={{
                       border:
                         errors.tr_CD &&
-                        (checkDBErrorYN.tr_CD_ERROR || errorName === 'tr_CD')
+                        (state.checkDBErrorYN.tr_CD_ERROR ||
+                          state.errorName === 'tr_CD')
                           ? '1px solid red'
                           : '1px solid #ccc',
                       backgroundColor:
-                        clickYN || selectedValue === 'auto'
+                        state.clickYN || state.selectedRadioValue === 'auto'
                           ? '#f2f2f2'
                           : '#fef4f4',
                     }}
-                    disabled={selectedValue === 'auto' || clickYN}
-                    onChange={onChangeDBDataSearch}
-                    defaultValue={data?.tr_CD}
-                    onFocus={onFocusError}
+                    disabled={
+                      state.selectedRadioValue === 'auto' || state.clickYN
+                    }
+                    onChange={actions.onChangeDBDataSearch}
+                    defaultValue={state.data?.tr_CD}
+                    onFocus={actions.onFocusError}
                   />
-                  {(checkDBErrorYN.tr_CD_ERROR || errorName === 'tr_CD') && (
+                  {(state.checkDBErrorYN.tr_CD_ERROR ||
+                    state.errorName === 'tr_CD') && (
                     <ErrorMessage
                       errors={errors}
                       name="tr_CD"
@@ -110,7 +89,7 @@ const GtradeInfoBox = ({
                 <button type="button" onClick={trCDModalButton}>
                   코드
                 </button>
-                {insertButtonClick && (
+                {state.insertButtonClick && (
                   <div>
                     <label>
                       <input
@@ -118,8 +97,8 @@ const GtradeInfoBox = ({
                         type="radio"
                         name="trCdFg"
                         value="manual"
-                        checked={selectedValue === 'manual'}
-                        onChange={handleRadioChange}
+                        checked={state.selectedRadioValue === 'manual'}
+                        onChange={actions.handleRadioChange}
                       />
                       수동
                     </label>
@@ -129,8 +108,8 @@ const GtradeInfoBox = ({
                         type="radio"
                         name="trCdFg"
                         value="auto"
-                        checked={selectedValue === 'auto'}
-                        onChange={handleRadioChange}
+                        checked={state.selectedRadioValue === 'auto'}
+                        onChange={actions.handleRadioChange}
                       />
                       자동
                     </label>
@@ -146,22 +125,24 @@ const GtradeInfoBox = ({
                     className="reqInputStyle"
                     {...register(
                       'tr_NM',
-                      !clickYN && {
-                        required: 'ID를 입력해주세요.',
+                      !state.clickYN && {
+                        required: '거래처명을 입력해주세요.',
                       }
                     )}
-                    defaultValue={data?.tr_NM}
+                    defaultValue={state.data?.tr_NM}
                     style={{
                       border:
                         errors.tr_NM &&
-                        (checkDBErrorYN.tr_NM_ERROR || errorName === 'tr_NM')
+                        (state.checkDBErrorYN.tr_NM_ERROR ||
+                          state.errorName === 'tr_NM')
                           ? '1px solid red'
                           : '1px solid #ccc',
                     }}
-                    onFocus={onFocusError}
-                    onChange={onChangeDBDataSearch}
+                    onFocus={actions.onFocusError}
+                    onChange={actions.onChangeDBDataSearch}
                   />
-                  {(checkDBErrorYN.tr_NM_ERROR || errorName === 'tr_NM') && (
+                  {(state.checkDBErrorYN.tr_NM_ERROR ||
+                    state.errorName === 'tr_NM') && (
                     <ErrorMessage
                       errors={errors}
                       name="tr_NM"
@@ -182,7 +163,7 @@ const GtradeInfoBox = ({
                     //onFocus={onFocusErrors}
                     name="reg_NB"
                     {...register('reg_NB')}
-                    onChange={onFocusError}
+                    onChange={actions.onFocusError}
                   >
                     {() => (
                       <input
@@ -192,8 +173,8 @@ const GtradeInfoBox = ({
                         style={{
                           border:
                             errors.reg_NB &&
-                            (checkDBErrorYN.reg_NB_ERROR ||
-                              errorName === 'reg_NB')
+                            (state.checkDBErrorYN.reg_NB_ERROR ||
+                              state.errorName === 'reg_NB')
                               ? '1px solid red'
                               : '1px solid #ccc',
                         }}
@@ -220,7 +201,7 @@ const GtradeInfoBox = ({
                     //onFocus={onFocusErrors}
                     name="ppl_NB"
                     {...register('ppl_NB')}
-                    onChange={onFocusError}
+                    onChange={actions.onFocusError}
                   >
                     {() => (
                       <input
@@ -230,8 +211,8 @@ const GtradeInfoBox = ({
                         style={{
                           border:
                             errors.ppl_NB &&
-                            (checkDBErrorYN.ppl_NB_ERROR ||
-                              errorName === 'ppl_NB')
+                            (state.checkDBErrorYN.ppl_NB_ERROR ||
+                              state.errorName === 'ppl_NB')
                               ? '1px solid red'
                               : '1px solid #ccc',
                         }}
@@ -256,8 +237,8 @@ const GtradeInfoBox = ({
                   name="ceo_NM"
                   className="reqInputStyle"
                   {...register('ceo_NM')}
-                  defaultValue={data.ceo_NM}
-                  onChange={onChangeDBDataSearch}
+                  defaultValue={state.data.ceo_NM}
+                  onChange={actions.onChangeDBDataSearch}
                 />
               </td>
             </tr>
@@ -270,7 +251,7 @@ const GtradeInfoBox = ({
                     name="business"
                     className="reqInputStyle"
                     {...register('business')}
-                    defaultValue={data.business}
+                    defaultValue={state.data.business}
                   />
                 </div>
               </td>
@@ -281,7 +262,7 @@ const GtradeInfoBox = ({
                   name="jongmok"
                   className="reqInputStyle"
                   {...register('jongmok')}
-                  defaultValue={data.jongmok}
+                  defaultValue={state.data.jongmok}
                 />
               </td>
             </tr>
@@ -295,11 +276,11 @@ const GtradeInfoBox = ({
                   className="addressInputStyle"
                   name="zip"
                   {...register('zip')}
-                  defaultValue={address ? address : data.zip}
+                  defaultValue={state.address ? state.address : state.data.zip}
                 />
                 <EventButton
                   data={'우편번호'}
-                  onClickEvent={onChangeOpenPost}
+                  onClickEvent={actions.onChangeOpenPost}
                 ></EventButton>
               </td>
             </tr>
@@ -310,7 +291,9 @@ const GtradeInfoBox = ({
                   className="addrNum"
                   name="addr"
                   {...register('addr')}
-                  defaultValue={addressDetail ? addressDetail : data.addr}
+                  defaultValue={
+                    state.addressDetail ? state.addressDetail : state.data.addr
+                  }
                 />
               </td>
               <td className="cellStyle">
@@ -319,7 +302,7 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="addr_NUM"
                   {...register('addr_NUM')}
-                  defaultValue={data.addr_NUM}
+                  defaultValue={state.data.addr_NUM}
                 />
               </td>
             </tr>
@@ -331,8 +314,8 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="phone_NB"
                   {...register('phone_NB')}
-                  onChange={onChangeTel}
-                  defaultValue={data.phone_NB}
+                  onChange={actions.onChangeTel}
+                  defaultValue={state.data.phone_NB}
                 />
               </td>
               <th className="headerCellStyle">팩스번호</th>
@@ -342,8 +325,8 @@ const GtradeInfoBox = ({
                   name="fax"
                   className="inputStyle"
                   {...register('fax')}
-                  onChange={onChangeHomeTel}
-                  defaultValue={data.fax}
+                  onChange={actions.onChangeHomeTel}
+                  defaultValue={state.data.fax}
                 />
               </td>
             </tr>
@@ -355,8 +338,8 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="website"
                   {...register('website')}
-                  onChange={onChangeTel}
-                  defaultValue={data.website}
+                  onChange={actions.onChangeTel}
+                  defaultValue={state.data.website}
                 />
               </td>
               <th className="headerCellStyle">메일주소</th>
@@ -366,8 +349,8 @@ const GtradeInfoBox = ({
                   name="email"
                   className="inputStyle"
                   {...register('email')}
-                  onChange={onChangeHomeTel}
-                  defaultValue={data.email}
+                  onChange={actions.onChangeHomeTel}
+                  defaultValue={state.data.email}
                 />
               </td>
             </tr>
@@ -379,11 +362,11 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="liq_CD"
                   {...register('liq_CD')}
-                  onChange={onChangeTel}
+                  onChange={actions.onChangeTel}
                   defaultValue={
                     liquorCDData
                       ? `${liquorCDData?.liq_CD}. ${liquorCDData?.wholesale}`
-                      : data.liq_CD
+                      : state.data.liq_CD
                   }
                 />
                 <button type="button" onClick={liquorCDModalButton}>
@@ -404,9 +387,9 @@ const GtradeInfoBox = ({
               <th className="headerCellStyle">거래시작일</th>
               <td className="cellStyle">
                 <DatePicker
-                  selected={openDate}
+                  selected={state.openDate}
                   name="start_DT"
-                  onChange={handleOpenDateChange}
+                  onChange={actions.handleOpenDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -415,8 +398,8 @@ const GtradeInfoBox = ({
               <td className="cellStyle">
                 <DatePicker
                   name="end_DT"
-                  selected={closeDate}
-                  onChange={handleCloseDateChange}
+                  selected={state.closeDate}
+                  onChange={actions.handleCloseDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -427,13 +410,13 @@ const GtradeInfoBox = ({
               <td className="cellStyle">
                 <SelectBoxUSEYN
                   width={'calc(100% - 7px)'}
-                  state={useYN}
-                  setState={setUseYN}
-                  clickYN={clickYN}
-                  register={register}
-                  errors={errors}
-                  errorName={errorName}
-                  setChangeFormData={setChangeFormData}
+                  state={state.useYN}
+                  setState={state.setUseYN}
+                  clickYN={state.clickYN}
+                  register={state.register}
+                  errors={state.errors}
+                  errorName={state.errorName}
+                  setChangeFormData={state.setChangeFormData}
                 />
               </td>
             </tr>
@@ -444,18 +427,18 @@ const GtradeInfoBox = ({
         {/* 거래처 담당자 관리 */}
         <div>관리 담당자</div>
         <StradeRollManageRealGrid
-          tr_CD={tr_CD}
-          gridViewStrade={gridViewStrade}
-          setGridViewStrade={setGridViewStrade}
-          dataProviderStrade={dataProviderStrade}
-          setDataProviderStrade={setDataProviderStrade}
-          setDeleteCheck={setDeleteCheck}
+          tr_CD={state.tr_CD}
+          gridViewStrade={state.gridViewStrade}
+          setGridViewStrade={state.setGridViewStrade}
+          dataProviderStrade={state.dataProviderStrade}
+          setDataProviderStrade={state.setDataProviderStrade}
+          setDeleteCheck={state.setDeleteCheck}
         />
       </div>
       {trCDModal && (
         <StradeCodeHelpModal
           onChangeModalClose={trCDModalButton}
-          tr_CD={tr_CD}
+          tr_CD={state.tr_CD}
         />
       )}
       {liquorCDModal && (
