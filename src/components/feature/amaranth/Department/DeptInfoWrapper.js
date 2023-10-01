@@ -15,12 +15,12 @@ import EventButton from '../../../common/button/EventButton';
 
 const DeptInfoWrapper = ({
   data,
-  openDate,
-  setOpenDate,
-  closeDate,
-  handleOpenDateChange,
-  handleCloseDateChange,
   register,
+  CoCd,
+  errors,
+  setError,
+  isUpdate,
+  clearErrors,
   selectedRadioValue,
   showRadioValue,
   handleRadioChange,
@@ -72,8 +72,9 @@ const DeptInfoWrapper = ({
             <th className="headerCellStyle">상위부서</th>
             <td colSpan="3" className="cellStyle">
               <InfoInput
+                name="mdept_CD"
                 defaultValue={data ? data.mdept_CD || '' : ''}
-                {...register('mdept_CD')}
+                register={register('mdept_CD')}
                 maxLength={10}
                 readOnly
               />
@@ -83,6 +84,7 @@ const DeptInfoWrapper = ({
             <th className="headerCellStyle">대내수신여부</th>
             <td colSpan="3" className="cellStyle">
               <select
+                {...register('call_YN')}
                 className="deptSelectStyle"
                 value={selectedValue}
                 onChange={e => setSelectedValue(e.target.value)}
@@ -99,8 +101,9 @@ const DeptInfoWrapper = ({
             <th className="headerCellStyle">발신인명</th>
             <td colSpan="3" className="cellStyle">
               <InfoInput
+                name="call_NM"
                 defaultValue={data ? data.call_NM || '' : ''}
-                {...register('call_NM')}
+                register={register('call_NM')}
                 maxLength={10}
               />
             </td>
@@ -110,11 +113,27 @@ const DeptInfoWrapper = ({
             <td colSpan="3" className="cellStyle">
               <InfoInput
                 type={1}
+                CoCd={CoCd}
+                name="dept_CD"
+                setError={setError}
+                clearErrors={clearErrors}
                 defaultValue={data ? data.dept_CD || '' : ''}
-                {...register('dept_CD')}
+                register={
+                  isUpdate
+                    ? register('dept_CD', {
+                        pattern: {
+                          value: /^[0-9]{4}$/,
+                          message: '4자리의 숫자만 입력하세요.',
+                        },
+                        required: '값을 입력하세요.',
+                      })
+                    : register('dept_CD')
+                }
                 valid={'number'}
                 placeholder="부서코드를 입력해주세요."
+                errors={errors}
                 maxLength={10}
+                readOnly={!isUpdate}
               />
             </td>
           </tr>
@@ -125,7 +144,7 @@ const DeptInfoWrapper = ({
                 className="deptSelectStyle"
                 value={selectedDeptCT}
                 onChange={e => setSelectedDeptCT(e.target.value)}
-                // {...register('dept_CT')}
+                register={register('dept_CT')}
               >
                 <option value="" disabled hidden>
                   선택하세요
@@ -143,8 +162,13 @@ const DeptInfoWrapper = ({
                 valid={'text'}
                 defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
-                {...register('dept_NM')}
+                // register={register('dept_NM')}
+                register={register('dept_NM', {
+                  required: '부서명을 입력해주세요.',
+                })}
+                errors={errors}
                 maxLength={20}
+                name="dept_NM"
               />
             </td>
           </tr>
@@ -153,8 +177,9 @@ const DeptInfoWrapper = ({
             <td colSpan="3" className="cellStyle">
               <InfoInput
                 defaultValue={data ? data.dept_NMK || '' : ''}
-                {...register('dept_NMK')}
+                register={register('dept_NMK')}
                 maxLength={20}
+                name="dept_NMK"
               />
             </td>
           </tr>
@@ -164,7 +189,8 @@ const DeptInfoWrapper = ({
               <InfoInput
                 defaultValue={data ? data.mgr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
-                {...register('mgr_NM')}
+                register={register('mgr_NM')}
+                name="mgr_NM"
               />
             </td>
           </tr>
@@ -175,10 +201,11 @@ const DeptInfoWrapper = ({
             <td colSpan="3" className="cellEmpAddrStyle">
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <InfoInput
-                  {...register('addr_CD')}
+                  register={register('addr_CD')}
                   defaultValue={address ? address : data.addr_CD}
                   style={{ width: '150px' }}
                   maxLength={5}
+                  name="addr_CD"
                 />
                 <EventButton
                   data={'우편번호'}
@@ -190,15 +217,16 @@ const DeptInfoWrapper = ({
           <tr>
             <td colSpan="2" className="cellStyle">
               <InfoInput
-                {...register('addr')}
+                register={register('addr')}
                 defaultValue={addressDetail ? addressDetail : data.addr}
                 maxLength={60}
+                name="addr"
               />
             </td>
             <td className="cellStyle">
               <InfoInput
                 name="addr_NUM"
-                {...register('addr_NUM')}
+                register={register('addr_NUM')}
                 defaultValue={data.addr_NUM}
                 maxLength={40}
               />

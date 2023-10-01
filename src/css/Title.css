@@ -140,26 +140,6 @@
   padding: 0 5px;
 }
 
-.WhiteButton {
-  background: linear-gradient(#f9f9f9, #eaeaea);
-  border: 1px solid lightgray;
-  font-size: 13px;
-  font-weight: bold;
-  color: #000000;
-  transition: border-color 0.3s;
-  box-shadow: none;
-  width: 50px;
-  height: 26px;
-  margin-bottom: 5px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.WhiteButton:hover {
-  border-color: #000000;
-  box-shadow: none;
-}
-
 .slideForm {
   visibility: hidden;
   position: absolute;

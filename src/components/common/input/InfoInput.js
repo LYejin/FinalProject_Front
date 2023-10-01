@@ -2,47 +2,88 @@ import React, { useState, forwardRef } from 'react';
 import { authAxiosInstance } from '../../../axios/axiosInstance';
 import '../../../css/CustomInput.css';
 
-const InfoInput = forwardRef(({ valid, maxLength, type, ...props }, ref) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [error, setError] = useState('');
+const InfoInput = forwardRef(
+  (
+    {
+      valid,
+      maxLength,
+      CoCd,
+      type,
+      name,
+      errors,
+      setError,
+      clearErrors,
+      register,
+      ...props
+    },
+    ref
+  ) => {
+    const [isFocused, setIsFocused] = useState(false);
 
-  const handleChange = e => {
-    if (valid === 'number') {
+    const handleChange = async e => {
+      if (register && typeof register.onChange === 'function') {
+        register.onChange(e);
+      }
       const value = e.target.value;
-      if (!value) setError('값을 입력하세요.');
-      else if (!/^[0-9]{4}$/.test(value))
-        setError('4자리의 숫자만 입력하세요.');
-      else setError('');
-    } else if (valid === 'text') {
-      const value = e.target.value;
-      if (!value) setError('값을 입력하세요.');
-      else setError('');
+      if (valid === 'number') {
+        if (valid === 'number' && /^[0-9]{4}$/.test(value)) {
+          try {
+            const response = await authAxiosInstance.get(
+              'system/user/departments/deptCheck',
+              {
+                params: { coCd: CoCd, deptCd: value },
+              }
+            );
+            if (response.data) {
+              // 중복이면 에러를 설정합니다.
+              setError(name, {
+                type: 'manual',
+                message: '중복된 번호입니다.',
+              });
+            } else {
+              // 중복이 아니면 에러를 클리어합니다.
+              clearErrors(name);
+            }
+          } catch (error) {
+            console.error('Error during duplicate check', error);
+            // 요청 중 오류가 발생하면 에러를 설정합니다.
+            setError(name, {
+              type: 'manual',
+              message: '중복 확인 중 오류 발생',
+            });
+          }
+        }
+      }
+    };
+
+    if (type === 1) {
+      type = 'number';
+    } else {
+      type = 'text';
     }
-  };
 
-  if (type === 1) {
-    type = 'number';
-  } else {
-    type = 'text';
+    return (
+      <div className="inputWrapper">
+        <input
+          ref={ref}
+          {...props}
+          type={type}
+          maxLength={maxLength}
+          className={`custom-input ${isFocused ? 'focused' : ''} ${
+            errors && errors[name] ? 'error' : ''
+          } ${valid ? 'valid-input' : ''}`}
+          {...register}
+          onChange={handleChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+        {errors && errors[name] && (
+          <div className="errorMessage">{errors[name].message}</div>
+        )}
+        {/* {error && <div className="errorMessage">{error}</div>} */}
+      </div>
+    );
   }
-
-  return (
-    <div className="inputWrapper">
-      <input
-        {...props}
-        type={type}
-        ref={ref}
-        maxLength={maxLength}
-        className={`custom-input ${isFocused ? 'focused' : ''} ${
-          error ? 'error' : ''
-        } ${valid ? 'valid-input' : ''}`}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        onChange={handleChange} // onBlur를 onChange로 바꿨습니다.
-      />
-      {error && <div className="errorMessage">{error}</div>}
-    </div>
-  );
-});
+);
 
 export default InfoInput;

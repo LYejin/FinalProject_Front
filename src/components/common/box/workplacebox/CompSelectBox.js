@@ -27,17 +27,11 @@ const CompSelectBox = ({
     }
   }, [data]);
 
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     setSelectedValue(0);
-  //     onSelectChange(); // 초기에 첫번째 항목에 대한 onSelectChange 호출
-  //   }
-  // }, []);
-
   const handleChange = event => {
     const value = event.target.value;
     setSelectedValue(value);
-    onSelectChange(value);
+    const selectedLabel = data.find(item => item.value === value)?.label;
+    onSelectChange(value, selectedLabel);
   };
 
   return (

@@ -30,39 +30,42 @@ const DeptTextFieldBox = ({
 
   // 전체 데이터를 사업장과 부서의 데이터 배열로 변환
   const getSortedDeptCDs = data => {
-    let result = [];
+    if (data) {
+      let result = [];
 
-    let divGroups = {};
-    data.forEach(item => {
-      if (!divGroups[item.div_CD]) divGroups[item.div_CD] = [];
-      divGroups[item.div_CD].push(item);
-    });
-
-    const findSubItems = (dept_CD, items) => {
-      const subItems = items.filter(item => item.mdept_CD === dept_CD);
-      subItems.forEach(subItem => {
-        result.push({ dept_CD: subItem.dept_CD, dept_NM: subItem.dept_NM });
-        findSubItems(subItem.dept_CD, items); // 재귀적으로 하위 요소를 찾음
+      let divGroups = {};
+      data.forEach(item => {
+        if (!divGroups[item.div_CD]) divGroups[item.div_CD] = [];
+        divGroups[item.div_CD].push(item);
       });
-    };
 
-    Object.keys(divGroups)
-      .sort()
-      .forEach(div_CD => {
-        let group = divGroups[div_CD];
-        result.push({ div_CD, div_NM: group[0].div_NM });
-
-        let noMdeptItems = group
-          .filter(item => !item.mdept_CD)
-          .sort((a, b) => (a.dept_CD || '').localeCompare(b.dept_CD || ''));
-
-        noMdeptItems.forEach(item => {
-          result.push({ dept_CD: item.dept_CD, dept_NM: item.dept_NM });
-          findSubItems(item.dept_CD, group); // 해당 dept_CD를 mdept_CD로 가지고 있는 모든 하위 요소를 찾음
+      const findSubItems = (dept_CD, items) => {
+        const subItems = items.filter(item => item.mdept_CD === dept_CD);
+        subItems.forEach(subItem => {
+          if (result.find(item => item.dept_CD === subItem.dept_CD)) return; // 이미 추가된 경우 종료
+          result.push({ dept_CD: subItem.dept_CD, dept_NM: subItem.dept_NM });
+          findSubItems(subItem.dept_CD, items);
         });
-      });
+      };
 
-    return result;
+      Object.keys(divGroups)
+        .sort()
+        .forEach(div_CD => {
+          let group = divGroups[div_CD];
+          result.push({ div_CD, div_NM: group[0].div_NM });
+
+          let noMdeptItems = group
+            .filter(item => !item.mdept_CD)
+            .sort((a, b) => (a.dept_CD || '').localeCompare(b.dept_CD || ''));
+
+          noMdeptItems.forEach(item => {
+            result.push({ dept_CD: item.dept_CD, dept_NM: item.dept_NM });
+            findSubItems(item.dept_CD, group); // 해당 dept_CD를 mdept_CD로 가지고 있는 모든 하위 요소를 찾음
+          });
+        });
+
+      return result;
+    }
   };
 
   //현재 부서의 배열

@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ListDept from './ListDept';
 import workpImg from './workpImg.png';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
+import { DeptContext } from '../../../../pages/amaranth10/DepartmentPage';
 
 function ListDivision({ data, searchValue }) {
   const [isOpen, setIsOpen] = useState(
     localStorage.getItem('divisionIsOpen') === 'true' || false
   );
-
+  const { setSelectedDivCd, setSelectedDivCdName, setSelectedDeptCd } =
+    useContext(DeptContext);
   const toggleOpen = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
     localStorage.setItem('divisionIsOpen', newIsOpen);
+  };
+
+  const onDivisonClick = () => {
+    setSelectedDivCd(data.div_CD);
+    setSelectedDivCdName(data.div_NM);
+    setSelectedDeptCd('');
   };
 
   const highlightStyle =
@@ -47,7 +55,7 @@ function ListDivision({ data, searchValue }) {
             (isOpen ? <FaAngleDown /> : <FaAngleRight />)}
         </span>
         <span
-          onClick={toggleOpen}
+          onClick={onDivisonClick}
           style={{
             ...highlightStyle,
             display: 'inline-block',

@@ -4,8 +4,12 @@ import { DeptContext } from '../../../../pages/amaranth10/DepartmentPage';
 import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 
 function ListDept({ data, roof, deptStyle, searchValue }) {
-  const { handleSelectDepartment, selectedDeptCd, setSelectedDeptCd } =
-    useContext(DeptContext);
+  const {
+    handleSelectDepartment,
+    selectedDeptCd,
+    setSelectedDeptCd,
+    setSelectedDivCdName,
+  } = useContext(DeptContext);
   const localStorageKey = `departmentIsOpen_${data.dept_CD}`;
   const [isOpen, setIsOpen] = useState(
     localStorage.getItem(localStorageKey) === 'true' || false
@@ -17,11 +21,10 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
     }
   }, [searchValue]);
 
-  console.log('드루와', searchValue);
-
   const onDeptClick = () => {
     handleSelectDepartment(data.dept_CD, data.div_CD);
     setSelectedDeptCd(data.dept_CD);
+    setSelectedDivCdName(data.div_NM);
   };
 
   if (!data || !data.dept_CD) return null;
