@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react';
-import {
-  authAxiosInstance,
-  imageAxiosInstance,
-} from '../../axios/axiosInstance';
-import {
-  DetailTitle,
-  MainTitle,
-  ScrollWrapper,
-  Title,
-} from '../../components/common/Index';
+import { authAxiosInstance } from '../../axios/axiosInstance';
+import { MainTitle, ScrollWrapper, Title } from '../../components/common/Index';
 import {
   ContentWrapper,
   DetailContentWrapper,
@@ -16,16 +8,11 @@ import {
   RightContentWrapper,
   SelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
-import EmpSelectListWrapper from '../../components/feature/amaranth/employee/EmpSelectListWrapper';
-import { EmpInfoBox } from '../../components/feature/amaranth/Index';
 import { useForm } from 'react-hook-form';
 import { getNowJoinTime } from '../../util/time';
-import CommonLayout from '../../components/common/CommonLayout';
 import DaumPostcode from 'react-daum-postcode';
 import Modal from '../../components/common/modal/Modal';
 import EventButton from '../../components/common/button/EventButton';
-import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
-import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
 import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
@@ -75,6 +62,7 @@ const GtradePage = () => {
   const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
   const [useYN, setUseYN] = useState(''); // 사용여부 select box state
   const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
+  const [selectPplNb, setSelectPplNb] = useState(''); // 내국인 외국인 select box
   const listRef = useRef(null); // list 화면 상하단 이동
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능

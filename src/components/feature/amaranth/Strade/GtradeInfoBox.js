@@ -8,6 +8,7 @@ import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
 import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGrid';
 import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import LiquorcodeModal from '../Modal/LiquorcodeModal/LiquorcodeModal';
+import SelectBox from './../../../common/box/SelectBox';
 
 const GtradeInfoBox = ({
   data,
@@ -212,6 +213,7 @@ const GtradeInfoBox = ({
               <th className="headerCellStyle">주민등록번호</th>
               <td className="cellStyle">
                 <div className="errorWrapper">
+                  <SelectBox data={['내국인', '외국인']} width={120} />
                   <InputMask
                     mask="999999-9999999"
                     alwaysShowMask={true}
