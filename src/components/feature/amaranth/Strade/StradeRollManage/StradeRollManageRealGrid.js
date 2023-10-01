@@ -36,6 +36,24 @@ const StradeRollManageRealGrid = ({
     setEmpMenuButton(false);
   };
 
+  //부서코드 유효성 검사
+  const deptDataCheck = dept_CD => {
+    return new Promise((resolve, reject) => {
+      authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
+        tr_CD: tr_CD,
+        dept_CD: dept_CD,
+      })
+        .then(response => {
+          const deptValue = response.data;
+          resolve(deptValue);
+        })
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  };
+
   //   const FtradeList = ({ dataProvider, gridView }) => {
   //     const params = {};
   //     params.TR_CD = tr_CD;
@@ -146,21 +164,132 @@ const StradeRollManageRealGrid = ({
       gridView.checkRows(rows, false);
     };
 
+    // 행 유효성
+    gridView.onValidateRow = async (
+      grid,
+      itemIndex,
+      dataRow,
+      inserting,
+      values
+    ) => {
+      const error = {};
+      const deptResponse = authAxiosInstance(
+        'accounting/user/Strade/gridUseDeptCd',
+        {
+          tr_CD: tr_CD,
+          dept_CD: values?.dept_CD,
+        }
+      );
+
+      if (values?.dept_CD !== undefined) {
+        if (deptResponse.data === '사용중') {
+          error.level = 'error';
+          error.message = '사용중인 부서코드입니다.';
+          return error;
+        } else if (deptResponse.data === '부서없음') {
+          error.level = 'error';
+          error.message = '존재하지 않는 부서코드입니다.';
+          return error;
+        }
+      } else if (values?.emp_CD !== undefined) {
+        await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
+          tr_CD: tr_CD,
+          emp_CD: values?.emp_CD,
+        }).then(response => {
+          if (response.data === '사용중') {
+            error.level = 'error';
+            error.message = '사용중인 사원코드입니다.';
+            return error;
+          } else if (response.data === '부서없음') {
+            error.level = 'error';
+            error.message = '존재하지 않는 사원코드입니다.';
+            return error;
+          }
+        });
+      }
+    };
+
+    //칼럼 별 유효성 검사를 발생하는 이벤트를 처리합니다.
+    gridView.onValidateColumn = async (
+      grid,
+      column,
+      inserting,
+      value,
+      itemIndex,
+      dataRow
+    ) => {
+      const error = {};
+
+      if (
+        column.fieldName === 'dept_CD' &&
+        gridView.getValue(itemIndex, 'dept_CD') !== undefined &&
+        gridView.getCurrent().dataRow === -1
+      ) {
+        await authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
+          tr_CD: tr_CD,
+          dept_CD: value,
+        })
+          .then(response => {
+            if (response.data !== '사용중' || response.data !== '부서없음') {
+              //grid.setEditOptions({ enterToTab: false });
+              gridView.setCurrent({ dataRow: dataRow, column: 'dept_CD' });
+              gridView.setValues(itemIndex, { dept_CD: '' }, false);
+              //gridView.setValue(itemIndex, 'dept_CD', '');
+              error.level = 'error';
+              error.message = '이미 등록된 자금코드입니다';
+              alert('이미 등록된 자금코드입니다');
+              console.log('컬럼중복');
+              return;
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+
+      return error;
+    };
+
     // onRowInserting insert 전 확인 과정
-    dataProvider.onRowInserting = function (provider, row, values) {
+    dataProvider.onRowInserting = async (provider, row, values) => {
       let editItem = gridView.getEditingItem();
+
       if (
         editItem?.values.dept_CD === undefined &&
         editItem?.values.emp_CD === undefined
       ) {
         return false;
+      } else if (editItem?.values.dept_CD !== undefined) {
+        await authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
+          tr_CD: tr_CD,
+          dept_CD: editItem?.values.dept_CD,
+        }).then(response => {
+          if (response.data === '사용중') {
+            alert('사용중인 부서코드입니다.');
+            return false;
+          } else if (response.data === '부서없음') {
+            alert('존재하지 않는 부서코드입니다.');
+            return false;
+          }
+        });
+      } else if (editItem?.values.emp_CD !== undefined) {
+        await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
+          tr_CD: tr_CD,
+          emp_CD: editItem?.values.emp_CD,
+        }).then(response => {
+          if (response.data === '사용중') {
+            alert('사용중인 사원코드입니다.');
+            return false;
+          } else if (response.data === '부서없음') {
+            alert('존재하지 않는 사원코드입니다.');
+            return false;
+          }
+        });
       } else if (
         editItem?.values.dept_CD !== undefined ||
         editItem?.values.emp_CD !== undefined
       ) {
         return true;
-      } else {
-        return false;
       }
     };
 
