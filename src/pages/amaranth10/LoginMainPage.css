@@ -1,0 +1,226 @@
+/* LoginMainPage.css */
+  .loginMainPage {
+    background-image: url(../../components/common/image/mainPageImg.jpg);
+    background-size: cover;
+    height: 100vh;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    padding-left: 60px;
+    border-bottom: 2px solid #ccc;
+  }
+  
+  .logo {
+    width: 150px;
+    height: auto;
+  }
+  
+  .centerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(80vh - 60px); 
+  }
+  
+  .title {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px; 
+    color: white;
+  }
+  
+  .subtitle {
+    font-size: 30px; 
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 40px; 
+    color: white;
+  }
+
+  .searchInputContainer {
+    display: flex;
+    align-items: center;
+    position: relative; /* 컨테이너에 position 설정 */
+  }
+  
+  .searchInput {
+    width: 500px;
+    padding: 30px;
+    border: none;
+    border-radius: 40px; 
+    height: 40px;
+    color: 'darkgray'; /* 따옴표 제거 */
+    font-size: 18px;
+    outline: none; /* 포커스 시 기본 테두리 제거 */
+    border: 2px solid transparent; /* 포커스 시 기본 테두리를 투명으로 만듦 */
+    transition: border-color 0.3s; /* 테두리 색상 변화에 트랜지션 적용 */
+  }
+  
+  .searchInput:focus {
+    border-color: #1c90fb; /* 포커스 시 파란색 테두리 추가 */
+  }
+  
+  .searchButton {
+    position: absolute; 
+    right: 30px; 
+    top: 50%; /* 세로 중앙 정렬을 위해 50% 이동 */
+    transform: translateY(-50%); /* 수직 방향으로 -50% 이동하여 세로 중앙 정렬 */
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 30px;
+    transition: color 0.3s; /* 텍스트 색상 변화에 트랜지션 적용 */
+    &:hover {
+      color: #1c90fb;; /* 마우스 오버 시 파란색으로 변경 */
+    }
+  }
+  .semiTransparentBox {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(295deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.8));
+    border-radius: 20px;
+    width: 800px;
+    height: 100px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Add this line */
+    text-align: center;
+  }
+  
+
+.btn-hover {
+    width: 70px;
+    font-size: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 70px;
+    margin :12px;
+    text-align:center;
+    border: none;
+    background-size: 300% 100%;
+    justify-content: center; /* Add this line */
+    display: flex;
+    align-items: center;
+
+    border-radius: 15px;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-hover:hover {
+  background-position: 100% 0;
+  font-size: 40px; /* Adjust font size on hover */
+  transform: scale(1.1); /* Adjust size of the entire button on hover */
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover:focus {
+    outline: none;
+}
+
+.btn-hover.color-1 {
+    background-image: linear-gradient(to right, #25aae1, #40e495, #30dd8a, #2bb673);
+    box-shadow: 0 4px 15px 0 rgba(49, 196, 190, 0.75);
+}
+.btn-hover.color-2 {
+    background-image: linear-gradient(to right, #f5ce62, #e43603, #fa7199, #e85a19);
+    box-shadow: 0 4px 15px 0 rgba(229, 66, 10, 0.75);
+}
+.btn-hover.color-3 {
+    background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
+    box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.75);
+}
+.btn-hover.color-4 {
+    background-image: linear-gradient(to right, #fc6076, #ff9a44, #ef9d43, #e75516);
+    box-shadow: 0 4px 15px 0 rgba(252, 104, 110, 0.75);
+}
+.btn-hover.color-5 {
+    background-image: linear-gradient(to right, #0ba360, #3cba92, #30dd8a, #2bb673);
+    box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+}
+.btn-hover.color-6 {
+    background-image: linear-gradient(to right, #009245, #FCEE21, #00A8C5, #D9E021);
+    box-shadow: 0 4px 15px 0 rgba(83, 176, 57, 0.75);
+}
+.btn-hover.color-7 {
+    background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645);
+    box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
+}
+.btn-hover.color-8 {
+    background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
+    box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}
+.btn-hover.color-9 {
+    background-image: linear-gradient(to right, #25aae1, #4481eb, #04befe, #3f86ed);
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+}
+.btn-hover.color-10 {
+        background-image: linear-gradient(to right, #ed6ea0, #ec8c69, #f7186a , #FBB03B);
+    box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+.btn-hover.color-11 {
+       background-image: linear-gradient(to right, #eb3941, #f15e64, #e14e53, #e2373f);  box-shadow: 0 5px 15px rgba(242, 97, 103, .4);
+}
+
+.message {
+  position: absolute;
+  z-index: 2;
+  width: 100px; /* 메시지 박스의 최소 넓이를 조절합니다. */
+  max-width: 300px; /* 필요하다면 최대 넓이도 설정할 수 있습니다. */
+  background-color: #333333; /* 백그라운드 색을 원하는 색상으로 변경합니다. */
+  color: #ffeeee; /* 글자 색을 원하는 색상으로 변경합니다. */
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px; /* 패딩을 조절하여 박스 크기를 변경합니다. */
+  font-weight: 600;
+  font-size: 14px; /* 폰트 사이즈를 조절합니다. */
+  bottom: 100%; 
+  left: 50%;
+  margin-bottom: 10px;
+  transform: translateX(-50%);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ffeeee;
+}
+
+.message::before, .message::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  border: solid transparent;
+  border-width: 5px;
+}
+
+.message::before {
+  top: 100%; 
+  margin-top: 1px; 
+  margin-left: -6px; 
+  border-color: rgba(0, 0, 0, 0.3) transparent transparent transparent; 
+}
+
+.message::after {
+  top: 100%;
+  margin-left: -5px;
+  border-color: #ffeeee transparent transparent transparent; 
+}
+
+.semiTransparentBox a { /* a 태그에 직접 스타일을 적용 */
+  color: inherit; /* 상위 요소의 글자 색상을 상속받아 보라색으로 바뀌지 않도록 설정 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.semiTransparentBox a:visited { /* 방문한 링크 스타일 */
+  color: inherit; /* 상위 요소의 글자 색상을 상속받음 */
+}

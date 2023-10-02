@@ -19,6 +19,7 @@ const DeptInfoWrapper = ({
   CoCd,
   errors,
   setError,
+  setChangeForm,
   isUpdate,
   clearErrors,
   selectedRadioValue,
@@ -52,6 +53,35 @@ const DeptInfoWrapper = ({
     }
   }, [data]);
 
+  const handleChange = event => {
+    const newValue = event.target.value;
+    if (newValue !== selectedValue) {
+      setSelectedValue(newValue);
+      setChangeForm(event); //
+    } else {
+      setChangeForm(event);
+    }
+  };
+  const handleCall_YNChange = event => {
+    const newValue = event.target.value;
+    if (newValue !== selectedValue) {
+      setSelectedValue(newValue);
+      setChangeForm(event); //
+    } else {
+      setChangeForm(event);
+    }
+  };
+
+  const handleDept_CTChange = event => {
+    const newValue = event.target.value;
+    if (newValue !== selectedValue) {
+      setSelectedDeptCT(newValue);
+      setChangeForm(event); //
+    } else {
+      setChangeForm(event);
+    }
+  };
+
   return (
     <div className="selectListWrapper">
       <table className="tableStyle">
@@ -83,18 +113,13 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">대내수신여부</th>
             <td colSpan="3" className="cellStyle">
-              <select
-                {...register('call_YN')}
-                className="deptSelectStyle"
+              <DeptSelectBox
+                type="use"
+                name="call_YN"
                 value={selectedValue}
-                onChange={e => setSelectedValue(e.target.value)}
-              >
-                <option value="" disabled hidden>
-                  선택하세요
-                </option>
-                <option value="1">사용</option>
-                <option value="0">미사용</option>
-              </select>
+                onChange={handleCall_YNChange}
+                register={register('call_YN')}
+              />
             </td>
           </tr>
           <tr>
@@ -140,7 +165,7 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">부서유형</th>
             <td colSpan="3" className="cellStyle">
-              <select
+              {/* <select
                 className="deptSelectStyle"
                 value={selectedDeptCT}
                 onChange={e => setSelectedDeptCT(e.target.value)}
@@ -152,7 +177,21 @@ const DeptInfoWrapper = ({
                 <option value="2">부서</option>
                 <option value="1">팀</option>
                 <option value="0">임시</option>
-              </select>
+              </select> */}
+              {/* <DeptSelectBox
+                type="dept"
+                name="dept_CT"
+                value={selectedValue}
+                onChange={handleChange}
+                register={register}
+              /> */}
+              <DeptSelectBox
+                type="dept"
+                name="dept_CT"
+                value={selectedDeptCT} // 변경된 상태 값을 사용합니다.
+                onChange={handleDept_CTChange}
+                register={register('dept_CT')}
+              />
             </td>
           </tr>
           <tr>
@@ -163,9 +202,13 @@ const DeptInfoWrapper = ({
                 defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
                 // register={register('dept_NM')}
-                register={register('dept_NM', {
-                  required: '부서명을 입력해주세요.',
-                })}
+                register={
+                  isUpdate
+                    ? register('dept_NM', {
+                        required: '부서명을 입력해주세요.',
+                      })
+                    : register('dept_NM')
+                }
                 errors={errors}
                 maxLength={20}
                 name="dept_NM"

@@ -28,6 +28,7 @@ import Modal from '../../components/common/modal/Modal';
 import DaumPostcode from 'react-daum-postcode';
 import { setDate } from 'date-fns';
 import Swal from 'sweetalert2';
+import _ from 'lodash';
 
 const DepartmentPage = () => {
   const {
@@ -77,7 +78,7 @@ const DepartmentPage = () => {
     setIsOpenPost(!isOpenPost);
   };
 
-  // 우편번호 검색 시 처리
+  // // 우편번호 검색 시 처리
   const onCompletePost = data => {
     let fullAddr = data.address;
     let extraAddr = '';
@@ -91,11 +92,24 @@ const DepartmentPage = () => {
 
     setAddress(data.zonecode);
     setAddressDetail(fullAddr);
-    setChangeFormData({
-      ...changeFormData,
-      zipcode: data.zonecode,
-      addr: fullAddr,
+    setChangeFormData(prevChangeFormData => {
+      const updatedData = {
+        ...prevChangeFormData,
+        addr_CD: data.zonecode,
+        addr: fullAddr,
+      };
+
+      // 비교를 수행하여 setChangeForm 설정
+      const isChanged =
+        prevChangeFormData &&
+        Object.keys(updatedData).some(
+          key => !_.isEqual(prevChangeFormData[key], updatedData[key])
+        );
+      setChangeForm(!isChanged);
+
+      return updatedData;
     });
+
     setIsOpenPost(false);
   };
 
@@ -140,7 +154,7 @@ const DepartmentPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log('이거왜', isUpdate);
+    console.log('isUpdate', isUpdate);
   }, [isUpdate]);
 
   const resetData = () => {
@@ -174,6 +188,7 @@ const DepartmentPage = () => {
   const onSubmit = async data => {
     console.log('이거왜', isUpdate);
     if (isUpdate) {
+      console.log('인서트입니다.');
       console.log('당연히 안나오겠지만,', data.dept_CD);
       console.log('Submitted Data: ', data);
 
@@ -205,7 +220,6 @@ const DepartmentPage = () => {
         div_CD: selectedDivCd,
         mdept_CD: selectedDeptCd,
         dept_CD: data?.dept_CD,
-        // dept_CD: selectedDeptCd,
         dept_CT: data?.dept_CT,
         dept_NM: data?.dept_NM,
         dept_NMK: data?.dept_NMK,
@@ -233,6 +247,7 @@ const DepartmentPage = () => {
         title: '부서추가 완료',
         text: '부서 정보가 성공적으로 입력되었습니다.',
       });
+      setIsUpdate(false);
     } else if (!isUpdate) {
       if (!onChangeForm) {
         Swal.fire({
@@ -241,34 +256,18 @@ const DepartmentPage = () => {
         });
         return;
       }
+      console.log('업데이트입니다.');
       console.log('당연히 안나오겠지만,', data.dept_CD);
-      console.log('Submitted Data: ', data);
-
-      const userData = {
-        co_CD: useCoCd,
-        div_CD: selectedDivCd,
-        dept_CD: selectedDeptCd,
-        mdept_CD: data?.mdept_CD,
-        dept_CT: data?.dept_CT,
-        dept_NM: data?.dept_NM,
-        dept_NMK: data?.dept_NMK,
-        dept_YN: data?.dept_YN,
-        call_NM: data?.call_NM,
-        call_YN: data?.call_YN,
-        mgr_NM: data?.mgr_NM,
-        show_YN: data?.show_YN,
-        sort_YN: data?.sort_YN,
-        addr: data?.addr,
-        addr_CD: data?.addr_CD,
-        addr_NUM: data?.addr_NUM,
-      };
-
-      console.log('update 버튼');
-      console.log(userData);
+      console.log('Submitted Data: ', changeFormData);
 
       const response = await authAxiosInstance.put(
         'system/user/departments/update',
-        userData
+        {
+          ...changeFormData, // 기존의 changeFormData 객체를 펼침
+          co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열
+          div_CD: selectedDivCd,
+          dept_CD: selectedDeptCd,
+        }
       );
       console.log(response.data);
       Swal.fire({
@@ -277,16 +276,27 @@ const DepartmentPage = () => {
         text: '부서 정보가 성공적으로 업데이트되었습니다.',
       });
     }
-    fetchDepartmentData(useCoCd);
+    fetchDepartmentDataAfter(useCoCd);
     setChangeForm(false);
+    setChangeFormData();
   };
 
   const onChangeFunction = e => {
-    setChangeForm(true);
-    setChangeFormData(changeFormData => ({
+    const updatedData = {
       ...changeFormData,
       [e.target.name]: e.target.value,
+    };
+    // setChangeFormData(updatedData);
+    setChangeFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
     }));
+
+    const isChanged = Object.keys(updatedData).some(
+      key => !_.isEqual(data[key], updatedData[key])
+    );
+
+    setChangeForm(isChanged);
   };
 
   const fetchDepartmentData = async (selectedCoCd, selectedLabel) => {
@@ -298,11 +308,26 @@ const DepartmentPage = () => {
       setIsUpdate(false);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
+      setChangeForm(false);
       setAllDepartmentData(response.data);
       setUseCoCd(selectedCoCd); //현재 선택된 회사코드
       if (selectedLabel) {
         setUseCoCdName(selectedLabel); //현재 선택된 회사이름
       }
+    } catch (error) {
+      console.error('Error fetching department data:', error);
+    }
+  };
+  const fetchDepartmentDataAfter = async (selectedCoCd, selectedLabel) => {
+    try {
+      const response = await authAxiosInstance.get(
+        `/system/user/departments/getDeptList/${selectedCoCd}`
+      );
+      setIsUpdate(false);
+      const organizedData = hierarchyData(response.data);
+      setDeptData(organizedData);
+      setChangeForm(false);
+      //setAllDepartmentData(response.data);
     } catch (error) {
       console.error('Error fetching department data:', error);
     }
@@ -364,12 +389,15 @@ const DepartmentPage = () => {
   };
 
   const handleSelectDepartment = async (dept_CD, div_CD) => {
+    console.log('불렀잖아:', dept_CD, div_CD);
     setSearchValue(dept_CD);
     reset();
     setAddress();
     setAddressDetail();
     setSelectedDivCd(div_CD);
     setIsUpdate(false);
+    setChangeForm(false);
+    setChangeFormData();
     try {
       const response = await authAxiosInstance.get(
         `system/user/departments/getDeptInfo/${dept_CD}`,
@@ -520,6 +548,7 @@ const DepartmentPage = () => {
                         onChangeOpenPost={onChangeOpenPost}
                         address={address}
                         addressDetail={addressDetail}
+                        setChangeForm={onChangeFunction}
                       />
                     </form>
                   </div>
