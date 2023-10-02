@@ -34,6 +34,7 @@ const DeptInfoWrapper = ({
   // console.log('과자과', data.mdept_CD);
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedDeptCT, setSelectedDeptCT] = useState('');
+  const [isDeptDisabled, setIsDeptDisabled] = useState(false);
 
   // data가 변경될 때마다 선택된 값을 업데이트
   useEffect(() => {
@@ -51,17 +52,15 @@ const DeptInfoWrapper = ({
     } else {
       setSelectedDeptCT(''); // 기본값으로 설정
     }
+
+    if (data && (data.mdept_CD === null || data.mdept_CD === '')) {
+      setSelectedDeptCT('0');
+      setIsDeptDisabled(true);
+    } else {
+      setIsDeptDisabled(false);
+    }
   }, [data]);
 
-  const handleChange = event => {
-    const newValue = event.target.value;
-    if (newValue !== selectedValue) {
-      setSelectedValue(newValue);
-      setChangeForm(event); //
-    } else {
-      setChangeForm(event);
-    }
-  };
   const handleCall_YNChange = event => {
     const newValue = event.target.value;
     if (newValue !== selectedValue) {
@@ -73,9 +72,9 @@ const DeptInfoWrapper = ({
   };
 
   const handleDept_CTChange = event => {
-    const newValue = event.target.value;
-    if (newValue !== selectedValue) {
-      setSelectedDeptCT(newValue);
+    const ThisValue = event.target.value;
+    if (ThisValue !== selectedDeptCT) {
+      setSelectedDeptCT(ThisValue);
       setChangeForm(event); //
     } else {
       setChangeForm(event);
@@ -165,32 +164,13 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">부서유형</th>
             <td colSpan="3" className="cellStyle">
-              {/* <select
-                className="deptSelectStyle"
-                value={selectedDeptCT}
-                onChange={e => setSelectedDeptCT(e.target.value)}
-                register={register('dept_CT')}
-              >
-                <option value="" disabled hidden>
-                  선택하세요
-                </option>
-                <option value="2">부서</option>
-                <option value="1">팀</option>
-                <option value="0">임시</option>
-              </select> */}
-              {/* <DeptSelectBox
-                type="dept"
-                name="dept_CT"
-                value={selectedValue}
-                onChange={handleChange}
-                register={register}
-              /> */}
               <DeptSelectBox
                 type="dept"
                 name="dept_CT"
-                value={selectedDeptCT} // 변경된 상태 값을 사용합니다.
+                value={selectedDeptCT}
                 onChange={handleDept_CTChange}
                 register={register('dept_CT')}
+                disabled={isDeptDisabled}
               />
             </td>
           </tr>
@@ -201,7 +181,6 @@ const DeptInfoWrapper = ({
                 valid={'text'}
                 defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
-                // register={register('dept_NM')}
                 register={
                   isUpdate
                     ? register('dept_NM', {
@@ -282,7 +261,7 @@ const DeptInfoWrapper = ({
               <input
                 className="radioStyle"
                 type="radio"
-                name="display"
+                name="dept_YN"
                 value="1"
                 checked={selectedRadioValue === '1'}
                 onChange={handleRadioChange}
@@ -291,7 +270,7 @@ const DeptInfoWrapper = ({
               <input
                 className="radioStyle"
                 type="radio"
-                name="display"
+                name="dept_YN"
                 value="0"
                 checked={selectedRadioValue === '0'}
                 onChange={handleRadioChange}
@@ -303,7 +282,7 @@ const DeptInfoWrapper = ({
               <input
                 className="radioStyle"
                 type="radio"
-                name="show"
+                name="show_YN"
                 value="Y"
                 checked={showRadioValue === 'Y'}
                 onChange={handleShowRadioChange}
@@ -312,7 +291,7 @@ const DeptInfoWrapper = ({
               <input
                 className="radioStyle"
                 type="radio"
-                name="show"
+                name="show_YN"
                 value="N"
                 checked={showRadioValue === 'N'}
                 onChange={handleShowRadioChange}
@@ -323,7 +302,13 @@ const DeptInfoWrapper = ({
           <tr>
             <th className="headerCellStyle">정렬</th>
             <td colSpan="3" className="cellStyle">
-              <InfoInput />
+              <InfoInput
+                type={1}
+                register={register('sort_YN')}
+                defaultValue={data ? data.sort_YN || '' : ''}
+                maxLength={4}
+                name="sort_YN"
+              />
             </td>
           </tr>
         </tbody>

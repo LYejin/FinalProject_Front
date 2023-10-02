@@ -89,9 +89,12 @@ const DepartmentPage = () => {
       }
       fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
     }
-
+    setChangeForm(true);
     setAddress(data.zonecode);
     setAddressDetail(fullAddr);
+    setData(prevData => ({
+      addr_NUM: '',
+    }));
     setChangeFormData(prevChangeFormData => {
       const updatedData = {
         ...prevChangeFormData,
@@ -166,11 +169,11 @@ const DepartmentPage = () => {
       dept_CT: '',
       dept_NM: '',
       dept_NMK: '',
-      dept_YN: '',
+      dept_YN: 'Y',
       call_NM: '',
       call_YN: '',
       mgr_NM: '',
-      show_YN: '',
+      show_YN: 'Y',
       sort_YN: '',
       addr: '',
       addr_CD: '',
@@ -220,17 +223,17 @@ const DepartmentPage = () => {
         div_CD: selectedDivCd,
         mdept_CD: selectedDeptCd,
         dept_CD: data?.dept_CD,
-        dept_CT: data?.dept_CT,
+        dept_CT: data?.dept_CT || (data?.dept_CT === '' ? '0' : data?.dept_CT),
         dept_NM: data?.dept_NM,
         dept_NMK: data?.dept_NMK,
         dept_YN: data?.dept_YN,
         call_NM: data?.call_NM,
-        call_YN: data?.call_YN,
+        call_YN: data?.call_YN || (data?.call_YN === '' ? '1' : data?.call_YN),
         mgr_NM: data?.mgr_NM,
         show_YN: data?.show_YN,
         sort_YN: data?.sort_YN,
-        addr: data?.addr,
-        addr_CD: data?.addr_CD,
+        addr: data?.addr || addressDetail,
+        addr_CD: data?.addr_CD || address,
         addr_NUM: data?.addr_NUM,
       };
 
@@ -308,6 +311,7 @@ const DepartmentPage = () => {
       setIsUpdate(false);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
+      console.log('오늘은 너다:', organizedData);
       setChangeForm(false);
       setAllDepartmentData(response.data);
       setUseCoCd(selectedCoCd); //현재 선택된 회사코드
@@ -327,7 +331,7 @@ const DepartmentPage = () => {
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
       setChangeForm(false);
-      //setAllDepartmentData(response.data);
+      setAllDepartmentData(response.data);
     } catch (error) {
       console.error('Error fetching department data:', error);
     }
@@ -347,10 +351,23 @@ const DepartmentPage = () => {
 
     const findSubDepts = (dept_CD, allDepts) => {
       return (allDepts || [])
-        .filter(dept => dept && dept.mdept_CD === dept_CD) // dept와 mdept_CD가 있는지 확인
+        .filter(dept => dept && dept.mdept_CD === dept_CD)
+        .sort((a, b) => {
+          // sort_YN이 null이거나 undefined인 경우를 모두 고려하여 정렬
+          const aSortValue =
+            a.sort_YN !== null && a.sort_YN !== undefined
+              ? parseInt(a.sort_YN)
+              : Infinity;
+          const bSortValue =
+            b.sort_YN !== null && b.sort_YN !== undefined
+              ? parseInt(b.sort_YN)
+              : Infinity;
+
+          return aSortValue - bSortValue || a.dept_CD.localeCompare(b.dept_CD);
+        })
         .map(dept => ({
           ...dept,
-          subDepts: findSubDepts(dept.dept_CD || '', allDepts), // dept_CD가 있는지 확인
+          subDepts: findSubDepts(dept.dept_CD || '', allDepts),
         }));
     };
 
@@ -370,9 +387,25 @@ const DepartmentPage = () => {
 
     for (const div in divGroups) {
       const deptsForThisDiv = divGroups[div].depts || [];
-      const topLevelDepts = (deptsForThisDiv || []).filter(
-        dept => dept && !dept.mdept_CD
-      ); // dept와 mdept_CD가 있는지 확인
+
+      // 여기서 최상위 부서를 찾고 정렬합니다.
+      const topLevelDepts = (deptsForThisDiv || [])
+        .filter(dept => dept && !dept.mdept_CD)
+        .sort((a, b) => {
+          // sort_YN이 null이거나 undefined인 경우를 모두 고려하여 정렬
+          const aSortValue =
+            a.sort_YN !== null && a.sort_YN !== undefined
+              ? parseInt(a.sort_YN)
+              : Infinity;
+          const bSortValue =
+            b.sort_YN !== null && b.sort_YN !== undefined
+              ? parseInt(b.sort_YN)
+              : Infinity;
+
+          return aSortValue - bSortValue || a.dept_CD.localeCompare(b.dept_CD);
+        });
+
+      // 정렬된 최상위 부서를 바탕으로 각 부서의 하위 부서를 찾습니다.
       (topLevelDepts || []).forEach(dept => {
         dept.subDepts = findSubDepts(dept.dept_CD || '', deptsForThisDiv);
       });
@@ -380,7 +413,7 @@ const DepartmentPage = () => {
       const divItem = {
         div_CD: div,
         div_NM: divGroups[div].div_NM || '',
-        depts: topLevelDepts,
+        depts: topLevelDepts, // 정렬된 최상위 부서를 할당합니다.
       };
       coItem.divs.push(divItem);
     }

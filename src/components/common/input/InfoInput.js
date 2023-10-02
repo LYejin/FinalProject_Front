@@ -25,6 +25,13 @@ const InfoInput = forwardRef(
         register.onChange(e);
       }
       const value = e.target.value;
+
+      if (type === 'number') {
+        if (e.target.value.length > maxLength) {
+          e.target.value = e.target.value.slice(0, maxLength);
+        }
+      }
+
       if (valid === 'number') {
         if (valid === 'number' && /^[0-9]{4}$/.test(value)) {
           try {
@@ -73,14 +80,18 @@ const InfoInput = forwardRef(
             errors && errors[name] ? 'error' : ''
           } ${valid ? 'valid-input' : ''}`}
           {...register}
-          onChange={handleChange}
+          onChange={e => {
+            if (type === 'number' && e.target.value.length > 4) {
+              e.target.value = e.target.value.slice(0, 4);
+            }
+            handleChange(e); // 이미 존재하는 handleChange 호출
+          }}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
         {errors && errors[name] && (
           <div className="errorMessage">{errors[name].message}</div>
         )}
-        {/* {error && <div className="errorMessage">{error}</div>} */}
       </div>
     );
   }

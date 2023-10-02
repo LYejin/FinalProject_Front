@@ -3,8 +3,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const DeptSelectBox = ({ type, value, name, onChange, register }) => {
+const DeptSelectBox = ({ type, value, name, onChange, disabled, register }) => {
   let menuItems;
+  let renderValueFunction; // renderValue 함수를 담기 위한 변수 선언
+
   if (type === 'use') {
     menuItems = [
       <MenuItem value={'1'} sx={{ height: '25px', fontSize: '13px' }} key="1">
@@ -14,15 +16,18 @@ const DeptSelectBox = ({ type, value, name, onChange, register }) => {
         미사용
       </MenuItem>,
     ];
+    // renderValue 함수 설정. 값에 따른 레이블을 반환.
+    renderValueFunction = value =>
+      value === '1' ? '사용' : value === '0' ? '미사용' : '선택하세요';
   } else if (type === 'dept') {
     menuItems = [
-      <MenuItem value={0} sx={{ height: '25px', fontSize: '13px' }} key={0}>
+      <MenuItem value={'0'} sx={{ height: '25px', fontSize: '13px' }} key="0">
         부서
       </MenuItem>,
-      <MenuItem value={1} sx={{ height: '25px', fontSize: '13px' }} key={1}>
+      <MenuItem value={'1'} sx={{ height: '25px', fontSize: '13px' }} key="1">
         팀
       </MenuItem>,
-      <MenuItem value={2} sx={{ height: '25px', fontSize: '13px' }} key={2}>
+      <MenuItem value={'2'} sx={{ height: '25px', fontSize: '13px' }} key="2">
         임시
       </MenuItem>,
     ];
@@ -42,9 +47,10 @@ const DeptSelectBox = ({ type, value, name, onChange, register }) => {
           id="demo-select-small"
           displayEmpty
           value={value}
-          renderValue={selectedValue => selectedValue || '선택하세요'}
+          renderValue={renderValueFunction}
+          disabled={disabled}
           onChange={e => {
-            console.log('DeptSelectBox onChange Event', e); // 여기서 로그를 확인해보세요.
+            console.log('DeptSelectBox onChange Event', e);
             onChange(e);
           }}
           name={name}
