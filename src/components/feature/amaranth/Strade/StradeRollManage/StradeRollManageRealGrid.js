@@ -36,24 +36,6 @@ const StradeRollManageRealGrid = ({
     setEmpMenuButton(false);
   };
 
-  //부서코드 유효성 검사
-  const deptDataCheck = dept_CD => {
-    return new Promise((resolve, reject) => {
-      authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
-        tr_CD: tr_CD,
-        dept_CD: dept_CD,
-      })
-        .then(response => {
-          const deptValue = response.data;
-          resolve(deptValue);
-        })
-        .catch(error => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  };
-
   //   const FtradeList = ({ dataProvider, gridView }) => {
   //     const params = {};
   //     params.TR_CD = tr_CD;
@@ -95,7 +77,6 @@ const StradeRollManageRealGrid = ({
     authAxiosInstance('accounting/user/Strade/stradeRollManageSearchList', {
       params,
     }).then(response => {
-      console.log('reeeeeeeeee : ', response.data);
       if (response.data !== null && Object.keys(response.data).length > 0) {
         const newDataList = response.data?.map(data =>
           data.roll_FG === '1'
@@ -107,7 +88,6 @@ const StradeRollManageRealGrid = ({
         newDataList.map(
           data => (data.insert_DT = String(data.insert_DT).slice(0, 10))
         );
-        console.log('----------------', newDataList);
         dataProvider.fillJsonData(newDataList, {
           fillMode: 'set',
         });
@@ -149,65 +129,50 @@ const StradeRollManageRealGrid = ({
       return true;
     };
 
-    const onClickRemoveButton = (gridView, dataProvider) => {
-      console.log('hiiiiiiii');
+    // // 행 유효성
+    // gridView.onValidateRow = async (
+    //   grid,
+    //   itemIndex,
+    //   dataRow,
+    //   inserting,
+    //   values
+    // ) => {
+    //   const error = {};
+    //   const deptResponse = authAxiosInstance(
+    //     'accounting/user/Strade/gridUseDeptCd',
+    //     {
+    //       tr_CD: tr_CD,
+    //       dept_CD: values?.dept_CD,
+    //     }
+    //   );
 
-      //체크된 행 가져오기
-      var rows = gridView.getCheckedRows();
-      console.log('rows: ' + rows);
-
-      //행 삭제하기
-      dataProvider.removeRows(rows);
-      dataProvider.softDeleting = true;
-
-      //체크 해제하기
-      gridView.checkRows(rows, false);
-    };
-
-    // 행 유효성
-    gridView.onValidateRow = async (
-      grid,
-      itemIndex,
-      dataRow,
-      inserting,
-      values
-    ) => {
-      const error = {};
-      const deptResponse = authAxiosInstance(
-        'accounting/user/Strade/gridUseDeptCd',
-        {
-          tr_CD: tr_CD,
-          dept_CD: values?.dept_CD,
-        }
-      );
-
-      if (values?.dept_CD !== undefined) {
-        if (deptResponse.data === '사용중') {
-          error.level = 'error';
-          error.message = '사용중인 부서코드입니다.';
-          return error;
-        } else if (deptResponse.data === '부서없음') {
-          error.level = 'error';
-          error.message = '존재하지 않는 부서코드입니다.';
-          return error;
-        }
-      } else if (values?.emp_CD !== undefined) {
-        await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
-          tr_CD: tr_CD,
-          emp_CD: values?.emp_CD,
-        }).then(response => {
-          if (response.data === '사용중') {
-            error.level = 'error';
-            error.message = '사용중인 사원코드입니다.';
-            return error;
-          } else if (response.data === '부서없음') {
-            error.level = 'error';
-            error.message = '존재하지 않는 사원코드입니다.';
-            return error;
-          }
-        });
-      }
-    };
+    //   if (values?.dept_CD !== undefined) {
+    //     if (deptResponse.data === '사용중') {
+    //       error.level = 'error';
+    //       error.message = '사용중인 부서코드입니다.';
+    //       return error;
+    //     } else if (deptResponse.data === '부서없음') {
+    //       error.level = 'error';
+    //       error.message = '존재하지 않는 부서코드입니다.';
+    //       return error;
+    //     }
+    //   } else if (values?.emp_CD !== undefined) {
+    //     await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
+    //       tr_CD: tr_CD,
+    //       emp_CD: values?.emp_CD,
+    //     }).then(response => {
+    //       if (response.data === '사용중') {
+    //         error.level = 'error';
+    //         error.message = '사용중인 사원코드입니다.';
+    //         return error;
+    //       } else if (response.data === '부서없음') {
+    //         error.level = 'error';
+    //         error.message = '존재하지 않는 사원코드입니다.';
+    //         return error;
+    //       }
+    //     });
+    //   }
+    // };
 
     //칼럼 별 유효성 검사를 발생하는 이벤트를 처리합니다.
     gridView.onValidateColumn = async (
@@ -219,26 +184,53 @@ const StradeRollManageRealGrid = ({
       dataRow
     ) => {
       const error = {};
-
+      console.log(value);
       if (
         column.fieldName === 'dept_CD' &&
         gridView.getValue(itemIndex, 'dept_CD') !== undefined &&
         gridView.getCurrent().dataRow === -1
       ) {
-        await authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
-          tr_CD: tr_CD,
-          dept_CD: value,
-        })
+        await authAxiosInstance
+          .post('accounting/user/Strade/gridUseDeptCd', {
+            tr_CD: tr_CD,
+            dept_CD: value,
+          })
           .then(response => {
-            if (response.data !== '사용중' || response.data !== '부서없음') {
-              //grid.setEditOptions({ enterToTab: false });
-              gridView.setCurrent({ dataRow: dataRow, column: 'dept_CD' });
-              gridView.setValues(itemIndex, { dept_CD: '' }, false);
-              //gridView.setValue(itemIndex, 'dept_CD', '');
+            try {
+              if (response.data === '사용중') {
+                gridView.setCurrent({ dataRow: dataRow, column: 'dept_CD' });
+                gridView.setValues(itemIndex, { dept_CD: '' }, false);
+                error.level = 'error';
+                error.message = '사용중인 부서코드입니다.';
+                alert('사용중인 부서코드입니다.');
+                return;
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+
+      if (
+        column.fieldName === 'emp_CD' &&
+        gridView.getValue(itemIndex, 'emp_CD') !== undefined &&
+        gridView.getCurrent().dataRow === -1
+      ) {
+        await authAxiosInstance
+          .post('accounting/user/Strade/gridUseEmpCd', {
+            tr_CD: tr_CD,
+            emp_CD: value,
+          })
+          .then(response => {
+            if (response.data === '사용중') {
+              gridView.setCurrent({ dataRow: dataRow, column: 'emp_CD' });
+              gridView.setValues(itemIndex, { emp_CD: '' }, false);
               error.level = 'error';
-              error.message = '이미 등록된 자금코드입니다';
-              alert('이미 등록된 자금코드입니다');
-              console.log('컬럼중복');
+              error.message = '사용중인 사원코드입니다.';
+              alert('사용중인 사원코드입니다.');
               return;
             }
           })
@@ -259,32 +251,6 @@ const StradeRollManageRealGrid = ({
         editItem?.values.emp_CD === undefined
       ) {
         return false;
-      } else if (editItem?.values.dept_CD !== undefined) {
-        await authAxiosInstance('accounting/user/Strade/gridUseDeptCd', {
-          tr_CD: tr_CD,
-          dept_CD: editItem?.values.dept_CD,
-        }).then(response => {
-          if (response.data === '사용중') {
-            alert('사용중인 부서코드입니다.');
-            return false;
-          } else if (response.data === '부서없음') {
-            alert('존재하지 않는 부서코드입니다.');
-            return false;
-          }
-        });
-      } else if (editItem?.values.emp_CD !== undefined) {
-        await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
-          tr_CD: tr_CD,
-          emp_CD: editItem?.values.emp_CD,
-        }).then(response => {
-          if (response.data === '사용중') {
-            alert('사용중인 사원코드입니다.');
-            return false;
-          } else if (response.data === '부서없음') {
-            alert('존재하지 않는 사원코드입니다.');
-            return false;
-          }
-        });
       } else if (
         editItem?.values.dept_CD !== undefined ||
         editItem?.values.emp_CD !== undefined
@@ -364,14 +330,16 @@ const StradeRollManageRealGrid = ({
           'accounting/user/Strade/gridDeptCd',
           { params: { TR_CD: tr_CD, DEPT_CD: editItem.values.dept_CD } }
         );
-        if (response.data !== null) {
+        if (response.data !== null && response.data !== '') {
           const data = {
             dept_CD: editItem.values.dept_CD,
             dept_NM: response.data,
           };
           gridView.setValues(itemIndex, data, false);
+        } else if (response.data === '') {
         } else {
           // 모달창 띄우기
+          gridView.setValues(itemIndex, { dept_CD: '' }, false);
           setDeptMenuButton(true);
           setDeptGridValue(editItem.values.dept_CD);
           setCellClickData(itemIndex);
@@ -382,12 +350,13 @@ const StradeRollManageRealGrid = ({
           'accounting/user/Strade/gridEmpCode',
           { params: { TR_CD: tr_CD, EMP_CD: editItem.values.emp_CD } }
         );
-        if (response.data !== null) {
+        if (response.data !== null && response.data !== '') {
           const data = {
             emp_CD: editItem.values.emp_CD,
             kor_NM: response.data,
           };
           gridView.setValues(itemIndex, data, false);
+        } else if (response.data === '') {
         } else {
           // 모달창 띄우기
           setEmpGridValue(editItem.values.emp_CD);
@@ -524,16 +493,6 @@ const StradeRollManageRealGrid = ({
       }
     };
 
-    gridView.onColumnPropertyChanged = function (
-      grid,
-      column,
-      property,
-      newValue,
-      oldValue
-    ) {
-      console.log(column + 's props werer changed!');
-    };
-
     gridView.onCurrentRowChanged = function (grid, oldRow, newRow) {
       // console.log(newRow);
       // console.log('Ggggggggg', grid);
@@ -618,21 +577,6 @@ const StradeRollManageRealGrid = ({
       dataProvider.destroy(); // useEffect는 한 번만 실행되도록 빈 배열을 의존성으로 설정합니다.
     };
   }, [tr_CD, empCheckDataList, deptCheckDataList]);
-
-  const onClickRemoveButton = () => {
-    console.log('hiiiiiiii');
-
-    //체크된 행 가져오기
-    var rows = gridViewStrade.getCheckedRows();
-    console.log('rows: ' + rows);
-    dataProviderStrade.softDeleting = true;
-
-    //행 삭제하기
-    dataProviderStrade.removeRows(rows);
-
-    //체크 해제하기
-    //gridViewStrade.checkRows(rows, false);
-  };
 
   return (
     <>
