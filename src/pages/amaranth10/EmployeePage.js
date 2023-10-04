@@ -168,7 +168,12 @@ const EmployeePage = () => {
       setUsername(response.data[0]?.username);
       setData(response?.data[0] || resetData());
       setSelectedRadioValue(response.data[0]?.gender_FG);
+      setInfoBoxEnrlData(response.data[0]?.enrl_FG);
       setCompany(response.data[0]?.co_CD);
+      response.data[0]?.home_TEL &&
+        setValue('home_TEL', onChangePhoneNumber(response.data[0]?.home_TEL));
+      response.data[0]?.tel &&
+        setValue('tel', onChangePhoneNumber(response.data[0]?.tel));
       setWorkplaceSelect(response.data[0]?.div_CD);
     }
     setChangeForm(false);
@@ -212,20 +217,20 @@ const EmployeePage = () => {
         username: username,
       }
     );
-    setData(response.data);
-    console.log(response.data);
-    setSelectedRadioValue(response.data.gender_FG);
-    setOpenDate(new Date(response.data.join_DT) || '');
-    setImgFile(response.data.pic_FILE_ID);
+    setData(response?.data);
+    console.log(response?.data);
+    setSelectedRadioValue(response.data?.gender_FG);
+    setOpenDate(new Date(response.data?.join_DT) || '');
+    setImgFile(response.data?.pic_FILE_ID);
     setIsLoading(false);
-    setUsername(response.data.username);
-    setCompany(response.data.co_CD);
-    setInfoBoxEnrlData(response.data.enrl_FG);
+    setUsername(response.data?.username);
+    setCompany(response.data?.co_CD);
+    setInfoBoxEnrlData(response.data?.enrl_FG);
     setWorkplaceSelect(response.data?.div_CD);
-    response.data.home_TEL &&
-      setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
-    response.data.tel &&
-      setValue('tel', onChangePhoneNumber(response.data.tel));
+    response.data?.home_TEL &&
+      setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+    response.data?.tel &&
+      setValue('tel', onChangePhoneNumber(response.data?.tel));
   };
 
   // 조건 검색 버튼
@@ -246,7 +251,7 @@ const EmployeePage = () => {
     authAxiosInstance('system/user/groupManage/employee/getList', {
       params,
     }).then(response => {
-      setEmpList(response.data);
+      setEmpList(response?.data);
     });
   };
 
@@ -266,7 +271,7 @@ const EmployeePage = () => {
     setInfoBoxEnrlData(0);
     setEmailPersonalData('');
     setEmailSalaryData('');
-    setCompany(companyList[0].co_CD);
+    setCompany(companyList[0]?.co_CD);
     setImgPriviewFile();
     setOpenDate(new Date());
     setInsertButtonClick(true);
@@ -379,7 +384,7 @@ const EmployeePage = () => {
         emp_CD: data?.emp_CD,
         co_CD: company || null,
         div_CD: workplaceSelect || null,
-        dept_CD: 'CN1',
+        dept_CD: '1212',
         username: data?.username,
         password: data?.password,
         kor_NM: data?.kor_NM,

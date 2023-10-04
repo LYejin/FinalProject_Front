@@ -456,6 +456,7 @@ const EmpInfoBox = ({
                 {...register('tel')}
                 onChange={onChangeTel}
                 defaultValue={data?.tel}
+                maxLength="12"
               />
             </td>
             <th className="headerCellStyle">전화번호(집)</th>
@@ -467,6 +468,7 @@ const EmpInfoBox = ({
                 {...register('home_TEL')}
                 onChange={onChangeHomeTel}
                 defaultValue={data?.home_TEL}
+                maxLength="12"
               />
             </td>
           </tr>
