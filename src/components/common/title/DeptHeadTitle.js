@@ -15,6 +15,7 @@ const DeptHeadTitle = ({
   onSave,
   formRef,
   setIsUpdate,
+  isUpdate,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -46,8 +47,8 @@ const DeptHeadTitle = ({
       {titleName}
       <div className="headTitleButton">
         {selectedDivCd && useCoCd && (
-          <button className="WhiteButton" onClick={onClickInsertDept}>
-            추가
+          <button className="NewBlueButton" onClick={onClickInsertDept}>
+            {isUpdate ? '초기화' : '부서 추가'}
           </button>
         )}
         <button className="WhiteButton" onClick={onSaveClick}>

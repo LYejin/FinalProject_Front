@@ -29,6 +29,7 @@ import DaumPostcode from 'react-daum-postcode';
 import { setDate } from 'date-fns';
 import Swal from 'sweetalert2';
 import _ from 'lodash';
+import Modal2 from '../../components/common/modal/Modal2';
 
 const DepartmentPage = () => {
   const {
@@ -64,8 +65,12 @@ const DepartmentPage = () => {
   const [selectedDivCd, setSelectedDivCd] = useState(null);
   const [selectedDivCdName, setSelectedDivCdName] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [IsOpenMdept, setIsOpenMdept] = useState(false);
+  const [MdeptCD, setMdeptCD] = useState('');
 
   const formRef = useRef(null);
+
+  console.log(MdeptCD);
 
   const handleClick = () => {
     if (formRef.current) {
@@ -76,6 +81,14 @@ const DepartmentPage = () => {
   // 우편번호
   const onChangeOpenPost = () => {
     setIsOpenPost(!isOpenPost);
+  };
+
+  const onChangeOpenDeptList = () => {
+    setIsOpenMdept(!IsOpenMdept);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenMdept(false);
   };
 
   // // 우편번호 검색 시 처리
@@ -154,6 +167,7 @@ const DepartmentPage = () => {
     setIsUpdate(false);
     initialDataFetch();
     setChangeForm(false);
+    setMdeptCD('');
   }, []);
 
   useEffect(() => {
@@ -169,11 +183,11 @@ const DepartmentPage = () => {
       dept_CT: '',
       dept_NM: '',
       dept_NMK: '',
-      dept_YN: 'Y',
+      dept_YN: '',
       call_NM: '',
       call_YN: '',
       mgr_NM: '',
-      show_YN: 'Y',
+      show_YN: '',
       sort_YN: '',
       addr: '',
       addr_CD: '',
@@ -193,6 +207,8 @@ const DepartmentPage = () => {
     if (isUpdate) {
       console.log('인서트입니다.');
       console.log('당연히 안나오겠지만,', data.dept_CD);
+      console.log('당연히 안나오겠지만,', data.dept_YN);
+      console.log('당연히 안나오겠지만,', data.show_YN);
       console.log('Submitted Data: ', data);
 
       try {
@@ -221,16 +237,16 @@ const DepartmentPage = () => {
       const userData = {
         co_CD: useCoCd,
         div_CD: selectedDivCd,
-        mdept_CD: selectedDeptCd,
+        mdept_CD: MdeptCD !== '' ? MdeptCD : selectedDeptCd,
         dept_CD: data?.dept_CD,
-        dept_CT: data?.dept_CT || (data?.dept_CT === '' ? '0' : data?.dept_CT),
+        dept_CT: data?.dept_CT || '0',
         dept_NM: data?.dept_NM,
         dept_NMK: data?.dept_NMK,
-        dept_YN: data?.dept_YN,
+        dept_YN: data?.dept_YN || '1',
         call_NM: data?.call_NM,
-        call_YN: data?.call_YN || (data?.call_YN === '' ? '1' : data?.call_YN),
+        call_YN: data?.call_YN || '1',
         mgr_NM: data?.mgr_NM,
-        show_YN: data?.show_YN,
+        show_YN: data?.show_YN || 'Y',
         sort_YN: data?.sort_YN,
         addr: data?.addr || addressDetail,
         addr_CD: data?.addr_CD || address,
@@ -272,6 +288,9 @@ const DepartmentPage = () => {
           dept_CD: selectedDeptCd,
         }
       );
+      const updatedData = { ...data, ...changeFormData };
+      setChangeFormData(updatedData);
+
       console.log(response.data);
       Swal.fire({
         icon: 'success',
@@ -280,8 +299,9 @@ const DepartmentPage = () => {
       });
     }
     fetchDepartmentDataAfter(useCoCd);
+    setIsUpdate(false);
     setChangeForm(false);
-    setChangeFormData();
+    setMdeptCD('');
   };
 
   const onChangeFunction = e => {
@@ -307,6 +327,7 @@ const DepartmentPage = () => {
       const response = await authAxiosInstance.get(
         `/system/user/departments/getDeptList/${selectedCoCd}`
       );
+      console.log('이건뭐지? : ', response.data);
       setVisible(false);
       setIsUpdate(false);
       const organizedData = hierarchyData(response.data);
@@ -315,6 +336,9 @@ const DepartmentPage = () => {
       setChangeForm(false);
       setAllDepartmentData(response.data);
       setUseCoCd(selectedCoCd); //현재 선택된 회사코드
+      setMdeptCD('');
+      selectedDeptCd('');
+      setSelectedDeptCd('');
       if (selectedLabel) {
         setUseCoCdName(selectedLabel); //현재 선택된 회사이름
       }
@@ -327,10 +351,8 @@ const DepartmentPage = () => {
       const response = await authAxiosInstance.get(
         `/system/user/departments/getDeptList/${selectedCoCd}`
       );
-      setIsUpdate(false);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
-      setChangeForm(false);
       setAllDepartmentData(response.data);
     } catch (error) {
       console.error('Error fetching department data:', error);
@@ -431,6 +453,7 @@ const DepartmentPage = () => {
     setIsUpdate(false);
     setChangeForm(false);
     setChangeFormData();
+    setMdeptCD('');
     try {
       const response = await authAxiosInstance.get(
         `system/user/departments/getDeptInfo/${dept_CD}`,
@@ -456,7 +479,7 @@ const DepartmentPage = () => {
           co_NM: foundDept.co_NM,
           div_NM: foundDept.div_NM,
         });
-        setSelectedRadioValue(response.data.call_YN);
+        setSelectedRadioValue(response.data.dept_YN);
         setShowRadioValue(response.data.show_YN);
       } else {
         console.log('No matching department found.');
@@ -480,6 +503,27 @@ const DepartmentPage = () => {
       ...changeFormData,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const updateMdeptCDInInfoWrapper = () => {
+    if (formRef.current) {
+      const mdeptInputElement = formRef.current.elements['mdept_CD'];
+      if (mdeptInputElement) {
+        mdeptInputElement.value = MdeptCD;
+        setChangeForm(true);
+        setChangeFormData(changeFormData => ({
+          ...changeFormData,
+          mdept_CD: MdeptCD,
+        }));
+
+        setChangeFormData(changeFormData => ({
+          ...changeFormData,
+          div_CD: selectedDivCd,
+        }));
+
+        handleCloseModal();
+      }
+    }
   };
 
   return (
@@ -519,11 +563,13 @@ const DepartmentPage = () => {
                     searchValue,
                     setSelectedDivCd,
                     setSelectedDivCdName,
+                    setIsUpdate,
                   }}
                 >
                   <DeptShowWrapper
                     width={'350px'}
                     title={'조직도'}
+                    height={'100%'}
                     data={DeptData}
                     searchValue={searchValue}
                   />
@@ -531,7 +577,7 @@ const DepartmentPage = () => {
               </LeftContentWrapper>
               <RightContentWrapper>
                 <DeptHeadTitle
-                  titleName={'상세정보'}
+                  titleName={isUpdate ? '부서 추가' : '상세정보'}
                   clickInsertBoxEvent={onClickInsert}
                   selectedDivCd={selectedDivCd}
                   useCoCd={useCoCd}
@@ -539,6 +585,7 @@ const DepartmentPage = () => {
                   onSave={handleSubmit(onSubmit)}
                   formRef={formRef}
                   setIsUpdate={setIsUpdate}
+                  isUpdate={isUpdate}
                 ></DeptHeadTitle>
                 <div style={{ display: isVisible ? 'block' : 'none' }}>
                   <DeptSubTitle>
@@ -582,6 +629,7 @@ const DepartmentPage = () => {
                         address={address}
                         addressDetail={addressDetail}
                         setChangeForm={onChangeFunction}
+                        onChangeOpenDeptList={onChangeOpenDeptList}
                       />
                     </form>
                   </ScrollWrapper>
@@ -611,6 +659,42 @@ const DepartmentPage = () => {
           >
             <DaumPostcode autoClose onComplete={onCompletePost} />
           </Modal>
+        ) : null}
+        {IsOpenMdept ? (
+          <Modal2
+            isOpen={IsOpenMdept}
+            onClose={handleCloseModal}
+            title={'상위부서선택'}
+            width={400}
+            height={700}
+            buttonYN={true}
+            updateMdeptCDInInfoWrapper={updateMdeptCDInInfoWrapper}
+          >
+            <DeptContext.Provider
+              value={{
+                selectedDeptCd: '',
+                setSelectedDeptCd,
+                handleSelectDepartment,
+                searchValue,
+                setSelectedDivCd,
+                setSelectedDivCdName,
+                setIsUpdate,
+                isModal: false,
+                MdeptCD,
+                setMdeptCD,
+              }}
+            >
+              <DeptShowWrapper
+                width={'350px'}
+                isModal={1}
+                height={550}
+                data={DeptData}
+                searchValue={searchValue}
+                marginL={5}
+                marginT={20}
+              />
+            </DeptContext.Provider>
+          </Modal2>
         ) : null}
       </CommonLayout2>
     </>
