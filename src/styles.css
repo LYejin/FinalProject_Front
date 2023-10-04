@@ -10,6 +10,9 @@
 @import './css/Common.css';
 @import './css/MainSidebar.css';
 @import './css/RealGrid.css';
+@import './css/MainLogin.css';
+@import './css/Util.css';
+@import './css/Sidebar.css';
 
 :root {
   --bs-blue: #0d6efd;
@@ -90,8 +93,8 @@
   /* --nav--width: 43px; */
 
   /* Colores */
-  --first-color: #0c5df4;
-  --bg-color: #12192c;
+  --first-color: #191c24;
+  --bg-color: #333948;
   --sub-color: #b6cefc;
   --white-color: #fff;
 
