@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ListDivision from './ListDivision';
 import compImg from './compImg.png';
+import { FaAngleRight, FaAngleDown } from 'react-icons/fa';
 
 function GetComp({ data, searchValue }) {
   const [isOpen, setIsOpen] = useState(
@@ -12,12 +13,6 @@ function GetComp({ data, searchValue }) {
     setIsOpen(newIsOpen);
     localStorage.setItem('companyIsOpen', newIsOpen);
   };
-
-  const highlightStyle =
-    searchValue &&
-    (data.co_CD.includes(searchValue) || data.co_NM.includes(searchValue))
-      ? { border: '1px solid blue', backgroundColor: '#D3FFFF' }
-      : {};
 
   return (
     <div>
@@ -39,12 +34,14 @@ function GetComp({ data, searchValue }) {
             width: 15,
           }}
         >
-          {data.divs && data.divs.length > 0 && (isOpen ? '▼' : '▶')}
+          {data.divs &&
+            data.divs.length > 0 &&
+            data.divs.some(div => div && div.div_CD) &&
+            (isOpen ? <FaAngleDown /> : <FaAngleRight />)}
         </span>
         <span
           onClick={toggleOpen}
           style={{
-            ...highlightStyle,
             display: 'inline-block',
             cursor: 'pointer',
             padding: 2,

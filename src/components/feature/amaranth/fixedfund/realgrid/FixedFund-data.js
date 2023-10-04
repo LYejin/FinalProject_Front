@@ -68,7 +68,7 @@ export const columns = [
   {
     name: 'sq_NB',
     fieldName: 'sq_NB',
-    width: '40',
+    width: '50',
     editable: false,
     // visible: false,
     header: {
@@ -80,16 +80,20 @@ export const columns = [
     fieldName: 'cash_CD',
     width: '60',
     editor: {
-      type: 'number',
+      type: 'text',
       maxLength: 4,
       positiveOnly: true,
-      inputCharacters: '0-9',
     },
     header: {
       text: '코드',
+      styles: {
+        background: '#CCC',
+        font: 'bold',
+      },
     },
     footer: {
       text: '합계',
+      styleName: 'align-center',
     },
     button: 'action',
     buttonVisibility: 'default',

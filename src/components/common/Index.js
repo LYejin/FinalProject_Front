@@ -19,6 +19,7 @@ import DeptHeadTitle from './title/DeptHeadTitle';
 import DeptSubTitle from './title/DeptSubTitle';
 import DeptTextFieldBox from './box/workplacebox/DeptTextFieldBox';
 import DeptSelectBox from './box/department/deptSelectBox';
+import InfoInput from './input/InfoInput';
 
 export {
   CheckSelectBox,
@@ -42,4 +43,5 @@ export {
   DeptSubTitle,
   DeptTextFieldBox,
   DeptSelectBox,
+  InfoInput,
 };
