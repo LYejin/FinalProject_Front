@@ -3,9 +3,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 43px;
+  width: 54px;
   height: 100vh;
-  background-color: var(--bg-color);
+  background-color: #333948;
   color: var(--white-color);
   transition: 0.5s;
   z-index: 1;
@@ -13,7 +13,7 @@
 }
 
 .navbarStylekkk:hover {
-  width: 200px;
+  width: 260px;
 }
 
 /* NAV */
@@ -22,7 +22,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+
+/* NAV */
+.nav::-webkit-scrollbar {
+  display: none;
 }
 
 .nav__brand {
@@ -30,7 +36,41 @@
   grid-template-columns: max-content max-content;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  /* margin-bottom: 1rem; */
+  border-bottom: 1px solid rgb(133, 133, 133);
+  margin-top: 5px;
+  width: 100%;
+  height: 45px;
+}
+
+.topNavWrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.nav__topIcon {
+  margin-left: 11.5px;
+  color: gray;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.nav__topIcon2 {
+  margin-left: 35px;
+  color: white;
+  height: 100%;
+  font-size: 1.8rem;
+  font-weight: 600;
+  border-bottom: 2px solid white;
+}
+
+.nav__topIcon3 {
+  margin-left: 35px;
+  color: gray;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
 .nav__toggle {
@@ -40,7 +80,7 @@
 }
 
 .nav__logo {
-  color: var(--white-color);
+  color: rgb(147, 147, 147);
   font-weight: 600;
 }
 
@@ -50,23 +90,28 @@
   align-items: center;
   column-gap: 0.75rem;
   padding: 0.75rem;
-  color: var(--white-color);
-  margin-bottom: 1rem;
+  color: rgb(147, 147, 147);
+  font-family: Montserrat-Regular;
   transition: 0.3s;
   cursor: pointer;
 }
 
 .nav__link:hover {
   width: calc(var(--nav--width) + 9.25rem);
-  background-color: var(--first-color);
+  color: white;
+  background-color: #202228;
 }
 
 .nav__icon {
-  font-size: 1.25rem;
+  margin-left: 3.8px;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .nav_name {
-  font-size: var(--small-font-size);
+  font-size: 0.98rem;
+  font-weight: bold;
+  padding-left: 15px;
 }
 
 /* Expander menu */
@@ -82,6 +127,7 @@
 /* Active links menu */
 .active {
   background-color: var(--first-color);
+  color: white;
 }
 
 /* COLLAPSE */
@@ -100,7 +146,6 @@
 }
 
 .collapse__sublink {
-  color: var(--sub-color);
   font-size: var(--small-font-size);
 }
 

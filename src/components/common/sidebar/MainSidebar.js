@@ -1,22 +1,108 @@
 import React, { useEffect } from 'react';
 import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 import { useState } from 'react';
+import {
+  FaCalculator,
+  FaCoins,
+  FaMoneyCheckAlt,
+  FaBoxes,
+  FaBox,
+  FaBullhorn,
+  FaFileMedical,
+  FaStethoscope,
+  FaUserMd,
+  FaFileSignature,
+  FaClipboardList,
+  FaCalendarAlt,
+} from 'react-icons/fa';
+import { HiComputerDesktop } from 'react-icons/hi2';
+import { ImFolderOpen } from 'react-icons/im';
+import {
+  MdBusinessCenter,
+  MdFactory,
+  MdEqualizer,
+  MdPrint,
+  MdMenu,
+  MdPhoneAndroid,
+} from 'react-icons/md';
+import { BsPersonLinesFill } from 'react-icons/bs';
+import { RiShakeHandsFill } from 'react-icons/ri';
+import { TbReportMoney } from 'react-icons/tb';
+import { GrMail } from 'react-icons/gr';
+import { CgMenuGridR } from 'react-icons/cg';
+import { AiOutlineStar, AiOutlineMenu } from 'react-icons/ai';
+import { GiBackwardTime } from 'react-icons/gi';
 
 const MainSidebar = () => {
   const menu = localStorage.getItem('menu');
-  console.log('menu', menu);
+  const menuData = JSON.parse(localStorage.getItem('mainSidebar'));
+  console.log(menuData);
   const [clickMenu, setClickMenu] = useState(menu);
+  const iconList = [
+    { name: 'FaCoins', value: <FaCoins className="nav__icon" /> },
+    { name: 'MdPhoneAndroid', value: <MdPhoneAndroid className="nav__icon" /> },
+    {
+      name: 'FaClipboardList',
+      value: <FaClipboardList className="nav__icon" />,
+    },
+    { name: 'FaCalendarAlt', value: <FaCalendarAlt className="nav__icon" /> },
+    { name: 'MdPrint', value: <MdPrint className="nav__icon" /> },
+    { name: 'GrMail', value: <GrMail className="nav__icon" /> },
+    { name: 'MdEqualizer', value: <MdEqualizer className="nav__icon" /> },
+    {
+      name: 'FaFileSignature',
+      value: <FaFileSignature className="nav__icon" />,
+    },
+    {
+      name: 'TbReportMoney',
+      value: <TbReportMoney className="nav__icon" />,
+    },
+    { name: 'FaCalculator', value: <FaCalculator className="nav__icon" /> },
+    {
+      name: 'FaMoneyCheckAlt',
+      value: <FaMoneyCheckAlt className="nav__icon" />,
+    },
+    { name: 'FaBoxes', value: <FaBoxes className="nav__icon" /> },
+    { name: 'FaBox', value: <FaBox className="nav__icon" /> },
+    { name: 'FaBullhorn', value: <FaBullhorn className="nav__icon" /> },
+    { name: 'FaFileMedical', value: <FaFileMedical className="nav__icon" /> },
+    { name: 'FaStethoscope', value: <FaStethoscope className="nav__icon" /> },
+    { name: 'FaUserMd', value: <FaUserMd className="nav__icon" /> },
+    { name: 'ImFolderOpen', value: <ImFolderOpen className="nav__icon" /> },
+    {
+      name: 'MdBusinessCenter',
+      value: <MdBusinessCenter className="nav__icon" />,
+    },
+    { name: 'MdFactory', value: <MdFactory className="nav__icon" /> },
+    {
+      name: 'BsPersonLinesFill',
+      value: <BsPersonLinesFill className="nav__icon" />,
+    },
+    {
+      name: 'RiShakeHandsFill',
+      value: <RiShakeHandsFill className="nav__icon" />,
+    },
+    {
+      name: 'HiComputerDesktop',
+      value: <HiComputerDesktop className="nav__icon" />,
+    },
+  ];
+
+  const icon = <FaCalculator className="nav__icon" />;
+  console.log(icon);
 
   useEffect(() => {
     setClickMenu(localStorage.getItem('menu'));
   }, [clickMenu]);
 
-  const onClickSetting = () => {
-    localStorage.setItem('menu', 'setting');
-  };
-
-  const onClickFinancial = () => {
-    localStorage.setItem('menu', 'financial');
+  const onClickMenu = menu => {
+    setClickMenu(menu);
+    localStorage.setItem('menu', menu);
+    if (menu === 'Company') {
+      localStorage.setItem('menuDetailSystem', 'Company');
+    } else if (menu === 'FundTypeSetting') {
+      localStorage.setItem('menuDetailFund', 'FundTypeSetting');
+    }
   };
 
   return (
@@ -25,78 +111,38 @@ const MainSidebar = () => {
         <nav className="nav">
           <div>
             <div className="nav__brand">
-              <ion-icon
-                name="menu-outline"
-                class="nav__toggle"
-                id="nav-toggle"
-              ></ion-icon>
+              <div className="topNavWrapper">
+                <CgMenuGridR className="nav__topIcon" />
+                <AiOutlineMenu className="nav__topIcon2" />
+                <AiOutlineStar className="nav__topIcon3" />
+                <GiBackwardTime className="nav__topIcon3" />
+              </div>
             </div>
             <div className="nav__list">
-              <Link
-                to="/Company"
-                className={
-                  clickMenu === 'setting' ? 'nav__link active' : 'nav__link'
+              {menuData.map(data => {
+                const foundIcon = iconList.find(
+                  iconName => iconName.name === data.icon
+                );
+                if (foundIcon) {
+                  return (
+                    <Link
+                      key={data.icon}
+                      name={data.link}
+                      to={`/${data.link}`}
+                      className={
+                        clickMenu === data.link
+                          ? 'nav__link active'
+                          : 'nav__link'
+                      }
+                      onClick={() => onClickMenu(data.link)}
+                    >
+                      {foundIcon.value}
+                      <span className="nav_name">{data.title}</span>
+                    </Link>
+                  );
                 }
-                onClick={onClickSetting}
-              >
-                <ion-icon name="home-outline" class="nav__icon"></ion-icon>
-                <span className="nav_name">시스템 설정</span>
-              </Link>
-              <Link
-                to="/FundTypeSetting"
-                className={
-                  clickMenu === 'financial' ? 'nav__link active' : 'nav__link'
-                }
-                onClick={onClickFinancial}
-              >
-                <ion-icon
-                  name="chatbubbles-outline"
-                  class="nav__icon"
-                ></ion-icon>
-                <span className="nav_name">회계관리</span>
-              </Link>
-
-              <div href="#" className="nav__link collapse">
-                <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                <span className="nav_name">Projects</span>
-
-                <ion-icon
-                  name="chevron-down-outline"
-                  class="collapse__link"
-                ></ion-icon>
-
-                <ul className="collapse__menu">
-                  <a href="#" className="collapse__sublink">
-                    Data
-                  </a>
-                  <a href="#" className="collapse__sublink">
-                    Group
-                  </a>
-                  <a href="#" className="collapse__sublink">
-                    Members
-                  </a>
-                </ul>
-              </div>
-
-              <a href="#" className="nav__link">
-                <ion-icon name="pie-chart-outline" class="nav__icon"></ion-icon>
-                <span className="nav_name">Analytics</span>
-              </a>
-
-              <div href="#" className="nav__link collapse">
-                <ion-icon name="people-outline" class="nav__icon"></ion-icon>
-                <span className="nav_name">Team</span>
-              </div>
-
-              <a href="#" className="nav__link">
-                <ion-icon name="settings-outline" class="nav__icon"></ion-icon>
-                <span className="nav_name">Settings</span>
-              </a>
+              })}
             </div>
-            <a href="#" className="nav__link">
-              <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-              <span className="nav_name">Log out</span>
-            </a>
           </div>
         </nav>
       </div>
@@ -104,4 +150,4 @@ const MainSidebar = () => {
   );
 };
 
-export default MainSidebar;
+export default React.memo(MainSidebar);

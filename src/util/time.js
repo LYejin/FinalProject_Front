@@ -15,14 +15,16 @@ export const getNowTime = () => {
 };
 
 export const getNowJoinTime = data => {
-  let todayYear = data.getFullYear();
-  let todayMonth =
-    data.getMonth() / 10 === 1
-      ? data.getMonth() + 1
-      : '0' + (data.getMonth() + 1);
-  let todayDate =
-    data.getDate() / 10 >= 1 ? data.getDate() : '0' + data.getDate();
-  return todayYear + '-' + todayMonth + '-' + todayDate;
+  if (data) {
+    let todayYear = data.getFullYear();
+    let todayMonth =
+      data.getMonth() / 10 >= 1
+        ? data.getMonth() + 1
+        : '0' + (data.getMonth() + 1);
+    let todayDate =
+      data.getDate() / 10 >= 1 ? data.getDate() : '0' + data.getDate();
+    return todayYear + '-' + todayMonth + '-' + todayDate;
+  }
 };
 
 export const getJoinTime = data => {
