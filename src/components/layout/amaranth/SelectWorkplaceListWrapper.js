@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ListBoxItem from './ListBoxItem';
-import axios from '../../../../node_modules/axios/index';
 import { WorkplaceListBoxItem } from './Index';
 
 const SelectWorkplaceListWrapper = ({
@@ -39,7 +37,7 @@ const SelectWorkplaceListWrapper = ({
       <div className="listWrapper">
         {data.map((data, index) => (
           <WorkplaceListBoxItem
-            key={data.div_CD}
+            key={`${data.div_CD}-${data.co_CD}`}
             leftTop={data.div_CD}
             rightTop={data.co_CD}
             leftBottom={data.div_NM}

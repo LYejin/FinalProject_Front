@@ -141,3 +141,41 @@
 .fundTypeSerrchSetting .rg-focused-row {
   background: #eff7ff !important;
 }
+
+.changeHistoryLableText {
+  margin-left: 15px;
+  width: 70px;
+}
+.changeHistoryLableCompanyText {
+  margin-left: 15px;
+  width: 30px;
+}
+
+.changeHistoryTextInputBox {
+  border: 1px solid #b6b6b6;
+  width: 115px;
+  height: 25px;
+}
+
+.changeHistoryselectBoxWrapper {
+  border: 2px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding-left: 60px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.custom-datepicker-style {
+  /* Add your styles here */
+  width: 160px;
+  height: 25px;
+  /* Add more styles as needed */
+}
+/* .react-datepicker__input-container > input {
+} */
+
+.daterangepicker-container {
+  position: relative;
+  width: 300px;
+}

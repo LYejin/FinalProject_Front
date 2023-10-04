@@ -15,6 +15,7 @@ import FixedFundPage from '../pages/amaranth10/FixedFundPage';
 
 import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
 import FundTypePage from '../pages/amaranth10/FundTypePage';
+import LoginMainPage from '../pages/amaranth10/LoginMainPage';
 import Login from '../pages/login/Login';
 
 const Routers = () => {
@@ -30,6 +31,7 @@ const Routers = () => {
       <Route path={URL.GeneralVendorRegistration} element={<GtradePage />} />
       <Route path={URL.Department} element={<DepartmentPage />} />
       <Route path={URL.FixedFund} element={<FixedFundPage />} />
+      <Route path={URL.LoginMain} element={<LoginMainPage />} />
     </Routes>
   );
 };

@@ -1,16 +1,7 @@
 import React from 'react';
 import GetComp from '../../feature/amaranth/Department/GetComp';
 
-function DeptShowWrapper({
-  width,
-  title,
-  dataCount,
-  data,
-  FetchWorkplaceDetailInfo,
-  handleAddClick,
-  isAdding,
-  searchValue,
-}) {
+function DeptShowWrapper({ width, title, data, searchValue }) {
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,

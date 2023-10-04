@@ -17,12 +17,13 @@ function RealGrid({
   excelImport,
   setMenuGrid,
   setInputData,
+  highFundsList,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const realgridElement = useRef(null);
   const fileInput = useRef();
-  const nowGrid = useRef(null);
+  const searchValue = useRef('');
 
   //자금종목 데이터 추가 시 필수 칼럼 데이터 입력 유무 판별 함수
   const checkRequireColumn = rowData => {
@@ -54,7 +55,6 @@ function RealGrid({
         undefinedCount++;
       }
     }
-
     return undefinedCount >= 10 ? false : true;
   };
 
@@ -108,15 +108,14 @@ function RealGrid({
         });
     });
   };
-
-  const highFundsList = checkData => {
+  const highFundsNameUpdate = rowData => {
+    console.log('엽데이터', rowData);
     return new Promise((resolve, reject) => {
       authAxiosInstance
-        .post('accounting/user/fundType/highFundsList', checkData)
+        .put('accounting/user/fundType/highFundsNameUpdate', rowData)
         .then(response => {
-          const highFundsList = response.data;
-          console.log('상위자금', highFundsList);
-          resolve(highFundsList);
+          const stateValue = response.data;
+          resolve(stateValue);
         })
         .catch(error => {
           console.error(error);
@@ -265,7 +264,7 @@ function RealGrid({
     grid.onContextMenuItemClicked = function (grid, item, clickData) {
       //handleXlsFile; excelExport excelImport
       if (item.tag === 'excelExport') {
-        excelExport(grid);
+        excelExport(grid, fundTypeLayout);
       } else if (item.tag === 'excelImport') {
         setMenuGrid(prveData => ({
           ...prveData,
@@ -309,6 +308,7 @@ function RealGrid({
 
       console.log(
         '포커스2',
+        grid.getValues(grid.getCurrent().itemIndex),
         oldIndex,
         newIndex,
         newIndex.dataRow,
@@ -322,10 +322,15 @@ function RealGrid({
         grid.getValues(grid.getCurrent().itemIndex),
         oldIndex.fieldName
       );
-      if (newIndex.fieldName === 'USE_YN') {
-        const values = grid.getValues(grid.getCurrent().itemIndex);
+
+      const values = grid.getValues(grid.getCurrent().itemIndex);
+      if (
+        newIndex.fieldName === 'USE_YN' &&
+        columnUndefinedCount(values) &&
+        values !== null
+      ) {
         const emptyColumn = checkRequireColumn(values);
-        if (emptyColumn !== '' && columnUndefinedCount(values)) {
+        if (emptyColumn !== '') {
           const columlName = Object.keys(emptyColumn);
           alert('[' + emptyColumn[columlName] + ']반드시 입력해 주십시요.');
 
@@ -403,9 +408,16 @@ function RealGrid({
       const CASH_CD = grid.getValue(itemIndex, 'CASH_CD');
       const LEVEL_CD = grid.getValue(itemIndex, 'LEVEL_CD');
       const SUM_CD = grid.getValue(itemIndex, 'SUM_CD');
-      console.log('체인지 컬럼', inputData.fieldName);
+      console.log(
+        '체인지 컬럼',
+        inputData,
+        inputData.fieldName,
+        SUM_CD,
+        SUM_CD !== undefined
+      );
       setCASH_CD();
       setLEVEL_CD();
+
       if (
         inputData.fieldName === 'SUM_CD' &&
         SUM_CD !== undefined &&
@@ -418,6 +430,9 @@ function RealGrid({
         }
         if (LEVEL_CD !== undefined) {
           setLEVEL_CD(LEVEL_CD.toString());
+        } else if (SUM_CD !== undefined) {
+          console.log('체인지 컬럼(조건)', inputData.fieldName, SUM_CD);
+          setInputData(SUM_CD.toString());
         }
         onChangeOpenPost();
       } else if (inputData.fieldName === 'SUM_CD' && SUM_CD === undefined) {
@@ -442,6 +457,9 @@ function RealGrid({
           nowRowData.SUM_CD = '';
         }
         rowUpdate(nowRowData);
+        if (inputData.fieldName === 'CASH_NM') {
+          highFundsNameUpdate(nowRowData);
+        }
       }
     };
 
@@ -459,17 +477,22 @@ function RealGrid({
 
       if (index.fieldName === 'SUM_CD') {
         if (oldValue === undefined) {
-          console.log('확인(커밋)');
           setTimeout(() => {
             grid.setValue(index.itemIndex, 'SUM_CD', '');
+            searchValue.current = '';
+            setInputData();
           }, 30);
         } else {
           if (newValue === undefined) {
             grid.setValue(index.itemIndex, 'SUM_CD', '');
             grid.setValue(index.itemIndex, 'SUM_NM', '');
+            searchValue.current = '';
+            setInputData();
           } else {
+            console.log('확인(커밋)');
             setTimeout(() => {
               grid.setValue(index.itemIndex, 'SUM_CD', oldValue);
+              setInputData();
             }, 30);
           }
         }
@@ -525,13 +548,18 @@ function RealGrid({
         grid.getCurrent(),
         column.fieldName === 'CASH_CD',
         grid.getValue(itemIndex, 'CASH_CD') !== undefined,
+        grid.getCurrent().dataRow === -1,
+        '------------------',
+        column.fieldName === 'CASH_CD',
+        grid.getValue(itemIndex, 'CASH_CD') !== undefined,
         grid.getCurrent().dataRow === -1
       );
 
       if (
         column.fieldName === 'CASH_CD' &&
         grid.getValue(itemIndex, 'CASH_CD') !== undefined &&
-        grid.getCurrent().dataRow === -1
+        grid.getCurrent().dataRow === -1 &&
+        grid.getCurrent().fieldIndex === 2
       ) {
         console.log('컬럼이다 ', column.fieldName, value);
         dupDataCheck(value)
@@ -543,8 +571,6 @@ function RealGrid({
               grid.setValue(itemIndex, 'CASH_NM', '');
               grid.setValue(itemIndex, 'TYPE_NM', '');
               grid.setValue(itemIndex, 'DISP_SQ', '');
-              error.level = 'error';
-              error.message = '이미 등록된 자금코드입니다';
               alert('이미 등록된 자금코드입니다');
               console.log('컬럼중복');
               return;
@@ -641,9 +667,6 @@ function RealGrid({
       //const value = provider.getValue(current.dataRow, current.fieldName);
       const copyText = grid.getValue(row.fieldIndex, row.column);
       const values = grid.getValues(grid.getCurrent().itemIndex);
-      if (row.fieldName === 'SUM_CD') {
-        setInputData(editResult.text);
-      }
       console.log(
         'DB 저장 정보',
         grid.getValue(grid.getCurrent().dataRow, 'SUM_CD'),
@@ -682,13 +705,33 @@ function RealGrid({
       console.log('행데이터:', JSON.stringify(provider.getRows(1, 1)));
     };
 
+    //셀에 입력값이 실시간으로 들어왔을 때마다 실행되는(셀 반영되기 전) 이벤트
+    grid.onEditChange = function (grid, index, value) {
+      console.log('서치(onEditChange)', grid, index, value);
+      const SUM_CD = grid.getValue(index.itemIndex, 'SUM_CD');
+      if (index.column === 'SUM_CD' && value === undefined) {
+        setInputData();
+        searchValue.current = '';
+      } else if (index.column === 'SUM_CD' && value !== undefined) {
+        setInputData(value.toString());
+        searchValue.current = value;
+      }
+    };
+
     //셀 버튼을 클릭 했을 때 발생하는 이벤트
     grid.onCellButtonClicked = (grid, index, column) => {
       setCASH_CD();
       setLEVEL_CD();
       const CASH_CD = grid.getValue(index.itemIndex, 'CASH_CD');
       const LEVEL_CD = grid.getValue(index.itemIndex, 'LEVEL_CD');
-      console.log('셀버튼', typeof LEVEL_CD);
+      const SUM_CD = grid.getValue(index.itemIndex, 'SUM_CD');
+      console.log(
+        '셀버튼',
+        typeof LEVEL_CD,
+        SUM_CD,
+        searchValue.current === '',
+        searchValue.current
+      );
       if (index.dataRow !== -1) {
         if (typeof CASH_CD === 'number') {
           setCASH_CD(CASH_CD.toString());
@@ -702,6 +745,9 @@ function RealGrid({
         if (LEVEL_CD !== undefined) {
           setLEVEL_CD(LEVEL_CD.toString());
         }
+      }
+      if (searchValue.current === '') {
+        setInputData();
       }
     };
 
@@ -737,8 +783,8 @@ function RealGrid({
         console.log('체크된1231231233', nowLow, checkData);
         if (window.confirm('선택한 1개의 행을 삭제하시겠습니까??') === true) {
           if (highFundsData === '') {
-            //await deleteBtnClick(checkData);
             provider.removeRow(nowLow.dataRow);
+            await deleteBtnClick(checkData);
           } else {
             alert(
               '[' +
@@ -747,6 +793,10 @@ function RealGrid({
             );
           }
         }
+      }
+
+      if (event.key === 'Escape' && searchValue.current !== '') {
+        searchValue.current = '';
       }
     };
 
@@ -783,6 +833,7 @@ function RealGrid({
         type="file"
         id="fileInput"
         ref={fileInput}
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         style={{ display: 'none' }}
         onChange={excelImport}
       />
