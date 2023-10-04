@@ -5,7 +5,7 @@ import Select from '@mui/material/Select';
 const ITEM_HEIGHT = 40;
 const ITEM_PADDING_TOP = 1;
 
-const SelectBox = ({ data, width, SearchDataSet }) => {
+const SelectBox = ({ data, width, SearchDataSet, register }) => {
   const [age, setAge] = React.useState('');
   const MenuProps = {
     PaperProps: {

@@ -174,3 +174,8 @@
 }
 /* .react-datepicker__input-container > input {
 } */
+
+.daterangepicker-container {
+  position: relative;
+  width: 300px;
+}

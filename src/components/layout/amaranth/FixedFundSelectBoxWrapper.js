@@ -19,6 +19,7 @@ import FundTypeRidoButton from '../../feature/amaranth/fundType/Box/FundTypeRido
 import SubmitButton from '../../common/button/SubmitButton';
 import FundTypeSearch from '../../feature/amaranth/fundType/FundTypeSearch';
 import { useForm } from 'react-hook-form';
+import { ko } from 'date-fns/esm/locale';
 
 const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
@@ -510,6 +511,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
                 startDate={startDate}
                 endDate={endDate}
                 inline
+                locale={ko}
               />
               {startDate && (
                 <DatePicker
@@ -525,6 +527,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
                   endDate={endDate}
                   minDate={new Date(startDate.getTime() + 24 * 60 * 60 * 1000)}
                   inline
+                  locale={ko}
                 />
               )}
             </div>

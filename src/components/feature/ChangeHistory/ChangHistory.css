@@ -1,0 +1,6 @@
+.ChangHistoryView {
+  height: 500px;
+  width: 100%;
+  text-align: center; /* 수평 가운데 정렬 */
+  line-height: 2; /* 수직 가운데 정렬 */
+}
