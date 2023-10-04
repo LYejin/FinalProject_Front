@@ -12,6 +12,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import EventButton from '../../../common/button/EventButton';
+import { LuBuilding2 } from 'react-icons/lu';
+import { AiOutlineApartment } from 'react-icons/ai';
 
 const DeptInfoWrapper = ({
   data,
@@ -105,8 +107,16 @@ const DeptInfoWrapper = ({
                 defaultValue={data ? data.mdept_CD || '' : ''}
                 register={register('mdept_CD')}
                 maxLength={10}
+                style={{ width: '770px', float: 'left' }}
                 readOnly
               />
+              <button
+                type="button"
+                className="MdeptcustomButton"
+                style={{ float: 'left' }}
+              >
+                <LuBuilding2 />
+              </button>
             </td>
           </tr>
           <tr>
@@ -212,8 +222,16 @@ const DeptInfoWrapper = ({
                 defaultValue={data ? data.mgr_NM || '' : ''}
                 placeholder="사용자 이름을 입력해주세요."
                 register={register('mgr_NM')}
+                style={{ width: '350px', float: 'left' }}
                 name="mgr_NM"
               />
+              <button
+                type="button"
+                className="MdeptcustomButton"
+                style={{ float: 'left' }}
+              >
+                <AiOutlineApartment />
+              </button>
             </td>
           </tr>
           <tr>

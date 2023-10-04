@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  authAxiosInstance,
-  imageAxiosInstance,
-} from '../../axios/axiosInstance';
+
 import {
   DetailTitle,
   MainTitle,
@@ -30,8 +27,6 @@ import { onChangePhoneNumber } from '../../util/number';
 import { useRef } from 'react';
 import CommonLayout2 from '../../components/common/CommonLayout2';
 
-import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
-import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
 import FundTypeSelectBoxUSEYN from '../../components/feature/amaranth/fundType/Box/FundTypeSelectBoxUSEYN';
 import FundTypeSelectBoxWrapper from '../../components/feature/amaranth/fundType/Box/SelectBoxWrapper';
 import FundTypeRidoButton from '../../components/feature/amaranth/fundType/Box/FundTypeRidoButton';
@@ -40,6 +35,9 @@ import FundTypeSelectCashFG from '../../components/feature/amaranth/fundType/Box
 import RealGrid from '../../components/feature/amaranth/fundType/FuntTypeRealGrid';
 import FundTypeWidthView from '../../components/feature/amaranth/fundType/FundTypeWidthView';
 import FundTypeSearch from '../../components/feature/amaranth/fundType/FundTypeSearch';
+import { authAxiosInstance } from '../../axios/axiosInstance';
+import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
+import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
 
 const FundTypePage = () => {
   const {
@@ -110,6 +108,9 @@ const FundTypePage = () => {
     inputData,
     setInputData,
     loadTreeRowData,
+    highFundsList,
+    reqCASH_CD,
+    setreqCASH_CD,
   } = FundTypeModel();
 
   React.useEffect(() => {
@@ -118,7 +119,7 @@ const FundTypePage = () => {
     setValue('CASH_CD', '');
     setValue('searchData', '');
     setValue('TYPE_NM', '');
-
+    console.log('서치 데이터', getValues());
     const marsterRowValues = marsterGrid?.grid.getValues(
       marsterGrid?.grid.getCurrent().itemIndex
     );
@@ -127,11 +128,20 @@ const FundTypePage = () => {
       marsterRowValues?.SUM_NM === undefined &&
       !isOpenPost
     ) {
-      marsterGrid?.grid.setCurrent({
-        dataRow: marsterGrid?.grid.getCurrent().dataRow,
-        column: 'SUM_CD',
-      });
-      marsterGrid?.grid.setFocus();
+      if (!reqCASH_CD) {
+        console.log('확인용(페이지)');
+        marsterGrid?.grid.setCurrent({
+          dataRow: marsterGrid?.grid.getCurrent().dataRow,
+          column: 'SUM_CD',
+        });
+        marsterGrid?.grid.setFocus();
+      } else {
+        marsterGrid?.grid.setCurrent({
+          dataRow: marsterGrid?.grid.getCurrent().dataRow,
+          column: 'CASH_CD',
+        });
+        marsterGrid?.grid.setFocus();
+      }
     }
   }, [isOpenPost]);
 
@@ -208,6 +218,7 @@ const FundTypePage = () => {
   const onChangeOpenPost = () => {
     setIsOpenPost(!isOpenPost);
     setSelectUseYN('여');
+    setSelectedOption('');
   };
 
   // 우편번호 검색 시 처리
@@ -551,6 +562,7 @@ const FundTypePage = () => {
                   total={true}
                   setChangeFormData={setChangeFormData}
                 />
+
                 <span className="leftSelectBoxPadding">용도</span>
                 {selectedViewOption === '세로형태조회' ? (
                   <input
@@ -592,6 +604,7 @@ const FundTypePage = () => {
                   excelImport={excelImport}
                   setMenuGrid={setMenuGrid}
                   setInputData={setInputData}
+                  highFundsList={highFundsList}
                 />
               ) : (
                 <FundTypeWidthView
@@ -632,7 +645,7 @@ const FundTypePage = () => {
                 />
                 <input
                   type="text"
-                  className="searchModalTextInputBox "
+                  className="searchModalTextInputBox"
                   Placeholder="검색어 입력"
                   {...register('searchData')}
                 />
@@ -665,6 +678,7 @@ const FundTypePage = () => {
               excelImport={excelImport}
               setMenuGrid={setMenuGrid}
               inputData={inputData}
+              setreqCASH_CD={setreqCASH_CD}
             />
           </FundTypeModal>
         </div>

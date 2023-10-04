@@ -540,27 +540,27 @@ const DepartmentPage = () => {
                   formRef={formRef}
                   setIsUpdate={setIsUpdate}
                 ></DeptHeadTitle>
-                <DeptSubTitle>
-                  <div
-                    className={`subTitleInfo ${
-                      selectedDept === '1' ? 'IsSelected' : ''
-                    }`}
-                    onClick={() => handleDivClick('1')}
-                  >
-                    기본정보
-                  </div>
-                  <div
-                    className={`subTitleInfo2 ${
-                      selectedDept === '0' ? 'IsSelected' : ''
-                    }`}
-                    onClick={() => handleDivClick('0')}
-                  >
-                    부서원 정보
-                  </div>
-                </DeptSubTitle>
+                <div style={{ display: isVisible ? 'block' : 'none' }}>
+                  <DeptSubTitle>
+                    <div
+                      className={`subTitleInfo ${
+                        selectedDept === '1' ? 'IsSelected' : ''
+                      }`}
+                      onClick={() => handleDivClick('1')}
+                    >
+                      기본정보
+                    </div>
+                    <div
+                      className={`subTitleInfo2 ${
+                        selectedDept === '0' ? 'IsSelected' : ''
+                      }`}
+                      onClick={() => handleDivClick('0')}
+                    >
+                      부서원 정보
+                    </div>
+                  </DeptSubTitle>
 
-                <ScrollWrapper width={'900px'} deptH={30}>
-                  <div style={{ display: isVisible ? 'block' : 'none' }}>
+                  <ScrollWrapper width={'900px'} deptH={30}>
                     <form
                       ref={formRef}
                       onChange={onChangeFunction}
@@ -584,14 +584,19 @@ const DepartmentPage = () => {
                         setChangeForm={onChangeFunction}
                       />
                     </form>
-                  </div>
-                  <div
-                    className="selectDeptImg"
-                    style={{ display: isVisible ? 'none' : 'flex' }}
-                  >
-                    <img src={selectDeptImg} alt="부서선택" />
-                  </div>
-                </ScrollWrapper>
+                  </ScrollWrapper>
+                </div>
+                <div
+                  className="selectDeptImg"
+                  style={{
+                    display: isVisible ? 'none' : 'flex',
+                    border: '2px solid #ccc',
+                    marginTop: 10,
+                    padding: '328px 0px',
+                  }}
+                >
+                  <img src={selectDeptImg} alt="부서선택" />
+                </div>
               </RightContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>

@@ -40,9 +40,22 @@ const DeptTextFieldBox = ({
       });
 
       const findSubItems = (dept_CD, items) => {
-        const subItems = items.filter(item => item.mdept_CD === dept_CD);
+        const subItems = items
+          .filter(item => item.mdept_CD === dept_CD)
+          .sort((a, b) => {
+            const aSortValue =
+              a.sort_YN !== undefined ? parseInt(a.sort_YN) : Infinity;
+            const bSortValue =
+              b.sort_YN !== undefined ? parseInt(b.sort_YN) : Infinity;
+
+            return (
+              aSortValue - bSortValue ||
+              (a.dept_CD || '').localeCompare(b.dept_CD || '')
+            );
+          });
+
         subItems.forEach(subItem => {
-          if (result.find(item => item.dept_CD === subItem.dept_CD)) return; // 이미 추가된 경우 종료
+          if (result.find(item => item.dept_CD === subItem.dept_CD)) return;
           result.push({ dept_CD: subItem.dept_CD, dept_NM: subItem.dept_NM });
           findSubItems(subItem.dept_CD, items);
         });
@@ -56,11 +69,21 @@ const DeptTextFieldBox = ({
 
           let noMdeptItems = group
             .filter(item => !item.mdept_CD)
-            .sort((a, b) => (a.dept_CD || '').localeCompare(b.dept_CD || ''));
+            .sort((a, b) => {
+              const aSortValue =
+                a.sort_YN !== undefined ? parseInt(a.sort_YN) : Infinity;
+              const bSortValue =
+                b.sort_YN !== undefined ? parseInt(b.sort_YN) : Infinity;
+
+              return (
+                aSortValue - bSortValue ||
+                (a.dept_CD || '').localeCompare(b.dept_CD || '')
+              );
+            });
 
           noMdeptItems.forEach(item => {
             result.push({ dept_CD: item.dept_CD, dept_NM: item.dept_NM });
-            findSubItems(item.dept_CD, group); // 해당 dept_CD를 mdept_CD로 가지고 있는 모든 하위 요소를 찾음
+            findSubItems(item.dept_CD, group);
           });
         });
 

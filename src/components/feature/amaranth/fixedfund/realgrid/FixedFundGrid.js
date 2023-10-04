@@ -14,6 +14,8 @@ function FixedFundGrid({
   setGridViewStrade,
   values,
   setHandleDeleteRows,
+  isOpenCash,
+  setInputFixedCashCD,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -23,6 +25,7 @@ function FixedFundGrid({
   const queryParams = new URLSearchParams();
 
   console.log('그럼 잘와야지?', values);
+  console.log('오픈캐시', isOpenCash);
 
   const createQueryParams = values => {
     const queryParams = new URLSearchParams();
@@ -354,11 +357,58 @@ function FixedFundGrid({
       }
     };
 
+    grid.onEditRowChanged = (
+      grid,
+      itemIndex,
+      dataRow,
+      field,
+      oldValue,
+      newValue
+    ) => {
+      const current = grid.getCurrent();
+
+      console.log('Event triggered'); // 이벤트가 트리거되는지 확인
+
+      if (current.fieldName === 'cash_CD') {
+        console.log('CASH_CD changed to:', newValue); // CASH_CD의 새로운 값 출력
+        onChangeOpenCash();
+        setInputFixedCashCD(newValue);
+      }
+    };
+
     // 그리드의 상태 바를 숨깁니다.
     grid.setStateBar({ visible: false });
 
     //컬럼 너비 자동 조절 설정
     grid.setDisplayOptions({ fitStyle: 'evenFill' });
+
+    //헤더 높이 자동 조절 설정
+    grid.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+
+    //체크바 너비  옵션 설정
+    grid.setCheckBar({ width: 30 });
+
+    //헤더 높이 자동 조절 설정
+    grid.setFooter({ height: 35, backgroundColor: 'yellow' });
+
+    grid.setRowIndicator({
+      showAll: false,
+      headText: '',
+      footText: '',
+    });
+
+    grid.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
 
     setDataProvider(provider);
     setGridView(grid);
@@ -370,6 +420,21 @@ function FixedFundGrid({
       provider.destroy();
     };
   }, [DISQ, values]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (isOpenCash) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpenCash]);
 
   return (
     <div>
@@ -388,7 +453,12 @@ function FixedFundGrid({
       </div>
       <div
         ref={realgridElement}
-        style={{ height: '600px', width: '100%', margin: '0 auto' }}
+        style={{
+          height: '300px',
+          width: '100%',
+          margin: '0 auto',
+          borderTop: '1.5px solid #555',
+        }}
       ></div>
     </div>
   );

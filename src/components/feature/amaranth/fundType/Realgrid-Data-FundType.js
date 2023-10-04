@@ -198,6 +198,7 @@ export const columns = [
     fieldName: 'DISP_SQ',
     width: '140', // 너비 수정
     styleName: 'left-column ',
+    zeroText: '',
     editor: {
       type: 'number',
       editFormat: '#,##0',
