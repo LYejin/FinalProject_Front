@@ -47,6 +47,7 @@ const GtradeListBoxItem = ({
         id={leftTop}
         type="checkbox"
         checked={checked}
+        onClick={e => e.stopPropagation()}
         onChange={e => checkHandled(e)}
       />
       <div className="flexWrapper">

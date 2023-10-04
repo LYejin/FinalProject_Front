@@ -1,10 +1,11 @@
 /* ContentWrapper.js */
 .contentWrapper {
   position: fixed;
-  top: 101px;
-  left: 223px;
-  width: calc(100% - 223px);
-  height: calc(100% - 101px);
+  top: 95px;
+  left: 255px;
+  border-left: 1px solid #dcdcdc;
+  width: calc(100% - 255px);
+  height: calc(100% - 95px);
 }
 
 /* DetailContentWrapper.js */

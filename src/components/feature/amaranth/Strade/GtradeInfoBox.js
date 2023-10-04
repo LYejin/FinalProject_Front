@@ -1,40 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import EventButton from '../../../common/button/EventButton';
 import { ErrorMessage } from '@hookform/error-message';
-import { InputMask } from 'react-input-mask';
+import InputMask from 'react-input-mask';
 import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
 import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGrid';
 import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import LiquorcodeModal from '../Modal/LiquorcodeModal/LiquorcodeModal';
+import SelectBox from './../../../common/box/SelectBox';
 
 const GtradeInfoBox = ({
-  data,
   register,
-  openDate,
-  selectedValue,
-  onChangeOpenPost,
-  address,
-  addressDetail,
-  errors,
-  clickYN,
-  onFocusError,
-  errorName,
-  handleOpenDateChange,
-  handleCloseDateChange,
-  closeDate,
-  onChangeTel,
-  onChangeHomeTel,
-  setChangeFormData,
-  onChangeDBDataSearch,
+  handleSubmit,
+  reset,
   getValues,
-  setError,
+  errors,
   clearErrors,
-  checkDBErrorYN,
-  setUseYN,
-  useYN,
-  tr_CD,
+  setValue,
+  setFocus,
+  setError,
+  state,
+  actions,
 }) => {
   const [trCDModal, setTrCDModal] = useState(false);
   const [liquorCDModal, setLiquorCDModal] = useState(false);
@@ -48,8 +35,6 @@ const GtradeInfoBox = ({
     setLiquorCDModal(!liquorCDModal);
   };
 
-  console.log('kkk', liquorCDModal);
-
   return (
     <>
       <div className="selectListWrapper">
@@ -59,50 +44,107 @@ const GtradeInfoBox = ({
             <tr>
               <th className="headerCellStyle">거래처코드</th>
               <td className="cellStyle">
-                <input
-                  type="text"
-                  className="inputStyle"
-                  name="tr_CD"
-                  {...register('tr_CD', {
-                    required: '거래처코드를 입력해주세요.',
-                  })}
-                  onChange={onChangeTel}
-                  defaultValue={data.tr_CD}
-                />
+                <div className="errorWrapper">
+                  <input
+                    type="text"
+                    className="inputStyle"
+                    name="tr_CD"
+                    {...register(
+                      'tr_CD',
+                      state.selectedRadioValue !== 'auto' &&
+                        !state.clickYN && {
+                          required: '거래처코드를 입력해주세요.',
+                        }
+                    )}
+                    style={{
+                      border:
+                        errors.tr_CD &&
+                        (state.checkDBErrorYN.tr_CD_ERROR ||
+                          state.errorName === 'tr_CD')
+                          ? '1px solid red'
+                          : '1px solid #ccc',
+                      backgroundColor:
+                        state.clickYN || state.selectedRadioValue === 'auto'
+                          ? '#f2f2f2'
+                          : '#fef4f4',
+                    }}
+                    disabled={
+                      state.selectedRadioValue === 'auto' || state.clickYN
+                    }
+                    onChange={actions.onChangeDBDataSearch}
+                    defaultValue={state.data?.tr_CD}
+                    onFocus={actions.onFocusError}
+                  />
+                  {(state.checkDBErrorYN.tr_CD_ERROR ||
+                    state.errorName === 'tr_CD') && (
+                    <ErrorMessage
+                      errors={errors}
+                      name="tr_CD"
+                      as="p"
+                      className="errorBox"
+                    />
+                  )}
+                </div>
                 <button type="button" onClick={trCDModalButton}>
                   코드
                 </button>
+                {state.insertButtonClick && (
+                  <div>
+                    <label>
+                      <input
+                        className="radioStyle"
+                        type="radio"
+                        name="trCdFg"
+                        value="manual"
+                        checked={state.selectedRadioValue === 'manual'}
+                        onChange={actions.handleRadioChange}
+                      />
+                      수동
+                    </label>
+                    <label>
+                      <input
+                        className="radioStyle"
+                        type="radio"
+                        name="trCdFg"
+                        value="auto"
+                        checked={state.selectedRadioValue === 'auto'}
+                        onChange={actions.handleRadioChange}
+                      />
+                      자동
+                    </label>
+                  </div>
+                )}
               </td>
               <th className="headerCellStyle">거래처명</th>
               <td className="cellStyle">
                 <div className="errorWrapper">
                   <input
                     type="text"
-                    name="email_ADD"
+                    name="tr_NM"
                     className="reqInputStyle"
                     {...register(
                       'tr_NM',
-                      !clickYN && {
-                        required: 'ID를 입력해주세요.',
+                      !state.clickYN && {
+                        required: '거래처명을 입력해주세요.',
                       }
                     )}
-                    defaultValue={data.tr_NM}
+                    defaultValue={state.data?.tr_NM}
                     style={{
                       border:
-                        errors.email_ADD &&
-                        (checkDBErrorYN.email_ADD_ERROR ||
-                          errorName === 'email_ADD')
+                        errors.tr_NM &&
+                        (state.checkDBErrorYN.tr_NM_ERROR ||
+                          state.errorName === 'tr_NM')
                           ? '1px solid red'
                           : '1px solid #ccc',
                     }}
-                    onFocus={onFocusError}
-                    onChange={onChangeDBDataSearch}
+                    onFocus={actions.onFocusError}
+                    onChange={actions.onChangeDBDataSearch}
                   />
-                  {(checkDBErrorYN.email_ADD_ERROR ||
-                    errorName === 'email_ADD') && (
+                  {(state.checkDBErrorYN.tr_NM_ERROR ||
+                    state.errorName === 'tr_NM') && (
                     <ErrorMessage
                       errors={errors}
-                      name="email_ADD"
+                      name="tr_NM"
                       as="p"
                       className="errorBox"
                     />
@@ -112,15 +154,37 @@ const GtradeInfoBox = ({
             </tr>
             <tr>
               <th className="headerCellStyle">사업자등록번호</th>
-              <td colSpan="3" className="cellStyle">
+              <td className="cellStyle">
                 <div className="errorWrapper">
-                  <input
-                    type="text"
-                    maxlength="12"
+                  <InputMask
+                    mask="999-99-99999"
+                    alwaysShowMask={true}
+                    //onFocus={onFocusErrors}
                     name="reg_NB"
-                    className="companyReqInputStyle"
                     {...register('reg_NB')}
-                    defaultValue={data.reg_NB}
+                    onChange={actions.onFocusError}
+                  >
+                    {() => (
+                      <input
+                        type="text"
+                        name="reg_NB"
+                        className="inputStyle"
+                        style={{
+                          border:
+                            errors.reg_NB &&
+                            (state.checkDBErrorYN.reg_NB_ERROR ||
+                              state.errorName === 'reg_NB')
+                              ? '1px solid red'
+                              : '1px solid #ccc',
+                        }}
+                      />
+                    )}
+                  </InputMask>
+                  <ErrorMessage
+                    errors={errors}
+                    name="reg_NB"
+                    as="p"
+                    className="errorBox"
                   />
                 </div>
               </td>
@@ -129,35 +193,46 @@ const GtradeInfoBox = ({
               <th className="headerCellStyle">주민등록번호</th>
               <td className="cellStyle">
                 <div className="errorWrapper">
-                  {/* <InputMask
-                  mask="999999-9999999"
-                  alwaysShowMask={true}
-                  //onFocus={onFocusErrors}
-                  // {...register(labels.PPL_NB, {
-                  //   pattern: {
-                  //     value: regexPatterns.PPL_NB[0],
-                  //     message: regexPatterns.PPL_NB[1],
-                  //   },
-                  //   required: regexPatterns.required,
-                  // })}
-                >
-                  {() => (
-                    <input
-                      type="text"
-                      //name={labels.PPL_NB}
-                      maxlength="15"
-                      className="companyReqInputStyle"
-                    />
-                  )}
-                </InputMask> */}
-                  <input
-                    type="text"
-                    className="inputStyle"
+                  <SelectBox
+                    data={['내국인', '외국인']}
+                    width={120}
+                    state={state.selectForYN}
+                    setState={state.setSelectForYN}
+                    setChangeFormData={state.setChangeFormData}
+                  />
+                  <InputMask
+                    mask="999999-9999999"
+                    alwaysShowMask={true}
+                    //onFocus={onFocusErrors}
                     name="ppl_NB"
                     {...register('ppl_NB')}
-                    onChange={onChangeTel}
-                    defaultValue={data.ppl_NB}
-                  />
+                    onChange={actions.onFocusError}
+                  >
+                    {() => (
+                      <input
+                        type="text"
+                        name="ppl_NB"
+                        className="inputStyle"
+                        style={{
+                          border:
+                            errors.ppl_NB &&
+                            (state.checkDBErrorYN.ppl_NB_ERROR ||
+                              state.errorName === 'ppl_NB')
+                              ? '1px solid red'
+                              : '1px solid #ccc',
+                        }}
+                        maxLength="15"
+                      />
+                    )}
+                  </InputMask>
+                  {
+                    <ErrorMessage
+                      errors={errors}
+                      name="ppl_NB"
+                      as="p"
+                      className="errorBox"
+                    />
+                  }
                 </div>
               </td>
               <th className="headerCellStyle">대표자명</th>
@@ -167,8 +242,8 @@ const GtradeInfoBox = ({
                   name="ceo_NM"
                   className="reqInputStyle"
                   {...register('ceo_NM')}
-                  defaultValue={data.ceo_NM}
-                  onChange={onChangeDBDataSearch}
+                  defaultValue={state.data.ceo_NM}
+                  onChange={actions.onChangeDBDataSearch}
                 />
               </td>
             </tr>
@@ -181,7 +256,7 @@ const GtradeInfoBox = ({
                     name="business"
                     className="reqInputStyle"
                     {...register('business')}
-                    defaultValue={data.business}
+                    defaultValue={state.data.business}
                   />
                 </div>
               </td>
@@ -192,7 +267,7 @@ const GtradeInfoBox = ({
                   name="jongmok"
                   className="reqInputStyle"
                   {...register('jongmok')}
-                  defaultValue={data.jongmok}
+                  defaultValue={state.data.jongmok}
                 />
               </td>
             </tr>
@@ -206,11 +281,11 @@ const GtradeInfoBox = ({
                   className="addressInputStyle"
                   name="zip"
                   {...register('zip')}
-                  defaultValue={address ? address : data.zip}
+                  defaultValue={state.address ? state.address : state.data.zip}
                 />
                 <EventButton
                   data={'우편번호'}
-                  onClickEvent={onChangeOpenPost}
+                  onClickEvent={actions.onChangeOpenPost}
                 ></EventButton>
               </td>
             </tr>
@@ -221,7 +296,9 @@ const GtradeInfoBox = ({
                   className="addrNum"
                   name="addr"
                   {...register('addr')}
-                  defaultValue={addressDetail ? addressDetail : data.addr}
+                  defaultValue={
+                    state.addressDetail ? state.addressDetail : state.data.addr
+                  }
                 />
               </td>
               <td className="cellStyle">
@@ -230,7 +307,7 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="addr_NUM"
                   {...register('addr_NUM')}
-                  defaultValue={data.addr_NUM}
+                  defaultValue={state.data.addr_NUM}
                 />
               </td>
             </tr>
@@ -242,8 +319,9 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="phone_NB"
                   {...register('phone_NB')}
-                  onChange={onChangeTel}
-                  defaultValue={data.phone_NB}
+                  onChange={actions.onChangeTel}
+                  defaultValue={state.data.phone_NB}
+                  maxLength="12"
                 />
               </td>
               <th className="headerCellStyle">팩스번호</th>
@@ -253,8 +331,8 @@ const GtradeInfoBox = ({
                   name="fax"
                   className="inputStyle"
                   {...register('fax')}
-                  onChange={onChangeHomeTel}
-                  defaultValue={data.fax}
+                  onChange={actions.onChangeHomeTel}
+                  defaultValue={state.data.fax}
                 />
               </td>
             </tr>
@@ -266,8 +344,8 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="website"
                   {...register('website')}
-                  onChange={onChangeTel}
-                  defaultValue={data.website}
+                  onChange={actions.onChangeTel}
+                  defaultValue={state.data.website}
                 />
               </td>
               <th className="headerCellStyle">메일주소</th>
@@ -277,8 +355,8 @@ const GtradeInfoBox = ({
                   name="email"
                   className="inputStyle"
                   {...register('email')}
-                  onChange={onChangeHomeTel}
-                  defaultValue={data.email}
+                  onChange={actions.onChangeHomeTel}
+                  defaultValue={state.data.email}
                 />
               </td>
             </tr>
@@ -290,11 +368,11 @@ const GtradeInfoBox = ({
                   className="inputStyle"
                   name="liq_CD"
                   {...register('liq_CD')}
-                  onChange={onChangeTel}
+                  onChange={actions.onChangeTel}
                   defaultValue={
                     liquorCDData
                       ? `${liquorCDData?.liq_CD}. ${liquorCDData?.wholesale}`
-                      : data.liq_CD
+                      : state.data.liq_CD
                   }
                 />
                 <button type="button" onClick={liquorCDModalButton}>
@@ -305,8 +383,6 @@ const GtradeInfoBox = ({
           </tbody>
         </table>
 
-        <br />
-
         {/* 거래기간 정보 */}
         <div>거래기간정보</div>
         <table className="tableStyle">
@@ -315,9 +391,9 @@ const GtradeInfoBox = ({
               <th className="headerCellStyle">거래시작일</th>
               <td className="cellStyle">
                 <DatePicker
-                  selected={openDate}
+                  selected={state.openDate}
                   name="start_DT"
-                  onChange={handleOpenDateChange}
+                  onChange={actions.handleOpenDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -326,8 +402,8 @@ const GtradeInfoBox = ({
               <td className="cellStyle">
                 <DatePicker
                   name="end_DT"
-                  selected={closeDate}
-                  onChange={handleCloseDateChange}
+                  selected={state.closeDate}
+                  onChange={actions.handleCloseDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -338,28 +414,47 @@ const GtradeInfoBox = ({
               <td className="cellStyle">
                 <SelectBoxUSEYN
                   width={'calc(100% - 7px)'}
-                  state={useYN}
-                  setState={setUseYN}
-                  clickYN={clickYN}
-                  register={register}
-                  errors={errors}
-                  errorName={errorName}
-                  setChangeFormData={setChangeFormData}
+                  state={state.useYN}
+                  setState={state.setUseYN}
+                  clickYN={state.clickYN}
+                  register={state.register}
+                  errors={state.errors}
+                  errorName={state.errorName}
+                  setChangeFormData={state.setChangeFormData}
                 />
               </td>
             </tr>
-            <br />
           </tbody>
         </table>
 
         {/* 거래처 담당자 관리 */}
         <div>관리 담당자</div>
-        <StradeRollManageRealGrid tr_CD={tr_CD} />
+        <div>
+          권한설정여부
+          <SelectBox
+            data={['부', '여']}
+            width={200}
+            state={state.viewYN}
+            setState={state.setViewYN}
+            setChangeFormData={state.setChangeFormData}
+            disable={state.insertButtonClick ? true : false}
+          />
+        </div>
+        {(state.viewYN === '1' || state.viewYN === 1) && (
+          <StradeRollManageRealGrid
+            tr_CD={state.tr_CD}
+            gridViewStrade={state.gridViewStrade}
+            setGridViewStrade={state.setGridViewStrade}
+            dataProviderStrade={state.dataProviderStrade}
+            setDataProviderStrade={state.setDataProviderStrade}
+            setDeleteCheck={state.setDeleteCheck}
+          />
+        )}
       </div>
       {trCDModal && (
         <StradeCodeHelpModal
           onChangeModalClose={trCDModalButton}
-          tr_CD={tr_CD}
+          tr_CD={state.tr_CD}
         />
       )}
       {liquorCDModal && (
