@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 
 const Sidebar = () => {
+  const mainMenu = localStorage.getItem('menu');
+  const menu = localStorage.getItem('menuDetailSystem');
+  const [clickMenu, setClickMenu] = useState('');
+
+  useEffect(() => {
+    setClickMenu(localStorage.getItem('menuDetailSystem'));
+  }, [clickMenu]);
+
+  const onClickMenu = menu => {
+    setClickMenu(menu);
+    localStorage.setItem('menuDetailSystem', menu);
+  };
+
   return (
     <div>
       <div id="layoutSidenav_nav">
@@ -15,51 +28,89 @@ const Sidebar = () => {
                 className="nav-link collapsed"
                 href="#"
                 data-bs-toggle="collapse"
-                data-bs-target="#collapseLayouts"
                 aria-expanded="false"
                 aria-controls="collapseLayouts"
               >
-                <div className="sb-nav-link-icon">
-                  <i className="fas fa-columns"></i>
+                프로세스갤러리
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
                 </div>
+              </div>
+              <div
+                className={`nav-link ${
+                  (mainMenu === 'Company' && menu !== 'Employee') ||
+                  menu === 'Company' ||
+                  menu === 'Workplace'
+                    ? 'collapsed'
+                    : ''
+                }`}
+                href="#"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseLayouts"
+                aria-expanded={`nav-link ${
+                  (mainMenu === 'Company' && menu !== 'Employee') ||
+                  menu === 'Company' ||
+                  menu === 'Workplace'
+                    ? 'true'
+                    : 'false'
+                }`}
+                aria-controls="collapseLayouts"
+              >
                 조직관리
                 <div className="sb-sidenav-collapse-arrow">
                   <i className="fas fa-angle-down"></i>
                 </div>
               </div>
               <div
-                className="collapse"
+                className={`collapse ${
+                  (mainMenu === 'Company' && menu !== 'Employee') ||
+                  menu === 'Company' ||
+                  menu === 'Workplace'
+                    ? 'show'
+                    : ''
+                }`}
                 id="collapseLayouts"
                 aria-labelledby="headingOne"
                 data-bs-parent="#sidenavAccordion"
               >
                 <nav className="sb-sidenav-menu-nested nav">
-                  <Link className="nav-link" to="/Company">
+                  <Link
+                    className={`nav-linkShow ${
+                      menu === 'Company' && 'activeMenu'
+                    }`}
+                    to="/Company"
+                    onClick={() => onClickMenu('Company')}
+                  >
                     회사관리
                   </Link>
-                  <Link className="nav-link" to="/Workplace">
+                  <Link
+                    className={`nav-linkShow ${
+                      menu === 'Workplace' && 'activeMenu'
+                    }`}
+                    to="/Workplace"
+                    onClick={() => onClickMenu('Workplace')}
+                  >
                     사업장관리
                   </Link>
                 </nav>
               </div>
               <div
-                className="nav-link collapsed"
+                className={`nav-link ${menu === 'Employee' ? 'collapsed' : ''}`}
                 href="#"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapsePages"
-                aria-expanded="false"
+                aria-expanded={`nav-link ${
+                  menu === 'Employee' ? 'true' : 'false'
+                }`}
                 aria-controls="collapsePages"
               >
-                <div className="sb-nav-link-icon">
-                  <i className="fas fa-book-open"></i>
-                </div>
                 사원관리
                 <div className="sb-sidenav-collapse-arrow">
                   <i className="fas fa-angle-down"></i>
                 </div>
               </div>
               <div
-                className="collapse"
+                className={`collapse ${menu === 'Employee' ? 'show' : ''}`}
                 id="collapsePages"
                 aria-labelledby="headingTwo"
                 data-bs-parent="#sidenavAccordion"
@@ -68,23 +119,125 @@ const Sidebar = () => {
                   className="sb-sidenav-menu-nested nav accordion"
                   id="sidenavAccordionPages"
                 >
-                  <Link className="nav-link" to="/Employee">
+                  <Link
+                    className={`nav-linkShow ${
+                      menu === 'Employee' && 'activeMenu'
+                    }`}
+                    to="/Employee"
+                    onClick={() => onClickMenu('Employee')}
+                  >
                     상용직관리
                   </Link>
                 </nav>
               </div>
-              <a className="nav-link" href="charts.html">
-                <div className="sb-nav-link-icon">
-                  <i className="fas fa-chart-area"></i>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                권한관리
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
                 </div>
-                Charts
-              </a>
-              <a className="nav-link" href="tables.html">
-                <div className="sb-nav-link-icon">
-                  <i className="fas fa-table"></i>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                일반설정
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
                 </div>
-                Tables
-              </a>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                포털설정
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                알림설정
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                항목관리
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                시스템통계
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                보안관리
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                연동설정
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
+              <div
+                className="nav-link collapsed"
+                href="#"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                aria-controls="collapseLayouts"
+              >
+                Biz사용자 관리
+                <div className="sb-sidenav-collapse-arrow">
+                  <i className="fas fa-angle-down"></i>
+                </div>
+              </div>
             </div>
           </div>
         </nav>
