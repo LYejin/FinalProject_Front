@@ -1,0 +1,35 @@
+.logInfoImg {
+  border-radius: 100%;
+  width: 35px;
+  height: 35px;
+}
+
+.user-info {
+  display: flex;
+  font-size: 11.5px;
+}
+.v-box {
+  margin-left: 5px;
+
+  font-weight: bold;
+}
+.name_txt {
+  margin-bottom: -3px;
+}
+
+.h-box {
+  display: flex;
+  min-width: 0;
+}
+
+.userInfoWrapper {
+  width: 200px;
+  height: 100%;
+  margin-left: auto;
+}
+
+.event-button-wrapper {
+  margin-right: 20px; /* 원하는 여백 값으로 조정합니다. */
+  margin-top: 5px;
+  font-size: 20px;
+}
