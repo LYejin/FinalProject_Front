@@ -22,6 +22,7 @@ const FundTypeSearch = ({
   excelImport,
   setMenuGrid,
   inputData,
+  setreqCASH_CD,
 }) => {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -174,25 +175,23 @@ const FundTypeSearch = ({
             column: 'LOW_YN',
           });
           marsterGrid.grid.setFocus();
+          setreqCASH_CD(false);
         } else {
           alert('자금과목을 먼저 입력해주세요.');
           marsterGrid.grid.setValues(nowLow, 'SUM_CD', '');
-          marsterGrid.grid.setCurrent({
-            itemIndex: nowLow,
-            column: 'CASH_CD',
-          });
 
-          marsterGrid.grid.setFocus();
+          setreqCASH_CD(true);
           onChangeOpenPost();
         }
       }
     };
 
     grid.onKeyDown = (grid, event) => {
-      console.log('검색', event);
+      console.log('검색엔터', event.key, provider.getRowCount());
+      const totalRow = provider.getRowCount();
       const nowLow = marsterGrid.grid.getCurrent().itemIndex;
       const marsterGrid_CASH_CD = marsterGrid.grid.getValue(nowLow, 'CASH_CD');
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && totalRow !== 0) {
         if (marsterGrid_CASH_CD !== undefined) {
           const clickRowData = grid.getValues(grid.getCurrent().itemIndex);
           const insertData = {
@@ -215,13 +214,10 @@ const FundTypeSearch = ({
             column: 'LOW_YN',
           });
           marsterGrid.grid.setFocus();
+          setreqCASH_CD(false);
         } else {
           alert('자금과목을 먼저 입력해주세요.');
-          marsterGrid.grid.setCurrent({
-            itemIndex: nowLow,
-            column: 'CASH_CD',
-          });
-          marsterGrid.grid.setFocus();
+          setreqCASH_CD(true);
           onChangeOpenPost();
           marsterGrid.grid.setValue(nowLow, 'SUM_CD', '');
         }

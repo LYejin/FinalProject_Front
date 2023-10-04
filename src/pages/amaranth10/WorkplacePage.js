@@ -249,7 +249,7 @@ const WorkplacePage = () => {
         setIsAdding(false);
         setAddress('');
         setAddressDetail('');
-        handleImageSelect(updatedWorkplaceDetailData.cop_SL);
+        handleImageSelect(updatedWorkplaceDetailData.pic_FILE_ID);
       } catch (error) {
         console.error('Error fetching company detail:', error);
       }
@@ -310,7 +310,7 @@ const WorkplacePage = () => {
       close_DT: parseDateToString(closeDate) || '',
       div_FAX: inputRefs.divFAXRef?.current?.value || '',
       cop_NB: inputRefs.copNBRef?.current?.value || '',
-      cop_SL: selectedImage,
+      pic_FILE_ID: selectedImage,
     };
   };
 
