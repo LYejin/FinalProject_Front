@@ -37,7 +37,7 @@
   font-weight: 600;
 }
 
-.FPSelectBoxWrapper{
+.FPSelectBoxWrapper {
   min-width: 1330px;
   height: 90px;
   border: 2px solid #e6e6e6;
@@ -45,14 +45,14 @@
   margin-bottom: 10px;
   font-size: 0.8rem;
   font-weight: 600;
-  justify-content: center; 
+  justify-content: center;
   flex-direction: column;
 }
 
 .FPSelectBoxWrapper > div {
   display: flex;
 
-  align-items: center; 
+  align-items: center;
 }
 
 .firstDiv {
@@ -64,22 +64,22 @@
   margin-left: 88px;
 }
 
-.inputDivStyle{
+.inputDivStyle {
   margin-right: 50px;
 }
-.inputDivStyle2{
+.inputDivStyle2 {
   margin-right: 66px;
 }
 
-.inputDivStyle3{
+.inputDivStyle3 {
   margin-right: 10px;
 }
 
 .FixedInputStyle {
   margin-left: 5px;
   height: 30px;
-  border: 1px solid lightgray; 
-  border-radius: 0; 
+  border: 1px solid lightgray;
+  border-radius: 0;
   outline: none;
   width: 200px;
   padding-right: 35px;
@@ -101,15 +101,15 @@
 .FixedInputStyle2 {
   margin-left: 5px;
   height: 30px;
-  border: 1px solid lightgray; 
-  border-radius: 0; 
+  border: 1px solid lightgray;
+  border-radius: 0;
   outline: none;
   width: 200px;
   padding-right: 35px;
 }
 
 .FPSelectBoxWrapper > div:not(:last-child) {
-  margin-bottom: 10px;  
+  margin-bottom: 10px;
 }
 
 .FFSelectBoxWrapper {
@@ -224,7 +224,6 @@
   padding-left: 13px;
 }
 
-
 .listBoxDataCount {
   color: blue;
 }
@@ -328,10 +327,8 @@
   float: left;
 }
 
-
 /* LeftContentWrapper.js */
 .leftContentWrapper {
-
   float: left;
 }
 
@@ -349,7 +346,6 @@
   flex-direction: row;
   width: 100%;
   height: calc(100% - 140px);
-
 }
 
 .selected {

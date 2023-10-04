@@ -13,6 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useRef } from 'react';
 import FundTypeModal from '../../feature/amaranth/fundType/Modal/FundTypeModal';
 import FundTypeModel from '../../feature/amaranth/fundType/model/FundTypeModel';
+import { ko } from 'date-fns/esm/locale';
 
 const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
@@ -367,6 +368,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
                 startDate={startDate}
                 endDate={endDate}
                 inline
+                locale={ko}
               />
               {startDate && (
                 <DatePicker
@@ -382,6 +384,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
                   endDate={endDate}
                   minDate={new Date(startDate.getTime() + 24 * 60 * 60 * 1000)}
                   inline
+                  locale={ko}
                 />
               )}
             </div>

@@ -655,7 +655,6 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       id="fileImageUpload"
                       accept="image/*"
                       className="userImage"
-                      accept="image/*"
                       name={labels.PIC_FILE_ID}
                       onChange={handleImageChange}
                     />
