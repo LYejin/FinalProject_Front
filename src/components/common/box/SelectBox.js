@@ -3,13 +3,26 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const SelectBox = ({ data, width, state, setState }) => {
-  const handleChange = event => {
-    setState(event.target.value);
+const SelectBox = ({
+  data,
+  width,
+  state,
+  setState,
+  setChangeFormData,
+  disable,
+}) => {
+  const handleChange = e => {
+    setState(e.target.value);
+    if (setChangeFormData) {
+      setChangeFormData(changeFormData => ({
+        ...changeFormData,
+        [e.target.name]: e.target.value,
+      }));
+    }
   };
 
   return (
-    <FormControl sx={{ m: 1, width: width }} size="small">
+    <FormControl sx={{ m: 1, width: width }} size="small" disabled={disable}>
       <Select
         id="demo-select-small"
         value={state}

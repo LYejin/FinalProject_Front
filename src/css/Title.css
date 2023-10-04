@@ -2,11 +2,11 @@
 .mainTitleWrapper {
   position: fixed;
   top: 50px;
-  left: 43px;
+  left: 53px;
   display: flex;
   align-items: center;
   min-width: 100px;
-  width: calc(100% - 43px);
+  width: calc(100% - 44px);
   height: 45px;
   color: white;
   background-color: #1c90fb;
@@ -68,7 +68,7 @@
 
 .deptSubTitleWrapper {
   display: flex;
-  align-items:end;
+  align-items: end;
   width: 100%;
   height: 40px;
   border-bottom: 1px solid gray;
@@ -76,23 +76,62 @@
   margin-bottom: 10px;
 }
 
-.subTitleInfo{
-  margin-bottom: 10px;
-  height: 15px;
+.subTitleInfo {
   width: 100px;
-  border-right: 3px solid lightgray;
   text-align: center;
   color: gray;
-  font-weight: 800;
+  font-weight: 600;
+  font-size: 18px;
+  padding-bottom: 7px;
 }
 
-.subTitleInfo2{
-  padding-left: 10px;
-  padding-bottom: 10px;
-  width: 100px;
+.subTitleInfo2 {
+  width: 120px;
   text-align: center;
   color: gray;
+  font-size: 18px;
+  font-weight: 600;
+  padding-bottom: 7px;
+}
+
+.subTitleInfo:hover {
+  color: #1c90fb;
+  cursor: pointer;
+  font-weight: 600;
+}
+.subTitleInfo2:hover {
+  color: #1c90fb;
+  cursor: pointer;
+  font-weight: 600;
+}
+.selectDeptImg {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 600px;
+}
+
+.subTitleInfo.IsSelected {
+  width: 100px;
+  text-align: center;
+  color: #1c90fb;
   font-weight: 800;
+  padding-bottom: 800;
+  border-bottom: 3px solid #1c90fb;
+  font-size: 18px;
+  padding-bottom: 4px;
+}
+
+.subTitleInfo2.IsSelected {
+  width: 120px;
+  text-align: center;
+  color: #1c90fb;
+  align-items: center;
+  font-weight: 800;
+  border-bottom: 3px solid #1c90fb;
+  font-size: 18px;
+  padding-bottom: 4px;
 }
 
 .detailTitleWrapper .fa-circle {
@@ -118,4 +157,15 @@
 .WhiteButton:hover {
   border-color: #000000;
   box-shadow: none;
+}
+
+.slideForm {
+  visibility: hidden;
+  position: absolute;
+  transition: left 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.slideForm.isVisible {
+  visibility: visible;
+  left: 0;
 }

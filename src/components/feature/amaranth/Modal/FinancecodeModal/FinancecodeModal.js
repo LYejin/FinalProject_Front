@@ -8,7 +8,12 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import EventButton from '../../../../common/button/EventButton';
 
-const FinancecodeModal = ({ onChangeModalClose, setState }) => {
+const FinancecodeModal = ({
+  onChangeModalClose,
+  setState,
+  inputData,
+  setValue,
+}) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
   });
@@ -60,7 +65,8 @@ const FinancecodeModal = ({ onChangeModalClose, setState }) => {
         finance_CD: jsonData.finance_CD,
         bank_NAME: jsonData.bank_NAME,
       };
-      setState(row);
+      setValue(row);
+      setValue('bank_CD', `${row?.finance_CD}. ${row?.bank_NAME}`);
       //gridViewStrade.setValues(cellClickData, row, false);
       onChangeModalClose();
     };
@@ -130,6 +136,7 @@ const FinancecodeModal = ({ onChangeModalClose, setState }) => {
           type="text"
           className="textInputBox"
           {...register('selectValue')}
+          defaultValue={inputData && inputData}
         />
         <div className="selectBoxButtonWrapper">
           <EventButton

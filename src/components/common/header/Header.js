@@ -1,4 +1,5 @@
 import React from 'react';
+import LogInfo from '../logInfo/LogInfo';
 
 const Header = () => {
   return (
@@ -11,7 +12,7 @@ const Header = () => {
             alt="React"
           />
         </a>
-        <button
+        {/* <button
           className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
           id="sidebarToggle"
           href="#!"
@@ -72,7 +73,8 @@ const Header = () => {
               </li>
             </ul>
           </li>
-        </ul>
+        </ul> */}
+        <LogInfo />
       </nav>
     </>
   );

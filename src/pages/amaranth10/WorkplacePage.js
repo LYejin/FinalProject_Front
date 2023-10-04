@@ -26,10 +26,8 @@ import {
   WorkPlaceInfoWrapper,
   WorkpSelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
-import axios from '../../../node_modules/axios/index';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { getAccessToken } from '../../cookie/Cookie';
 import Swal from 'sweetalert2';
 import { parseDateString, parseDateToString } from '../../util/time';
 import { useFetcher } from '../../../node_modules/react-router-dom/dist/index';
@@ -54,6 +52,7 @@ const WorkplacePage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [showUploadDiv, setShowUploadDiv] = useState(true);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [inputDivValue, setInputDivValue] = useState('');
 
   // 이미지 선택 시 실행되는 함수
   const handleImageSelect = imageData => {
@@ -89,7 +88,7 @@ const WorkplacePage = () => {
 
   useEffect(() => {
     fetchWorkplaceData();
-    FetchWorkplaceDetailInfo('001');
+    FetchWorkplaceDetailInfo('002', '1232');
     fetchCompanyData();
   }, []);
 
@@ -148,13 +147,11 @@ const WorkplacePage = () => {
 
   const fetchWorkplaceData = async () => {
     try {
-      const response = await axios.get(
-        '/system/user/WorkplaceManage/getList',
-
-        { headers: { Authorization: getAccessToken() } }
+      const response = await authAxiosInstance.get(
+        '/system/user/WorkplaceManage/getList'
       );
       setWorkplaceData(response.data);
-      console.log(workplaceData);
+      console.log('데이터입니다', workplaceData);
     } catch (error) {
       console.error('Error fetching employee list:', error);
     }
@@ -171,7 +168,8 @@ const WorkplacePage = () => {
         console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
-          FetchWorkplaceDetailInfo(firstDivCd);
+          const firstCoCd = response.data[0].co_CD;
+          FetchWorkplaceDetailInfo(firstDivCd, firstCoCd);
         } else if ((response.data.length = 0)) {
           Swal.fire({
             icon: 'error',
@@ -201,7 +199,8 @@ const WorkplacePage = () => {
         console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
-          FetchWorkplaceDetailInfo(firstDivCd);
+          const firstCoCd = response.data[0].co_CD;
+          FetchWorkplaceDetailInfo(firstDivCd, firstCoCd);
         } else {
           Swal.fire({
             icon: 'error',
@@ -216,11 +215,16 @@ const WorkplacePage = () => {
     }
   };
 
-  const FetchWorkplaceDetailInfo = async divCd => {
+  const FetchWorkplaceDetailInfo = async (divCd, coCd) => {
     try {
-      const response = await axios.get(
-        `system/user/WorkplaceManage/getWorkpInfo/${divCd}`,
-        { headers: { Authorization: getAccessToken() } }
+      const response = await authAxiosInstance.get(
+        `system/user/WorkplaceManage/getWorkpInfo`,
+        {
+          params: {
+            divCd: divCd,
+            coCd: coCd,
+          },
+        }
       );
 
       const fetchedWorkplaceDetailData = response.data;
@@ -228,9 +232,8 @@ const WorkplacePage = () => {
       const closeDate = parseDateString(fetchedWorkplaceDetailData.close_DT);
 
       try {
-        const companyResponse = await axios.get(
-          `system/admin/groupManage/CompanyDetail/${fetchedWorkplaceDetailData.co_CD}`,
-          { headers: { Authorization: getAccessToken() } }
+        const companyResponse = await authAxiosInstance.get(
+          `system/admin/groupManage/CompanyDetail/${fetchedWorkplaceDetailData.co_CD}`
         );
 
         const companyData = companyResponse.data;
@@ -246,7 +249,7 @@ const WorkplacePage = () => {
         setIsAdding(false);
         setAddress('');
         setAddressDetail('');
-        handleImageSelect(updatedWorkplaceDetailData.cop_SL);
+        handleImageSelect(updatedWorkplaceDetailData.pic_FILE_ID);
       } catch (error) {
         console.error('Error fetching company detail:', error);
       }
@@ -307,7 +310,7 @@ const WorkplacePage = () => {
       close_DT: parseDateToString(closeDate) || '',
       div_FAX: inputRefs.divFAXRef?.current?.value || '',
       cop_NB: inputRefs.copNBRef?.current?.value || '',
-      cop_SL: selectedImage,
+      pic_FILE_ID: selectedImage,
     };
   };
 
@@ -321,10 +324,9 @@ const WorkplacePage = () => {
 
     console.log(data);
     try {
-      const response = await axios.post(
+      const response = await authAxiosInstance.post(
         '/system/user/WorkplaceManage/insert',
-        data,
-        { headers: { Authorization: getAccessToken() } }
+        data
       );
 
       console.log('Insert response:', response.data);
@@ -332,15 +334,15 @@ const WorkplacePage = () => {
       Swal.fire({
         icon: 'success',
         title: '저장 완료',
-        text: '작업장 정보가 성공적으로 저장되었습니다.',
+        text: '사업장 정보가 성공적으로 저장되었습니다.',
       });
-      FetchWorkplaceDetailInfo(data.div_CD);
+      FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
     } catch (error) {
       console.error('Error inserting workplace:', error);
       Swal.fire({
         icon: 'error',
         title: '저장 실패',
-        text: '작업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
+        text: '사업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
       });
     }
   };
@@ -357,26 +359,35 @@ const WorkplacePage = () => {
     );
     try {
       console.log(data);
-      const response = await axios.put(
+      const response = await authAxiosInstance.put(
         '/system/user/WorkplaceManage/update',
-        data,
-        { headers: { Authorization: getAccessToken() } }
+        data
       );
 
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
           title: '업데이트 완료',
-          text: '작업장 정보가 성공적으로 업데이트되었습니다.',
+          text: '사업장 정보가 성공적으로 업데이트되었습니다.',
+        });
+
+        Swal.fire({
+          title: '업데이트 완료',
+          text: '사업장 정보가 성공적으로 업데이트되었습니다.',
+          icon: 'success',
+        }).then(result => {
+          if (result.isConfirmed) {
+            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+          }
         });
         fetchWorkplaceData();
-        FetchWorkplaceDetailInfo(data.div_CD);
+        FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
         console.log('이게궁금합니다', data.div_CD);
       } else {
         Swal.fire({
           icon: 'error',
           title: '업데이트 실패',
-          text: '작업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+          text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
         });
       }
     } catch (error) {
@@ -384,19 +395,17 @@ const WorkplacePage = () => {
       Swal.fire({
         icon: 'error',
         title: '업데이트 실패',
-        text: '작업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+        text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
       });
     }
   };
 
   const deleteDiv = async () => {
     try {
-      console.log(workplaceDetailData.div_CD);
-      let DIV_CD = workplaceDetailData.div_CD;
-      const response = await axios.put(
-        `system/user/WorkplaceManage/delete/` + DIV_CD,
-        '',
-        { headers: { Authorization: getAccessToken() } }
+      const { div_CD, co_CD } = workplaceDetailData;
+      const response = await authAxiosInstance.put(
+        `system/user/WorkplaceManage/delete/${div_CD}/${co_CD}`,
+        null
       );
       if (response.status === 200) {
         Swal.fire({
@@ -404,7 +413,10 @@ const WorkplacePage = () => {
           title: '삭제완료',
           text: '사업장 정보가 삭제되었습니다.',
         });
-        FetchWorkplaceDetailInfo(workplaceDetailData.div_CD);
+        FetchWorkplaceDetailInfo(
+          workplaceDetailData.div_CD,
+          workplaceDetailData.co_CD
+        );
         console.log('Workplace deleted successfully');
       } else {
         console.log('Error deleting workplace');
@@ -416,9 +428,8 @@ const WorkplacePage = () => {
 
   const fetchCompanyData = async () => {
     try {
-      const response = await axios.get(
-        'system/user/groupManage/employee/getCompanyList',
-        { headers: { Authorization: getAccessToken() } }
+      const response = await authAxiosInstance.get(
+        'system/user/groupManage/employee/getCompanyList'
       );
       const mappedCompanyData = response.data.map(company => ({
         value: company.co_CD,
@@ -474,9 +485,11 @@ const WorkplacePage = () => {
               onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
             />
             <WorkpTextFieldBox
-              width={'100px'}
+              width={'300px'}
               title={'사업장'}
               onInputChange={inputValue => setSearchDivInfo(inputValue)}
+              value={inputDivValue}
+              setValue={setInputDivValue}
             />
             <UseSelectBox
               title={'사용여부'}
@@ -489,7 +502,7 @@ const WorkplacePage = () => {
               }
               className="customButton"
             >
-              검색
+              <i className="fa-solid fa-magnifying-glass"></i>
             </button>
           </WorkpSelectBoxWrapper>
           <MainContentWrapper>
@@ -512,7 +525,7 @@ const WorkplacePage = () => {
                 onClickUpdate={handleUpdate}
                 deleteDiv={deleteDiv}
               ></WorkpHeadTitle>
-              <ScrollWrapper width={'100%'}>
+              <ScrollWrapper width={'100%'} deptH={-40}>
                 <WorkPlaceInfoWrapper
                   data={workplaceDetailData}
                   inputRefs={inputRefs}

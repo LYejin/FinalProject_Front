@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -11,7 +11,16 @@ const CompSelectBox = ({
   onSelectChange,
   selectMenu,
 }) => {
-  const [selectedValue, setSelectedValue] = React.useState('');
+  const [selectedValue, setSelectedValue] = React.useState(
+    data.length > 0 ? data[0].value : ''
+  );
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setSelectedValue(data[0].value);
+      onSelectChange(data[0].value); // 초기에 첫번째 항목에 대한 onSelectChange 호출
+    }
+  }, [data]);
 
   const handleChange = event => {
     const value = event.target.value;
@@ -43,6 +52,7 @@ const CompSelectBox = ({
             },
           }}
         >
+          1``{' '}
           {selectMenu != null && selectMenu !== '' && (
             <MenuItem
               value=""

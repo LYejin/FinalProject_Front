@@ -6,7 +6,7 @@ function ListDept({ data, roof, deptStyle, searchValue }) {
   const { handleSelectDepartment } = useContext(DeptContext);
 
   const onDeptClick = () => {
-    handleSelectDepartment(data.dept_CD);
+    handleSelectDepartment(data.dept_CD, data.div_CD);
   };
 
   const localStorageKey = `departmentIsOpen_${data.dept_CD}`;

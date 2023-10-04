@@ -1,72 +1,37 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { InputMask } from 'react-input-mask';
+import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import SelectBoxUSEYN from '../../../common/box/SelectBoxUSEYN';
 import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGrid';
-import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import { useState } from 'react';
-import EmpCodeHelpModal from '../Modal/EmpCodeHelpModal/EmpCodeHelpModal';
 import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import FinancecodeModal from '../Modal/FinancecodeModal/FinancecodeModal';
+import { ErrorMessage } from '@hookform/error-message';
+import SelectBox from './../../../common/box/SelectBox';
 
 const FtradeInfoBox = ({
-  data,
   register,
-  openDate,
-  selectedValue,
-  onChangeOpenPost,
-  address,
-  addressDetail,
-  errors,
-  clickYN,
-  onFocusError,
-  errorName,
-  handleOpenDateChange,
-  handleCloseDateChange,
-  closeDate,
-  onChangeTel,
-  onChangeDBDataSearch,
+  handleSubmit,
+  reset,
   getValues,
-  setError,
+  errors,
   clearErrors,
-  setChangeFormData,
-  checkDBErrorYN,
-  useYN,
-  setUseYN,
-  tr_CD,
-  setFinanceCDData,
-  financeCDData,
-  financeCDChangeData,
-  setFinanceChangeCDData,
+  setValue,
+  setFocus,
+  setError,
+  state,
+  actions,
 }) => {
   const [trCDModal, setTrCDModal] = useState(false);
-  const [financeCDModal, setFinanceCDModal] = useState(false);
 
   const trCDModalButton = () => {
     setTrCDModal(!trCDModal);
   };
 
   const financeCDModalButton = () => {
-    setFinanceCDModal(!financeCDModal);
+    state.setFinanceCDModal(!state.financeCDModal);
   };
-
-  console.log('**********************', financeCDData);
-  console.log(data);
-
-  console.log(financeCDData);
-  console.log(financeCDChangeData);
-
-  // const params = {};
-  // params.TR_CD = tr_CD;
-
-  // const FtradeGridData = authAxiosInstance(
-  //   'accounting/user/Strade/stradeRollManageSearchList',
-  //   {
-  //     params,
-  //   }
-  // ).then(response => console.log(response.data));
-  //console.log('FtradeGridDataaaaaaaaaaaa : ', response.data);
 
   return (
     <>
@@ -77,17 +42,76 @@ const FtradeInfoBox = ({
             <tr>
               <th className="headerCellStyle">거래처코드</th>
               <td className="cellStyle">
-                <input
-                  type="text"
-                  className="inputStyle"
-                  name="tr_CD"
-                  {...register('tr_CD')}
-                  onChange={onChangeTel}
-                  defaultValue={data?.tr_CD}
-                />
+                <div className="errorWrapper">
+                  <input
+                    type="text"
+                    className="inputStyle"
+                    name="tr_CD"
+                    {...register(
+                      'tr_CD',
+                      state.selectedValue !== 'auto' &&
+                        !state.clickYN && {
+                          required: '거래처코드를 입력해주세요.',
+                        }
+                    )}
+                    style={{
+                      border:
+                        errors.tr_CD &&
+                        (state.checkDBErrorYN.tr_CD_ERROR ||
+                          state.errorName === 'tr_CD')
+                          ? '1px solid red'
+                          : '1px solid #ccc',
+                      backgroundColor:
+                        state.clickYN || state.selectedRadioValue === 'auto'
+                          ? '#f2f2f2'
+                          : '#fef4f4',
+                    }}
+                    disabled={
+                      state.selectedRadioValue === 'auto' || state.clickYN
+                    }
+                    onChange={actions.onChangeDBDataSearch}
+                    defaultValue={state.data?.tr_CD}
+                    onFocus={actions.onFocusError}
+                  />
+                  {(state.checkDBErrorYN.tr_CD_ERROR ||
+                    state.errorName === 'tr_CD') && (
+                    <ErrorMessage
+                      errors={errors}
+                      name="tr_CD"
+                      as="p"
+                      className="errorBox"
+                    />
+                  )}
+                </div>
                 <button type="button" onClick={trCDModalButton}>
                   코드
                 </button>
+                {state.insertButtonClick && (
+                  <div>
+                    <label>
+                      <input
+                        className="radioStyle"
+                        type="radio"
+                        name="trCdFg"
+                        value="manual"
+                        checked={state.selectedRadioValue === 'manual'}
+                        onChange={actions.handleRadioChange}
+                      />
+                      수동
+                    </label>
+                    <label>
+                      <input
+                        className="radioStyle"
+                        type="radio"
+                        name="trCdFg"
+                        value="auto"
+                        checked={state.selectedRadioValue === 'auto'}
+                        onChange={actions.handleRadioChange}
+                      />
+                      자동
+                    </label>
+                  </div>
+                )}
               </td>
               <th className="headerCellStyle">거래처명</th>
               <td className="cellStyle">
@@ -98,35 +122,32 @@ const FtradeInfoBox = ({
                     className="reqInputStyle"
                     {...register(
                       'tr_NM',
-                      !clickYN && {
-                        required: 'ID를 입력해주세요.',
-                        pattern: {
-                          value: /\w+/,
-                          message: '한글을 포함할 수 없습니다.',
-                        },
+                      !state.clickYN && {
+                        required: '거래처명을 입력해주세요.',
                       }
                     )}
-                    defaultValue={data?.tr_NM}
+                    defaultValue={state.data?.tr_NM}
                     style={{
                       border:
-                        errors.email_ADD &&
-                        (checkDBErrorYN.email_ADD_ERROR ||
-                          errorName === 'email_ADD')
+                        errors.tr_NM &&
+                        (state.checkDBErrorYN.tr_NM_ERROR ||
+                          state.errorName === 'tr_NM')
                           ? '1px solid red'
                           : '1px solid #ccc',
                     }}
-                    onFocus={onFocusError}
-                    onChange={onChangeDBDataSearch}
+                    onFocus={actions.onFocusError}
+                    onChange={actions.onChangeDBDataSearch}
+                    maxLength="50"
                   />
-                  {/* {(checkDBErrorYN.email_ADD_ERROR ||
-                  errorName === 'email_ADD') && (
-                  <ErrorMessage
-                    errors={errors}
-                    name="email_ADD"
-                    as="p"
-                    className="errorBox"
-                  />
-                )} */}
+                  {(state.checkDBErrorYN.tr_NM_ERROR ||
+                    state.errorName === 'tr_NM') && (
+                    <ErrorMessage
+                      errors={errors}
+                      name="tr_NM"
+                      as="p"
+                      className="errorBox"
+                    />
+                  )}
                 </div>
               </td>
             </tr>
@@ -139,9 +160,26 @@ const FtradeInfoBox = ({
                     className="inputStyle"
                     name="ba_NB_TR"
                     {...register('ba_NB_TR')}
-                    onChange={onChangeTel}
-                    defaultValue={data?.ba_NB_TR}
+                    style={{
+                      border:
+                        errors.ba_NB_TR &&
+                        (state.checkDBErrorYN.ba_NB_TR_ERROR ||
+                          state.errorName === 'ba_NB_TR')
+                          ? '1px solid red'
+                          : '1px solid #ccc',
+                    }}
+                    onChange={actions.onFocusError}
+                    defaultValue={state.data?.ba_NB_TR}
+                    maxLength="38"
                   />
+                  {
+                    <ErrorMessage
+                      errors={errors}
+                      name="ba_NB_TR"
+                      as="p"
+                      className="errorBox"
+                    />
+                  }
                 </div>
               </td>
               <th className="headerCellStyle">금융기관코드</th>
@@ -153,15 +191,19 @@ const FtradeInfoBox = ({
                     className="reqInputStyle"
                     {...register('bank_CD')}
                     defaultValue={
-                      financeCDChangeData
-                        ? `${financeCDChangeData?.bank_CD}. ${financeCDChangeData?.bank_NAME}`
-                        : financeCDData
+                      state.financeCDChangeData
+                        ? `${state.financeCDChangeData?.finance_CD}. ${state.financeCDChangeData?.bank_NAME}`
+                        : state.financeCDData
                     }
-                    onChange={onChangeDBDataSearch}
+                    onChange={actions.onChangeDBDataSearch}
+                    onBlur={actions.onBlurfinanceCDData}
+                    onKeyDown={actions.onKeyDownEnterFin}
                   />
-                  <button type="button" onClick={financeCDModalButton}>
-                    코드
-                  </button>
+                  <FaRegListAlt
+                    className="FFInputIconStyle"
+                    size={20}
+                    onClick={financeCDModalButton}
+                  />
                 </div>
               </td>
             </tr>
@@ -173,7 +215,7 @@ const FtradeInfoBox = ({
                   name="depositor"
                   className="reqInputStyle"
                   {...register('depositor')}
-                  defaultValue={data?.depositor}
+                  defaultValue={state.data?.depositor}
                 />
               </td>
               <th className="headerCellStyle">예금명</th>
@@ -183,7 +225,7 @@ const FtradeInfoBox = ({
                   name="deposit_NM"
                   className="reqInputStyle"
                   {...register('deposit_NM')}
-                  defaultValue={data?.deposit_NM}
+                  defaultValue={state.data?.deposit_NM}
                 />
               </td>
             </tr>
@@ -195,7 +237,7 @@ const FtradeInfoBox = ({
                   name="account_OPEN_BN"
                   className="reqInputStyle"
                   {...register('account_OPEN_BN')}
-                  defaultValue={data?.account_OPEN_BN}
+                  defaultValue={state.data?.account_OPEN_BN}
                 />
               </td>
             </tr>
@@ -212,9 +254,9 @@ const FtradeInfoBox = ({
               <th className="headerCellStyle">계좌개설일</th>
               <td className="cellStyle">
                 <DatePicker
-                  selected={openDate}
+                  selected={state.openDate}
                   name="fstart_DT"
-                  onChange={handleOpenDateChange}
+                  onChange={actions.handleOpenDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -223,8 +265,8 @@ const FtradeInfoBox = ({
               <td className="cellStyle">
                 <DatePicker
                   name="fend_DT"
-                  selected={closeDate}
-                  onChange={handleCloseDateChange}
+                  selected={state.closeDate}
+                  onChange={actions.handleCloseDateChange}
                   dateFormat="yyyy-MM-dd"
                   className="datePickerInputStyle"
                 />
@@ -235,13 +277,13 @@ const FtradeInfoBox = ({
               <td className="cellStyle">
                 <SelectBoxUSEYN
                   width={'calc(100% - 7px)'}
-                  state={useYN}
-                  setState={setUseYN}
-                  clickYN={clickYN}
+                  state={state.useYN}
+                  setState={state.setUseYN}
+                  clickYN={state.clickYN}
                   register={register}
                   errors={errors}
-                  errorName={errorName}
-                  setChangeFormData={setChangeFormData}
+                  errorName={state.errorName}
+                  setChangeFormData={state.setChangeFormData}
                 />
               </td>
             </tr>
@@ -250,18 +292,40 @@ const FtradeInfoBox = ({
 
         {/* 거래처 담당자 관리 */}
         <div>금융거래처 조회권한</div>
-        <StradeRollManageRealGrid tr_CD={tr_CD} />
+        <div>
+          권한설정여부
+          <SelectBox
+            data={['부', '여']}
+            width={200}
+            state={state.viewYN}
+            setState={state.setViewYN}
+            setChangeFormData={state.setChangeFormData}
+            disable={state.insertButtonClick ? true : false}
+          />
+        </div>
+        {(state.viewYN === '1' || state.viewYN === 1) && (
+          <StradeRollManageRealGrid
+            tr_CD={state.tr_CD}
+            gridViewStrade={state.gridViewStrade}
+            setGridViewStrade={state.setGridViewStrade}
+            dataProviderStrade={state.dataProviderStrade}
+            setDataProviderStrade={state.setDataProviderStrade}
+            setDeleteCheck={state.setDeleteCheck}
+          />
+        )}
       </div>
       {trCDModal && (
         <StradeCodeHelpModal
           onChangeModalClose={trCDModalButton}
-          tr_CD={tr_CD}
+          tr_CD={state.tr_CD}
         />
       )}
-      {financeCDModal && (
+      {state.financeCDModal && (
         <FinancecodeModal
           onChangeModalClose={financeCDModalButton}
-          setState={setFinanceChangeCDData}
+          setState={state.setFinanceChangeCDData}
+          inputData={state.financeCDInputData}
+          setValue={setValue}
         />
       )}
     </>

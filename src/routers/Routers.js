@@ -15,11 +15,12 @@ import FixedFundPage from '../pages/amaranth10/FixedFundPage';
 
 import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
 import FundTypePage from '../pages/amaranth10/FundTypePage';
+import Login from '../pages/login/Login';
 
 const Routers = () => {
   return (
     <Routes>
-      <Route path={URL.home} element={<LoginHookForm />} />
+      <Route path={URL.home} element={<Login />} />
       <Route path={URL.register} element={<RegisterForm />} />
       <Route path={URL.company} element={<CompanyPage />} />
       <Route path={URL.employee} element={<EmployeePage />} />

@@ -7,6 +7,10 @@ const FundTypeRidoButton = ({
   defultValue,
   register,
 }) => {
+  React.useEffect(() => {
+    //onOptionChange(defultValue);
+    console.log('서치(라디오)', options, defultValue);
+  });
   return (
     <div>
       {options.map((option, index) => (
