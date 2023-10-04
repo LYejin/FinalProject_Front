@@ -226,7 +226,7 @@ const WorkplacePage = () => {
           },
         }
       );
-
+      console.log('dfsdfasdfsfasdfsd', response.data);
       const fetchedWorkplaceDetailData = response.data;
       const openDate = parseDateString(fetchedWorkplaceDetailData.open_DT);
       const closeDate = parseDateString(fetchedWorkplaceDetailData.close_DT);
@@ -371,15 +371,15 @@ const WorkplacePage = () => {
           text: '사업장 정보가 성공적으로 업데이트되었습니다.',
         });
 
-        Swal.fire({
-          title: '업데이트 완료',
-          text: '사업장 정보가 성공적으로 업데이트되었습니다.',
-          icon: 'success',
-        }).then(result => {
-          if (result.isConfirmed) {
-            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-          }
-        });
+        // Swal.fire({
+        //   title: '업데이트 완료',
+        //   text: '사업장 정보가 성공적으로 업데이트되었습니다.',
+        //   icon: 'success',
+        // }).then(result => {
+        //   if (result.isConfirmed) {
+        //     Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+        //   }
+        // });
         fetchWorkplaceData();
         FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
         console.log('이게궁금합니다', data.div_CD);
@@ -483,6 +483,7 @@ const WorkplacePage = () => {
               width={200}
               selectMenu={'전체'}
               onSelectChange={selectedCoCd => setSearchCocd(selectedCoCd)}
+              state={1}
             />
             <WorkpTextFieldBox
               width={'300px'}
