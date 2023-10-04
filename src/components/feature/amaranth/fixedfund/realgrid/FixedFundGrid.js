@@ -449,7 +449,9 @@ function FixedFundGrid({
           height: 30,
         }}
       >
-        <button onClick={handleDeleteRows}>행 삭제</button>
+        <button className="WhiteButton" onClick={handleDeleteRows}>
+          행 삭제
+        </button>
       </div>
       <div
         ref={realgridElement}

@@ -43,9 +43,6 @@ import LogInfo from './../../components/common/logInfo/LogInfo';
 import SubmitButton from '../../components/common/button/SubmitButton';
 
 import { isAfter } from 'date-fns';
-
-import { DateRangePicker } from 'rsuite';
-import 'rsuite/dist/rsuite-no-reset.min.css';
 import { useRef } from 'react';
 
 const CompanyPage = () => {
@@ -216,7 +213,7 @@ const CompanyPage = () => {
           <form onSubmit={handleSubmit(onMasterGridSubmit)}>
             <SelectBoxWrapper>
               <span className="searchModalSelectBoxPadding">변경일자</span>
-              <DateRangePicker
+              {/* <DateRangePicker
                 placement={'bottomStart'}
                 preventOverflow
                 name="period"
@@ -227,7 +224,7 @@ const CompanyPage = () => {
                 placeholder="변경기간"
                 disabledDate={date => isAfter(date, new Date())}
                 locale={kor}
-              />
+              /> */}
               <span className="searchModalSelectBoxPadding">변경구분</span>
               <ChangeHistorySelectCategory
                 width={'calc(0% - -90px)'}

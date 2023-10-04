@@ -31,7 +31,6 @@ const WorkpHeadTitle = ({
         <button className="WhiteButton" onClick={onClick2}>
           삭제
         </button>
-        X
       </div>
     </div>
   );

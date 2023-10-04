@@ -6,7 +6,10 @@
   border-left: 1px solid #dcdcdc;
   width: calc(100% - 255px);
   height: calc(100% - 95px);
+  background-color: white;
 }
+
+ 
 
 /* DetailContentWrapper.js */
 .detailContentWrapper {
@@ -102,7 +105,7 @@
 
 .FFInputIconStyle {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
   color: darkgray;
@@ -345,7 +348,7 @@
 /* ListBoxItem.js */
 .listBoxItem {
   width: calc(100% - 26px);
-  height: 77px;
+  height: 80px;
   background-color: white;
   border: 1px solid #dfdfdf;
   margin-bottom: 7px;
@@ -358,7 +361,6 @@
 
 .listBoxItem:hover {
   background-color: #e6f5ff;
-  border: 1px solid #4aa1f2;
 }
 
 .flexWrapper {
@@ -372,6 +374,7 @@
   display: flex;
   justify-content: end;
 }
+
 /* FullContentWrapper */
 .fullContentWrapper {
   flex: 1;
@@ -405,13 +408,15 @@
   flex-direction: row;
   width: 100%;
   height: calc(100% - 140px);
+  
 }
+
 
 .selected {
   background-color: #e6f5ff;
-  border: 3px solid #4aa1f2;
+  border: 2px solid #4aa1f2;
   width: calc(100% - 26px);
-  height: 77px;
+  height: 80px;
   margin-bottom: 7px;
   padding: 20px 6%;
   font-size: 0.8rem;

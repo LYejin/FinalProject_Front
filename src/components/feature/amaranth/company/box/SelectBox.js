@@ -46,6 +46,7 @@ const SelectBox = ({ data, width, SearchDataSet, register }) => {
           height: '28px',
           width: '200px',
           fontSize: '0.8rem',
+          borderRadius: 0,
         }}
       >
         <MenuItem value={''}>

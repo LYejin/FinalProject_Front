@@ -35,6 +35,7 @@ const EmpCheckSelectBox = ({ width, enrlList, handleCheckSelectChange }) => {
             height: '28px',
             fontSize: '0.8rem',
             margin: 0,
+            borderRadius: 0,
           }}
         >
           {ENRL_FG_LIST.map(name => (

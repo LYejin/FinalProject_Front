@@ -36,7 +36,7 @@ const FundTypeModal = ({
         <div className="bottomModalWrapper">
           {buttonYN && (
             <>
-              <button className="WhiteButton">취소</button>
+              <button className="WhiteMenuButton">취소</button>
               <button className="BlueButton">확인</button>
             </>
           )}

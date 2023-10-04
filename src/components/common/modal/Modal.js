@@ -45,7 +45,7 @@ const Modal = ({
             <>
               <button
                 type="button"
-                className="WhiteButton"
+                className="WhiteMenuButton"
                 onClick={onClickEventFunction}
               >
                 취소

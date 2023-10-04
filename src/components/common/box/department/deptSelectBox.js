@@ -58,6 +58,7 @@ const DeptSelectBox = ({ type, value, name, onChange, disabled, register }) => {
             height: '28px',
             fontSize: '0.8rem',
             width: '150px',
+            borderRadius: 0,
           }}
         >
           {menuItems}
