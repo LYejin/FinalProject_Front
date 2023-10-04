@@ -9,7 +9,6 @@ import StradeRollManageRealGrid from './StradeRollManage/StradeRollManageRealGri
 import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import LiquorcodeModal from '../Modal/LiquorcodeModal/LiquorcodeModal';
 import SelectBox from './../../../common/box/SelectBox';
-import GtradeModel from '../../../../model/GtradeModel';
 
 const GtradeInfoBox = ({
   register,
@@ -194,7 +193,13 @@ const GtradeInfoBox = ({
               <th className="headerCellStyle">주민등록번호</th>
               <td className="cellStyle">
                 <div className="errorWrapper">
-                  <SelectBox data={['내국인', '외국인']} width={120} />
+                  <SelectBox
+                    data={['내국인', '외국인']}
+                    width={120}
+                    state={state.selectForYN}
+                    setState={state.setSelectForYN}
+                    setChangeFormData={state.setChangeFormData}
+                  />
                   <InputMask
                     mask="999999-9999999"
                     alwaysShowMask={true}
@@ -216,7 +221,7 @@ const GtradeInfoBox = ({
                               ? '1px solid red'
                               : '1px solid #ccc',
                         }}
-                        maxlength="15"
+                        maxLength="15"
                       />
                     )}
                   </InputMask>
@@ -316,6 +321,7 @@ const GtradeInfoBox = ({
                   {...register('phone_NB')}
                   onChange={actions.onChangeTel}
                   defaultValue={state.data.phone_NB}
+                  maxLength="12"
                 />
               </td>
               <th className="headerCellStyle">팩스번호</th>
@@ -377,8 +383,6 @@ const GtradeInfoBox = ({
           </tbody>
         </table>
 
-        <br />
-
         {/* 거래기간 정보 */}
         <div>거래기간정보</div>
         <table className="tableStyle">
@@ -420,20 +424,32 @@ const GtradeInfoBox = ({
                 />
               </td>
             </tr>
-            <br />
           </tbody>
         </table>
 
         {/* 거래처 담당자 관리 */}
         <div>관리 담당자</div>
-        <StradeRollManageRealGrid
-          tr_CD={state.tr_CD}
-          gridViewStrade={state.gridViewStrade}
-          setGridViewStrade={state.setGridViewStrade}
-          dataProviderStrade={state.dataProviderStrade}
-          setDataProviderStrade={state.setDataProviderStrade}
-          setDeleteCheck={state.setDeleteCheck}
-        />
+        <div>
+          권한설정여부
+          <SelectBox
+            data={['부', '여']}
+            width={200}
+            state={state.viewYN}
+            setState={state.setViewYN}
+            setChangeFormData={state.setChangeFormData}
+            disable={state.insertButtonClick ? true : false}
+          />
+        </div>
+        {(state.viewYN === '1' || state.viewYN === 1) && (
+          <StradeRollManageRealGrid
+            tr_CD={state.tr_CD}
+            gridViewStrade={state.gridViewStrade}
+            setGridViewStrade={state.setGridViewStrade}
+            dataProviderStrade={state.dataProviderStrade}
+            setDataProviderStrade={state.setDataProviderStrade}
+            setDeleteCheck={state.setDeleteCheck}
+          />
+        )}
       </div>
       {trCDModal && (
         <StradeCodeHelpModal

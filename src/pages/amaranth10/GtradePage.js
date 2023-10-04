@@ -42,8 +42,6 @@ const GtradePage = () => {
     setFocus,
     setError,
   });
-  console.log(state, actions);
-  console.log(state.register);
 
   return (
     <>
@@ -189,7 +187,6 @@ const GtradePage = () => {
           onClickEvent={actions.onChangeDeleteListModal}
         >
           <div>일반거래처 삭제 요청이 완료되었습니다.</div>
-          <br />
           <div>
             <span>요청 {state.deleteListCount}건</span>
             <span>
@@ -197,7 +194,6 @@ const GtradePage = () => {
             </span>
             <span>실패 {state.deleteStradeInfo.length}건</span>
           </div>
-          <br />
           {state.deleteStradeInfo.map((info, index) => (
             <>
               <div>

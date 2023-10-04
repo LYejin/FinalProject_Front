@@ -41,13 +41,14 @@ const GtradeModel = ({
   const [workplaceList, setWorkplaceList] = useState(''); // Infobox workplaceList
   const [useYN, setUseYN] = useState(''); // 사용여부 select box state
   const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
-  const [selectPplNb, setSelectPplNb] = useState(''); // 내국인 외국인 select box
+  const [selectForYN, setSelectForYN] = useState(''); // 내국인 외국인 select box
   const listRef = useRef(null); // list 화면 상하단 이동
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
   const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
   const [dataProviderStrade, setDataProviderStrade] = useState(null); // DataProvider 저장
+  const [viewYN, setViewYN] = useState(''); // 조회권한 여부
   const [checkDBErrorYN, setCheckDBErrorYN] = useState({
     emp_CD_ERROR: false,
     username_ERROR: false,
@@ -97,7 +98,6 @@ const GtradeModel = ({
 
   // 개업일 선택 시 처리 함수
   const handleOpenDateChange = date => {
-    console.log(date);
     setOpenDate(date);
     setChangeFormData({
       ...changeFormData,
@@ -107,7 +107,6 @@ const GtradeModel = ({
 
   // 폐업일 선택 시 처리 함수
   const handleCloseDateChange = date => {
-    console.log(date);
     setCloseDate(date);
     setChangeFormData({
       ...changeFormData,
@@ -143,28 +142,20 @@ const GtradeModel = ({
     console.log(response.data);
     setEmpList(response.data || null);
     if (clickYN && !insertButtonClick) {
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^');
       setTR_CD(response.data[0]?.tr_CD);
       setValue('reg_NB', response.data[0]?.reg_NB);
       setValue('ppl_NB', response.data[0]?.ppl_NB);
       setUseYN(response.data[0]?.use_YN);
       setData(response?.data[0] || null);
+      setSelectForYN(response.data[0]?.for_YN);
       setSelectedRadioValue(response.data[0]?.gender_FG);
       setCompany(response.data[0]?.co_CD);
+      setViewYN(response.data[0]?.view_YN);
     }
-  };
-
-  // 회사 리스트 얻는 axios
-  const getCompanyList = async () => {
-    const response = await authAxiosInstance(
-      'system/user/groupManage/employee/getCompanyList'
-    );
-    setCompanyList(response?.data);
   };
 
   useEffect(() => {
     getEmpList();
-    getCompanyList();
     setChangeForm(false);
   }, []);
 
@@ -178,7 +169,6 @@ const GtradeModel = ({
     if (onChangeForm === true) {
       alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
     }
-    console.log('TR_CD : ', tr_CD);
     setIsLoading(true);
     setInsertButtonClick(false);
     setClickYN(true);
@@ -192,11 +182,22 @@ const GtradeModel = ({
       }
     );
     setData(response?.data);
-    console.log('Detail : ', response.data);
     setValue('reg_NB', response.data?.reg_NB);
     setValue('ppl_NB', response.data?.ppl_NB);
-    setOpenDate(new Date(response.data?.start_DT) || '');
-    setCloseDate(new Date(response.data?.end_DT) || '');
+    setViewYN(response.data?.view_YN);
+    setOpenDate(
+      JSON.stringify(new Date(response.data?.start_DT)) !==
+        '"1970-01-01T00:00:00.000Z"'
+        ? new Date(response.data?.start_DT)
+        : null
+    );
+    setCloseDate(
+      JSON.stringify(new Date(response.data?.end_DT)) !==
+        '"1970-01-01T00:00:00.000Z"'
+        ? new Date(response.data?.end_DT)
+        : null
+    );
+    setSelectForYN(response.data?.for_YN);
     setIsLoading(false);
     setTR_CD(response.data?.tr_CD);
     setUseYN(response.data?.use_YN);
@@ -210,9 +211,6 @@ const GtradeModel = ({
   const onClickSearchEmpList = () => {
     const { select_TR_CD, select_TR_NM, select_REG_NB, select_PPL_NB } =
       getValues();
-    console.log(select_TR_CD, select_TR_NM, select_REG_NB, select_PPL_NB);
-
-    console.log('selectUseYN : ', selectUseYN);
     const params = {};
 
     if (select_TR_CD !== '') {
@@ -251,20 +249,19 @@ const GtradeModel = ({
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
-    setCompany(companyList[0].co_CD);
     setUseYN('1');
     setOpenDate(new Date());
     setCloseDate();
     setValue('reg_NB', '');
     setValue('ppl_NB', '');
-    setSelectPplNb(0);
+    setSelectForYN('0');
     setInsertButtonClick(true);
     setClickYN(false);
     setSelectedRadioValue('auto');
     setAddress();
+    setViewYN('0');
     setAddressDetail();
     setWorkplaceList('');
-    console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
     setTR_CD('');
   };
 
@@ -286,12 +283,9 @@ const GtradeModel = ({
 
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
-    console.log('eeeeeeeeee', openDate);
-    const getJoinDT = getNowJoinTime(openDate);
-    console.log('geeeeeee', getJoinDT);
+    const getJoinDT = openDate ? getNowJoinTime(openDate) : '';
+    const getEndDT = closeDate ? getNowJoinTime(closeDate) : '';
 
-    console.log('kkkkkkkkkkkkk');
-    console.log(checkDBErrorYN);
     if (checkDBErrorYN.tr_CD_ERROR) {
       setError('tr_CD', { message: '거래처가 중복되었습니다.' });
       alert('중복된 값이 존재합니다.');
@@ -325,19 +319,10 @@ const GtradeModel = ({
       if (changeFormData && changeFormData.ppl_NB === '______-_______') {
         changeFormData.ppl_NB = '';
       }
-      // if (changeFormData && Object.keys(changeFormData).includes('tel')) {
-      //   changeFormData.tel = changeFormData.tel.replace(/-/g, '');
-      // }
-      // formData.append(
-      //   'userData',
-      //   new Blob([JSON.stringify({ ...changeFormData, username: username })], {
-      //     type: 'application/json',
-      //   })
-      // );
       console.log('kkkkkkkkkkkkkk', { ...changeFormData, tr_CD: tr_CD });
       const responseUpdate = await authAxiosInstance.post(
         'accounting/user/Strade/stradeUpdate',
-        { ...changeFormData, tr_CD: tr_CD, tr_FG: '1' }
+        { ...changeFormData, tr_CD: tr_CD, tr_FG: '1', view_YN: viewYN }
       );
       console.log(responseUpdate.data);
       const responseGetList = await authAxiosInstance(
@@ -376,9 +361,9 @@ const GtradeModel = ({
         fax: data?.fax,
         website: data?.website,
         email: data?.email,
-        start_DT: getJoinDT || null,
-        end_DT: getJoinDT || null,
-        for_YN: '0',
+        start_DT: getJoinDT || '',
+        end_DT: getEndDT || null,
+        for_YN: selectForYN || null,
         liq_CD: data?.liq_CD,
       };
 
@@ -406,12 +391,12 @@ const GtradeModel = ({
       setChangeFormData();
       setInsertButtonClick(false);
       setClickYN(true);
-      console.log(listRef.current.scrollHeight);
+      //console.log(listRef.current.scrollHeight);
       if (listRef.current) {
         listRef.current.scrollTop = 3000;
       }
-      console.log(listRef.current.scrollHeight);
-      console.log(listRef.current.scrollTop);
+      //console.log(listRef.current.scrollHeight);
+      //console.log(listRef.current.scrollTop);
     } else if (
       !clickYN &&
       insertButtonClick &&
@@ -524,7 +509,7 @@ const GtradeModel = ({
     // 정제된 숫자를 원하는 전화번호 형식으로 변환합니다.
     const formattedPhoneNumber = onChangePhoneNumber(tel);
 
-    setValue('tel', formattedPhoneNumber);
+    setValue('phone_NB', formattedPhoneNumber);
   };
 
   // 전화번호(집) 실시간 010-0000-000 change
@@ -534,20 +519,6 @@ const GtradeModel = ({
     const formattedPhoneNumber = onChangePhoneNumber(tel);
 
     setValue('home_TEL', formattedPhoneNumber);
-  };
-
-  // drop box 선택시 personal_MAIL_CP 값 변경
-  const onChangePersonalMAIL = value => {
-    value === ''
-      ? setValue('personal_MAIL_CP', '')
-      : setValue('personal_MAIL_CP', value);
-  };
-
-  // drop box 선택시 salary_MAIL_CP 값 변경
-  const onChangeSalaryMAIL = value => {
-    value === ''
-      ? setValue('salary_MAIL_CP', '')
-      : setValue('salary_MAIL_CP', value);
   };
 
   // onChange 시 DB 내 동일한 데이터 검사
@@ -572,51 +543,7 @@ const GtradeModel = ({
         }
       });
     }
-    // } else if (e.target.name === 'username') {
-    //   params.USERNAME = e.target.value;
-    //   await authAxiosInstance(
-    //     `system/user/groupManage/employee/getUsernameInCompany`,
-    //     { params }
-    //   ).then(response => {
-    //     console.log(response.data);
-    //     response.data &&
-    //       setError('username', { message: 'ID가 중복되었습니다.' });
-    //     if (response.data) {
-    //       setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });
-    //     } else {
-    //       setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: false });
-    //       delete errors.username;
-    //     }
-    //   });
-    // } else if (e.target.name === 'email_ADD') {
-    //   params.EMAIL_ADD = e.target.value;
-    //   await authAxiosInstance(
-    //     `system/user/groupManage/employee/getEmailInCompany`,
-    //     {
-    //       params,
-    //     }
-    //   ).then(response => {
-    //     console.log(response.data);
-    //     response.data &&
-    //       setError('email_ADD', { message: 'ID가 중복되었습니다.' });
-    //     if (response.data) {
-    //       setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: true });
-    //     } else {
-    //       setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: false });
-    //       delete errors.email_ADD;
-    //     }
-    //   });
-    // }
-    console.log('checkDBErrorYN : ', checkDBErrorYN);
   };
-
-  console.log('errors', errors);
-  console.log('errorName', errorName);
-  console.log(changeFormData);
-  console.log(checkDBErrorYN);
-  console.log(data);
-  // console.log(onChangeForm);
-  // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
   const checkItemHandler = (id, isChecked) => {
     if (isChecked) {
@@ -784,8 +711,8 @@ const GtradeModel = ({
     setUseYN,
     selectUseYN,
     setSelectUseYN,
-    selectPplNb,
-    setSelectPplNb,
+    selectForYN,
+    setSelectForYN,
     listRef,
     checkItems,
     setCheckItems,
@@ -799,6 +726,8 @@ const GtradeModel = ({
     setDataProviderStrade,
     checkDBErrorYN,
     setCheckDBErrorYN,
+    viewYN,
+    setViewYN,
   };
 
   const actions = {
@@ -810,7 +739,6 @@ const GtradeModel = ({
     handleCloseDateChange,
     resetData,
     getEmpList,
-    getCompanyList,
     onClickDetailSGtradeInfo,
     onClickSearchEmpList,
     onChangeFunction,
@@ -823,8 +751,6 @@ const GtradeModel = ({
     onCompletePplNb,
     onChangeTel,
     onChangeHomeTel,
-    onChangePersonalMAIL,
-    onChangeSalaryMAIL,
     onChangeDBDataSearch,
     checkItemHandler,
     allCheckedHandler,
