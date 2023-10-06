@@ -29,8 +29,8 @@ const Login = () => {
         await axiosInstance('common/page/mainSidebarList').then(res => {
           localStorage.setItem('mainSidebar', JSON.stringify(res.data));
         });
-        localStorage.setItem('menu', 'Company');
-        navigate('/Employee');
+        localStorage.setItem('menu', 'Home');
+        navigate('/LoginMain');
       })
       .catch(err => {
         try {
@@ -62,7 +62,7 @@ const Login = () => {
               <span className="login100-form-title p-b-43">로그인</span>
               <div className="wrap-input100 validate-input">
                 <input
-                  className="input100 has-val"
+                  className="input100 has-val loginInput"
                   type="text"
                   name="username"
                   {...register('username')}
@@ -75,7 +75,7 @@ const Login = () => {
                 data-validate="Password is required"
               >
                 <input
-                  className="input100 has-val"
+                  className="input100 has-val loginInput"
                   type="password"
                   name="password"
                   {...register('password')}

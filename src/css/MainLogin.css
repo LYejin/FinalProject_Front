@@ -98,7 +98,7 @@ li {
 }
 
 /*---------------------------------------------*/
-input {
+.loginInput {
   outline: none;
   border: none;
 }
@@ -109,20 +109,20 @@ textarea {
 }
 
 textarea:focus,
-input:focus {
+.loginInput:focus {
   border-color: transparent !important;
 }
 
-input:focus::-webkit-input-placeholder {
+.loginInput:focus::-webkit-input-placeholder {
   color: transparent;
 }
-input:focus:-moz-placeholder {
+.loginInput:focus:-moz-placeholder {
   color: transparent;
 }
-input:focus::-moz-placeholder {
+.loginInput:focus::-moz-placeholder {
   color: transparent;
 }
-input:focus:-ms-input-placeholder {
+.loginInput:focus:-ms-input-placeholder {
   color: transparent;
 }
 
@@ -139,16 +139,16 @@ textarea:focus:-ms-input-placeholder {
   color: transparent;
 }
 
-input::-webkit-input-placeholder {
+.loginInput::-webkit-input-placeholder {
   color: #999999;
 }
-input:-moz-placeholder {
+.loginInput:-moz-placeholder {
   color: #999999;
 }
-input::-moz-placeholder {
+.loginInput::-moz-placeholder {
   color: #999999;
 }
-input:-ms-input-placeholder {
+.loginInput:-ms-input-placeholder {
   color: #999999;
 }
 
