@@ -20,7 +20,6 @@
   border: 2px solid #e6e6e6;
   display: flex;
   align-items: center;
-  padding-left: 90px;
   margin-bottom: 10px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -38,7 +37,7 @@
   font-weight: 600;
 }
 
-.FPSelectBoxWrapper{
+.FPSelectBoxWrapper {
   min-width: 1050px;
   height: 90px;
   border: 2px solid #e6e6e6;
@@ -49,8 +48,6 @@
   justify-content: center;
   flex-direction: column;
 }
-
-
 
 .FPSelectBoxWrapper > div {
   display: flex;
@@ -71,23 +68,22 @@
   margin-right: 50px;
 }
 
-.inputDivStyle2{
+.inputDivStyle2 {
   margin-right: 66px;
 }
 
-.inputDivStyle5{
+.inputDivStyle5 {
   margin-right: 64px;
 }
 
-.inputDivStyle3{
+.inputDivStyle3 {
   margin-right: 10px;
 }
 
-.inputDivStyle4{
+.inputDivStyle4 {
   margin-right: 67px;
-  margin-left : -29px
+  margin-left: -29px;
 }
-
 
 .FixedInputStyle {
   margin-left: 5px;
@@ -165,7 +161,7 @@
   border-radius: 3px;
   font-size: 13px;
   font-weight: bold;
-  color: #4aa1f2; 
+  color: #4aa1f2;
   transition: border-color 0.5s;
   vertical-align: middle;
   box-shadow: none;

@@ -28,7 +28,11 @@ const SelectListWrapperCommon = ({
     <div style={selectListWrapper}>
       <div className="listBoxHeader">
         {checkTotalList && (
-          <input type="checkbox" onChange={e => allCheckedHandler(e)} />
+          <input
+            type="checkbox"
+            className="listBoxTotalCheckBox"
+            onChange={e => allCheckedHandler(e)}
+          />
         )}
         <span className="listBoxtitle">{title}</span>
         <span className="listBoxDataCount">{dataCount}</span>건
