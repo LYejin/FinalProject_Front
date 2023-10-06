@@ -9,6 +9,7 @@ const Modal2 = ({
   buttonYN,
   onClose,
   isOpen,
+  updateMdeptCDInInfoWrapper,
 }) => {
   const modalBox = {
     position: 'fixed',
@@ -18,7 +19,7 @@ const Modal2 = ({
     width: width,
     height: height,
     backgroundColor: 'white',
-    zIndex: 10000,
+    zIndex: 20000,
     display: isOpen ? 'block' : 'none',
   };
 
@@ -28,25 +29,44 @@ const Modal2 = ({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 9999,
-    display: isOpen ? 'block' : 'none', // This line ensures that the modal background only shows when the modal is open
+    display: isOpen ? 'block' : 'none',
+  };
+
+  const closeButtonStyle = {
+    position: 'absolute',
+    right: '10px',
+    top: '5px',
+    fontSize: '20px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    marginTop: '25px',
+    marginRight: '13px',
+  };
+
+  const onClickOkButton = () => {
+    updateMdeptCDInInfoWrapper();
   };
 
   return (
     <>
       <div style={modalBox}>
-        <div className="topModalWrapper">
+        <button style={closeButtonStyle} onClick={onClose}>
+          X
+        </button>
+        <div className="topModalWrapper2">
           <Title titleName={title} />
           {children}
         </div>
         <div className="bottomModalWrapper">
           {buttonYN && (
             <>
-              <button className="WhiteButton" onClick={onClose}>
+              <button className="WhiteMenuButton" onClick={onClose}>
                 취소
               </button>
-              <button className="BlueButton" onClick={onClose}>
+              <button className="BlueButton" onClick={onClickOkButton}>
                 확인
               </button>
             </>

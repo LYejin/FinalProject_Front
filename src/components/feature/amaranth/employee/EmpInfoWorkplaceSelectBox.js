@@ -51,6 +51,7 @@ const EmpInfoWorkplaceSelectBox = ({
             fontSize: '0.8rem',
             borderRadius: '0',
             border: errors.div_CD && errorName === 'div_CD' && '1px solid red',
+            borderRadius: 0,
           }}
           MenuProps={{
             PaperProps: {

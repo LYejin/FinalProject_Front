@@ -28,7 +28,11 @@ const SelectListWrapperCommon = ({
     <div style={selectListWrapper}>
       <div className="listBoxHeader">
         {checkTotalList && (
-          <input type="checkbox" onChange={e => allCheckedHandler(e)} />
+          <input
+            type="checkbox"
+            className="listBoxTotalCheckBox"
+            onChange={e => allCheckedHandler(e)}
+          />
         )}
         <span className="listBoxtitle">{title}</span>
         <span className="listBoxDataCount">{dataCount}</span>건
@@ -38,7 +42,7 @@ const SelectListWrapperCommon = ({
         {children}
       </div>
       <div className="footerBox" onClick={onClickInsertEmp}>
-        <i class="fa-solid fa-circle-plus"></i>추가
+        <i className="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
   );

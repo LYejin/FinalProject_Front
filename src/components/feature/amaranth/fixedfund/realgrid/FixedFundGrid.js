@@ -223,7 +223,7 @@ function FixedFundGrid({
       appendWhenExitLast: false, //Tap, Enter키 입력시 행추가 가능
       crossWhenExitLast: true, //Tab이 이나 Enter 키로 마지막 셀을 벗어날 때 다음 행으로 이동할지의 여부
       //displayEmptyEditRow: true, //마지막행에 항상 빈 행을 추가하는 기능
-      enterToNextRow: true, //셀 편집 중 Enter 키를 입력하면 편집을 완료하고 다음 행으로 이동할지의 여부
+      //enterToNextRow: true, //셀 편집 중 Enter 키를 입력하면 편집을 완료하고 다음 행으로 이동할지의 여부
       enterToTab: true, //셀에 데이터 입력 후 다음 셀로 이동하기 여부 기능
       hintOnError: false, //편집 중에 에러가 있는 셀에 마우스가 위치할 때 에러 힌트 툴팁 표시 여부
       skipReadOnly: true, //readOnly, editable로 설정되 있는 컬럼 Enter키 입력시 foucs 스킵하는 기능
@@ -371,11 +371,29 @@ function FixedFundGrid({
 
       if (current.fieldName === 'cash_CD') {
         console.log('CASH_CD changed to:', newValue); // CASH_CD의 새로운 값 출력
+
+        if (newValue && newValue !== '') {
+          grid.editOptions.commitWhenExitLast = true; // Tap, Enter키 입력시 커밋(행이동 or 행 추가) 가능
+          grid.editOptions.appendWhenExitLast = true;
+        }
+
         onChangeOpenCash();
         setInputFixedCashCD(newValue);
       }
     };
 
+    grid.onCurrentRowChanged = (grid, oldIndex, newIndex) => {
+      if (newIndex !== oldIndex) {
+        // 행이 변경되었을 때만
+        grid.setCurrent({
+          itemIndex: newIndex,
+          column: 'Cash_CD', // 여기에 원하는 열의 이름을 넣습니다. Cash_CD로 예를 들었습니다.
+        });
+      }
+    };
+
+    grid.editOptions.commitWhenExitLast = true; //Tap, Enter키 입력시 커밋(행이동 or 행 추가) 가능
+    grid.editOptions.appendWhenExitLast = true;
     // 그리드의 상태 바를 숨깁니다.
     grid.setStateBar({ visible: false });
 
@@ -394,8 +412,8 @@ function FixedFundGrid({
     //체크바 너비  옵션 설정
     grid.setCheckBar({ width: 30 });
 
-    //헤더 높이 자동 조절 설정
-    grid.setFooter({ height: 35, backgroundColor: 'yellow' });
+    //푸터 높이 자동 조절 설정
+    grid.setFooter({ height: 35 });
 
     grid.setRowIndicator({
       showAll: false,
@@ -449,7 +467,9 @@ function FixedFundGrid({
           height: 30,
         }}
       >
-        <button onClick={handleDeleteRows}>행 삭제</button>
+        <button className="WhiteButton" onClick={handleDeleteRows}>
+          행 삭제
+        </button>
       </div>
       <div
         ref={realgridElement}

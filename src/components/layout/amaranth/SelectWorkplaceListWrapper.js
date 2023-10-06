@@ -16,11 +16,13 @@ const SelectWorkplaceListWrapper = ({
     setSelectedItemIndex(0);
   }, []);
 
+  console.log('호우', data);
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,
     height: '100%',
     border: '1px solid #ebebeb',
+    width: 360,
   };
 
   const resetSelectedItemIndex = () => {
@@ -41,6 +43,7 @@ const SelectWorkplaceListWrapper = ({
             leftTop={data.div_CD}
             rightTop={data.co_CD}
             leftBottom={data.div_NM}
+            rightBottom={data.co_NM}
             isAdding={isAdding}
             handleFetchWorkplaceInfo={FetchWorkplaceDetailInfo}
             selectedItemIndex={selectedItemIndex}

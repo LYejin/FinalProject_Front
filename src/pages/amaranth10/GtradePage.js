@@ -16,6 +16,7 @@ import GtradeListBoxItem from '../../components/feature/amaranth/Strade/GtradeLi
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 import GtradeModel from '../../model/GtradeModel';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
 const GtradePage = () => {
   const {
@@ -50,53 +51,74 @@ const GtradePage = () => {
         <ContentWrapper>
           <Title titleName={'일반거래처등록'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper height="80px" width="1200px">
-              <span className="leftSelectBoxPadding">거래처코드</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('select_TR_CD')}
-              />
-              <span className="lastSelectBoxTextPadding">거래처명</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('select_TR_NM')}
-              />
-              <span className="rightSelectBoxPadding">사업자등록번호</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('select_REG_NB')}
-              />
-              <span className="rightSelectBoxPadding">주민등록번호</span>
-              <input
-                type="text"
-                className="textInputBox"
-                {...register('select_PPL_NB')}
-              />
-              <div className="leftSelectBoxPadding">사용여부</div>
-              <SelectBoxUSEYN
-                width={'100px'}
-                state={state.selectUseYN}
-                setState={state.setSelectUseYN}
-                clickYN={state.clickYN}
-                register={register}
-                errors={errors}
-                errorName={state.errorName}
-                total={true}
-                setChangeFormData={state.setChangeFormData}
-              />
-              <div className="selectBoxButtonWrapper">
-                <EventButton
-                  data={<i className="fa-solid fa-magnifying-glass"></i>}
-                  width={'-10px'}
-                  height={30}
-                  onClickEvent={actions.onClickSearchEmpList}
-                />
+            <SelectBoxWrapper height="92px" width="1200px">
+              <div className="selectDetailWrapper">
+                <div className="selectBox">
+                  <div className="selectTop1">
+                    <span className="leftSelectBoxPaddingGtrade">
+                      거래처코드
+                    </span>
+                    <input
+                      type="text"
+                      className="textInputBox"
+                      {...register('select_TR_CD')}
+                    />
+                    <span className="rightSelectBoxPaddingGtrade">
+                      거래처명
+                    </span>
+                    <input
+                      type="text"
+                      className="textInputBox"
+                      {...register('select_TR_NM')}
+                    />
+                    <span className="rightSelectBoxPaddingGtradeREG">
+                      사업자등록번호
+                    </span>
+                    <input
+                      type="text"
+                      className="textInputBox"
+                      {...register('select_REG_NB')}
+                    />
+                  </div>
+                  <div className="selectTop2">
+                    <span className="leftSelectBoxPaddingGtradePPL">
+                      주민등록번호
+                    </span>
+                    <input
+                      type="text"
+                      className="textInputBox"
+                      {...register('select_PPL_NB')}
+                    />
+                    <span className="rightSelectBoxPaddingGtrade">
+                      사용여부
+                    </span>
+                    <SelectBoxUSEYN
+                      width={'100px'}
+                      state={state.selectUseYN}
+                      setState={state.setSelectUseYN}
+                      clickYN={state.clickYN}
+                      register={register}
+                      errors={errors}
+                      errorName={state.errorName}
+                      total={true}
+                      setChangeFormData={state.setChangeFormData}
+                    />
+                  </div>
+                </div>
+
+                <div className="selectButtonWrapperGtrade">
+                  <button
+                    className="FFcustomButton"
+                    onClick={actions.onClickSearchEmpList}
+                  >
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                </div>
               </div>
             </SelectBoxWrapper>
-            <MainContentWrapper>
+            <MainContentWrapper
+              height={state.deleteYN === true ? '150px' : '97px'}
+            >
               <SelectListWrapperCommon
                 width={'295px'}
                 title={'사용자:'}
@@ -111,7 +133,7 @@ const GtradePage = () => {
                 {state.empList.map(info => (
                   <GtradeListBoxItem
                     key={info.tr_CD}
-                    //clickedBoxID={clickedBoxID}
+                    clickedBoxID={state.tr_CD}
                     isAllChecked={state.isAllChecked}
                     leftTop={info?.tr_CD}
                     rightTop={info?.tr_NM}
@@ -129,13 +151,6 @@ const GtradePage = () => {
                   <div className="tableHeader">
                     <div className="defaultTitle">기본등록사항</div>
                     <div className="buttonWrapper">
-                      <button
-                        type="button"
-                        className="WhiteButton"
-                        onClick={actions.removeStradelist}
-                      >
-                        L삭제
-                      </button>
                       <button type="submit" className="WhiteButton">
                         저장
                       </button>
@@ -148,7 +163,10 @@ const GtradePage = () => {
                       </button>
                     </div>
                   </div>
-                  <ScrollWrapper width={'900px'}>
+                  <ScrollWrapper
+                    width={'900px'}
+                    deptH={state.deleteYN === true ? 65 : 15}
+                  >
                     <GtradeInfoBox
                       register={register}
                       state={state}
@@ -165,10 +183,26 @@ const GtradePage = () => {
                   </ScrollWrapper>
                 </form>
               </RightContentWrapper>
+              {state.deleteYN === true && state.deleteListCount > 0 && (
+                <div className="deletBoxWrapper">
+                  <div className="deleteCount">{state.deleteListCount}건</div>
+                  <div className="deleteTradeSpan">선택됨</div>
+                  <div className="deleteButtonTradeWrapper">
+                    <div
+                      type="button"
+                      className="deleteTradeButton"
+                      onClick={actions.removeStradelist}
+                    >
+                      삭제
+                    </div>
+                  </div>
+                </div>
+              )}
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
       </CommonLayout2>
+
       {state.isOpenPost ? (
         <Modal
           width={'560px'}

@@ -200,15 +200,15 @@ const StradeCodeHelpModal = ({
       onClickEvent={onChangeModalClose}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">거래처코드</span>
+        <span className="trModalTitle">거래처코드</span>
         <input
           type="text"
           className="textInputBox"
           {...register('selectValue')}
         />
-        <span className="rightSelectBoxPadding">사용여부</span>
+        <span className="ynModalTitle">사용여부</span>
         <StradeCodeHelpUseYNSelectBox
-          width={200}
+          width={150}
           register={register}
           state={useYNSelectData}
           setState={setUseYNSelectData}

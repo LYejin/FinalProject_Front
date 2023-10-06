@@ -6,7 +6,10 @@
   border-left: 1px solid #dcdcdc;
   width: calc(100% - 255px);
   height: calc(100% - 95px);
+  background-color: white;
 }
+
+ 
 
 /* DetailContentWrapper.js */
 .detailContentWrapper {
@@ -20,7 +23,6 @@
   border: 2px solid #e6e6e6;
   display: flex;
   align-items: center;
-
   margin-bottom: 10px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -91,14 +93,20 @@
   height: 30px;
   border: 1px solid lightgray;
   border-radius: 0;
+  /* outline: none; */
   width: 200px;
   padding-right: 35px;
   padding-left: 5px;
 }
 
+.FixedInputStyle:focus {
+  outline: none;
+  border-color: #1C90FB;
+}
+
 .FFInputIconStyle {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
   color: darkgray;
@@ -113,10 +121,16 @@
   height: 30px;
   border: 1px solid lightgray;
   border-radius: 0;
-  outline: none;
+  /* outline: none; */
   width: 200px;
   padding-right: 35px;
 }
+
+.FixedInputStyle2:focus {
+  outline: none;
+  border-color: #1C90FB;
+}
+
 
 .FPSelectBoxWrapper > div:not(:last-child) {
   margin-bottom: 10px;
@@ -341,7 +355,7 @@
 /* ListBoxItem.js */
 .listBoxItem {
   width: calc(100% - 26px);
-  height: 77px;
+  height: 80px;
   background-color: white;
   border: 1px solid #dfdfdf;
   margin-bottom: 7px;
@@ -354,7 +368,6 @@
 
 .listBoxItem:hover {
   background-color: #e6f5ff;
-  border: 1px solid #4aa1f2;
 }
 
 .flexWrapper {
@@ -368,6 +381,7 @@
   display: flex;
   justify-content: end;
 }
+
 /* FullContentWrapper */
 .fullContentWrapper {
   flex: 1;
@@ -401,13 +415,15 @@
   flex-direction: row;
   width: 100%;
   height: calc(100% - 140px);
+  
 }
+
 
 .selected {
   background-color: #e6f5ff;
-  border: 3px solid #4aa1f2;
+  border: 2px solid #4aa1f2;
   width: calc(100% - 26px);
-  height: 77px;
+  height: 80px;
   margin-bottom: 7px;
   padding: 20px 6%;
   font-size: 0.8rem;

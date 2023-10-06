@@ -31,6 +31,7 @@ const DeptInfoWrapper = ({
   address,
   addressDetail,
   onChangeOpenPost,
+  onChangeOpenDeptList,
 }) => {
   // console.log('바든데이터', data);
   // console.log('과자과', data.mdept_CD);
@@ -107,13 +108,14 @@ const DeptInfoWrapper = ({
                 defaultValue={data ? data.mdept_CD || '' : ''}
                 register={register('mdept_CD')}
                 maxLength={10}
-                style={{ width: '770px', float: 'left' }}
+                style={{ width: '350px', float: 'left' }}
                 readOnly
               />
               <button
                 type="button"
                 className="MdeptcustomButton"
                 style={{ float: 'left' }}
+                onClick={onChangeOpenDeptList}
               >
                 <LuBuilding2 />
               </button>

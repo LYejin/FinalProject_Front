@@ -7,7 +7,7 @@ const SubmitButton = ({ data, width, height }) => {
       type="submit"
       variant="contained"
       size="small"
-      class="WhiteButton"
+      className="WhiteButton"
     >
       {data}
     </ButtonMUI>

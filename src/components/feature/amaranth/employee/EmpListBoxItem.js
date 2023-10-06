@@ -18,7 +18,7 @@ const EmpListBoxItem = ({
     border:
       clickedBoxID === leftTop ? '1px solid #4aa1f2' : '1px solid #dfdfdf',
     marginBottom: '7px',
-    padding: '20px 6%',
+    padding: '17px 6%',
     fontSize: '0.8rem',
     fontWeight: '500',
     cursor: 'pointer',

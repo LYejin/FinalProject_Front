@@ -1,16 +1,17 @@
 .rightSelectBoxPadding {
-  width: 40px;
+  margin-left: 90px;
+  width: 28px;
 }
 
 .leftSelectBoxPadding {
-  margin-left: 50px;
-  width: 60px;
+  margin-left: 65px;
+  width: 54px;
 }
 
 .lastSelectBoxTextPadding {
-  margin-left: 30px;
-  margin-right: 7px;
-  width: 100px;
+  margin-left: 60px;
+  margin-right: 3px;
+  width: 97px;
 }
 
 .selectBoxButtonWrapper {
