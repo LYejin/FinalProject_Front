@@ -19,6 +19,7 @@ const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
         sx={{
           height: '28px',
           fontSize: '0.8rem',
+          borderRadius: 0,
         }}
         MenuProps={{
           PaperProps: {

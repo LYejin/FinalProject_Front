@@ -1,20 +1,33 @@
 import React from 'react';
 import GetComp from '../../feature/amaranth/Department/GetComp';
 
-function DeptShowWrapper({ width, title, data, searchValue }) {
+function DeptShowWrapper({
+  width,
+  height,
+  title,
+  data,
+  searchValue,
+  isModal,
+  marginL,
+  marginT,
+}) {
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,
     width: width,
-    height: '100%',
+    height: height,
+    marginLeft: marginL,
+    marginTop: marginT,
   };
 
   return (
     <div style={selectListWrapper}>
-      <div className="deptListBoxHeader">
-        <span className="deptListBoxtitle">· {title}</span>
-        <span className="deptListBoxSort">필터</span>
-      </div>
+      {!isModal && (
+        <div className="deptListBoxHeader">
+          <span className="deptListBoxtitle">· {title}</span>
+          <span className="deptListBoxSort">필터</span>
+        </div>
+      )}
       <div className="deptListWrapper">
         {data.map(company => (
           <GetComp

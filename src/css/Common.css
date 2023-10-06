@@ -39,12 +39,54 @@
   width: 50px;
   height: 30px;
   margin-bottom: 5px;
-  margin-right: 10px;
+  margin-left: 10px;
   cursor: pointer;
   border-radius: 3px;
 }
 
+.NewBlueButton {
+  background: linear-gradient( #1CAAFB,#1C90FB);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 80px;
+  height: 30px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.NewBlueButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
 .WhiteButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
+
+.WhiteMenuButton {
+  background: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 50px;
+  height: 26px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.WhiteMenuButton:hover {
   border-color: #000000;
   box-shadow: none;
 }
@@ -70,3 +112,44 @@
   margin-left: -5px;
   margin-top: 5px;
 }
+
+
+/* 스크롤바 전체의 너비를 설정 */
+::-webkit-scrollbar {
+  width: 6px; /* 가늘게 설정 */
+}
+
+/* 스크롤바 트랙 (트랙은 스크롤바가 움직이는 부분입니다) */
+::-webkit-scrollbar-track {
+  background: #fafafa;
+  border-radius: 10px; /* 둥근 모서리 추가 */
+}
+
+/* 스크롤바의 핸들 (실제로 움직이는 부분) */
+::-webkit-scrollbar-thumb {
+  background: darkgray;
+  border-radius: 10px; /* 둥근 모서리 추가 */
+}
+
+/* 스크롤바 핸들에 호버했을 때 */
+::-webkit-scrollbar-thumb:hover {
+  background: darkgray;
+}
+
+
+/* 스크롤 발생 시 보이는 스크롤바 스타일 */
+.scrolling::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+/* 스크롤바가 있는 영역에 마우스를 올렸을 때 핸들을 보이게 합니다. */
+.flexWrapper:hover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+
+
+
+
+

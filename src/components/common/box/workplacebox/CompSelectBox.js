@@ -48,6 +48,7 @@ const CompSelectBox = ({
             fontSize: '0.8rem',
             width: width,
             backgroundColor: 'white',
+            borderRadius: 0,
           }}
           MenuProps={{
             PaperProps: {

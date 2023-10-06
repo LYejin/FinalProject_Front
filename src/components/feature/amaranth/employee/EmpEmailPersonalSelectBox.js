@@ -26,6 +26,7 @@ const EmpEmailPersonalSelectBox = ({
           height: '26.3px',
           borderRadius: '0',
           fontSize: '0.8rem',
+          borderRadius: 0,
         }}
         MenuProps={{
           PaperProps: {

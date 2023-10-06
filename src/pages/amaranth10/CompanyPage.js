@@ -45,7 +45,6 @@ import { ko } from 'date-fns/esm/locale';
 import SubmitButton from '../../components/common/button/SubmitButton';
 
 import { isAfter } from 'date-fns';
-
 import { useRef } from 'react';
 
 const CompanyPage = () => {

@@ -10,6 +10,7 @@ const WorkplaceListBoxItem = ({
   setSelectedItemIndex,
   index,
   serachButtonClick,
+  rightBottom,
 }) => {
   const isSelected = index === selectedItemIndex;
 
@@ -42,7 +43,8 @@ const WorkplaceListBoxItem = ({
         <span className="rightContent">{rightTop}</span>
       </div>
       <div className="flexWrapper">
-        <span className="code">{leftBottom}</span>
+        <span className="codeLeft">{leftBottom}</span>
+        <span className="codeRighst">{rightBottom}</span>
       </div>
     </div>
   );

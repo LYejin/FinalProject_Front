@@ -121,7 +121,7 @@ const SelectListWrapper = ({
         ))} */}
       </div>
       <div className="footerBox">
-        <i class="fa-solid fa-circle-plus"></i>추가
+        <i className="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
   );

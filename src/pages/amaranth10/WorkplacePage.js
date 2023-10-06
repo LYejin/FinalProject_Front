@@ -501,7 +501,7 @@ const WorkplacePage = () => {
               onClick={() =>
                 SearchWorkplace(SearchDivInfo, SearchDivYN, SearchCocd)
               }
-              className="customButton"
+              className="FFcustomButton"
             >
               <i className="fa-solid fa-magnifying-glass"></i>
             </button>
