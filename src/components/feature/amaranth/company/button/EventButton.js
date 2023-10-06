@@ -12,7 +12,7 @@ const EventButton = ({ data, width, height, onClickEvent, classname }) => {
       onClick={onClickEventFunction}
       variant="contained"
       size="small"
-      className={classname}
+      class={classname}
     >
       {data}
     </ButtonMUI>
