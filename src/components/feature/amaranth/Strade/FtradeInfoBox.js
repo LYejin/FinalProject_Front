@@ -9,6 +9,7 @@ import StradeCodeHelpModal from '../Modal/StradeCodeHelpModal/StradeCodeHelpModa
 import FinancecodeModal from '../Modal/FinancecodeModal/FinancecodeModal';
 import { ErrorMessage } from '@hookform/error-message';
 import SelectBox from './../../../common/box/SelectBox';
+import { CiSquareMore } from 'react-icons/ci';
 
 const FtradeInfoBox = ({
   register,
@@ -42,74 +43,86 @@ const FtradeInfoBox = ({
             <tr>
               <th className="headerCellStyle">거래처코드</th>
               <td className="cellStyle">
-                <div className="errorWrapper">
-                  <input
-                    type="text"
-                    className="inputStyle"
-                    name="tr_CD"
-                    {...register(
-                      'tr_CD',
-                      state.selectedValue !== 'auto' &&
-                        !state.clickYN && {
-                          required: '거래처코드를 입력해주세요.',
-                        }
-                    )}
-                    style={{
-                      border:
-                        errors.tr_CD &&
-                        (state.checkDBErrorYN.tr_CD_ERROR ||
-                          state.errorName === 'tr_CD')
-                          ? '1px solid red'
-                          : '1px solid #ccc',
-                      backgroundColor:
-                        state.clickYN || state.selectedRadioValue === 'auto'
-                          ? '#f2f2f2'
-                          : '#fef4f4',
-                    }}
-                    disabled={
-                      state.selectedRadioValue === 'auto' || state.clickYN
+                <div
+                  className={state.clickYN ? 'GtradeFlex' : 'GtradeFlexInsert'}
+                >
+                  <div
+                    className={
+                      state.clickYN ? 'errorWrapper' : 'errorWrapperTRCD'
                     }
-                    onChange={actions.onChangeDBDataSearch}
-                    defaultValue={state.data?.tr_CD}
-                    onFocus={actions.onFocusError}
-                  />
-                  {(state.checkDBErrorYN.tr_CD_ERROR ||
-                    state.errorName === 'tr_CD') && (
-                    <ErrorMessage
-                      errors={errors}
+                  >
+                    <input
+                      type="text"
+                      className={
+                        state.clickYN ? 'inputTRCD' : 'inputTRCDInsert'
+                      }
                       name="tr_CD"
-                      as="p"
-                      className="errorBox"
+                      {...register(
+                        'tr_CD',
+                        state.selectedValue !== 'auto' &&
+                          !state.clickYN && {
+                            required: '거래처코드를 입력해주세요.',
+                          }
+                      )}
+                      style={{
+                        border:
+                          errors.tr_CD &&
+                          (state.checkDBErrorYN.tr_CD_ERROR ||
+                            state.errorName === 'tr_CD')
+                            ? '1px solid red'
+                            : '1px solid #ccc',
+                        backgroundColor:
+                          state.clickYN || state.selectedRadioValue === 'auto'
+                            ? '#f2f2f2'
+                            : '#fef4f4',
+                      }}
+                      disabled={
+                        state.selectedRadioValue === 'auto' || state.clickYN
+                      }
+                      onChange={actions.onChangeDBDataSearch}
+                      defaultValue={state.data?.tr_CD}
+                      onFocus={actions.onFocusError}
                     />
-                  )}
+                    {(state.checkDBErrorYN.tr_CD_ERROR ||
+                      state.errorName === 'tr_CD') && (
+                      <ErrorMessage
+                        errors={errors}
+                        name="tr_CD"
+                        as="p"
+                        className="errorBox"
+                      />
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className={
+                      state.clickYN ? 'WhiteButtonTR' : 'WhiteButtonTRInsert'
+                    }
+                    onClick={trCDModalButton}
+                  >
+                    <CiSquareMore className="CiSquareMoreIcon" />
+                  </button>
                 </div>
-                <button type="button" onClick={trCDModalButton}>
-                  코드
-                </button>
                 {state.insertButtonClick && (
-                  <div>
-                    <label>
-                      <input
-                        className="radioStyle"
-                        type="radio"
-                        name="trCdFg"
-                        value="manual"
-                        checked={state.selectedRadioValue === 'manual'}
-                        onChange={actions.handleRadioChange}
-                      />
-                      수동
-                    </label>
-                    <label>
-                      <input
-                        className="radioStyle"
-                        type="radio"
-                        name="trCdFg"
-                        value="auto"
-                        checked={state.selectedRadioValue === 'auto'}
-                        onChange={actions.handleRadioChange}
-                      />
-                      자동
-                    </label>
+                  <div className="radioTradeStyle">
+                    <input
+                      className="radioStyle"
+                      type="radio"
+                      name="trCdFg"
+                      value="manual"
+                      checked={state.selectedRadioValue === 'manual'}
+                      onChange={actions.handleRadioChange}
+                    />
+                    수동
+                    <input
+                      className="radioStyle"
+                      type="radio"
+                      name="trCdFg"
+                      value="auto"
+                      checked={state.selectedRadioValue === 'auto'}
+                      onChange={actions.handleRadioChange}
+                    />
+                    자동
                   </div>
                 )}
               </td>
@@ -188,7 +201,7 @@ const FtradeInfoBox = ({
                   <input
                     type="text"
                     name="bank_CD"
-                    className="reqInputStyle"
+                    className="inputStyle"
                     {...register('bank_CD')}
                     defaultValue={
                       state.financeCDChangeData
@@ -213,7 +226,7 @@ const FtradeInfoBox = ({
                 <input
                   type="text"
                   name="depositor"
-                  className="reqInputStyle"
+                  className="inputStyle"
                   {...register('depositor')}
                   defaultValue={state.data?.depositor}
                 />
@@ -223,7 +236,7 @@ const FtradeInfoBox = ({
                 <input
                   type="text"
                   name="deposit_NM"
-                  className="reqInputStyle"
+                  className="inputStyle"
                   {...register('deposit_NM')}
                   defaultValue={state.data?.deposit_NM}
                 />
@@ -235,11 +248,13 @@ const FtradeInfoBox = ({
                 <input
                   type="text"
                   name="account_OPEN_BN"
-                  className="reqInputStyle"
+                  className="reqInputStyleAccount"
                   {...register('account_OPEN_BN')}
                   defaultValue={state.data?.account_OPEN_BN}
                 />
               </td>
+              <th className="headerCellStyle22"></th>
+              <td className="cellStyle"></td>
             </tr>
           </tbody>
         </table>
@@ -258,7 +273,7 @@ const FtradeInfoBox = ({
                   name="fstart_DT"
                   onChange={actions.handleOpenDateChange}
                   dateFormat="yyyy-MM-dd"
-                  className="datePickerInputStyle"
+                  className="datePickerInputStyleTrade"
                 />
               </td>
               <th className="headerCellStyle">거래종료일</th>
@@ -268,7 +283,7 @@ const FtradeInfoBox = ({
                   selected={state.closeDate}
                   onChange={actions.handleCloseDateChange}
                   dateFormat="yyyy-MM-dd"
-                  className="datePickerInputStyle"
+                  className="datePickerInputStyleTrade"
                 />
               </td>
             </tr>
@@ -276,7 +291,7 @@ const FtradeInfoBox = ({
               <th className="headerCellStyle">사용여부</th>
               <td className="cellStyle">
                 <SelectBoxUSEYN
-                  width={'calc(100% - 7px)'}
+                  width={300}
                   state={state.useYN}
                   setState={state.setUseYN}
                   clickYN={state.clickYN}
@@ -286,17 +301,19 @@ const FtradeInfoBox = ({
                   setChangeFormData={state.setChangeFormData}
                 />
               </td>
+              <th className="headerCellStyle22"></th>
+              <td className="cellStyle"></td>
             </tr>
           </tbody>
         </table>
 
         {/* 거래처 담당자 관리 */}
-        <div>금융거래처 조회권한</div>
-        <div>
-          권한설정여부
+        <div className="titleTradeRole">금융거래처 조회권한</div>
+        <div className="tradeRoleYN">
+          <span className="tradeRoleYNTitle">권한설정여부</span>
           <SelectBox
             data={['부', '여']}
-            width={200}
+            width={800}
             state={state.viewYN}
             setState={state.setViewYN}
             setChangeFormData={state.setChangeFormData}
@@ -311,6 +328,8 @@ const FtradeInfoBox = ({
             dataProviderStrade={state.dataProviderStrade}
             setDataProviderStrade={state.setDataProviderStrade}
             setDeleteCheck={state.setDeleteCheck}
+            setDeleteYN={state.setDeleteYN}
+            setDeleteListCount={state.setDeleteListCount}
           />
         )}
       </div>

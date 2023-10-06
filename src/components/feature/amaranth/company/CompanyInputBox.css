@@ -98,11 +98,12 @@
 
 /* Wrapper for the entire form */
 
-.company-form {
+/* .company-form {
   margin-top: -35px;
   position: absolute;
-  z-index: 100;
-}
+  z-index: 40;
+  width: 75.38%;
+} */
 
 /* Style for input fields */
 .form-control-sm {

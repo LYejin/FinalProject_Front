@@ -9,16 +9,22 @@ const EmpEmailSalarySelectBox = ({
   onClickEvent,
   emailSalaryData,
   setEmailSalaryData,
+  setChangeFormData,
 }) => {
   const handleChange = e => {
     setEmailSalaryData(e.target.value);
     onClickEvent(e.target.value);
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
     <FormControl sx={{ m: 1, minWidth: width }} size="small">
       <Select
         id="demo-select-small"
+        name="salary_MAIL_CP"
         value={emailSalaryData}
         onChange={handleChange}
         displayEmpty

@@ -10,10 +10,12 @@ const SelectBox = ({
   setState,
   setChangeFormData,
   disable,
+  name,
 }) => {
   const handleChange = e => {
     setState(e.target.value);
     if (setChangeFormData) {
+      // setChangeFormData 설정하면 사용됨
       setChangeFormData(changeFormData => ({
         ...changeFormData,
         [e.target.name]: e.target.value,
@@ -22,9 +24,10 @@ const SelectBox = ({
   };
 
   return (
-    <FormControl sx={{ m: 1, width: width }} size="small" disabled={disable}>
+    <FormControl sx={{ width: width }} size="small" disabled={disable}>
       <Select
         id="demo-select-small"
+        name={name && name}
         value={state}
         onChange={handleChange}
         displayEmpty
@@ -32,8 +35,6 @@ const SelectBox = ({
           height: '28px',
           fontSize: '0.8rem',
           borderRadius: '0',
-          marginLeft: '-9px',
-          borderRadius: 0,
         }}
         MenuProps={{
           PaperProps: {

@@ -9,6 +9,7 @@ import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
 import EmpEmailSelectBox from './EmpEmailPersonalSelectBox';
 import EmpEmailPersonalSelectBox from './EmpEmailPersonalSelectBox';
 import EmpEmailSalarySelectBox from './EmpEmailSalarySelectBox';
+import { ko } from 'date-fns/esm/locale';
 
 const EmpInfoBox = ({
   data,
@@ -347,28 +348,24 @@ const EmpInfoBox = ({
             <th className="headerCellStyle">성별</th>
             <td className="cellStyle">
               <div>
-                <label>
-                  <input
-                    className="radioStyle"
-                    type="radio"
-                    name="gender_FG"
-                    value="W"
-                    checked={selectedValue === 'W'}
-                    onChange={handleRadioChange}
-                  />
-                  여자
-                </label>
-                <label>
-                  <input
-                    className="radioStyle"
-                    type="radio"
-                    name="gender_FG"
-                    value="M"
-                    checked={selectedValue === 'M'}
-                    onChange={handleRadioChange}
-                  />
-                  남자
-                </label>
+                <input
+                  className="radioStyle"
+                  type="radio"
+                  name="gender_FG"
+                  value="W"
+                  checked={selectedValue === 'W'}
+                  onChange={handleRadioChange}
+                />
+                여자
+                <input
+                  className="radioStyle"
+                  type="radio"
+                  name="gender_FG"
+                  value="M"
+                  checked={selectedValue === 'M'}
+                  onChange={handleRadioChange}
+                />
+                남자
               </div>
             </td>
             <th className="headerCellStyle">재직구분</th>
@@ -412,6 +409,7 @@ const EmpInfoBox = ({
                   onClickEvent={onChangePersonalMAIL}
                   emailPersonalData={emailPersonalData}
                   setEmailPersonalData={setEmailPersonalData}
+                  setChangeFormData={setChangeFormData}
                 />
               </div>
             </td>
@@ -442,6 +440,7 @@ const EmpInfoBox = ({
                   onClickEvent={onChangeSalaryMAIL}
                   emailSalaryData={emailSalaryData}
                   setEmailSalaryData={setEmailSalaryData}
+                  setChangeFormData={setChangeFormData}
                 />
               </div>
             </td>
@@ -456,7 +455,7 @@ const EmpInfoBox = ({
                 {...register('tel')}
                 onChange={onChangeTel}
                 defaultValue={data?.tel}
-                maxLength="12"
+                maxLength="13"
               />
             </td>
             <th className="headerCellStyle">전화번호(집)</th>
@@ -468,7 +467,7 @@ const EmpInfoBox = ({
                 {...register('home_TEL')}
                 onChange={onChangeHomeTel}
                 defaultValue={data?.home_TEL}
-                maxLength="12"
+                maxLength="13"
               />
             </td>
           </tr>
@@ -519,6 +518,7 @@ const EmpInfoBox = ({
                 onChange={handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerInputStyle"
+                locale={ko}
               />
             </td>
             <th className="headerCellStyle">퇴사일</th>
@@ -528,6 +528,7 @@ const EmpInfoBox = ({
                 onChange={handleCloseDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerStyle"
+                locale={ko} 
               /> */}
             </td>
           </tr>

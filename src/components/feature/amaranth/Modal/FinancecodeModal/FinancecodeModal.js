@@ -131,7 +131,7 @@ const FinancecodeModal = ({
       onClickEvent={onChangeModalClose}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">검색어</span>
+        <span className="liqModalTitle">검색어</span>
         <input
           type="text"
           className="textInputBox"

@@ -592,7 +592,7 @@ const EmployeePage = () => {
         <ContentWrapper>
           <Title titleName={'상용직관리'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper>
+            <SelectBoxWrapper width="1150px">
               <span className="rightSelectBoxPadding">회사</span>
               <EmpSelectBox
                 width={200}
@@ -613,12 +613,12 @@ const EmployeePage = () => {
                 {...register('name')}
               />
               <div className="selectBoxButtonWrapper">
-                <EventButton
-                  data={<i className="fa-solid fa-magnifying-glass"></i>}
-                  width={'-10px'}
-                  height={30}
-                  onClickEvent={onClickSearchEmpList}
-                />
+                <button
+                  className="FFcustomButton"
+                  onClick={onClickSearchEmpList}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
               </div>
             </SelectBoxWrapper>
             <MainContentWrapper>

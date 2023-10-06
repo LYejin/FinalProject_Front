@@ -7,7 +7,7 @@ const GtradeListBoxItem = ({
   clickBoxEvent,
   checkItemHandler,
   isAllChecked,
-  //clickedBoxID,
+  clickedBoxID,
 }) => {
   const [checked, setChecked] = useState(false); // 하나씩에 대한 체크 여부 판단
 
@@ -23,17 +23,19 @@ const GtradeListBoxItem = ({
     checkItemHandler(target.id, target.checked);
   };
 
-  const empListBoxItemCSS = {
+  const gtradeListBoxItemCSS = {
     width: 'calc(100% - 26px)',
-    height: '77px',
-    //backgroundColor: clickedBoxID === leftTop ? '#e6f5ff' : 'white',
-    // border:
-    //   clickedBoxID === leftTop ? '1px solid #4aa1f2' : '1px solid #dfdfdf',
+    height: '65px',
+    backgroundColor: clickedBoxID === leftTop ? '#e6f5ff' : 'white',
+    border:
+      clickedBoxID === leftTop ? '1px solid #4aa1f2' : '1px solid #dfdfdf',
     marginBottom: '7px',
-    padding: '20px 6%',
+    padding: '25px 6%',
     fontSize: '0.8rem',
     fontWeight: '500',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
     borderRadius: '5px',
     '&:hover': {
       backgroundColor: '#e6f5ff',
@@ -42,20 +44,25 @@ const GtradeListBoxItem = ({
   };
 
   return (
-    <div style={empListBoxItemCSS} onClick={onClickDetailEmpInfo}>
-      <input
-        id={leftTop}
-        type="checkbox"
-        checked={checked}
-        onClick={e => e.stopPropagation()}
-        onChange={e => checkHandled(e)}
-      />
-      <div className="flexWrapper">
-        <span className="leftContent">{leftTop}</span>
-        <span className="rightContent">{rightTop}</span>
+    <div style={gtradeListBoxItemCSS} onClick={onClickDetailEmpInfo}>
+      <div>
+        <input
+          id={leftTop}
+          type="checkbox"
+          style={{ borderRadius: '0' }}
+          checked={checked}
+          onClick={e => e.stopPropagation()}
+          onChange={e => checkHandled(e)}
+        />
       </div>
-      <div className="flexWrapper">
-        <span className="code">{leftBottom}</span>
+      <div className="bottomGtradeListWrapper">
+        <div className="flexWrapper gtradeLineFix">
+          <span className="leftContent">{leftTop}</span>
+          <span className="rightContent">{rightTop}</span>
+        </div>
+        <div className="flexWrapper">
+          <span className="code">{leftBottom}</span>
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import EventButton from '../../../../common/button/EventButton';
 import SelectBox from '../../../../common/box/SelectBox';
+import WhiteButton from '../../../../common/button/WhiteButton';
 
 const LiquorcodeModal = ({ onChangeModalClose, setState }) => {
   const { register, getValues } = useForm({
@@ -125,14 +126,14 @@ const LiquorcodeModal = ({ onChangeModalClose, setState }) => {
       onClickEvent={onChangeModalClose}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">주류코드</span>
+        <span className="liqModalTitle">검색어</span>
         <input
           type="text"
           className="textInputBox"
           {...register('selectValue')}
         />
         <div className="selectBoxButtonWrapper">
-          <EventButton
+          <WhiteButton
             data={<i className="fa-solid fa-magnifying-glass"></i>}
             width={'-10px'}
             height={30}

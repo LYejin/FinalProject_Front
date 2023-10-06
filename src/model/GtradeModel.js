@@ -28,7 +28,7 @@ const GtradeModel = ({
   const [addressDetail, setAddressDetail] = useState(); // 주소
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
   const [deleteListModal, setDeleteListModal] = useState(false); // 거래처 삭제 정보 모달창
-  const [deleteListCount, setDeleteListCount] = useState(''); // 거래처 삭제 정보 모달창
+  const [deleteListCount, setDeleteListCount] = useState(); // 거래처 삭제 정보 모달창
   const [deleteStradeInfo, setDeleteStradeInfo] = useState([
     { count: '', tr_CD: '' },
   ]); // 거래처 삭제 정보
@@ -46,6 +46,7 @@ const GtradeModel = ({
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
+  const [deleteYN, setDeleteYN] = useState(false); // delete check box 클릭 상태 관리
   const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
   const [dataProviderStrade, setDataProviderStrade] = useState(null); // DataProvider 저장
   const [viewYN, setViewYN] = useState(''); // 조회권한 여부
@@ -162,6 +163,7 @@ const GtradeModel = ({
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailSGtradeInfo = async tr_CD => {
     setChangeForm(false);
+    setDeleteYN(false);
     setChangeFormData();
     reset();
     setAddress();
@@ -249,6 +251,7 @@ const GtradeModel = ({
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    setDeleteYN(false);
     setUseYN('1');
     setOpenDate(new Date());
     setCloseDate();
@@ -555,14 +558,19 @@ const GtradeModel = ({
     }
     if (checkItems.size > 0) {
       setDeleteCheck('listDelete');
+      setDeleteListCount(Array.from(checkItems).length);
+      setDeleteYN(true);
     } else {
       setDeleteCheck('');
+      setDeleteYN(false);
     }
   };
 
   const allCheckedHandler = ({ target }) => {
     if (target.checked) {
       setDeleteCheck('listDelete');
+      setDeleteListCount(Array.from(checkItems).length);
+      setDeleteYN(true);
       setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
       setIsAllChecked(true);
       Array.from(checkItems);
@@ -570,6 +578,7 @@ const GtradeModel = ({
       checkItems.clear();
       setCheckItems(checkItems);
       setIsAllChecked(false);
+      setDeleteYN(false);
     }
   };
 
@@ -656,6 +665,8 @@ const GtradeModel = ({
   };
 
   const state = {
+    deleteYN,
+    setDeleteYN,
     register,
     handleSubmit,
     reset,
