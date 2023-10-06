@@ -5,6 +5,7 @@ import Select from '@mui/material/Select';
 
 const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
   const handleChange = event => {
+    console.log(event.target.value);
     setCompanySelect(event.target.value);
   };
 

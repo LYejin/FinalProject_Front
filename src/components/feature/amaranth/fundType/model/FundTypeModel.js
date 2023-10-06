@@ -61,7 +61,7 @@ const FundTypeModel = () => {
   };
 
   const deleteBtnClick = checkData => {
-    console.log('체크된<비동기>', checkData, checkList);
+    console.log('삭제검사', checkData, checkList);
     if (checkData !== undefined) {
       return new Promise((resolve, reject) => {
         authAxiosInstance

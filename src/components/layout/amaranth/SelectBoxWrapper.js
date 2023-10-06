@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SelectBoxWrapper = ({ children, height, width, className }) => {
+const SelectBoxWrapper = ({ children, height, width, className, padding }) => {
   return (
     <div
       className={'selectBoxWrapper'}
@@ -10,6 +10,7 @@ const SelectBoxWrapper = ({ children, height, width, className }) => {
         gap: '10px',
         height: height,
         minWidth: width,
+        paddingLeft: padding,
       }}
     >
       {children}

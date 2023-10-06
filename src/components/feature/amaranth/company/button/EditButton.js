@@ -1,7 +1,7 @@
 import React from 'react';
 import ButtonMUI from '@mui/material/Button';
 
-const SubmitButton = ({ data, width, height, onClickEvent }) => {
+const EditButton = ({ data, width, height, onClickEvent }) => {
   const onClickEventFunction = () => {
     console.log('hiii');
     onClickEvent();
@@ -19,4 +19,4 @@ const SubmitButton = ({ data, width, height, onClickEvent }) => {
   );
 };
 
-export default SubmitButton;
+export default EditButton;
