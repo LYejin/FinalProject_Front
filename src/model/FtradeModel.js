@@ -41,6 +41,7 @@ const FtradeModel = ({
   const [financeCDChangeData, setFinanceChangeCDData] = useState(); // 모달창 통해 변화된 금융 정보
   const [financeCDData, setFinanceCDData] = useState(); // '001. 금융네임' 통채로 입력
   const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
+  const [deleteYN, setDeleteYN] = useState(false); // delete check box 클릭 상태 관리
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [gridViewStrade, setGridViewStrade] = useState(null); // gridView 저장
@@ -178,6 +179,7 @@ const FtradeModel = ({
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailSGtradeInfo = async tr_CD => {
     setChangeForm(false);
+    setDeleteYN(false);
     setChangeFormData();
     reset();
     setAddress();
@@ -263,6 +265,7 @@ const FtradeModel = ({
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    setDeleteYN(false);
     setOpenDate(new Date());
     setFinanceCDData();
     setCloseDate();
@@ -521,11 +524,22 @@ const FtradeModel = ({
       checkItems.delete(id);
       setCheckItems(checkItems);
     }
+    if (checkItems.size > 0) {
+      setDeleteCheck('listDelete');
+      setDeleteListCount(Array.from(checkItems).length);
+      setDeleteYN(true);
+    } else {
+      setDeleteCheck('');
+      setDeleteYN(false);
+    }
   };
 
   // list 전체 클릭
   const allCheckedHandler = ({ target }) => {
     if (target.checked) {
+      setDeleteCheck('listDelete');
+      setDeleteListCount(Array.from(checkItems).length);
+      setDeleteYN(true);
       setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
       setIsAllChecked(true);
       Array.from(checkItems);
@@ -533,6 +547,7 @@ const FtradeModel = ({
       checkItems.clear();
       setCheckItems(checkItems);
       setIsAllChecked(false);
+      setDeleteYN(false);
     }
   };
 
@@ -657,6 +672,8 @@ const FtradeModel = ({
   };
 
   const state = {
+    deleteYN,
+    setDeleteYN,
     financeCDInputData,
     setFinanceCDInputData,
     financeCDModal,

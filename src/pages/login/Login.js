@@ -29,8 +29,8 @@ const Login = () => {
         await axiosInstance('common/page/mainSidebarList').then(res => {
           localStorage.setItem('mainSidebar', JSON.stringify(res.data));
         });
-        localStorage.setItem('menu', 'Company');
-        navigate('/Employee');
+        localStorage.setItem('menu', 'Home');
+        navigate('/LoginMain');
       })
       .catch(err => {
         try {

@@ -10,15 +10,17 @@ const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
   };
 
   return (
-    <FormControl sx={{ m: 1, width: width }} size="small">
+    <FormControl sx={{ width: width }} size="small">
       <Select
         id="demo-select-small"
         value={companySelect}
         onChange={handleChange}
         displayEmpty
         sx={{
+          borderRadius: '0',
           height: '28px',
           fontSize: '0.8rem',
+          fontStyle: 'normal',
         }}
         MenuProps={{
           PaperProps: {
@@ -33,6 +35,7 @@ const EmpSelectBox = ({ data, width, setCompanySelect, companySelect }) => {
           value=""
           style={{
             fontSize: '0.8rem',
+            fontStyle: 'normal',
             fontWeight: 'bold',
             borderBottom: '1px solid #CCC',
           }}

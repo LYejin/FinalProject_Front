@@ -43,7 +43,7 @@ const EmpSelectListWrapper = ({
         ))}
       </div>
       <div className="footerBox" onClick={onClickInsertEmp}>
-        <i class="fa-solid fa-circle-plus"></i>사원추가
+        <i className="fa-solid fa-circle-plus"></i>사원추가
       </div>
     </div>
   );

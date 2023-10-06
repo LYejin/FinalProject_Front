@@ -23,7 +23,7 @@ const EmpCheckSelectBox = ({ width, enrlList, handleCheckSelectChange }) => {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: width }} size="small">
+      <FormControl sx={{ mt: 1, mb: 1, width: width }} size="small">
         <Select
           id="demo-multiple-checkbox"
           multiple
@@ -35,6 +35,7 @@ const EmpCheckSelectBox = ({ width, enrlList, handleCheckSelectChange }) => {
             height: '28px',
             fontSize: '0.8rem',
             margin: 0,
+            borderRadius: '0',
           }}
         >
           {ENRL_FG_LIST.map(name => (

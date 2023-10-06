@@ -55,26 +55,26 @@ const FtradePage = () => {
         <ContentWrapper>
           <Title titleName={'금융거래처등록'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper height="50px" width="1200px">
-              <span className="rightSelectBoxPadding">거래처코드</span>
+            <SelectBoxWrapper height="50px" width="1400px">
+              <span className="rightSelectBoxPaddingFtradeTR">거래처코드</span>
               <input
                 type="text"
                 className="textInputBox"
                 {...register('select_TR_CD')}
               />
-              <span className="leftSelectBoxPadding">거래처명</span>
+              <span className="rightSelectBoxPaddingFtradeTRNM">거래처명</span>
               <input
                 type="text"
                 className="textInputBox"
                 {...register('select_TR_NM')}
               />
-              <span className="lastSelectBoxTextPadding">계좌/가맹점번호</span>
+              <span className="rightFtradeBANBTR">계좌/가맹점번호</span>
               <input
                 type="text"
                 className="textInputBox"
                 {...register('select_BA_NB_TR')}
               />
-              <div className="leftSelectBoxPadding">사용여부</div>
+              <div className="rightFtradeUSEYN">사용여부</div>
               <SelectBoxUSEYN
                 width={'80px'}
                 state={state.selectUseYN}
@@ -87,15 +87,17 @@ const FtradePage = () => {
                 setChangeFormData={state.setChangeFormData}
               />
               <div className="selectBoxButtonWrapper">
-                <EventButton
-                  data={<i className="fa-solid fa-magnifying-glass"></i>}
-                  width={'-10px'}
-                  height={30}
-                  onClickEvent={actions.onClickSearchEmpList}
-                />
+                <button
+                  className="FFcustomButton"
+                  onClick={actions.onClickSearchEmpList}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
               </div>
             </SelectBoxWrapper>
-            <MainContentWrapper>
+            <MainContentWrapper
+              height={state.deleteYN === true ? '110px' : '50px'}
+            >
               <SelectListWrapperCommon
                 width={'295px'}
                 title={'거래처'}
@@ -110,7 +112,7 @@ const FtradePage = () => {
                 {state.empList.map(info => (
                   <GtradeListBoxItem
                     key={info.tr_CD}
-                    //clickedBoxID={clickedBoxID}
+                    clickedBoxID={state.tr_CD}
                     isAllChecked={state.isAllChecked}
                     leftTop={info?.tr_CD}
                     rightTop={info?.tr_NM}
@@ -128,13 +130,6 @@ const FtradePage = () => {
                   <div className="tableHeader">
                     <div className="defaultTitle">기본등록사항</div>
                     <div className="buttonWrapper">
-                      <button
-                        type="button"
-                        className="WhiteButton"
-                        onClick={actions.removeStradelist}
-                      >
-                        L삭제
-                      </button>
                       <button type="submit" className="WhiteButton">
                         저장
                       </button>
@@ -147,7 +142,10 @@ const FtradePage = () => {
                       </button>
                     </div>
                   </div>
-                  <ScrollWrapper width={'900px'}>
+                  <ScrollWrapper
+                    width={'900px'}
+                    deptH={state.deleteYN === true ? 25 : -36}
+                  >
                     <FtradeInfoBox
                       register={register}
                       state={state}
@@ -163,6 +161,21 @@ const FtradePage = () => {
                   </ScrollWrapper>
                 </form>
               </RightContentWrapper>
+              {state.deleteYN === true && state.deleteListCount > 0 && (
+                <div className="deletBoxWrapper">
+                  <div className="deleteCount">{state.deleteListCount}건</div>
+                  <div className="deleteTradeSpan">선택됨</div>
+                  <div className="deleteButtonTradeWrapper">
+                    <div
+                      type="button"
+                      className="deleteTradeButton"
+                      onClick={actions.removeStradelist}
+                    >
+                      삭제
+                    </div>
+                  </div>
+                </div>
+              )}
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>

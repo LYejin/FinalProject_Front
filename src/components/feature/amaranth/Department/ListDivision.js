@@ -8,8 +8,13 @@ function ListDivision({ data, searchValue }) {
   const [isOpen, setIsOpen] = useState(
     localStorage.getItem('divisionIsOpen') === 'true' || false
   );
-  const { setSelectedDivCd, setSelectedDivCdName, setSelectedDeptCd } =
-    useContext(DeptContext);
+  const {
+    setSelectedDivCd,
+    setSelectedDivCdName,
+    setSelectedDeptCd,
+    setIsUpdate,
+    isModal,
+  } = useContext(DeptContext);
   const toggleOpen = () => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
@@ -17,9 +22,13 @@ function ListDivision({ data, searchValue }) {
   };
 
   const onDivisonClick = () => {
+    if (isModal === false) {
+      return;
+    }
     setSelectedDivCd(data.div_CD);
     setSelectedDivCdName(data.div_NM);
     setSelectedDeptCd('');
+    setIsUpdate(false);
   };
 
   const highlightStyle =
