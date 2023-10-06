@@ -98,7 +98,7 @@ li {
 }
 
 /*---------------------------------------------*/
-input {
+.loginInput {
   outline: none;
   border: none;
 }
