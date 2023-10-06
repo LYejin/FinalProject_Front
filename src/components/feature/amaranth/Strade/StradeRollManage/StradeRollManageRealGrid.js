@@ -19,6 +19,8 @@ const StradeRollManageRealGrid = ({
   dataProviderStrade,
   setDataProviderStrade,
   setDeleteCheck,
+  setDeleteYN,
+  setDeleteListCount,
 }) => {
   const [empMenuButton, setEmpMenuButton] = useState(false);
   const [empGridValue, setEmpGridValue] = useState(false);
@@ -88,9 +90,12 @@ const StradeRollManageRealGrid = ({
         newDataList.map(
           data => (data.insert_DT = String(data.insert_DT).slice(0, 10))
         );
-        dataProvider.fillJsonData(newDataList, {
-          fillMode: 'set',
-        });
+
+        if (Object.keys(newDataList).length > 0) {
+          dataProvider.fillJsonData(newDataList, {
+            fillMode: 'set',
+          });
+        }
 
         // update 상태로 변경
         for (let i = 0; i < Object.keys(response.data).length; i++) {
@@ -488,8 +493,11 @@ const StradeRollManageRealGrid = ({
       const checkedRows = gridView.getCheckedItems();
       if (checkedRows.length > 0) {
         setDeleteCheck('gridDelete');
+        setDeleteListCount(checkedRows.length);
+        setDeleteYN(true);
       } else {
         setDeleteCheck('');
+        setDeleteYN(false);
       }
     };
 
