@@ -1,5 +1,6 @@
 import React from 'react';
 import GetComp from '../../feature/amaranth/Department/GetComp';
+import FilterSelectBox from '../../feature/amaranth/Department/FilterSelectBox';
 
 function DeptShowWrapper({
   width,
@@ -10,6 +11,10 @@ function DeptShowWrapper({
   isModal,
   marginL,
   marginT,
+  useSelect,
+  showSelect,
+  setUseSelect,
+  setShowSelect,
 }) {
   const selectListWrapper = {
     position: 'relative',
@@ -25,7 +30,14 @@ function DeptShowWrapper({
       {!isModal && (
         <div className="deptListBoxHeader">
           <span className="deptListBoxtitle">· {title}</span>
-          <span className="deptListBoxSort">필터</span>
+          <span className="deptListBoxSort">
+            <FilterSelectBox
+              useSelect={useSelect}
+              showSelect={showSelect}
+              setUseSelect={setUseSelect}
+              setShowSelect={setShowSelect}
+            />
+          </span>
         </div>
       )}
       <div className="deptListWrapper">
