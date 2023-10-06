@@ -20,15 +20,13 @@ import {
   MainContentWrapper,
   RightContentWrapper,
   CompanySelectListWrapper,
-  SelectListWrapper,
   SelectBoxWrapper,
 } from './../../components/layout/amaranth/Index';
 import { CompanyInputBox } from '../../components/feature/amaranth/Index';
-import DaumPostcode from 'react-daum-postcode';
-import ComCheckSelectBox from '../../components/feature/amaranth/company/box/ComCheckSelectBox';
+
 import SelectBox from '../../components/feature/amaranth/company/box/SelectBox';
 import TextFieldBox from '../../components/feature/amaranth/company/box/TextFieldBox';
-import Button from '../../components/feature/amaranth/company/button/Button';
+
 import EventButton from '../../components/feature/amaranth/company/button/EventButton';
 import { useState } from 'react';
 import ChangeHistory from '../../components/feature/ChangeHistory/ChangeHistory';
@@ -38,14 +36,13 @@ import ChangeHistorySelectCategory from '../../components/feature/ChangeHistory/
 import { authAxiosInstance } from '../../axios/axiosInstance';
 import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
 import { getNowJoinTime } from '../../util/time';
+import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import { ko } from 'date-fns/esm/locale';
-import LogInfo from './../../components/common/logInfo/LogInfo';
+
 import SubmitButton from '../../components/common/button/SubmitButton';
 
 import { isAfter } from 'date-fns';
 
-import { DateRangePicker } from 'rsuite';
-import 'rsuite/dist/rsuite-no-reset.min.css';
 import { useRef } from 'react';
 
 const CompanyPage = () => {
@@ -83,35 +80,33 @@ const CompanyPage = () => {
   const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
   const [companyList, setCompanyList] = useState([]); // select box 내 company list
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+
   const [dateRange, setDateRange] = useState([]);
-  const CATEGORY = useRef('회사');
-  const kor = {
-    sunday: '일',
-    monday: '월',
-    tuesday: '화',
-    wednesday: '수',
-    thursday: '목',
-    friday: '금',
-    saturday: '토',
-    ok: '확인',
-    today: '오늘',
-    yesterday: '어제',
-    last7Days: '지난 7일',
+  const CATEGORY = useRef('사업장');
+
+  const [endStartDate, setEndStartDate] = useState(null);
+  const [endEndDate, setEndEndDate] = useState(null);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+  const [endStart, setEndStart] = useState();
+  const [endEnd, setEndEnd] = useState();
+
+  const [changeHistoryGrid, setChangeHistoryGrid] = useState();
+
+  const handleEndCalendarClick = () => {
+    setIsEndOpen(!isEndOpen);
+  };
+  const setEndDate1 = data => {
+    // console.log('데이트2', formatDate(endStartDate), formatDate(data));
+    setEndStart(getNowJoinTime(endStartDate));
+    setEndEnd(getNowJoinTime(data));
   };
 
-  // 날짜 범위가 변경될 때 호출되는 콜백 함수
-  const handleDateRangeChange = newDateRange => {
-    setDateRange(newDateRange); // 새로운 날짜 범위로 상태 업데이트
-  };
-
-  const handleSelect = ranges => {
-    // 선택한 날짜 범위 업데이트
-    setDateRange([ranges.selection]);
-    // setTimeout(() => {
-    //   setShowDateRangePicker(!showDateRangePicker);
-    // }, 1000);
+  const handleDateReset = e => {
+    console.log('변경(리셋)', endStartDate);
+    // setEndStartDate(null);
+    // setEndEndDate(null);
+    setEndStart(null);
+    setEndEnd(null);
   };
 
   const onChangeModalClose = () => {
@@ -119,6 +114,9 @@ const CompanyPage = () => {
   };
   const ModalOpenButton = () => {
     setChangeHistoryOpenPost(!changeHistoryOpenPost);
+    setIsEndOpen(false);
+    setEndStartDate();
+    setEndEndDate();
   };
 
   const getCompanyList = async () => {
@@ -134,22 +132,32 @@ const CompanyPage = () => {
   }, [changeHistoryOpenPost]);
 
   const onMasterGridSubmit = async data => {
-    data.CATEGORY = CATEGORY.current;
+    data.CH_CATEGORY = CATEGORY.current;
 
-    if (dateRange.length > 0) {
-      if (dateRange[0] !== undefined && dateRange[1] !== undefined) {
-        data.startDate = getNowJoinTime(dateRange[0]);
-        data.endDate = getNowJoinTime(dateRange[1]);
-      } else if (dateRange[0] !== undefined && dateRange[1] === undefined) {
-        data.startDate = getNowJoinTime(dateRange[0]);
-      }
+    if (endStart !== undefined && endEnd !== undefined) {
+      data.startDate = endStart;
+      data.endDate = endEnd;
+    } else if (endStart !== undefined && endEnd === undefined) {
+      data.startDate = endStart;
     }
-    const response = await authAxiosInstance(
-      'system/user/groupManage/employee/',
+
+    const response = await authAxiosInstance.post(
+      'system/admin/groupManage/ChangeHistorySearch',
       data
     );
-    setCompanyList(response.data);
-    console.log('변경검색1', data);
+
+    changeHistoryGrid.grid.showProgress(); //데이터 로딩바 생성
+    changeHistoryGrid.grid.cancel();
+    changeHistoryGrid.provider.clearRows();
+    changeHistoryGrid.grid.resetCurrent();
+    changeHistoryGrid.grid.cancel();
+
+    changeHistoryGrid.grid.closeProgress(); // 서버 데이터 로드 완료시 로딩바 제거
+    changeHistoryGrid.provider.fillJsonData(response.data, {
+      fillMode: 'set',
+    });
+    console.log('변경검색', data);
+    console.log('변경검색1', response.data);
   };
   return (
     <div className="sb-nav-fixed">
@@ -159,9 +167,12 @@ const CompanyPage = () => {
       <MainTitle mainTitle={'시스템 설정'} />
       <ContentWrapper>
         <Title titleName={'회사관리'}>
-          <div class="button-container">
-            <EventButton data={'변경이력'} onClickEvent={ModalOpenButton} />
-          </div>
+          <button
+            className="changeHistoryWhiteButton"
+            onClick={() => ModalOpenButton()}
+          >
+            변경이력
+          </button>
         </Title>
         <DetailContentWrapper>
           <SelectBoxWrapper>
@@ -173,9 +184,12 @@ const CompanyPage = () => {
               SearchDataSet={SearchDataSet}
               searchData={searchData}
             />
-            <div className="C_eventButton">
-              <EventButton data={'검색'} onClickEvent={searchCompanyOnClick} />
-            </div>
+            <button
+              className="companyFFcustomButton"
+              onClick={() => searchCompanyOnClick()}
+            >
+              <i className="fa-solid fa-magnifying-glass"></i>
+            </button>
           </SelectBoxWrapper>
           <MainContentWrapper>
             <CompanySelectListWrapper
@@ -193,7 +207,7 @@ const CompanyPage = () => {
             />
             <RightContentWrapper>
               <DetailTitle detailTitle={'기본정보'}></DetailTitle>
-              <ScrollWrapper width={'100%'} height={'100%'}>
+              <ScrollWrapper width={'100%'}>
                 <CompanyInputBox
                   formData={formData}
                   formDataSet={formDataSet}
@@ -216,18 +230,69 @@ const CompanyPage = () => {
           <form onSubmit={handleSubmit(onMasterGridSubmit)}>
             <SelectBoxWrapper>
               <span className="searchModalSelectBoxPadding">변경일자</span>
-              <DateRangePicker
-                placement={'bottomStart'}
-                preventOverflow
-                name="period"
-                ranges={dateRange}
-                onChange={handleDateRangeChange}
-                size="sm"
-                className="daterangepicker-container"
-                placeholder="변경기간"
-                disabledDate={date => isAfter(date, new Date())}
-                locale={kor}
-              />
+
+              <div style={{ position: 'relative' }}>
+                <input
+                  className="FixedInputStyle"
+                  type="text"
+                  readOnly
+                  value={
+                    endStartDate && endEndDate
+                      ? `${endStartDate.toLocaleDateString(
+                          'fr-CA'
+                        )}~${endEndDate.toLocaleDateString('fr-CA')}`
+                      : ''
+                  }
+                  onClick={handleEndCalendarClick}
+                />
+                <FaRegCalendarAlt
+                  className="FFInputIconStyle"
+                  size={20}
+                  onClick={handleEndCalendarClick}
+                />
+                {isEndOpen && (
+                  <div className="date-picker-container">
+                    <DatePicker
+                      className="date-picker"
+                      selected={endStartDate}
+                      onChange={date => setEndStartDate(date)}
+                      selectsStart
+                      startDate={endStartDate}
+                      endDate={endEndDate}
+                      inline
+                      locale={ko}
+                    />
+                    {endStartDate && (
+                      <DatePicker
+                        className="date-picker"
+                        selected={endEndDate}
+                        onChange={date => {
+                          setEndEndDate(date);
+                          setIsEndOpen(false);
+                          setEndDate1(date);
+                        }}
+                        selectsEnd
+                        startDate={endStartDate}
+                        endDate={endEndDate}
+                        minDate={
+                          new Date(endStartDate.getTime() + 24 * 60 * 60 * 1000)
+                        }
+                        inline
+                        locale={ko}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+              {endStartDate && (
+                <button
+                  onClick={() => handleDateReset()}
+                  className="companyCancelButton"
+                >
+                  취소
+                </button>
+              )}
+
               <span className="searchModalSelectBoxPadding">변경구분</span>
               <ChangeHistorySelectCategory
                 width={'calc(0% - -90px)'}
@@ -240,7 +305,7 @@ const CompanyPage = () => {
               />
               <span className="changeHistoryLableCompanyText">회사</span>
               <EmpSelectBox
-                width={100}
+                width={135}
                 data={companyList}
                 setCompanySelect={setCompanySelect}
                 companySelect={companySelect}
@@ -258,18 +323,18 @@ const CompanyPage = () => {
                 {...register('CH_NM')}
               />
               <div className="selectBoxButtonWrapper">
-                <SubmitButton
-                  data={<i className="fa-solid fa-magnifying-glass" />}
-                  width={'-10px'}
-                  height={30}
-                />
+                <button type="submit" className="companyFFcustomButton">
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </button>
               </div>
             </SelectBoxWrapper>
           </form>
+
           <ChangeHistory
             onChangeModalClose={onChangeModalClose}
             CATEGORY={CATEGORY.current}
             layout={comPanyChangeHistoryLayout}
+            setChangeHistoryGrid={setChangeHistoryGrid}
           />
         </Modal>
       )}
