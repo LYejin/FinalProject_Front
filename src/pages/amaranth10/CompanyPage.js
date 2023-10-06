@@ -31,7 +31,10 @@ import EventButton from '../../components/feature/amaranth/company/button/EventB
 import { useState } from 'react';
 import ChangeHistory from '../../components/feature/ChangeHistory/ChangeHistory';
 import Modal from '../../components/common/modal/Modal';
-import { comPanyChangeHistoryLayout } from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
+import {
+  comPanyChangeHistoryLayout,
+  empAndWorkChangeHistoryLayout,
+} from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
 import ChangeHistorySelectCategory from '../../components/feature/ChangeHistory/box/ChangeHistorySelectCategory';
 import { authAxiosInstance } from '../../axios/axiosInstance';
 import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
@@ -333,7 +336,7 @@ const CompanyPage = () => {
           <ChangeHistory
             onChangeModalClose={onChangeModalClose}
             CATEGORY={CATEGORY.current}
-            layout={comPanyChangeHistoryLayout}
+            layout={empAndWorkChangeHistoryLayout}
             setChangeHistoryGrid={setChangeHistoryGrid}
           />
         </Modal>

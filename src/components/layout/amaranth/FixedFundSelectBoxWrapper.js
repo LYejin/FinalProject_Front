@@ -546,6 +546,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
         )}
 
         <div className="inputDivStyle" style={{ position: 'relative' }}>
+          종료일
           <input
             className="FixedInputStyle"
             type="text"
