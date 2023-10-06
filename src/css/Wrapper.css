@@ -97,10 +97,15 @@
   height: 30px;
   border: 1px solid lightgray;
   border-radius: 0;
-  outline: none;
+  /* outline: none; */
   width: 200px;
   padding-right: 35px;
   padding-left: 5px;
+}
+
+.FixedInputStyle:focus {
+  outline: none;
+  border-color: #1C90FB;
 }
 
 .FFInputIconStyle {
@@ -120,10 +125,16 @@
   height: 30px;
   border: 1px solid lightgray;
   border-radius: 0;
-  outline: none;
+  /* outline: none; */
   width: 200px;
   padding-right: 35px;
 }
+
+.FixedInputStyle2:focus {
+  outline: none;
+  border-color: #1C90FB;
+}
+
 
 .FPSelectBoxWrapper > div:not(:last-child) {
   margin-bottom: 10px;

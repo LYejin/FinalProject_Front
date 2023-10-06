@@ -108,7 +108,7 @@ const DeptInfoWrapper = ({
                 defaultValue={data ? data.mdept_CD || '' : ''}
                 register={register('mdept_CD')}
                 maxLength={10}
-                style={{ width: '770px', float: 'left' }}
+                style={{ width: '350px', float: 'left' }}
                 readOnly
               />
               <button

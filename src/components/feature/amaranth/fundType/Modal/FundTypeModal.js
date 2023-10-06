@@ -29,7 +29,7 @@ const FundTypeModal = ({
       <div style={modalBox}>
         <div className="topModalWrapper">
           <Title titleName={title}>
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </Title>
           {children}
         </div>

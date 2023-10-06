@@ -12,7 +12,7 @@ const EditButton = ({ data, width, height, onClickEvent }) => {
       onClick={onClickEventFunction}
       variant="contained"
       size="small"
-      class="comWhiteButton"
+      className="comWhiteButton"
     >
       {data}
     </ButtonMUI>

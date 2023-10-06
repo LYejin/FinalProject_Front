@@ -156,7 +156,7 @@ const CompanyPage = () => {
       <MainTitle mainTitle={'시스템 설정'} />
       <ContentWrapper>
         <Title titleName={'회사관리'}>
-          <div class="button-container">
+          <div className="button-container">
             <EventButton data={'변경이력'} onClickEvent={ModalOpenButton} />
           </div>
         </Title>

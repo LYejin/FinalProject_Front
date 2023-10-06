@@ -22,7 +22,7 @@ const WorkpHeadTitle = ({
 
   return (
     <div className="detailTitleWrapper">
-      <i class="fa-solid fa-circle"></i>
+      <i className="fa-solid fa-circle"></i>
       {titleName}
       <div className="headTitleButton">
         <button className="WhiteButton" onClick={onClick}>

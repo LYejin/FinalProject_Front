@@ -21,7 +21,6 @@ function ListDivision({ data, searchValue }) {
     localStorage.setItem('divisionIsOpen', newIsOpen);
   };
 
-  console.log('====================================================');
   const onDivisonClick = () => {
     if (isModal === false) {
       return;

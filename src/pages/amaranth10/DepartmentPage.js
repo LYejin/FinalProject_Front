@@ -30,6 +30,7 @@ import { setDate } from 'date-fns';
 import Swal from 'sweetalert2';
 import _ from 'lodash';
 import Modal2 from '../../components/common/modal/Modal2';
+import DeptEmpListGrid from '../../components/feature/amaranth/Department/DeptEmpListGrid';
 
 const DepartmentPage = () => {
   const {
@@ -69,8 +70,6 @@ const DepartmentPage = () => {
   const [MdeptCD, setMdeptCD] = useState('');
 
   const formRef = useRef(null);
-
-  console.log(MdeptCD);
 
   const handleClick = () => {
     if (formRef.current) {
@@ -266,6 +265,7 @@ const DepartmentPage = () => {
         title: '부서추가 완료',
         text: '부서 정보가 성공적으로 입력되었습니다.',
       });
+      setSelectedDeptCd(userData.dept_CD);
       setIsUpdate(false);
     } else if (!isUpdate) {
       if (!onChangeForm) {
@@ -337,7 +337,6 @@ const DepartmentPage = () => {
       setAllDepartmentData(response.data);
       setUseCoCd(selectedCoCd); //현재 선택된 회사코드
       setMdeptCD('');
-      selectedDeptCd('');
       setSelectedDeptCd('');
       if (selectedLabel) {
         setUseCoCdName(selectedLabel); //현재 선택된 회사이름
@@ -450,6 +449,7 @@ const DepartmentPage = () => {
     setAddress();
     setAddressDetail();
     setSelectedDivCd(div_CD);
+    setSelectedDeptCd(dept_CD);
     setIsUpdate(false);
     setChangeForm(false);
     setChangeFormData();
@@ -525,6 +525,80 @@ const DepartmentPage = () => {
       }
     }
   };
+  const queryParams = new URLSearchParams();
+
+  const checkDeleteDept = async () => {
+    console.log('CoCd : ', useCoCd, 'Dept_CD :', selectedDeptCd);
+    if (
+      !useCoCd ||
+      !selectedDeptCd ||
+      useCoCd === '' ||
+      selectedDeptCd === ''
+    ) {
+      alert('부서를 선택하세요');
+      return;
+    }
+
+    queryParams.append('CO_CD', useCoCd);
+    queryParams.append('DEPT_CD', selectedDeptCd);
+
+    try {
+      const response = await authAxiosInstance.get(
+        `/system/user/departments/check-data?${queryParams.toString()}`
+      );
+
+      if (response.data === false) {
+        const userConfirmation = window.confirm(
+          '부서에 속한 하위 부서 혹은 사원이 존재하므로 삭제할 수 없습니다.\n미사용으로 변경하시겠습니까?'
+        );
+
+        if (userConfirmation) {
+          const response = await authAxiosInstance.put(
+            '/system/user/departments/update-department-employee',
+            {
+              CO_CD: useCoCd,
+              DEPT_CD: selectedDeptCd,
+            }
+          );
+
+          console.log('부서 삭제', response.data);
+          fetchDepartmentData(useCoCd);
+          Swal.fire({
+            icon: 'success',
+            title: '삭제 완료',
+            text: '부서 정보가 성공적으로 변경 되었습니다.',
+          });
+          console.log('미사용으로 변경');
+        } else {
+          console.log('삭제취소');
+        }
+      } else {
+        const deleteConfirmation = window.confirm('부서를 삭제하시겠습니까?');
+        if (deleteConfirmation) {
+          const response = await authAxiosInstance.delete(
+            '/system/user/departments/delete',
+            {
+              data: {
+                co_CD: useCoCd,
+                dept_CD: selectedDeptCd,
+              },
+            }
+          );
+          console.log('부서 삭제', response.data);
+          fetchDepartmentData(useCoCd);
+          Swal.fire({
+            icon: 'success',
+            title: '삭제 완료',
+            text: '부서가 삭제되었습니다.',
+          });
+        } else {
+          console.log('삭제취소');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching company data:', error);
+    }
+  };
 
   return (
     <>
@@ -586,6 +660,7 @@ const DepartmentPage = () => {
                   formRef={formRef}
                   setIsUpdate={setIsUpdate}
                   isUpdate={isUpdate}
+                  checkDeleteDept={checkDeleteDept}
                 ></DeptHeadTitle>
                 <div style={{ display: isVisible ? 'block' : 'none' }}>
                   <DeptSubTitle>
@@ -607,32 +682,38 @@ const DepartmentPage = () => {
                     </div>
                   </DeptSubTitle>
 
-                  <ScrollWrapper width={'900px'} deptH={30}>
-                    <form
-                      ref={formRef}
-                      onChange={onChangeFunction}
-                      onSubmit={handleSubmit(onSubmit)}
-                    >
-                      <DeptInfoWrapper
-                        data={data}
-                        register={register}
-                        CoCd={useCoCd}
-                        errors={errors}
-                        setError={setError}
-                        isUpdate={isUpdate}
-                        clearErrors={clearErrors}
-                        selectedRadioValue={selectedRadioValue}
-                        showRadioValue={showRadioValue}
-                        handleRadioChange={handleRadioChange}
-                        handleShowRadioChange={handleShowRadioChange}
-                        onChangeOpenPost={onChangeOpenPost}
-                        address={address}
-                        addressDetail={addressDetail}
-                        setChangeForm={onChangeFunction}
-                        onChangeOpenDeptList={onChangeOpenDeptList}
-                      />
-                    </form>
-                  </ScrollWrapper>
+                  {selectedDept === '1' ? (
+                    <ScrollWrapper width={'900px'} deptH={30}>
+                      <form
+                        ref={formRef}
+                        onChange={onChangeFunction}
+                        onSubmit={handleSubmit(onSubmit)}
+                      >
+                        <DeptInfoWrapper
+                          data={data}
+                          register={register}
+                          CoCd={useCoCd}
+                          errors={errors}
+                          setError={setError}
+                          isUpdate={isUpdate}
+                          clearErrors={clearErrors}
+                          selectedRadioValue={selectedRadioValue}
+                          showRadioValue={showRadioValue}
+                          handleRadioChange={handleRadioChange}
+                          handleShowRadioChange={handleShowRadioChange}
+                          onChangeOpenPost={onChangeOpenPost}
+                          address={address}
+                          addressDetail={addressDetail}
+                          setChangeForm={onChangeFunction}
+                          onChangeOpenDeptList={onChangeOpenDeptList}
+                        />
+                      </form>
+                    </ScrollWrapper>
+                  ) : (
+                    selectedDept === '0' && (
+                      <DeptEmpListGrid CoCd={useCoCd} DeptCd={selectedDeptCd} />
+                    )
+                  )}
                 </div>
                 <div
                   className="selectDeptImg"

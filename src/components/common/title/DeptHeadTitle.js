@@ -16,6 +16,7 @@ const DeptHeadTitle = ({
   formRef,
   setIsUpdate,
   isUpdate,
+  checkDeleteDept,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -26,7 +27,7 @@ const DeptHeadTitle = ({
   };
 
   const onClick2 = () => {
-    deleteDiv();
+    checkDeleteDept();
   };
 
   const onClickInsertDept = e => {
@@ -43,7 +44,7 @@ const DeptHeadTitle = ({
   };
   return (
     <div className="deptDetailTitleWrapper">
-      <i class="fa-solid fa-circle"></i>
+      <i className="fa-solid fa-circle"></i>
       {titleName}
       <div className="headTitleButton">
         {selectedDivCd && useCoCd && (
