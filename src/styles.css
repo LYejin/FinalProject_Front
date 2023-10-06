@@ -13,6 +13,7 @@
 @import './css/MainLogin.css';
 @import './css/Util.css';
 @import './css/Sidebar.css';
+@import './css/TradePage.css';
 
 :root {
   --bs-blue: #0d6efd;
@@ -120,6 +121,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-style: 'normal';
   font-family: var(--body-font);
   font-size: var(--normal-font-size);
 }

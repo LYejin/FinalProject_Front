@@ -1,0 +1,349 @@
+/* gtrade */
+
+/* top1 */
+.rightSelectBoxPaddingGtrade {
+  margin-left: 90px;
+  margin-right: 5px;
+  width: 55px;
+}
+
+.rightSelectBoxPaddingGtradeREG {
+  margin-left: 90px;
+  margin-right: 5px;
+  width: 93px;
+}
+
+.leftSelectBoxPaddingGtrade {
+  margin-left: 100px;
+  width: 67px;
+  margin-right: 5px;
+}
+
+/* top2 */
+.leftSelectBoxPaddingGtradePPL {
+  margin-left: 88px;
+  width: 80px;
+  margin-right: 5px;
+}
+
+.lastSelectBoxTextPaddingGtrade {
+  margin-left: 60px;
+  margin-right: 3px;
+  width: 97px;
+}
+
+.selectDetailWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.selectBox {
+  width: 1400px;
+  height: 100%;
+}
+
+.selectTop1 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+}
+
+.selectTop2 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+}
+
+.selectButtonWrapperGtrade {
+  padding-top: 8px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  height: 100%;
+}
+
+.listBoxTotalCheckBox {
+  margin-left: 15px;
+  margin-right: -10px;
+}
+
+.bottomGtradeListWrapper {
+  width: 100%;
+  height: 100%;
+  margin-top: -20px;
+  padding-left: 10px;
+}
+
+.gtradeLineFix {
+  margin-bottom: 2px;
+}
+
+/* ftrade */
+.rightSelectBoxPaddingFtradeTR {
+  margin-left: 65px;
+  width: 67px;
+}
+
+.rightSelectBoxPaddingFtradeTRNM {
+  margin-left: 60px;
+  width: 55px;
+}
+
+.rightFtradeBANBTR {
+  margin-left: 60px;
+  width: 98px;
+}
+
+.rightFtradeUSEYN {
+  margin-left: 60px;
+  width: 55px;
+}
+
+.leftSelectBoxPaddingFtrade {
+  margin-left: 100px;
+  width: 62px;
+  margin-right: 5px;
+}
+
+/* Gtrade InfoBox */
+.radioTradeStyle {
+  margin-top: 3px;
+  margin-bottom: -5px;
+  margin-left: -10px;
+}
+
+.inputTRCD {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+}
+
+.inputTRCDInsert {
+  width: 100%;
+  height: 26px;
+}
+
+.CiSquareMoreIcon {
+  font-size: 1.2rem;
+  padding-top: 1px;
+}
+
+/* 버튼 css */
+.WhiteButtonTR {
+  background: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 40px;
+  height: 100%;
+  margin-left: 3px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.GtradeFlex {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.GtradeFlexInsert {
+  width: 100%;
+  height: 26px;
+  display: flex;
+}
+
+.inputStylePPL {
+  width: 70%;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+}
+
+.reqInputStyleLiq {
+  width: 100%;
+  height: 29px;
+  border: 1px solid #ccc;
+  min-width: 150px;
+  padding-left: 5px;
+}
+
+.reqInputStyleAccount {
+  width: 100%;
+  height: 29px;
+  border: 1px solid #ccc;
+  min-width: 150px;
+  padding-left: 5px;
+  margin-right: 10px;
+}
+
+.errorWrapperTRCD {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  display: inline-block;
+}
+
+.WhiteButtonTRInsert {
+  background: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 40px;
+  height: 26px;
+  margin-left: 3px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.errorWrapperliq {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.cellFtradeHelf {
+  width: calc(40% - 2px);
+  border: 1px solid blue;
+}
+
+.headerCellStyle22 {
+  width: calc(50% - 2px); /* Subtract 2px for the border */
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+}
+
+.titleTrade {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.titleTradeRole {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid darkgray;
+}
+
+.tradeRoleYN {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 42px;
+  border-top: 1px solid darkgray;
+  border-bottom: 1px solid darkgray;
+  font-size: 14px;
+}
+
+.tradeRoleYNTitle {
+  width: 250px;
+  background-color: #fafafa;
+  padding-left: 140px;
+  padding-right: 20px;
+}
+
+.datePickerInputStyleTrade {
+  width: 135px;
+  height: 26px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+
+/* 삭제 하단 배너 */
+.deletBoxWrapper {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  align-items: center;
+  width: calc(100vw - 255px);
+  height: 65px;
+  background-color: #50596c;
+}
+
+.deleteCount {
+  margin-left: 30px;
+  color: #3bc1db;
+  font-size: large;
+  font-weight: 600;
+}
+
+.deleteTradeSpan {
+  margin-left: 5px;
+  color: white;
+  font-size: large;
+  font-weight: 600;
+}
+
+.liqModalTitle {
+  margin-left: 90px;
+  margin-right: 3px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 40px;
+}
+
+.deleteButtonTradeWrapper {
+  display: flex;
+  justify-content: end;
+  width: 90%;
+}
+
+.trModalTitle {
+  margin-left: 70px;
+  margin-right: 3px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 70px;
+}
+
+.ynModalTitle {
+  margin-left: 70px;
+  margin-right: 3px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 55px;
+}
+
+/* delete button */
+.deleteTradeButton {
+  color: white;
+  width: 60px;
+  height: 35px;
+  border: 1px solid #9b9ea2;
+  border-radius: 5px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.deleteTradeButton:hover {
+  color: white;
+  width: 60px;
+  height: 35px;
+  border: 1px solid white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
