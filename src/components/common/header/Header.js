@@ -1,5 +1,6 @@
 import React from 'react';
 import LogInfo from '../logInfo/LogInfo';
+import styled from 'styled-components';
 
 const Header = () => {
   return (

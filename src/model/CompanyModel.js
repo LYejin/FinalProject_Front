@@ -16,6 +16,7 @@ const CompanyModel = () => {
   const [ch_listData, ch_listDataSet] = useState(0);
   const [listCount, listCountSet] = useState(0);
   const [searchData, SearchDataSet] = useState();
+
   const reSetData = useRef({
     acct_FG: '일반 의료기관',
     business: '',

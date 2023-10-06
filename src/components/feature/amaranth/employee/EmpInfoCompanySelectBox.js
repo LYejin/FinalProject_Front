@@ -71,6 +71,7 @@ const EmpInfoCompanySelectBox = ({
             borderRadius: '0',
             border: errors.co_CD && errorName === 'co_CD' && '1px solid red',
             backgroundColor: clickYN && '#f2f2f2',
+            borderRadius: 0,
           }}
           MenuProps={{
             PaperProps: {

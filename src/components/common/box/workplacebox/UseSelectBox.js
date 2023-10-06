@@ -22,6 +22,7 @@ const UseSelectBox = ({ title, onChange, defaultUse }) => {
             height: '28px',
             fontSize: '0.8rem',
             width: '100px',
+            borderRadius: 0,
           }}
         >
           <MenuItem value="">

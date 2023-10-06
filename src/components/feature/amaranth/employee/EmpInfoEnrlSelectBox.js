@@ -49,6 +49,7 @@ const EmpInfoEnrlSelectBox = ({
             marginLeft: '-9px',
             border:
               errors.enrl_FG && errorName === 'enrl_FG' && '1px solid red',
+            borderRadius: 0,
           }}
           MenuProps={{
             PaperProps: {

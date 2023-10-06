@@ -35,7 +35,7 @@ const Modal = ({
         <div className="topModalWrapper">
           <Title titleName={title}>
             <div onClick={onClickEventFunction}>
-              <i className="fa-solid fa-xmark"></i>
+              <i className="fa-solid fa-xmark modelX"></i>
             </div>
           </Title>
           {children}
@@ -45,7 +45,7 @@ const Modal = ({
             <>
               <button
                 type="button"
-                className="WhiteButton"
+                className="WhiteMenuButton"
                 onClick={onClickEventFunction}
               >
                 취소

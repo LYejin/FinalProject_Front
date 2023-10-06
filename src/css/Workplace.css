@@ -113,6 +113,7 @@ color: #333;
 
 .headTitleButton{
   margin-left: auto;
+  margin-bottom: 5px;
 }
 
 /* 이미지 테이블 */
@@ -120,6 +121,7 @@ color: #333;
 width: 100%;
 border-collapse: collapse;
 border: 1px solid #ccc;
+border-top: 2px solid darkgray;
 }
 
 .headerRowStyle {
@@ -152,6 +154,7 @@ text-align: center;
 }
 
 .imageCellStyle_Workplace {
+min-width: 250px;
 padding: 10px;
 height: 120px;
 text-align: center;

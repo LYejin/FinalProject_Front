@@ -140,6 +140,21 @@ function RealGrid({
       visible: false,
     });
 
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
+
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+
     setChDataProvider(dataProvider);
     setChGridView(gridView);
 

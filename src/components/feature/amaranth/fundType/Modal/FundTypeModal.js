@@ -29,14 +29,14 @@ const FundTypeModal = ({
       <div style={modalBox}>
         <div className="topModalWrapper">
           <Title titleName={title}>
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </Title>
           {children}
         </div>
         <div className="bottomModalWrapper">
           {buttonYN && (
             <>
-              <button className="WhiteButton">취소</button>
+              <button className="WhiteMenuButton">취소</button>
               <button className="BlueButton">확인</button>
             </>
           )}

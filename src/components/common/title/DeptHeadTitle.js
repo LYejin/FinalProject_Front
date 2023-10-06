@@ -15,6 +15,8 @@ const DeptHeadTitle = ({
   onSave,
   formRef,
   setIsUpdate,
+  isUpdate,
+  checkDeleteDept,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -25,7 +27,7 @@ const DeptHeadTitle = ({
   };
 
   const onClick2 = () => {
-    deleteDiv();
+    checkDeleteDept();
   };
 
   const onClickInsertDept = e => {
@@ -42,12 +44,12 @@ const DeptHeadTitle = ({
   };
   return (
     <div className="deptDetailTitleWrapper">
-      <i class="fa-solid fa-circle"></i>
+      <i className="fa-solid fa-circle"></i>
       {titleName}
       <div className="headTitleButton">
         {selectedDivCd && useCoCd && (
-          <button className="WhiteButton" onClick={onClickInsertDept}>
-            추가
+          <button className="NewBlueButton" onClick={onClickInsertDept}>
+            {isUpdate ? '초기화' : '부서 추가'}
           </button>
         )}
         <button className="WhiteButton" onClick={onSaveClick}>

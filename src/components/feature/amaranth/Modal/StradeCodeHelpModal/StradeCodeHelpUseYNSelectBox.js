@@ -28,6 +28,7 @@ const StradeCodeHelpUseYNSelectBox = ({
           fontSize: '0.8rem',
           borderRadius: '0',
           marginLeft: '-9px',
+          borderRadius: 0,
         }}
         MenuProps={{
           PaperProps: {

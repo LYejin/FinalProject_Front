@@ -478,7 +478,7 @@ const WorkPlaceInfoWrapper = ({
       </table>
       <br />
 
-      <div>
+      {/* <div>
         <DetailTitle detailTitle={'신고 관련 정보'}></DetailTitle>
       </div>
       <table className="tableStyle">
@@ -536,7 +536,7 @@ const WorkPlaceInfoWrapper = ({
                 className="inputStyle"
                 style={{ verticalAlign: 'middle' }}
               /> */}
-              <input
+      {/*<input
                 type="text"
                 className="inputStyle"
                 style={{
@@ -594,13 +594,11 @@ const WorkPlaceInfoWrapper = ({
             </td>
           </tr>
         </tbody>
-      </table>
-
-      <br />
+      </table> */}
       <div>
         <DetailTitle detailTitle={'인감 정보'}></DetailTitle>
       </div>
-      <table className="tableStyle">
+      {/* <table className="tableStyle">
         <tbody>
           <tr>
             <th className="headerCellStyle"> 발신명의</th>
@@ -610,7 +608,7 @@ const WorkPlaceInfoWrapper = ({
           </tr>
         </tbody>
       </table>
-      <br />
+      <br /> */}
       <table className="tableStyle2">
         <thead>
           <tr className="headerRowStyle">

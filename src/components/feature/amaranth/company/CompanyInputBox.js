@@ -12,12 +12,14 @@ import { getNowJoinTime } from '../../../../util/time';
 import ComModel from './model/ComModel';
 import CompanyNameSelect from './CompanyNameSelect.js';
 import { Label } from '../../../../../node_modules/@mui/icons-material/index';
+import { ko } from 'date-fns/esm/locale';
 
-import EventButton from './button/EventButton';
 import SubmitButton from './button/SubmitButton';
 import EditButton from './button/EditButton';
 import { clear } from '../../../../../node_modules/@testing-library/user-event/dist/clear';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
+import Swal from 'sweetalert2';
+import EventButton from '../../../common/button/EventButton';
 
 const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   const {
@@ -63,9 +65,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     CO_NMK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     BUSINESS: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     JONGMOK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
-    REG_NB: [/^\d{3}-\d{2}-\d{5}$/, '000-00-00000형식에 맞춰서 입력하세요'],
+    REG_NB: [/^\d{3}-\d{2}-\d{5}$/, '형식에 맞춰서 입력하세요'],
     CEO_NM: [/^[가-힣]{3,4}$/, '3~4자리 이내로 입력하세요'],
-    HO_FAX: [/^\d{3}-\d{3}-\d{4}$/, '000-0000-000형식에 맞춰 입력하세요'],
+    HO_FAX: [/^\d{3}-\d{3}-\d{4}$/, '형식에 맞춰 입력하세요'],
     CEO_TEL: [/^0\d{2}-\d{3,4}-\d{4}$/, '전화번호 형식에 맞게 입력하세요'],
     PPL_NB: [
       /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])-\d{7}$/,
@@ -73,7 +75,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     ],
     HO_ZIP: [/^\d{5}$/, '우편번호 형식에 맞게 입력하세요'],
     HO_ADDR: [/[가-힣]+/, '잘못된 주소지 입니다'],
-    CO_NB: [/^\d{6}-\d{7}$/, '000000-0000000 형식에 맞게 입력하세요'],
+    CO_NB: [/^\d{6}-\d{7}$/, '형식에 맞게 입력하세요'],
     required: '필수 입력입니다',
     dup: '이미 존재합니다',
   };
@@ -101,6 +103,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   const [selectedDate, setSelectedDate] = useState();
   const [isOpenPost, setIsOpenPost] = useState(false); // 우편번호 모달창
   const [isOpenCompanyName, setIsOpenCompanyName] = useState(false); // 우편번호 모달창
+  const [uppercaseFormData, setUppercaseFormData] = useState({});
+  const companyCodeInput = useRef();
 
   React.useEffect(() => {
     if (formData) {
@@ -109,7 +113,13 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       setSelectedImage(formData.pic_FILE_ID);
 
       setChFormData();
-      console.log('!!!!!!!!!!!!!', ch_formData);
+      console.log(
+        '검사마운트',
+        ch_formData,
+        Object.keys(formData).length,
+        formData?.co_CD,
+        formData?.co_CD !== '' && formData
+      );
       setChFormData(prevChFormData => ({
         ...prevChFormData,
         CO_CD: formData.co_CD,
@@ -163,8 +173,12 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     console.log(Object.keys(errors).length);
     console.log(errors[e.target.name]?.message);
     console.log(
+      '검사',
+      formData.CO_CD,
       Object.keys(errors).length >= 0,
-      errors[e.target.name] !== undefined
+      errors[e.target.name] !== undefined,
+      e.target.value.includes('__'),
+      e.target.value
     );
     // if (Object.keys(errors).length >= 0) {
     //   Object.keys(errors).forEach(errorFieldName => {
@@ -180,10 +194,12 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       !dupError[e.target.name] &&
       !regexPatterns[e.target.name][0].test(e.target.value)
     ) {
+      console.log('검사확인');
       setError(e.target.name, {
-        message: e.target.value
-          ? regexPatterns[e.target.name][1]
-          : regexPatterns.required,
+        message:
+          e.target.value && !e.target.value.includes('__')
+            ? regexPatterns[e.target.name][1]
+            : regexPatterns.required,
       });
     } else if (
       dupError[e.target.name] &&
@@ -347,11 +363,22 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
           { 'Content-Type': 'multipart/form-data' } // 이부분 코드 확인하기
         );
         if (response.data !== '') {
-          ch_listDataSet(prveData => prveData + 1);
+          Swal.fire({
+            icon: 'success',
+            title: '저장 완료',
+            text: '회사 정보가 성공적으로 저장되었습니다.',
+          });
+          console.log('인풋', companyCodeInput.current);
+          companyCodeInput.current.readOnly = true;
         }
         console.log('전달된:', response.data);
       } catch (error) {
         console.error('데이터 전송 실패:', error);
+        // Swal.fire({
+        //   icon: 'error',
+        //   title: '저장 실패',
+        //   text: '회사 정보 저장에 실패했습니다. 다시 시도해주세요.',
+        // });
       }
     } else {
       for (const key in dupError) {
@@ -545,11 +572,56 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       setValue(type, '');
     }
   };
+  const updateCheckObjects = (obj1, obj2) => {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    delete keys2['0'];
+    console.log('변경(함수)', keys1, keys2);
+
+    // 두 객체의 프로퍼티 키 목록을 순회하며 값을 비교합니다.
+    for (const key of keys1) {
+      // 'current' 키는 건너뛰고 나머지 키만을 비교합니다.
+      if (key === 'current') {
+        continue;
+      }
+
+      // 두 객체의 같은 키에 대한 값을 비교합니다.
+      if (obj1[key] !== obj2[key]) {
+        console.log('변경(틀림)', obj1[key], obj2[key]);
+        return false; // 값이 다르면 다른 데이터를 가지고 있다고 판단합니다.
+      }
+    }
+
+    // 모든 프로퍼티가 같으면 같은 데이터를 가지고 있다고 판단합니다.
+    return true;
+  };
 
   const updateBtnClick = async () => {
-    console.log('변경!!!!!!!!!!!!', ch_formData);
+    const checkFormData = getValues();
+    for (const key in checkFormData) {
+      if (transformColme.includes(key)) {
+        checkFormData[key] = checkFormData[key].replace(/-/g, ''); // 하이픈 제거
+      }
+    }
+    const dataCheck = updateCheckObjects(checkFormData, up_FormData);
+
+    console.log(
+      '변경!!!!!!!!!!!!',
+      ch_formData,
+      formData,
+      getValues(),
+      checkFormData,
+      up_FormData,
+      dataCheck
+    );
     const isValid = await trigger();
-    if (ch_formData.CO_CD !== '' && isValid && hasValue(dupError)) {
+    if (
+      ch_formData.CO_CD !== '' &&
+      isValid &&
+      hasValue(dupError) &&
+      !dataCheck
+    ) {
       const c_formData = new FormData();
 
       for (const key in ch_formData) {
@@ -569,10 +641,19 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         );
         console.log(response.data);
         if (response.data !== '') {
-          ch_listDataSet(prveData => prveData + 1);
+          Swal.fire({
+            icon: 'success',
+            title: '업데이트 완료',
+            text: '회사 정보가 성공적으로 업데이트되었습니다.',
+          });
         }
       } catch (error) {
         console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: '업데이트 실패',
+          text: '회사 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+        });
       }
       console.log('변경!!!!!!!!!!!?', ch_formData);
     } else {
@@ -625,22 +706,31 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         onKeyDown={onEnterKeyDown}
       >
         <div className="button-container">
-          <SubmitButton data={'추가'} width={'-10px'} height={30} />
-          <EditButton
-            data={'수정'}
-            width={'-10px'}
-            height={30}
-            onClickEvent={() => {
-              trigger(); // 유효성 검사를 실행한 후 onSubmit 호출
-              handleSubmit(updateBtnClick)();
-            }}
-          />
-          <EventButton
-            data={'삭제'}
-            width={'-10px'}
-            height={30}
-            onClickEvent={removeBtnClick}
-          />
+          {formData?.co_CD !== '' && formData ? (
+            <div>
+              <button
+                className="WhiteButton"
+                onClick={() => {
+                  trigger(); // 유효성 검사를 실행한 후 onSubmit 호출 (수정하기)
+                  handleSubmit(updateBtnClick());
+                }}
+              >
+                저장
+              </button>
+            </div>
+          ) : (
+            <div>
+              <button type="submit" className="WhiteButton">
+                저장
+              </button>
+            </div>
+          )}
+          <button
+            className="companyRemoveWhiteButton"
+            onClick={() => removeBtnClick()}
+          >
+            삭제
+          </button>
         </div>
 
         <table className="tableStyle">
@@ -702,8 +792,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   ) : (
                     <input
                       type="text"
+                      ref={companyCodeInput}
                       name={labels.CO_CD}
-                      maxlength="4"
+                      maxLength="4"
                       className="companyReqInputStyle"
                       {...register(labels.CO_CD, {
                         pattern: {
@@ -716,7 +807,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     />
                   )}
                   {errors[labels.CO_CD] && (
-                    <p className="errorBox">{errors?.CO_CD?.message}</p>
+                    <p className="comerrorBox">{errors?.CO_CD?.message}</p>
                   )}
                 </div>
               </td>
@@ -739,7 +830,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.CO_NM}
-                    maxlength="17"
+                    maxLength="17"
                     className="C_addressInputStyle"
                     {...register(labels.CO_NM, {
                       pattern: {
@@ -751,12 +842,15 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     onFocus={onFocusErrors}
                   />
                   {errors[labels.CO_NM] && (
-                    <p className="errorBox">{errors?.CO_NM?.message}</p>
+                    <p className="comerrorBox">{errors?.CO_NM?.message}</p>
                   )}
-                  <EventButton
-                    data={'검색'}
-                    onClickEvent={onChangeOpenCompanyName}
-                  ></EventButton>
+
+                  <button
+                    className="companyFFcustomButton"
+                    onClick={onChangeOpenCompanyName}
+                  >
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </button>
                 </div>
               </td>
               <th className="headerCellStyle">회사약칭</th>
@@ -765,7 +859,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.CO_NMK}
-                    maxlength="10"
+                    maxLength="10"
                     className="inputStyle"
                     {...register(labels.CO_NMK, {
                       pattern: {
@@ -773,10 +867,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                         message: regexPatterns.CO_NMK[1],
                       },
                     })}
-                    onFocus={onFocusErrors}
                   />
                   {errors[labels.CO_NMK] && (
-                    <p className="errorBox">{errors?.CO_NMK?.message}</p>
+                    <p className="comerrorBox">{errors?.CO_NMK?.message}</p>
                   )}
                 </div>
               </td>
@@ -801,13 +894,13 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       <input
                         type="text"
                         name={labels.REG_NB}
-                        maxlength="13"
+                        maxLength="13"
                         className="companyReqInputStyle"
                       />
                     )}
                   </InputMask>
                   {errors[labels.REG_NB] && (
-                    <p className="errorBox">{errors?.REG_NB?.message}</p>
+                    <p className="comerrorBox">{errors?.REG_NB?.message}</p>
                   )}
                 </div>
               </td>
@@ -842,13 +935,13 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                         <input
                           type="text"
                           name={labels.CO_NB}
-                          maxlength="15"
+                          maxLength="15"
                           className="companyReqInputStyle"
                         />
                       )}
                     </InputMask>
                     {errors[labels.CO_NB] && (
-                      <p className="errorBox">{errors?.CO_NB?.message}</p>
+                      <p className="comerrorBox">{errors?.CO_NB?.message}</p>
                     )}
                   </div>
                 </div>
@@ -861,7 +954,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.BUSINESS}
-                    maxlength="10"
+                    maxLength="10"
                     className="companyReqInputStyle"
                     {...register(labels.BUSINESS, {
                       pattern: {
@@ -873,7 +966,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     onFocus={onFocusErrors}
                   />
                   {errors[labels.BUSINESS] && (
-                    <p className="errorBox">{errors?.BUSINESS?.message}</p>
+                    <p className="comerrorBox">{errors?.BUSINESS?.message}</p>
                   )}
                 </div>
               </td>
@@ -883,7 +976,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.JONGMOK}
-                    maxlength="10"
+                    maxLength="10"
                     className="companyReqInputStyle"
                     {...register(labels.JONGMOK, {
                       pattern: {
@@ -896,7 +989,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   />
 
                   {errors[labels.JONGMOK] && (
-                    <p className="errorBox">{errors?.JONGMOK?.message}</p>
+                    <p className="comerrorBox">{errors?.JONGMOK?.message}</p>
                   )}
                 </div>
               </td>
@@ -908,7 +1001,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.CEO_NM}
-                    maxlength="4"
+                    maxLength="4"
                     className="companyReqInputStyle"
                     {...register(labels.CEO_NM, {
                       pattern: {
@@ -920,7 +1013,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     onFocus={onFocusErrors}
                   />
                   {errors[labels.CEO_NM] && (
-                    <p className="errorBox">{errors?.CEO_NM?.message}</p>
+                    <p className="comerrorBox">{errors?.CEO_NM?.message}</p>
                   )}
                 </div>
               </td>
@@ -930,7 +1023,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.CEO_TEL}
-                    maxlength="13"
+                    maxLength="13"
                     className="companyReqInputStyle"
                     {...register(labels.CEO_TEL, {
                       pattern: {
@@ -942,7 +1035,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     onFocus={onFocusErrors}
                   />
                   {errors[labels.CEO_TEL] && (
-                    <p className="errorBox">{errors?.CEO_TEL?.message}</p>
+                    <p className="comerrorBox">{errors?.CEO_TEL?.message}</p>
                   )}
                 </div>
               </td>
@@ -967,34 +1060,38 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                       <input
                         type="text"
                         name={labels.PPL_NB}
-                        maxlength="15"
+                        maxLength="15"
                         className="companyReqInputStyle"
                       />
                     )}
                   </InputMask>
                   {errors[labels.PPL_NB] && (
-                    <p className="errorBox">{errors?.PPL_NB?.message}</p>
+                    <p className="comerrorBox">{errors?.PPL_NB?.message}</p>
                   )}
                   {errors['DUP_PPL_NB'] && (
-                    <p className="errorBox">{errors?.DUP_PPL_NB?.message}</p>
+                    <p className="comerrorBox">{errors?.DUP_PPL_NB?.message}</p>
                   )}
                 </div>
               </td>
               <th className="headerCellStyle">대표팩스</th>
               <td className="cellStyle">
-                <input
-                  type="text"
-                  name={labels.HO_FAX}
-                  maxlength="12"
-                  className="inputStyle"
-                  {...register(labels.HO_FAX, {
-                    pattern: {
-                      value: regexPatterns.HO_FAX[0],
-                      message: regexPatterns.HO_FAX[1],
-                    },
-                  })}
-                />
-                {errors[labels.HO_FAX] && <p>{errors?.HO_FAX?.message}</p>}
+                <div className="errorWrapper">
+                  <input
+                    type="text"
+                    name={labels.HO_FAX}
+                    maxLength="12"
+                    className="inputStyle"
+                    {...register(labels.HO_FAX, {
+                      pattern: {
+                        value: regexPatterns.HO_FAX[0],
+                        message: regexPatterns.HO_FAX[1],
+                      },
+                    })}
+                  />
+                  {errors['HO_FAX'] && (
+                    <p className="comerrorBox">{errors?.HO_FAX?.message}</p>
+                  )}
+                </div>
               </td>
             </tr>
             <tr>
@@ -1009,6 +1106,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   dateFormat="yyyy-MM-dd"
                   calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                   className="C_datePickerReqInputStyle"
+                  locale={ko}
                 />
               </td>
               <th className="headerCellStyle">개/폐업일</th>
@@ -1023,6 +1121,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                     className="C_datePickerInputStyle"
+                    locale={ko}
                   />
                   <p className="p_margin">/</p>
                   <DatePicker
@@ -1034,6 +1133,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                     className="C_datePickerInputStyle"
+                    locale={ko}
                   />
                 </div>
               </td>
@@ -1047,7 +1147,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     className="C_addressInputStyle"
-                    maxlength="5"
+                    maxLength="5"
                     {...register(labels.HO_ZIP, {
                       pattern: {
                         value: regexPatterns.HO_ZIP[0],
@@ -1057,10 +1157,12 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     })}
                     onFocus={onFocusErrors}
                   />
-                  <EventButton
-                    data={'우편번호'}
-                    onClickEvent={onChangeOpenPost}
-                  ></EventButton>
+                  <button
+                    className="companyWhiteButton"
+                    onClick={() => onChangeOpenPost()}
+                  >
+                    우편번호
+                  </button>
                   {errors[labels.HO_ZIP] && (
                     <p className="zipErrorBox">{errors?.HO_ZIP?.message}</p>
                   )}

@@ -42,7 +42,7 @@ const SelectListWrapperCommon = ({
         {children}
       </div>
       <div className="footerBox" onClick={onClickInsertEmp}>
-        <i class="fa-solid fa-circle-plus"></i>추가
+        <i className="fa-solid fa-circle-plus"></i>추가
       </div>
     </div>
   );
