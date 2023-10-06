@@ -23,6 +23,9 @@ const FundTypeSearch = ({
   setMenuGrid,
   inputData,
   setreqCASH_CD,
+  onChangeOpenCash,
+  FixedPage,
+  onRowSelected,
 }) => {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -154,8 +157,36 @@ const FundTypeSearch = ({
 
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
+      // 고정자금등록 페이지 자금과목 검색
+      if (FixedPage === 2) {
+        const clickRowData = grid.getValues(clickData.itemIndex);
+        const insertData = {
+          cash_CD: clickRowData?.CASH_CD,
+          cash_NM: clickRowData?.CASH_NM,
+        };
+        onRowSelected(insertData);
+        onChangeOpenCash();
+        return;
+      }
       const nowLow = marsterGrid.grid.getCurrent().itemIndex;
       const marsterGrid_CASH_CD = marsterGrid.grid.getValue(nowLow, 'CASH_CD');
+
+      //고정자금등록 페이지 자금과목코드 설정
+      if (clickData.cellType === 'data' && FixedPage === 1) {
+        const clickRowData = grid.getValues(clickData.itemIndex);
+        const insertData = {
+          cash_CD: clickRowData?.CASH_CD,
+          cash_NM: clickRowData?.CASH_NM,
+        };
+        marsterGrid.grid.setValues(nowLow, insertData, true);
+        marsterGrid.grid.setCurrent({
+          itemIndex: nowLow,
+          column: 'TR_CD',
+        });
+        marsterGrid.grid.setFocus();
+        onChangeOpenCash();
+        return;
+      }
 
       console.log('셀타입', clickData.cellType);
       if (clickData.cellType === 'data') {
@@ -187,11 +218,44 @@ const FundTypeSearch = ({
     };
 
     grid.onKeyDown = (grid, event) => {
+      if (event.key === 'Enter') {
+        //고정자금등록 자금과목검색
+        if (FixedPage === 2) {
+          const clickRowData = grid.getValues(grid.getCurrent().itemIndex);
+          const insertData = {
+            cash_CD: clickRowData?.CASH_CD,
+            cash_NM: clickRowData?.CASH_NM,
+          };
+          onRowSelected(insertData);
+          onChangeOpenCash();
+          return;
+        }
+      }
       console.log('검색엔터', event.key, provider.getRowCount());
       const totalRow = provider.getRowCount();
-      const nowLow = marsterGrid.grid.getCurrent().itemIndex;
-      const marsterGrid_CASH_CD = marsterGrid.grid.getValue(nowLow, 'CASH_CD');
+      const nowLow = marsterGrid?.grid?.getCurrent()?.itemIndex;
+      const marsterGrid_CASH_CD = marsterGrid?.grid?.getValue(
+        nowLow,
+        'CASH_CD'
+      );
+
       if (event.key === 'Enter' && totalRow !== 0) {
+        //고정자금등록 자금과목설정
+        if (FixedPage === 1) {
+          const clickRowData = grid.getValues(grid.getCurrent().itemIndex);
+          const insertData = {
+            cash_CD: clickRowData?.CASH_CD,
+            cash_NM: clickRowData?.CASH_NM,
+          };
+          onChangeOpenCash();
+          marsterGrid.grid.setValues(nowLow, insertData, true);
+          marsterGrid.grid.setCurrent({
+            itemIndex: nowLow,
+            column: 'TR_CD',
+          });
+          marsterGrid.grid.setFocus();
+          return;
+        }
         if (marsterGrid_CASH_CD !== undefined) {
           const clickRowData = grid.getValues(grid.getCurrent().itemIndex);
           const insertData = {
@@ -221,6 +285,15 @@ const FundTypeSearch = ({
           onChangeOpenPost();
           marsterGrid.grid.setValue(nowLow, 'SUM_CD', '');
         }
+      }
+      if (event.key === 'Escape' && FixedPage === 1) {
+        marsterGrid.grid.setCurrent({
+          dataRow: nowLow.dataRow,
+          column: 'cash_CD',
+        });
+        marsterGrid.grid.setFocus();
+        onChangeOpenCash();
+        return;
       }
       if (event.key === 'Escape') {
         marsterGrid.grid.setCurrent({

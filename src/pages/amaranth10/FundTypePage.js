@@ -525,24 +525,12 @@ const FundTypePage = () => {
         <ContentWrapper>
           <Title titleName={'자금과목설정'}>
             {' '}
-            <EventButton
-              data={'삭제'}
-              width={'-10px'}
-              height={30}
-              onClickEvent={deleteBtnClick}
-            />
-            <EventButton
-              data={'저장하기'}
-              width={'-10px'}
-              height={30}
-              onClickEvent={excelExport}
-            />
-            <input
-              type="file"
-              name="excelFile"
-              id="xlf"
-              onChange={excelImport}
-            />
+            <button
+              className="changeHistoryWhiteButton"
+              onClick={() => deleteBtnClick()}
+            >
+              삭제
+            </button>
           </Title>
           <DetailContentWrapper>
             <form
@@ -582,11 +570,9 @@ const FundTypePage = () => {
                   register={register}
                 />
                 <div className="selectBoxButtonWrapper">
-                  <SubmitButton
-                    data={<i className="fa-solid fa-magnifying-glass" />}
-                    width={'-10px'}
-                    height={30}
-                  />
+                  <button type="submit" className="companyFFcustomButton">
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                  </button>
                 </div>
               </SelectBoxWrapper>
             </form>

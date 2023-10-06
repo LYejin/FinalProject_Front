@@ -168,7 +168,7 @@ export const changeHistoryDetailColumns = [
   {
     name: 'chd_ITEM',
     fieldName: 'chd_ITEM',
-    width: '100', // 너비 수정
+    width: '70', // 너비 수정
     styleName: 'left-column ',
     header: {
       text: '항목명', // 열 헤더 텍스트 수정
@@ -202,7 +202,7 @@ export const changeHistoryDetailColumns = [
   {
     name: 'chd_AT',
     fieldName: 'chd_AT',
-    width: '50', // 너비 수정
+    width: '100', // 너비 수정
     styleName: 'left-column ',
     renderer: {
       type: 'html',

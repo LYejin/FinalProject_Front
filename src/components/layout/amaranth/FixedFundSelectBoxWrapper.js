@@ -13,9 +13,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useRef } from 'react';
 import FundTypeModal from '../../feature/amaranth/fundType/Modal/FundTypeModal';
 import FundTypeModel from '../../feature/amaranth/fundType/model/FundTypeModel';
+import FundTypeSelectBoxWrapper from '../../feature/amaranth/fundType/Box/SelectBoxWrapper';
+import FundTypeSelectBoxUSEYN from '../../feature/amaranth/fundType/Box/FundTypeSelectBoxUSEYN';
+import FundTypeRidoButton from '../../feature/amaranth/fundType/Box/FundTypeRidoButton';
+import SubmitButton from '../../common/button/SubmitButton';
+import FundTypeSearch from '../../feature/amaranth/fundType/FundTypeSearch';
+import { useForm } from 'react-hook-form';
 import { ko } from 'date-fns/esm/locale';
 
-const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
+const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false); //거래처 모달 State
   const [isOpenCash, setIsOpenCash] = useState(false); //자금과목 모달 State
@@ -44,6 +50,42 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   const [startEnd, setStartEnd] = useState(null);
   const [endStart, setEndStart] = useState(null);
   const [endEnd, setEndEnd] = useState(null);
+
+  /////////////
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const wrapperRef = useRef(null);
+
+  const [cellClickData, setCellClickData] = useState(null);
+  const [changeFormData, setChangeFormData] = useState({});
+  const [onChangeForm, setChangeForm] = useState(false);
+  const [clickYN, setClickYN] = useState(true);
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectUseYN, setSelectUseYN] = useState('여');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (wrapperRef.current) {
+        setIsSmallScreen(wrapperRef.current.offsetWidth <= 1330);
+      }
+    };
+
+    handleResize(); // 초기 크기에 따라 상태 설정
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  ////////////////////////
 
   const formatDate = date => {
     const year = date.getFullYear();
@@ -78,11 +120,52 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
     loadRowData,
     CASH_CD,
     setCASH_CD,
+    LEVEL_CD,
     marsterGrid,
     setMarsterGrid,
-    setCheckList,
-    deleteBtnClick,
+    searchGrid,
+    setSearchGrid,
+    setMenuGrid,
+    inputData,
   } = FundTypeModel();
+
+  const handleOptionChange = option => {
+    console.log('라디오', option);
+    setSelectedOption(option);
+  };
+
+  const onSearchGridSubmit = async SearchData => {
+    SearchData.CASH_FG = selectedOption;
+    console.log('라디오', SearchData, selectUseYN);
+    searchGrid.grid.showProgress(); //데이터 로딩바 생성
+    searchGrid.grid.cancel();
+    searchGrid.provider.clearRows();
+    searchGrid.grid.resetCurrent();
+    searchGrid.grid.cancel();
+    loadRowData(SearchData)
+      .then(loadData => {
+        console.log('검색전', CASH_CD, loadData);
+        if (CASH_CD !== undefined) {
+          loadData = loadData.filter(item => CASH_CD !== item.CASH_CD);
+        }
+        console.log('검색후', CASH_CD, loadData);
+        searchGrid.grid.closeProgress(); // 서버 데이터 로드 완료시 로딩바 제거
+        searchGrid.provider.fillJsonData(loadData, {
+          fillMode: 'set',
+        });
+        //마지막행에 항상 빈 행을 추가하는 기능
+        searchGrid.grid.setEditOptions({ displayEmptyEditRow: true });
+        //뷰 마운트 시 커서 포커스를 마지막 행 첫번째 셀에 위치하게 설정
+        searchGrid.grid.setCurrent({
+          itemIndex: 0,
+          column: 'CASH_FG',
+        });
+        searchGrid.grid.setFocus();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
   const hasSent = useRef(false);
 
@@ -226,7 +309,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
   };
 
   return (
-    <div className="FPSelectBoxWrapper">
+    <div className="FPSelectBoxWrapper" ref={wrapperRef}>
       <div className="firstDiv">
         <div className="inputDivStyle" style={{ position: 'relative' }}>
           회계단위{' '}
@@ -262,7 +345,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
             onOpen={handleOpenModal}
           />
         </Modal2>
-        <div className="inputDivStyle" style={{ position: 'relative' }}>
+        <div className="inputDivStyle5" style={{ position: 'relative' }}>
           자금과목{' '}
           <input
             className="FixedInputStyle"
@@ -277,23 +360,65 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
           />
         </div>
         {isOpenCash ? (
-          <FundTypeModal
-            width={'700px'}
-            height={'750px'}
-            title={'자금과목코드도움'}
-            onClickEvent={onChangeOpenCash}
-            buttonYN="true"
-          >
-            <FundTypeSearchGrid
-              loadRowData={loadRowData}
-              setCASH_CD={setCASH_CD}
-              onChangeOpenCash={onChangeOpenCash}
-              marsterGrid={marsterGrid}
-              setMarsterGrid={setMarsterGrid}
-              FixedFuntState={1}
-              onRowSelected={handleFTRowSelected}
-            />
-          </FundTypeModal>
+          <div className="ModalContainer">
+            <FundTypeModal
+              width={'720px'}
+              height={'750px'}
+              title={'자금과목코드도움'}
+              onClickEvent={onChangeOpenCash}
+              buttonYN="true"
+            >
+              <form
+                onSubmit={handleSubmit(onSearchGridSubmit)}
+                onChange={onChangeFunction}
+              >
+                <FundTypeSelectBoxWrapper>
+                  <FundTypeSelectBoxUSEYN
+                    width={'calc(0% - -100px)'}
+                    state={selectUseYN}
+                    setState={setSelectUseYN}
+                    clickYN={clickYN}
+                    register={register}
+                    total={true}
+                    setChangeFormData={setChangeFormData}
+                  />
+                  <input
+                    type="text"
+                    className="searchModalTextInputBox "
+                    Placeholder="검색어 입력"
+                    {...register('searchData')}
+                  />
+                  <span className="searchModalSelectBoxPadding">수지구분</span>
+                  <FundTypeRidoButton
+                    options={['', '지출', '수입']}
+                    defultValue={'전체'}
+                    selectedOption={selectedOption}
+                    onOptionChange={handleOptionChange}
+                  />
+                  <div className="selectBoxButtonWrapper">
+                    <SubmitButton
+                      data={<i className="fa-solid fa-magnifying-glass" />}
+                      width={'-10px'}
+                      height={30}
+                    />
+                  </div>
+                </FundTypeSelectBoxWrapper>
+              </form>
+              <FundTypeSearch
+                loadRowData={loadRowData}
+                LEVEL_CD={LEVEL_CD}
+                CASH_CD={CASH_CD}
+                onChangeOpenCash={onChangeOpenCash}
+                marsterGrid={marsterGrid}
+                setMarsterGrid={setMarsterGrid}
+                setSearchGrid={setSearchGrid}
+                setMenuGrid={setMenuGrid}
+                inputData={inputData}
+                FixedPage={2}
+                onRowSelected={handleFTRowSelected}
+              />
+            </FundTypeModal>
+          </div>
         ) : null}
         <div className="inputDivStyle" style={{ position: 'relative' }}>
           거래처{' '}
@@ -318,26 +443,44 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange }) => {
             InputState={1}
           />
         )}
-        <div className="inputDivStyle3" style={{ position: 'relative' }}>
-          금융거래처{' '}
-          <input
-            className="FixedInputStyle"
-            type="text"
-            placeholder="거래처코드도움"
-            defaultValue={ftradeValue}
-          ></input>
-          <FaRegListAlt
-            className="FFInputIconStyle"
-            size={20}
-            onClick={handleFtradeIconClick}
-          />
-        </div>
+        {!isSmallScreen && (
+          <div className="inputDivStyle3" style={{ position: 'relative' }}>
+            금융거래처{' '}
+            <input
+              className="FixedInputStyle"
+              type="text"
+              placeholder="거래처코드도움"
+              defaultValue={ftradeValue}
+            ></input>
+            <FaRegListAlt
+              className="FFInputIconStyle"
+              size={20}
+              onClick={handleFtradeIconClick}
+            />
+          </div>
+        )}
         <button className="FFcustomButton" onClick={sendValuesToParent}>
           <i className="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
 
       <div className="secondDiv">
+        {isSmallScreen && (
+          <div className="inputDivStyle4" style={{ position: 'relative' }}>
+            금융거래처{' '}
+            <input
+              className="FixedInputStyle"
+              type="text"
+              placeholder="거래처코드도움"
+              defaultValue={ftradeValue}
+            ></input>
+            <FaRegListAlt
+              className="FFInputIconStyle"
+              size={20}
+              onClick={handleFtradeIconClick}
+            />
+          </div>
+        )}
         <div className="inputDivStyle2" style={{ position: 'relative' }}>
           시작일
           <input

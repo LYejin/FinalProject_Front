@@ -14,4 +14,5 @@ export const URL = {
   GeneralVendorRegistration: '/GeneralVendorRegistration',
   Department: '/Department',
   FixedFund: '/FixedFund',
+  LoginMain: '/LoginMain',
 };

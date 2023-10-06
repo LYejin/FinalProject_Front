@@ -1,7 +1,7 @@
 import React from 'react';
 import ButtonMUI from '@mui/material/Button';
 
-const EditButton = ({ data, width, height, onClickEvent }) => {
+const EventButton = ({ data, width, height, onClickEvent, classname }) => {
   const onClickEventFunction = () => {
     console.log('hiii');
     onClickEvent();
@@ -12,11 +12,11 @@ const EditButton = ({ data, width, height, onClickEvent }) => {
       onClick={onClickEventFunction}
       variant="contained"
       size="small"
-      class="comWhiteButton"
+      class={classname}
     >
       {data}
     </ButtonMUI>
   );
 };
 
-export default EditButton;
+export default EventButton;

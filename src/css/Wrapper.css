@@ -20,7 +20,7 @@
   border: 2px solid #e6e6e6;
   display: flex;
   align-items: center;
-  padding-left: 90px;
+
   margin-bottom: 10px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -39,7 +39,7 @@
 }
 
 .FPSelectBoxWrapper {
-  min-width: 1330px;
+  min-width: 1050px;
   height: 90px;
   border: 2px solid #e6e6e6;
   display: flex;
@@ -62,18 +62,28 @@
 }
 
 .secondDiv {
-  margin-left: 88px;
+  margin-left: 86px;
 }
 
 .inputDivStyle {
   margin-right: 50px;
 }
+
 .inputDivStyle2 {
   margin-right: 66px;
 }
 
+.inputDivStyle5 {
+  margin-right: 64px;
+}
+
 .inputDivStyle3 {
   margin-right: 10px;
+}
+
+.inputDivStyle4 {
+  margin-right: 67px;
+  margin-left: -29px;
 }
 
 .FixedInputStyle {
@@ -81,7 +91,6 @@
   height: 30px;
   border: 1px solid lightgray;
   border-radius: 0;
-  outline: none;
   width: 200px;
   padding-right: 35px;
   padding-left: 5px;
@@ -145,6 +154,29 @@
   cursor: pointer;
 }
 
+.MdeptcustomButton {
+  width: 30px;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #4aa1f2;
+  transition: border-color 0.5s;
+  vertical-align: middle;
+  box-shadow: none;
+  height: 30px;
+  margin-left: 10px;
+  line-height: 35px; /* 세로 중앙 정렬 */
+  text-align: center; /* 가로 중앙 정렬 */
+  font-size: 20px;
+}
+
+.MdeptcustomButton:hover {
+  border-color: darkgray;
+  cursor: pointer;
+}
+
 .DPcustomButton {
   margin-left: 5px;
   height: 30px;
@@ -158,6 +190,28 @@
 }
 
 .DPcustomButton:hover {
+  border-color: #000000;
+  cursor: pointer;
+  color: black;
+}
+
+.DPcustomButtonNext {
+  margin-left: 5px;
+  height: 30px;
+  width: 30px;
+  border: 2px solid darkgray;
+  border-radius: 3px;
+  margin-top: -3px;
+  color: darkgray;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border-radius: 3px;
+  display: flex; /* 부모 요소를 flex 컨테이너로 설정 */
+  align-items: center; /* 수직 정렬을 가운데로 설정 */
+  justify-content: center; /* 수평 정렬을 가운데로 설정 */
+  margin-right: 15px;
+}
+
+.DPcustomButtonNext:hover {
   border-color: #000000;
   cursor: pointer;
   color: black;

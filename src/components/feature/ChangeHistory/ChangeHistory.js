@@ -36,6 +36,7 @@ const ChangeHistory = ({
   //   setreqCASH_CD,
   CATEGORY,
   layout,
+  setChangeHistoryGrid,
 }) => {
   const {
     register,
@@ -85,6 +86,12 @@ const ChangeHistory = ({
     // 데이터 프로바이더 및 그리드 뷰를 초기화합니다.
     const provider = new LocalDataProvider(true);
     const grid = new GridView(container);
+
+    setChangeHistoryGrid(prveData => ({
+      ...prveData,
+      grid: grid,
+      provider: provider,
+    }));
 
     //타 컴포넌트에서도 서치 그리드를 참조(공유) 가능하게 전역 state변수 초기화
     // setSearchGrid(prveData => ({
@@ -200,8 +207,10 @@ const ChangeHistory = ({
       const rowvalue = grid.getValues(grid.getCurrent().itemIndex);
       console.log(grid.getCurrent().itemIndex, rowvalue);
       console.log('더블클릭');
-      setSearchDetailLow(rowvalue);
-      ModalOpenButton();
+      if (rowvalue.ch_DIVISION === '수정') {
+        setSearchDetailLow(rowvalue);
+        ModalOpenButton();
+      }
     };
 
     grid.onKeyDown = (grid, event) => {
@@ -224,7 +233,7 @@ const ChangeHistory = ({
     <>
       <div
         ref={realgridElement}
-        style={{ height: '500px', width: '100%' }}
+        style={{ height: '565px', width: '100%' }}
       ></div>
       {detailModalOpen && (
         <Modal
@@ -238,7 +247,7 @@ const ChangeHistory = ({
             onChangeModalClose={onChangeModalClose}
             searchDetailLow={searchDetailLow}
             layout={changeHistoryDetailCLayout}
-            columnLabels={companyLabels}
+            columnLabels={workplaceLabels}
           />
         </Modal>
       )}
