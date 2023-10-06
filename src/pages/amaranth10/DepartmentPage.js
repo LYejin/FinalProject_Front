@@ -66,8 +66,14 @@ const DepartmentPage = () => {
   const [selectedDivCd, setSelectedDivCd] = useState(null);
   const [selectedDivCdName, setSelectedDivCdName] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [IsOpenMdept, setIsOpenMdept] = useState(false);
-  const [MdeptCD, setMdeptCD] = useState('');
+  const [IsOpenMdept, setIsOpenMdept] = useState(false); //상위부서 모달창
+  const [MdeptCD, setMdeptCD] = useState(''); //상위부서 설정값
+  const [isLowLevel, setIsLowLevel] = useState(false); //하위부서,직원 확인
+  const [isHighLevel, setIsHighLevel] = useState(false); //상위부서 사용여부 확인
+  const [useSelect, setUseSelect] = useState('0'); //조직도표시 사용여부
+  const [showSelect, setShowSelect] = useState('0'); //조직도표시 표시기능
+
+  console.log('isHighLevel : ', isHighLevel);
 
   const formRef = useRef(null);
 
@@ -490,10 +496,26 @@ const DepartmentPage = () => {
   };
 
   const handleRadioChange = e => {
-    setSelectedRadioValue(e.target.value);
-    setChangeFormData(changeFormData => ({
-      ...changeFormData,
-      [e.target.name]: e.target.value,
+    const newValue = e.target.value;
+    if (isHighLevel && selectedRadioValue === '0' && newValue === '1') {
+      alert('상위부서를 먼저 사용 으로 변경해주세요');
+      return;
+    }
+    if (isLowLevel && selectedRadioValue === '1' && newValue === '0') {
+      // 사용 상태에서 미사용 버튼을 클릭했을 때
+      const userConfirmation = window.confirm(
+        '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.'
+      );
+      if (!userConfirmation) {
+        // 사용자가 취소를 선택하면 값을 업데이트하지 않고 함수 종료
+        return;
+      }
+    }
+
+    setSelectedRadioValue(newValue);
+    setChangeFormData(prevState => ({
+      ...prevState,
+      [e.target.name]: newValue,
     }));
   };
 
@@ -638,6 +660,10 @@ const DepartmentPage = () => {
                     setSelectedDivCd,
                     setSelectedDivCdName,
                     setIsUpdate,
+                    setIsHighLevel,
+                    setIsLowLevel,
+                    useSelect,
+                    showSelect,
                   }}
                 >
                   <DeptShowWrapper
@@ -646,6 +672,10 @@ const DepartmentPage = () => {
                     height={'100%'}
                     data={DeptData}
                     searchValue={searchValue}
+                    useSelect={useSelect}
+                    showSelect={showSelect}
+                    setUseSelect={setUseSelect}
+                    setShowSelect={setShowSelect}
                   />
                 </DeptContext.Provider>
               </LeftContentWrapper>
@@ -711,7 +741,11 @@ const DepartmentPage = () => {
                     </ScrollWrapper>
                   ) : (
                     selectedDept === '0' && (
-                      <DeptEmpListGrid CoCd={useCoCd} DeptCd={selectedDeptCd} />
+                      <DeptEmpListGrid
+                        CoCd={useCoCd}
+                        DeptCd={selectedDeptCd}
+                        setIsLowLevel={setIsLowLevel}
+                      />
                     )
                   )}
                 </div>

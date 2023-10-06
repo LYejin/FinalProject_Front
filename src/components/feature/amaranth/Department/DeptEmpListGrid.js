@@ -5,7 +5,7 @@ import 'realgrid/dist/realgrid-style.css';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import NoData from './noEmp.png';
 
-function DeptEmpListGrid({ CoCd, DeptCd }) {
+function DeptEmpListGrid({ CoCd, DeptCd, setIsLowLevel }) {
   const [chDataProvider, setChDataProvider] = useState(null);
   const [chGridView, setChGridView] = useState(null);
   const [isData, setIsData] = useState(false);
@@ -35,8 +35,10 @@ function DeptEmpListGrid({ CoCd, DeptCd }) {
         });
         if (responseData.data.length === 0) {
           setIsData(false);
+          setIsLowLevel(false);
         } else {
           setIsData(true);
+          setIsLowLevel(true);
         }
       })
       .catch(error => {
