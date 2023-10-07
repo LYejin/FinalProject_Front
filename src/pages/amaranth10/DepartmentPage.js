@@ -111,8 +111,10 @@ const DepartmentPage = () => {
     setAddress(data.zonecode);
     setAddressDetail(fullAddr);
     setData(prevData => ({
+      ...prevData,
       addr_NUM: '',
     }));
+
     setChangeFormData(prevChangeFormData => {
       const updatedData = {
         ...prevChangeFormData,
@@ -180,7 +182,7 @@ const DepartmentPage = () => {
   }, [isUpdate]);
 
   const resetData = () => {
-    setData(prevData => ({
+    setData({
       co_NM: useCoCdName,
       div_NM: selectedDivCdName,
       mdept_CD: selectedDeptCd,
@@ -197,7 +199,7 @@ const DepartmentPage = () => {
       addr: '',
       addr_CD: '',
       addr_NUM: '',
-    }));
+    });
   };
 
   const onClickInsert = () => {
@@ -285,15 +287,28 @@ const DepartmentPage = () => {
       console.log('당연히 안나오겠지만,', data.dept_CD);
       console.log('Submitted Data: ', changeFormData);
 
+      const mergedData = {
+        ...changeFormData,
+        dept_NM: changeFormData.dept_NM ? changeFormData.dept_NM : data.dept_NM,
+        co_CD: useCoCd,
+        div_CD: selectedDivCd,
+        dept_CD: selectedDeptCd,
+      };
+
       const response = await authAxiosInstance.put(
         'system/user/departments/update',
-        {
-          ...changeFormData, // 기존의 changeFormData 객체를 펼침
-          co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열
-          div_CD: selectedDivCd,
-          dept_CD: selectedDeptCd,
-        }
+        mergedData
       );
+
+      // const response = await authAxiosInstance.put(
+      //   'system/user/departments/update',
+      //   {
+      //     ...changeFormData, // 기존의 changeFormData 객체를 펼침
+      //     co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열
+      //     div_CD: selectedDivCd,
+      //     dept_CD: selectedDeptCd,
+      //   }
+      // );
       const updatedData = { ...data, ...changeFormData };
       setChangeFormData(updatedData);
 
@@ -303,8 +318,10 @@ const DepartmentPage = () => {
         title: '업데이트 완료',
         text: '부서 정보가 성공적으로 업데이트되었습니다.',
       });
+      console.log('아울아ㅓㄴ리ㅏㅇ', selectedDeptCd, useCoCd);
     }
     fetchDepartmentDataAfter(useCoCd);
+    setChangeFormData({});
     setIsUpdate(false);
     setChangeForm(false);
     setMdeptCD('');
@@ -502,7 +519,6 @@ const DepartmentPage = () => {
       return;
     }
     if (isLowLevel && selectedRadioValue === '1' && newValue === '0') {
-      // 사용 상태에서 미사용 버튼을 클릭했을 때
       const userConfirmation = window.confirm(
         '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.'
       );

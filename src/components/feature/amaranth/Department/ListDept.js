@@ -58,20 +58,19 @@ function ListDept({ data, roof, deptStyle, searchValue, parentDeptYN }) {
     setIsVisible(visibility);
   }, [useSelect, showSelect, data]);
 
-  console.log('이시발', isVisible);
-
-  console.log(
-    'deptCD : ',
-    data.dept_CD,
-    ' dept_YN : ',
-    data.dept_YN,
-    'show_YN :',
-    data.show_YN
-  );
+  // console.log(
+  //   'deptCD : ',
+  //   data.dept_CD,
+  //   ' dept_YN : ',
+  //   data.dept_YN,
+  //   'show_YN :',
+  //   data.show_YN
+  // );
 
   console.log('useSelect : ', useSelect, 'showSelect : ', showSelect);
 
   const onDeptClick = () => {
+    console.log('엔비', data.emp_NB);
     if (isModal === false) {
       setMdeptCD(data.dept_CD);
       setSelectedDivCd(data.div_CD);
@@ -83,8 +82,13 @@ function ListDept({ data, roof, deptStyle, searchValue, parentDeptYN }) {
     } else {
       setIsHighLevel(false);
     }
-    if (data.subDepts && data.subDepts.some(dept => dept.dept_YN === '1')) {
+    if (
+      (data.subDepts && data.subDepts.some(dept => dept.dept_YN === '1')) ||
+      data.emp_NB !== '0'
+    ) {
       setIsLowLevel(true);
+    } else {
+      setIsLowLevel(false);
     }
 
     handleSelectDepartment(data.dept_CD, data.div_CD);
