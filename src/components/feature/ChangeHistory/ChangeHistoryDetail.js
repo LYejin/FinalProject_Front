@@ -16,6 +16,7 @@ import {
   changeHistoryDetailColumns,
   changeHistoryDetailfields,
 } from './Realgrid-Data-ChangeHistory';
+import './ChangHistory.css';
 
 const ChangeHistoryDetail = ({
   //   loadRowData,
@@ -33,6 +34,8 @@ const ChangeHistoryDetail = ({
   columnLabels,
   searchDetailLow,
   layout,
+  ModalOpenDetaillButton,
+  onChangeModalClose,
 }) => {
   const {
     register,
@@ -49,11 +52,6 @@ const ChangeHistoryDetail = ({
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const realgridElement = useRef(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const ModalOpenButton = () => {
-    setModalOpen(!modalOpen);
-  };
 
   const loadRowData = searchDetailLow => {
     return new Promise((resolve, reject) => {
@@ -206,13 +204,12 @@ const ChangeHistoryDetail = ({
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
       console.log('더블클릭', clickData);
-      const rowvalue = grid.getValues(grid.getCurrent().itemIndex);
-      console.log(grid.getCurrent().itemIndex, rowvalue);
-      console.log('더블클릭');
     };
 
     grid.onKeyDown = (grid, event) => {
-      console.log('검색엔터', event.key, provider.getRowCount());
+      if (event.key === 'Escape') {
+        ModalOpenDetaillButton();
+      }
     };
 
     // 데이터 프로바이더와 그리드 뷰를 상태에 저장합니다.
@@ -229,10 +226,7 @@ const ChangeHistoryDetail = ({
 
   return (
     <>
-      <div
-        ref={realgridElement}
-        style={{ height: '500px', width: '100%' }}
-      ></div>
+      <div ref={realgridElement} className="changHistoryDetailView"></div>
     </>
   );
 };

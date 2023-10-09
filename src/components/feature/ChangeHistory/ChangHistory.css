@@ -1,6 +1,20 @@
-.ChangHistoryView {
+.changHistoryView {
+  height: 365px;
+  width: 100%;
+  text-align: center; /* 수평 가운데 정렬 */
+  line-height: 2; /* 수직 가운데 정렬 */
+}
+.changHistoryDetailView {
   height: 500px;
   width: 100%;
   text-align: center; /* 수평 가운데 정렬 */
   line-height: 2; /* 수직 가운데 정렬 */
+}
+
+.changHistoryView .rg-focused-row {
+  background: #eff7ff !important;
+}
+
+.changHistoryDetailView .rg-focused-row {
+  background: #eff7ff !important;
 }
