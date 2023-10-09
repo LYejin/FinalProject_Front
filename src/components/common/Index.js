@@ -12,13 +12,13 @@ import DetailTitle from './title/DetailTitle';
 import MainTitle from './title/MainTitle';
 import Title from './title/Title';
 import WorkpHeadTitle from './title/WorkpHeadTitle';
-import CompSelectBox from './box/workplacebox/CompSelectBox';
-import WorkpTextFieldBox from './box/workplacebox/WorkpTextFieldBox';
-import UseSelectBox from './box/workplacebox/UseSelectBox';
+import CompSelectBox from '../feature/amaranth/Workplace/workplacebox/CompSelectBox';
+import WorkpTextFieldBox from '../feature/amaranth/Workplace/workplacebox/WorkpTextFieldBox';
+import UseSelectBox from '../feature/amaranth/Workplace/workplacebox/UseSelectBox';
 import DeptHeadTitle from './title/DeptHeadTitle';
 import DeptSubTitle from './title/DeptSubTitle';
-import DeptTextFieldBox from './box/workplacebox/DeptTextFieldBox';
-import DeptSelectBox from './box/department/deptSelectBox';
+import DeptTextFieldBox from '../feature/amaranth/Workplace/workplacebox/DeptTextFieldBox';
+import DeptSelectBox from '../feature/amaranth/Department/deptSelectBox';
 import InfoInput from './input/InfoInput';
 
 export {
