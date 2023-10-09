@@ -78,50 +78,52 @@ const FundTypeModel = () => {
       });
     } else {
       const checkLowNumber = checkList.length;
-      if (
-        window.confirm(
-          '선택된 ' + checkLowNumber + '개의 행(들)을 삭제하시겠습니까??'
-        ) === true
-      ) {
-        highFundsList(checkList)
-          .then(highFundsData => {
-            console.log('체크된<비동기>(없음)', highFundsData);
-            if (highFundsData === '') {
-              return new Promise((resolve, reject) => {
-                authAxiosInstance
-                  .delete('/accounting/user/fundType/fundTypeDelete', {
-                    data: checkList,
-                  })
-                  .then(response => {
-                    setCheckList([]); // 삭제 완료시 데이터 초기화
-                    // 체크된 행 가져오기
-                    marsterGrid.grid.cancel();
-                    const rows = marsterGrid.grid.getCheckedRows();
-                    // 행 삭제하기
-                    marsterGrid.provider.removeRows(rows);
-                    // 체크 해제하기
-                    marsterGrid.grid.checkRows(rows, false);
+      if (checkLowNumber !== 0) {
+        if (
+          window.confirm(
+            '선택된 ' + checkLowNumber + '개의 행(들)을 삭제하시겠습니까??'
+          ) === true
+        ) {
+          highFundsList(checkList)
+            .then(highFundsData => {
+              console.log('체크된<비동기>(없음)', highFundsData);
+              if (highFundsData === '') {
+                return new Promise((resolve, reject) => {
+                  authAxiosInstance
+                    .delete('/accounting/user/fundType/fundTypeDelete', {
+                      data: checkList,
+                    })
+                    .then(response => {
+                      setCheckList([]); // 삭제 완료시 데이터 초기화
+                      // 체크된 행 가져오기
+                      marsterGrid.grid.cancel();
+                      const rows = marsterGrid.grid.getCheckedRows();
+                      // 행 삭제하기
+                      marsterGrid.provider.removeRows(rows);
+                      // 체크 해제하기
+                      marsterGrid.grid.checkRows(rows, false);
 
-                    resolve(response);
-                  })
-                  .catch(error => {
-                    console.error(error);
-                    reject(error);
-                  });
-              });
-            } else {
-              console.log('체크된<비동기>(있음)', highFundsData);
-              alert(
-                '[' +
-                  highFundsData +
-                  ']은 상위자금과목으로 설정되어 있어 삭제할 수 없습니다.'
-              );
-            }
-          })
-          .catch(error => {
-            // highFundsList()가 실패한 경우 처리
-            console.error(error);
-          });
+                      resolve(response);
+                    })
+                    .catch(error => {
+                      console.error(error);
+                      reject(error);
+                    });
+                });
+              } else {
+                console.log('체크된<비동기>(있음)', highFundsData);
+                alert(
+                  '[' +
+                    highFundsData +
+                    ']은 상위자금과목으로 설정되어 있어 삭제할 수 없습니다.'
+                );
+              }
+            })
+            .catch(error => {
+              // highFundsList()가 실패한 경우 처리
+              console.error(error);
+            });
+        }
       }
     }
   };

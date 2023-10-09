@@ -18,6 +18,7 @@ const FundTypeRidoButton = ({
           <input
             type="radio"
             value={option === '' ? defultValue : option}
+            className="radio-input"
             onClick={() => {
               onOptionChange(option === '' ? '' : option);
             }}
