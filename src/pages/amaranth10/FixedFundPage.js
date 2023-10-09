@@ -109,14 +109,14 @@ const FixedFundPage = () => {
                     수입
                   </div>
                 </DeptSubTitle>
-                {/* <FixedFundGrid
+                <FixedFundGrid
                   onChangeOpenCash={onChangeOpenCash}
                   onChangeOpenStrade={onChangeOpenStrade}
                   setMarsterGrid={setMarsterGrid}
                   setGridViewStrade={setGridViewStrade}
                   DISQ={selectedDiv}
                   values={searchValues}
-                /> */}
+                />
                 <FixedChartBox />
               </FullContentWrapper>
             </MainContentWrapper>

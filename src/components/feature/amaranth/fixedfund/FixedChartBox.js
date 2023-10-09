@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import FixedYearChart from './FixedYearChart';
 import FixedQuarterChart from './FixedQuarterChart';
+import FixedMonthChart from './FixedMonthChart';
 
 const FixedChartBox = ({ children }) => {
   return (
@@ -22,7 +23,8 @@ const FixedChartBox = ({ children }) => {
         }}
       >
         {/* <FixedYearChart /> */}
-        <FixedQuarterChart />
+        {/* <FixedQuarterChart /> */}
+        {/* <FixedMonthChart /> */}
       </div>
     </>
   );
