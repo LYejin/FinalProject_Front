@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Row, Col } from 'react-bootstrap';
-import { TextFieldBox } from '../../../common/Index';
+import { ButtonW, TextFieldBox } from '../../../common/Index';
 import DatePicker from 'react-datepicker';
 import InputMask from 'react-input-mask';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import DaumPostcode from 'react-daum-postcode';
 import { getNowJoinTime } from '../../../../util/time';
 import ComModel from './model/ComModel';
-import CompanyNameSelect from './CompanyNameSelect.js';
+
 import { Label } from '../../../../../node_modules/@mui/icons-material/index';
 import { ko } from 'date-fns/esm/locale';
 
@@ -20,8 +20,16 @@ import { clear } from '../../../../../node_modules/@testing-library/user-event/d
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import Swal from 'sweetalert2';
 import EventButton from '../../../common/button/EventButton';
+import CompanyNameSelect from './companyName/CompanyNameSelect';
 
-const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
+const CompanyInputBox = ({
+  formData,
+  ch_listData,
+  ch_listDataSet,
+  saveBtn,
+  editBtn,
+  removeBtn,
+}) => {
   const {
     register,
     handleSubmit,
@@ -66,7 +74,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     BUSINESS: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     JONGMOK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     REG_NB: [/^\d{3}-\d{2}-\d{5}$/, '형식에 맞춰서 입력하세요'],
-    CEO_NM: [/^[가-힣]{3,4}$/, '3~4자리 이내로 입력하세요'],
+    CEO_NM: [/^[가-힣A-Za-z]{2,10}$/, '3~10자리 이내로 입력하세요'],
     HO_FAX: [/^\d{3}-\d{3}-\d{4}$/, '형식에 맞춰 입력하세요'],
     CEO_TEL: [/^0\d{2}-\d{3,4}-\d{4}$/, '전화번호 형식에 맞게 입력하세요'],
     PPL_NB: [
@@ -172,23 +180,17 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
     console.log(errors[e.target.name]);
     console.log(Object.keys(errors).length);
     console.log(errors[e.target.name]?.message);
-    console.log(
-      '검사',
-      formData.CO_CD,
-      Object.keys(errors).length >= 0,
-      errors[e.target.name] !== undefined,
-      e.target.value.includes('__'),
-      e.target.value
-    );
-    // if (Object.keys(errors).length >= 0) {
-    //   Object.keys(errors).forEach(errorFieldName => {
-    //     const fieldName = e.target.name;
-    //     console.log('확인!!', errorFieldName, fieldName);
-    //     if (errorFieldName !== fieldName) {
-    //       clearErrors(errorFieldName);
-    //     }
-    //   });
-    // }
+
+    //아무것도 입력되지 않는 상태에서
+    if (Object.keys(errors).length >= 0) {
+      Object.keys(errors).forEach(errorFieldName => {
+        const fieldName = e.target.name;
+        console.log('확인!!', errorFieldName, fieldName);
+        if (errorFieldName !== fieldName) {
+          clearErrors(errorFieldName);
+        }
+      });
+    }
 
     if (
       !dupError[e.target.name] &&
@@ -242,16 +244,18 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
   //Blob = base64를 정수형 베열형태 => 원시 데이터로
   const blobToByteArray = blob => {
     return new Promise((resolve, reject) => {
+      if (!(blob instanceof Blob)) {
+        reject();
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         console.log('로그');
         const base64Data = reader.result;
-        //const byteArray = new Uint8Array(base64Data);
         resolve(base64Data);
       };
       reader.onerror = reject;
-      //reader.readAsArrayBuffer(blob);   //BLOB형으로 변환
-      reader.readAsDataURL(blob); //base64형으로 변환
+      reader.readAsDataURL(blob);
     });
   };
 
@@ -328,6 +332,9 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       onChangeInput({ target: { name: labels.PIC_FILE_ID, value: imageFile } });
     }
   };
+  const handleImageRemove = () => {
+    setSelectedImage();
+  };
 
   const onSubmit = async (empdata, e) => {
     console.log(empdata);
@@ -364,21 +371,25 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         );
         if (response.data !== '') {
           Swal.fire({
+            position: 'center',
             icon: 'success',
-            title: '저장 완료',
-            text: '회사 정보가 성공적으로 저장되었습니다.',
+            title: '회사 정보가 성공적으로 추가되었습니다.',
+            showConfirmButton: false,
+            timer: 1200,
           });
           console.log('인풋', companyCodeInput.current);
-          companyCodeInput.current.readOnly = true;
+          //companyCodeInput.current.readOnly = true;
         }
         console.log('전달된:', response.data);
       } catch (error) {
         console.error('데이터 전송 실패:', error);
-        // Swal.fire({
-        //   icon: 'error',
-        //   title: '저장 실패',
-        //   text: '회사 정보 저장에 실패했습니다. 다시 시도해주세요.',
-        // });
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: '회사 정보 추가에 실패했습니다.',
+          showConfirmButton: false,
+          timer: 1200,
+        });
       }
     } else {
       for (const key in dupError) {
@@ -412,9 +423,26 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
     const parts = fieldName.split('_'); // "_"를 기준으로 문자열을 나눕니다.
     const transformedString = parts[0].toLowerCase() + '_' + parts[1]; // 첫 번째 부분은 소문자로 변환하고, 두 번째 부분은 소문자로 변환한 후 다시 "_"와 합칩니다.
+    const checkFormData = getValues();
+    checkFormData.PIC_FILE_ID =
+      checkFormData.PIC_FILE_ID !== selectedImage
+        ? selectedImage
+        : checkFormData.PIC_FILE_ID;
+    for (const key in checkFormData) {
+      if (transformColme.includes(key)) {
+        checkFormData[key] = checkFormData[key].replace(/[-_]/g, ''); // 하이픈과 밑줄 모두 제거
+      }
+    }
+    if (updateCheckObjects(checkFormData, up_FormData)) {
+      ch_listDataSet(0);
+    } else {
+      ch_listDataSet(prveData => prveData + 1);
+    }
+
     console.log(transformedString); // "co_CD"
     console.log('타냐?', Object.keys(errors).length);
     console.log('라벨', getValues(e.target.name), 'dup', dup[e.target.name]);
+
     console.log(errors);
     console.log(errors[e.target.name]?.message);
     console.log(regexPatterns[e.target.name]);
@@ -585,8 +613,14 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       if (key === 'current') {
         continue;
       }
-
-      // 두 객체의 같은 키에 대한 값을 비교합니다.
+      console.log(
+        '변경(확인)',
+        key,
+        obj1[key],
+        obj2[key],
+        obj1[key] !== obj2[key]
+      );
+      // 두 객체의 같은 키에 대한 값을 비교합니다.checkFormData
       if (obj1[key] !== obj2[key]) {
         console.log('변경(틀림)', obj1[key], obj2[key]);
         return false; // 값이 다르면 다른 데이터를 가지고 있다고 판단합니다.
@@ -599,6 +633,10 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
   const updateBtnClick = async () => {
     const checkFormData = getValues();
+    checkFormData.PIC_FILE_ID =
+      checkFormData.PIC_FILE_ID !== selectedImage
+        ? selectedImage
+        : checkFormData.PIC_FILE_ID;
     for (const key in checkFormData) {
       if (transformColme.includes(key)) {
         checkFormData[key] = checkFormData[key].replace(/-/g, ''); // 하이픈 제거
@@ -613,56 +651,72 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
       getValues(),
       checkFormData,
       up_FormData,
+      selectedImage,
       dataCheck
     );
     const isValid = await trigger();
-    if (
-      ch_formData.CO_CD !== '' &&
-      isValid &&
-      hasValue(dupError) &&
-      !dataCheck
-    ) {
-      const c_formData = new FormData();
+    if (!dataCheck) {
+      if (ch_formData.CO_CD !== '' && isValid && hasValue(dupError)) {
+        const c_formData = new FormData();
 
-      for (const key in ch_formData) {
-        if (transformColme.includes(key)) {
-          ch_formData[key] = ch_formData[key].replace(/-/g, ''); // 하이픈 제거
-          c_formData.append(key, ch_formData[key]);
-        } else if (!transformColme.includes(key)) {
-          c_formData.append(key, ch_formData[key]);
+        for (const key in ch_formData) {
+          if (transformColme.includes(key)) {
+            ch_formData[key] = ch_formData[key].replace(/-/g, ''); // 하이픈 제거
+            c_formData.append(key, ch_formData[key]);
+          } else if (!transformColme.includes(key)) {
+            c_formData.append(key, ch_formData[key]);
+          }
         }
-      }
 
-      try {
-        const response = await authAxiosInstance.put(
-          'system/admin/groupManage/CompanyUpdate',
-          c_formData,
-          { 'Content-Type': 'multipart/form-data' }
-        );
-        console.log(response.data);
-        if (response.data !== '') {
+        try {
+          const response = await authAxiosInstance.put(
+            'system/admin/groupManage/CompanyUpdate',
+            c_formData,
+            { 'Content-Type': 'multipart/form-data' }
+          );
+          console.log(response.data);
+          ch_listDataSet(0);
+          if (response.data !== '') {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '회사 정보가 성공적으로 수정되었습니다.',
+              showConfirmButton: false,
+              timer: 1200,
+            });
+          }
+        } catch (error) {
+          console.log(error);
           Swal.fire({
-            icon: 'success',
-            title: '업데이트 완료',
-            text: '회사 정보가 성공적으로 업데이트되었습니다.',
+            position: 'center',
+            icon: 'error',
+            title: '회사 정보 수정에 실패했습니다.',
+            showConfirmButton: false,
+            timer: 1200,
           });
         }
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: '업데이트 실패',
-          text: '회사 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
-        });
-      }
-      console.log('변경!!!!!!!!!!!?', ch_formData);
-    } else {
-      for (const key in dupError) {
-        if (dupError[key]) {
-          console.log(key);
-          setError(key, { message: regexPatterns.dup }, { shouldFocus: true });
+        console.log('변경!!!!!!!!!!!?', ch_formData);
+      } else {
+        for (const key in dupError) {
+          if (dupError[key]) {
+            console.log(key);
+            setError(
+              key,
+              { message: regexPatterns.dup },
+              { shouldFocus: true }
+            );
+          }
         }
       }
+    } else {
+      ch_listDataSet(0);
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '회사정보 수정된 정보가 없습니다.',
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 
@@ -678,9 +732,31 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
         if (response.data !== '') {
           ch_listDataSet(prveData => prveData + 1);
         }
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: '회사 정보가 성공적으로 삭제되었습니다.',
+          showConfirmButton: false,
+          timer: 1200,
+        });
       } catch (error) {
         console.log(error);
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: '회사 정보 삭제에 실패했습니다.',
+          showConfirmButton: false,
+          timer: 1200,
+        });
       }
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '이미 삭제된 회사 정보입니다.',
+        showConfirmButton: false,
+        timer: 1200,
+      });
     }
   };
 
@@ -709,7 +785,8 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
           {formData?.co_CD !== '' && formData ? (
             <div>
               <button
-                className="WhiteButton"
+                ref={editBtn}
+                style={{ display: 'none' }}
                 onClick={() => {
                   trigger(); // 유효성 검사를 실행한 후 onSubmit 호출 (수정하기)
                   handleSubmit(updateBtnClick());
@@ -720,13 +797,14 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
             </div>
           ) : (
             <div>
-              <button type="submit" className="WhiteButton">
+              <button type="submit" ref={saveBtn} style={{ display: 'none' }}>
                 저장
               </button>
             </div>
           )}
           <button
-            className="companyRemoveWhiteButton"
+            ref={removeBtn}
+            style={{ display: 'none' }}
             onClick={() => removeBtnClick()}
           >
             삭제
@@ -766,6 +844,16 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     >
                       <i className="fa-solid fa-paperclip"></i>
                     </label>
+
+                    {selectedImage && (
+                      <button
+                        type="button"
+                        className="comimageButtonWrapper2"
+                        onClick={handleImageRemove}
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    )}
                   </div>
                 </div>
               </td>
@@ -813,14 +901,20 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
               </td>
               <th className="headerCellStyle">사용여부</th>
               <td className="cellStyle">
-                <label>
-                  <input type="radio" value="1" {...register(labels.USE_YN)} />
-                  사용
-                </label>
-                <label>
-                  <input type="radio" value="0" {...register(labels.USE_YN)} />
-                  미사용
-                </label>
+                사용
+                <input
+                  type="radio"
+                  className="comRadioStyle"
+                  value="1"
+                  {...register(labels.USE_YN)}
+                />
+                미사용
+                <input
+                  type="radio"
+                  className="comRadioStyle"
+                  value="0"
+                  {...register(labels.USE_YN)}
+                />
               </td>
             </tr>
             <tr>
@@ -831,7 +925,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     type="text"
                     name={labels.CO_NM}
                     maxLength="17"
-                    className="C_addressInputStyle"
+                    className="C_companyNameInputStyle"
                     {...register(labels.CO_NM, {
                       pattern: {
                         value: regexPatterns.CO_NM[0],
@@ -1001,7 +1095,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     name={labels.CEO_NM}
-                    maxLength="4"
+                    maxLength="9"
                     className="companyReqInputStyle"
                     {...register(labels.CEO_NM, {
                       pattern: {
@@ -1157,12 +1251,12 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                     })}
                     onFocus={onFocusErrors}
                   />
-                  <button
-                    className="companyWhiteButton"
-                    onClick={() => onChangeOpenPost()}
-                  >
-                    우편번호
-                  </button>
+
+                  <ButtonW
+                    data={'우편번호'}
+                    onClickEvent={() => onChangeOpenPost()}
+                  ></ButtonW>
+
                   {errors[labels.HO_ZIP] && (
                     <p className="zipErrorBox">{errors?.HO_ZIP?.message}</p>
                   )}
@@ -1175,6 +1269,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                   <input
                     type="text"
                     className="reqInputStyle"
+                    maxLength="40"
                     {...register(labels.HO_ADDR, {
                       pattern: {
                         value: regexPatterns.HO_ADDR[0],
@@ -1193,6 +1288,7 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
                 <input
                   type="text"
                   className="inputStyle"
+                  maxLength="20"
                   {...register(labels.HO_ADDR1)}
                 />
               </td>
@@ -1225,17 +1321,16 @@ const CompanyInputBox = ({ formData, ch_listData, ch_listDataSet }) => {
 
       {isOpenCompanyName ? (
         <ComModel
-          width={'560px'}
+          width={'680px'}
           height={'600px'}
           title={'회사명검색'}
           onClickEvent={onChangeOpenCompanyName}
         >
-          <div onClick={handleOverlayClick}>
-            <CompanyNameSelect
-              onComplete={onCompleteCompanyName}
-              closeModal={() => setIsOpenCompanyName(false)}
-            />
-          </div>
+          <CompanyNameSelect
+            isOpenCompanyName={isOpenCompanyName}
+            onChangeOpenCompanyName={onChangeOpenCompanyName}
+            onCompleteCompanyName={onCompleteCompanyName}
+          />
         </ComModel>
       ) : null}
     </div>

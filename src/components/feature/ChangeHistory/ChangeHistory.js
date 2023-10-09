@@ -20,6 +20,7 @@ import {
 } from './Realgrid-Data-ChangeHistory';
 import { authAxiosInstance } from '../../../axios/axiosInstance';
 import ChangeHistoryDetail from './ChangeHistoryDetail';
+import './ChangHistory.css';
 
 const ChangeHistory = ({
   //   loadRowData,
@@ -37,6 +38,9 @@ const ChangeHistory = ({
   CATEGORY,
   layout,
   setChangeHistoryGrid,
+  changeHistoryGrid,
+  setTotalPage,
+  ModalOpenButton,
 }) => {
   const {
     register,
@@ -55,12 +59,15 @@ const ChangeHistory = ({
   const realgridElement = useRef(null);
   const [searchDetailLow, setSearchDetailLow] = useState(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const onChangeModalClose = () => {
-    setModalOpen(false);
-  };
-  const ModalOpenButton = () => {
+
+  const keyData = useRef('');
+
+  const ModalOpenDetaillButton = () => {
     setDetailModalOpen(!detailModalOpen);
+
+    if (detailModalOpen === true) {
+      changeHistoryGrid.grid.setFocus();
+    }
   };
 
   const loadRowData = CATEGORY => {
@@ -117,6 +124,8 @@ const ChangeHistory = ({
       .then(loadData => {
         grid.closeProgress();
         provider.fillJsonData(loadData, { fillMode: 'set' });
+        console.log('페이징', grid.getItemCount());
+        setTotalPage(loadData.length);
         grid.setCurrent({
           itemIndex: 0,
           column: 'CASH_FG',
@@ -155,7 +164,10 @@ const ChangeHistory = ({
     // grid.columnByName('SUM_NM').editable = false;
 
     // 행 수정 데이터 기능 비활성화
-    grid.setEditOptions({ editable: false });
+    grid.setEditOptions({ editable: false, useArrowKeys: true });
+
+    //페이징 처리
+    grid.setPaging(true, 11);
 
     //(컬럼 너비) + (행 높이) 자동 조절 설정
     grid.setDisplayOptions({
@@ -166,6 +178,9 @@ const ChangeHistory = ({
 
     //헤더 높이 자동 조절 설정
     grid.setHeader({ height: 30 });
+
+    //포커스된 행의 배경색 스타일 적용
+    grid.setDisplayOptions({ useFocusClass: true });
 
     grid.setContextMenu([
       {
@@ -201,6 +216,20 @@ const ChangeHistory = ({
     //   }
     // };
 
+    //'수정' 행에 enter눌렸을 시 포커스 이동 막기
+    grid.onCurrentChanging = function (grid, oldIndex, newIndex) {
+      if (keyData.current === 'Enter') {
+        keyData.current = '';
+        console.log('테스트확인', keyData.current);
+        setTimeout(() => {
+          grid.setFocus();
+        }, 10);
+        return false;
+      } else {
+        return true;
+      }
+    };
+
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
       console.log('더블클릭', clickData);
@@ -209,12 +238,24 @@ const ChangeHistory = ({
       console.log('더블클릭');
       if (rowvalue.ch_DIVISION === '수정') {
         setSearchDetailLow(rowvalue);
-        ModalOpenButton();
+        ModalOpenDetaillButton();
       }
     };
 
     grid.onKeyDown = (grid, event) => {
       console.log('검색엔터', event.key, provider.getRowCount());
+      const rowvalue = grid.getValues(grid.getCurrent().itemIndex);
+      console.log(grid.getCurrent().itemIndex, rowvalue);
+      console.log('더블클릭');
+      if (event.key === 'Enter') {
+        keyData.current = 'Enter';
+        if (rowvalue.ch_DIVISION === '수정') {
+          setSearchDetailLow(rowvalue);
+          ModalOpenDetaillButton();
+        }
+      } else if (event.key === 'Escape') {
+        ModalOpenDetaillButton();
+      }
     };
 
     // 데이터 프로바이더와 그리드 뷰를 상태에 저장합니다.
@@ -233,18 +274,19 @@ const ChangeHistory = ({
     <>
       <div
         ref={realgridElement}
-        style={{ height: '565px', width: '100%' }}
+        // style={{ height: '365px', width: '100%' }}
+        className="changHistoryView"
       ></div>
       {detailModalOpen && (
         <Modal
           width={'800px'}
           height={'800px'}
           title={'변경상세이력'}
-          onClickEvent={ModalOpenButton}
+          onClickEvent={ModalOpenDetaillButton}
           buttonYN={true}
         >
           <ChangeHistoryDetail
-            onChangeModalClose={onChangeModalClose}
+            ModalOpenDetaillButton={ModalOpenDetaillButton}
             searchDetailLow={searchDetailLow}
             layout={changeHistoryDetailCLayout}
             columnLabels={workplaceLabels}

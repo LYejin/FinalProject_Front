@@ -52,7 +52,7 @@
   padding: 20px;
 }
 
-.topModalWrapper2{
+.topModalWrapper2 {
   width: 100%;
   height: 88%;
   padding: 20px;
@@ -106,6 +106,11 @@
 
 .radio-label {
   margin-right: 10px;
+  display: inline;
+  width: 150px;
+}
+.radio-input {
+  margin-right: 5px;
 }
 
 .ModalContainer {

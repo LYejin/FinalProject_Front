@@ -9,8 +9,6 @@
   background-color: white;
 }
 
- 
-
 /* DetailContentWrapper.js */
 .detailContentWrapper {
   width: 100%;
@@ -151,7 +149,7 @@
 
 .FixedInputStyle:focus {
   outline: none;
-  border-color: #1C90FB;
+  border-color: #1c90fb;
 }
 
 .FFInputIconStyle {
@@ -178,9 +176,8 @@
 
 .FixedInputStyle2:focus {
   outline: none;
-  border-color: #1C90FB;
+  border-color: #1c90fb;
 }
-
 
 .FPSelectBoxWrapper > div:not(:last-child) {
   margin-bottom: 10px;
@@ -334,8 +331,8 @@
 }
 
 .listBoxtitle {
-  width: 60px;
-  padding-left: 13px;
+  width: 44px;
+  margin-left: 13px;
 }
 
 .deptListBoxtitle {
@@ -465,9 +462,7 @@
   flex-direction: row;
   width: 100%;
   height: calc(100% - 140px);
-  
 }
-
 
 .selected {
   background-color: #e6f5ff;

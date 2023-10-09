@@ -5,20 +5,15 @@ import { useState } from 'react';
 import { GridView, LocalDataProvider } from 'realgrid';
 import { useForm } from 'react-hook-form';
 //import './FundTypeSearch.css';
-import Modal from '../../common/modal/Modal';
-import SelectBoxWrapper from '../../layout/amaranth/SelectBoxWrapper';
 
-import { SelectBox } from '../../common/Index';
-import EventButton from '../../common/button/EventButton';
-import {} from './Realgrid-Data-ChangeHistory';
-import { authAxiosInstance } from '../../../axios/axiosInstance';
 import {
-  changeHistoryDetailColumns,
-  changeHistoryDetailfields,
-} from './Realgrid-Data-ChangeHistory';
-import './ChangHistory.css';
+  companyNameLayout,
+  companyNamecolumns,
+  companyNamefields,
+} from './Realgrid-Data-CompanyName';
+import './Paging.css';
 
-const ChangeHistoryDetail = ({
+const CompanyNameRearGrid = ({
   //   loadRowData,
   //   CASH_CD,
   //   LEVEL_CD,
@@ -31,11 +26,9 @@ const ChangeHistoryDetail = ({
   //   setMenuGrid,
   //   inputData,
   //   setreqCASH_CD,
-  columnLabels,
-  searchDetailLow,
-  layout,
-  ModalOpenDetaillButton,
-  onChangeModalClose,
+  setCompanyNameGrid,
+  onChangeOpenCompanyName,
+  onCompleteCompanyName,
 }) => {
   const {
     register,
@@ -52,38 +45,32 @@ const ChangeHistoryDetail = ({
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const realgridElement = useRef(null);
-
-  const loadRowData = searchDetailLow => {
-    return new Promise((resolve, reject) => {
-      authAxiosInstance
-        .post(
-          'system/admin/groupManage/ChangeHistoryDetailList',
-          searchDetailLow
-        )
-        .then(response => {
-          response.data.forEach(item => {
-            if (item.chd_PIC_AT !== null && item.chd_AT === null) {
-              item.chd_AT = item.chd_PIC_AT;
-            }
-            if (item.chd_PIC_BT !== null && item.chd_BT === null) {
-              item.chd_BT = item.chd_PIC_BT;
-            }
-            for (const key in columnLabels) {
-              if (item.hasOwnProperty('chd_ITEM') && item.chd_ITEM === key) {
-                item.chd_ITEM = columnLabels[key];
-              }
-            }
-          });
-
-          console.log('로드?', response.data);
-          resolve(response.data);
-        })
-        .catch(error => {
-          console.error(error);
-          reject(error);
-        });
-    });
+  const [searchDetailLow, setSearchDetailLow] = useState(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const onChangeModalClose = () => {
+    setModalOpen(false);
   };
+  const ModalOpenButton = () => {
+    setDetailModalOpen(!detailModalOpen);
+  };
+
+  // const loadRowData = CATEGORY => {
+  //   return new Promise((resolve, reject) => {
+  //     authAxiosInstance(
+  //       'system/admin/groupManage/ChangeHistorySelect/' + CATEGORY
+  //     )
+  //       .then(response => {
+  //         console.log('로드?', response.data);
+  //         resolve(response.data);
+  //       })
+  //       .catch(error => {
+  //         console.error(error);
+  //         reject(error);
+  //       });
+  //   });
+  // };
+
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
     const container = realgridElement.current;
@@ -93,38 +80,40 @@ const ChangeHistoryDetail = ({
     const grid = new GridView(container);
 
     //타 컴포넌트에서도 서치 그리드를 참조(공유) 가능하게 전역 state변수 초기화
-    // setSearchGrid(prveData => ({
-    //   ...prveData,
-    //   grid: grid,
-    //   provider: provider,
-    // }));
+    setCompanyNameGrid(prveData => ({
+      ...prveData,
+      grid: grid,
+      provider: provider,
+    }));
 
     // 그리드에 데이터 소스를 설정합니다.
     grid.setDataSource(provider);
 
     // 필드 및 열 정의를 설정합니다.
-    provider.setFields(changeHistoryDetailfields);
-    grid.setColumns(changeHistoryDetailColumns);
+    provider.setFields(companyNamefields);
+    grid.setColumns(companyNamecolumns);
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
-    grid.setColumnLayout(layout);
+    grid.setColumnLayout(companyNameLayout);
 
     //마운트 시 로드될 행 데이터 출력
 
-    grid.showProgress();
-    loadRowData(searchDetailLow)
-      .then(loadData => {
-        grid.closeProgress();
-        provider.fillJsonData(loadData, { fillMode: 'set' });
-        grid.setCurrent({
-          itemIndex: 0,
-          column: 'CASH_FG',
-        });
-        grid.setFocus();
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    // loadRowData(CATEGORY)
+    //   .then(loadData => {
+    //     grid.closeProgress();
+    //     provider.fillJsonData(loadData, { fillMode: 'set' });
+    //     grid.setCurrent({
+    //       itemIndex: 0,
+    //       column: 'CASH_FG',
+    //     });
+    //     grid.setFocus();
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+    // provider.fillJsonData([{ company: 'd', bno: 'd', cno: 'o' }], {
+    //   fillMode: 'set',
+    // });
 
     // 컬럼 레이아웃에 있는 특정 클럼의 너비를 수정
     //grid.layoutByColumn('LEVEL_CD').cellWidth = 60;
@@ -156,11 +145,13 @@ const ChangeHistoryDetail = ({
     // 행 수정 데이터 기능 비활성화
     grid.setEditOptions({ editable: false });
 
+    //페이징 처리
+    grid.setPaging(true, 12);
+
     //(컬럼 너비) + (행 높이) 자동 조절 설정
     grid.setDisplayOptions({
       fitStyle: 'evenFill',
-      rowHeight: -1,
-      syncGridHeight: 'always',
+      rowHeight: 30,
       useFocusClass: true,
     });
 
@@ -204,11 +195,20 @@ const ChangeHistoryDetail = ({
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
       console.log('더블클릭', clickData);
+      const rowvalue = grid.getValues(grid.getCurrent().itemIndex);
+      console.log(grid.getCurrent().itemIndex, rowvalue);
+
+      onCompleteCompanyName(rowvalue);
+      onChangeOpenCompanyName();
     };
 
     grid.onKeyDown = (grid, event) => {
-      if (event.key === 'Escape') {
-        ModalOpenDetaillButton();
+      const rowvalue = grid.getValues(grid.getCurrent().itemIndex);
+      if (event.key === 'Enter') {
+        onCompleteCompanyName(rowvalue);
+        onChangeOpenCompanyName();
+      } else if (event.key === 'Escape') {
+        onChangeOpenCompanyName();
       }
     };
 
@@ -226,9 +226,9 @@ const ChangeHistoryDetail = ({
 
   return (
     <>
-      <div ref={realgridElement} className="changHistoryDetailView"></div>
+      <div ref={realgridElement} className="companyNameView"></div>
     </>
   );
 };
 
-export default ChangeHistoryDetail;
+export default CompanyNameRearGrid;

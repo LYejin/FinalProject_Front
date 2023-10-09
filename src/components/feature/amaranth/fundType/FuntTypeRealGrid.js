@@ -807,10 +807,22 @@ function RealGrid({
         // 체크된 행(CASH_CD)을 추가
         setCheckList(prevCheckList => [...prevCheckList, checkData]);
       } else {
+        console.log('삭제검사(체크해제)', checkData);
         // 체크 헤재된 행(CASH_CD)을 삭제
         setCheckList(prevCheckList =>
           prevCheckList.filter(checkItem => checkItem !== checkData)
         );
+      }
+    };
+    //체크박스 전체 체크시 => 행 삭제 요청 발생하는 이벤트
+    grid.onItemAllChecked = function (grid, checked) {
+      const checkedData = provider.getFieldValues('CASH_CD', 0, -1);
+      const checked_CHSH_CD = checkedData.map(num => num.toString());
+      if (checked) {
+        setCheckList([]);
+        setCheckList(prevCheckList => [...prevCheckList, ...checked_CHSH_CD]);
+      } else {
+        setCheckList([]);
       }
     };
 
