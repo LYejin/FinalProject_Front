@@ -22,6 +22,7 @@ import FtradeInfoBox from '../../components/feature/amaranth/Strade/FtradeInfoBo
 import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 import Swal from 'sweetalert2';
 import FtradeModel from '../../model/FtradeModel';
+import DeleteTradeModal from '../../components/feature/amaranth/Modal/DeleteTradeModal';
 
 const FtradePage = () => {
   const {
@@ -133,13 +134,6 @@ const FtradePage = () => {
                       <button type="submit" className="WhiteButton">
                         저장
                       </button>
-                      <button
-                        type="button"
-                        className="WhiteButton"
-                        onClick={actions.onClickButtonRemoveEmp}
-                      >
-                        삭제
-                      </button>
                     </div>
                   </div>
                   <ScrollWrapper
@@ -191,32 +185,12 @@ const FtradePage = () => {
         </Modal>
       )}
       {state.deleteListModal && (
-        <Modal
-          width={'560px'}
-          height={'600px'}
-          title={'거래처'}
+        <DeleteTradeModal
+          name="금융"
           onClickEvent={actions.onChangeDeleteListModal}
-        >
-          <div>금융거래처 삭제 요청이 완료되었습니다.</div>
-          <div>
-            <span>요청 {state.deleteListCount}건</span>
-            <span>
-              성공 {state.deleteListCount - state.deleteStradeInfo.length}건
-            </span>
-            <span>실패 {state.deleteStradeInfo.length}건</span>
-          </div>
-          {state.deleteStradeInfo.map((info, index) => (
-            <>
-              <div>
-                {index + 1}. 거래처 코드 {info.tr_CD}
-              </div>
-              <div>
-                고정자금등록에 {info.count}건 등록된 데이터가 존재하여 삭제할 수
-                없습니다.
-              </div>
-            </>
-          ))}
-        </Modal>
+          deleteListCount={state.deleteListCount}
+          deleteStradeInfo={state.deleteStradeInfo}
+        />
       )}
     </>
   );

@@ -77,6 +77,25 @@
   background-color: #8f8f8f;
 }
 
+.imageButtonWrapper2 {
+  width: 27px;
+  height: 27px;
+  background-color: white;
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 3.95rem;
+  right: -3.8rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.imageButtonWrapper2:hover {
+  background-color: #8f8f8f;
+}
+
 /* 버튼 */
 .saveButton {
   color: gray;
@@ -223,8 +242,8 @@
 
 .empInfoWorkplaceSelectBox {
   float: left;
-  margin-left: 7px;
-  width: 100%;
+  margin-left: 15px;
+  width: calc(100% - 230px);
   vertical-align: middle;
   font-size: 13px;
 }
@@ -241,4 +260,88 @@
   align-items: center;
   width: 100%;
   height: 100%;
+}
+
+.TRDeptErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 48%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRDeptErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 48%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TREmpCDErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 48%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TREmpCDErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 48%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TRUsernameErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 48%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRUsernameErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 48%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
 }

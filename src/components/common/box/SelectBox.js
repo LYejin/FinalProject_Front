@@ -35,6 +35,7 @@ const SelectBox = ({
           height: '28px',
           fontSize: '0.8rem',
           borderRadius: '0',
+          backgroundColor: 'white',
         }}
         MenuProps={{
           PaperProps: {

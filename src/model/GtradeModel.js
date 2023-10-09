@@ -43,6 +43,9 @@ const GtradeModel = ({
   const [selectUseYN, setSelectUseYN] = useState(''); // 사용여부 select box state
   const [selectForYN, setSelectForYN] = useState(''); // 내국인 외국인 select box
   const listRef = useRef(null); // list 화면 상하단 이동
+  const [liquorCDModal, setLiquorCDModal] = useState(false);
+  const [liquorCDChangeData, setLiquorCDChangeData] = useState(); // 모달창 통해 변화된 금융 정보
+  const [liquorCDData, setLiquorCDData] = useState(); // '001. 금융네임' 통채로 입력
   const [checkItems, setCheckItems] = useState(new Set()); // check 된 item들
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체선택 기능
   const [deleteCheck, setDeleteCheck] = useState(''); // list 와 real 그리드 중 어디서 클릭했는지
@@ -55,6 +58,17 @@ const GtradeModel = ({
     username_ERROR: false,
     email_ADD_ERROR: false,
   }); // check db error YN
+
+  const onformKeyDown = e => {
+    if (e.key === 'Insert') {
+      onSubmit();
+    } else if (e.key === 'Delete') {
+    }
+  };
+
+  const liquorCDModalButton = () => {
+    setLiquorCDModal(!liquorCDModal);
+  };
 
   // 우편번호 모달창 닫기
   const onChangeOpenPost = () => {
@@ -162,51 +176,120 @@ const GtradeModel = ({
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailSGtradeInfo = async tr_CD => {
-    setChangeForm(false);
-    setDeleteYN(false);
-    setChangeFormData();
-    reset();
-    setAddress();
-    setAddressDetail();
     if (onChangeForm === true) {
-      alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
-    }
-    setIsLoading(true);
-    setInsertButtonClick(false);
-    setClickYN(true);
-    const params = {};
-    params.TR_CD = tr_CD;
+      await Swal.fire({
+        text: '작성중인 내용이 있습니다. 취소하시겠습니까?',
+        icon: 'isConfirmed',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(async result => {
+        if (result.isConfirmed) {
+          setLiquorCDChangeData();
+          setChangeForm(false);
+          setDeleteYN(false);
+          setChangeFormData();
+          reset();
+          setAddress();
+          setAddressDetail();
+          setIsLoading(true);
+          setInsertButtonClick(false);
+          setClickYN(true);
+          const params = {};
+          params.TR_CD = tr_CD;
 
-    const response = await authAxiosInstance(
-      'accounting/user/Strade/sgtradeDetail',
-      {
-        params,
-      }
-    );
-    setData(response?.data);
-    setValue('reg_NB', response.data?.reg_NB);
-    setValue('ppl_NB', response.data?.ppl_NB);
-    setViewYN(response.data?.view_YN);
-    setOpenDate(
-      JSON.stringify(new Date(response.data?.start_DT)) !==
-        '"1970-01-01T00:00:00.000Z"'
-        ? new Date(response.data?.start_DT)
-        : null
-    );
-    setCloseDate(
-      JSON.stringify(new Date(response.data?.end_DT)) !==
-        '"1970-01-01T00:00:00.000Z"'
-        ? new Date(response.data?.end_DT)
-        : null
-    );
-    setSelectForYN(response.data?.for_YN);
-    setIsLoading(false);
-    setTR_CD(response.data?.tr_CD);
-    setUseYN(response.data?.use_YN);
-    response.data.home_TEL &&
-      setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
-    response.data.tel &&
-      setValue('tel', onChangePhoneNumber(response.data?.tel));
+          const response = await authAxiosInstance(
+            'accounting/user/Strade/sgtradeDetail',
+            {
+              params,
+            }
+          );
+          setData(response?.data);
+          setValue('reg_NB', response.data?.reg_NB);
+          setValue('ppl_NB', response.data?.ppl_NB);
+          setViewYN(response.data?.view_YN);
+          setOpenDate(
+            JSON.stringify(new Date(response.data?.start_DT)) !==
+              '"1970-01-01T00:00:00.000Z"'
+              ? new Date(response.data?.start_DT)
+              : null
+          );
+          setCloseDate(
+            JSON.stringify(new Date(response.data?.end_DT)) !==
+              '"1970-01-01T00:00:00.000Z"'
+              ? new Date(response.data?.end_DT)
+              : null
+          );
+          setLiquorCDData(
+            response.data?.liq_CD
+              ? `${response.data?.liq_CD}. ${response.data?.wholesale}`
+              : null
+          );
+          setSelectForYN(response.data?.for_YN);
+          setIsLoading(false);
+          setTR_CD(response.data?.tr_CD);
+          setUseYN(response.data?.use_YN);
+          response.data.home_TEL &&
+            setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+          response.data.tel &&
+            setValue('tel', onChangePhoneNumber(response.data?.tel));
+        } else if (result.isDenied) {
+          return;
+        }
+      });
+    }
+    if (onChangeForm === false) {
+      setLiquorCDChangeData();
+      setChangeForm(false);
+      setDeleteYN(false);
+      setChangeFormData();
+      reset();
+      setAddress();
+      setAddressDetail();
+      setIsLoading(true);
+      setInsertButtonClick(false);
+      setClickYN(true);
+      const params = {};
+      params.TR_CD = tr_CD;
+
+      const response = await authAxiosInstance(
+        'accounting/user/Strade/sgtradeDetail',
+        {
+          params,
+        }
+      );
+      setData(response?.data);
+      setValue('reg_NB', response.data?.reg_NB);
+      setValue('ppl_NB', response.data?.ppl_NB);
+      setViewYN(response.data?.view_YN);
+      setOpenDate(
+        JSON.stringify(new Date(response.data?.start_DT)) !==
+          '"1970-01-01T00:00:00.000Z"'
+          ? new Date(response.data?.start_DT)
+          : null
+      );
+      setCloseDate(
+        JSON.stringify(new Date(response.data?.end_DT)) !==
+          '"1970-01-01T00:00:00.000Z"'
+          ? new Date(response.data?.end_DT)
+          : null
+      );
+      setLiquorCDData(
+        response.data?.liq_CD
+          ? `${response.data?.liq_CD}. ${response.data?.wholesale}`
+          : null
+      );
+      setSelectForYN(response.data?.for_YN);
+      setIsLoading(false);
+      setTR_CD(response.data?.tr_CD);
+      setUseYN(response.data?.use_YN);
+      response.data.home_TEL &&
+        setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+      response.data.tel &&
+        setValue('tel', onChangePhoneNumber(response.data?.tel));
+    }
   };
 
   // 조건 검색 버튼
@@ -255,6 +338,8 @@ const GtradeModel = ({
     setUseYN('1');
     setOpenDate(new Date());
     setCloseDate();
+    setLiquorCDChangeData();
+    setLiquorCDModal();
     setValue('reg_NB', '');
     setValue('ppl_NB', '');
     setSelectForYN('0');
@@ -268,22 +353,6 @@ const GtradeModel = ({
     setTR_CD('');
   };
 
-  // 사원 remove 이벤트
-  const onClickButtonRemoveEmp = async () => {
-    await authAxiosInstance.post('system/user/groupManage/employee/empRemove', {
-      kor_NM: data.kor_NM,
-      username: data.username,
-    });
-    setClickYN(true);
-    setChangeForm(false);
-    getEmpList();
-    setTR_CD(empList[0].tr_CD);
-    if (listRef.current) {
-      listRef.current.scrollTop = 0;
-    }
-    alert('사원정보가 비활성화되었습니다.');
-  };
-
   // 사원 submit button(update, insert) 이벤트
   const onSubmit = async data => {
     const getJoinDT = openDate ? getNowJoinTime(openDate) : '';
@@ -291,20 +360,17 @@ const GtradeModel = ({
 
     if (checkDBErrorYN.tr_CD_ERROR) {
       setError('tr_CD', { message: '거래처가 중복되었습니다.' });
-      alert('중복된 값이 존재합니다.');
       return;
     }
 
     if (checkDBErrorYN.reg_NB_ERROR) {
-      setError('reg_NB', { message: '000-00-0000형식을 맞춰서 입력하세요.' });
+      setError('reg_NB', { message: '형식에 맞춰서 입력하세요.' });
       setFocus('reg_NB');
-      alert('000-00-0000형식을 맞춰서 입력하세요.');
       return;
     }
 
     if (checkDBErrorYN.ppl_NB_ERROR) {
       setError('ppl_NB', { message: '주민번호 형식에 맞게 입력하세요.' });
-      alert('주민번호 형식에 맞게 입력하세요.');
       return;
     }
 
@@ -312,8 +378,16 @@ const GtradeModel = ({
     if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length > 0
+      (changeFormData ? Object.keys(changeFormData).length > 0 : false)
     ) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '일반거래처 정보가 수정되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+
       console.log('update 버튼');
       console.log('changeFormData :', changeFormData);
       if (changeFormData && changeFormData.reg_NB === '___-__-_____') {
@@ -330,21 +404,41 @@ const GtradeModel = ({
       console.log(responseUpdate.data);
       const responseGetList = await authAxiosInstance(
         `accounting/user/Strade/getSGtradeList`
-      );
+      ).error(err => {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: '일반거래처 수정이 실패했습니다.',
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      });
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
-      alert('사원정보가 수정되었습니다.');
     } else if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length === 0
+      (changeFormData ? false : true)
     ) {
-      alert('사원정보가 수정된 정보가 없습니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '수정된 정보가 없습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
 
     // 사원 insert 중일 때 저장버튼 기능
     if (!clickYN && insertButtonClick && Object.keys(errors).length === 0) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '일반 거래처가 추가되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       const userData = {
         tr_CD: data?.tr_CD,
         tr_NM: data?.tr_NM,
@@ -367,7 +461,7 @@ const GtradeModel = ({
         start_DT: getJoinDT || '',
         end_DT: getEndDT || null,
         for_YN: selectForYN || null,
-        liq_CD: data?.liq_CD,
+        liq_CD: liquorCDChangeData?.liq_CD,
       };
 
       //setCompany(company);
@@ -388,11 +482,16 @@ const GtradeModel = ({
           reg_NB: data?.reg_NB,
         },
       ]);
-      alert('사원이 추가되었습니다.');
+      setData({ ...userData, tr_CD: response.data });
       reset();
       setChangeForm(false);
       setChangeFormData();
       setInsertButtonClick(false);
+      setLiquorCDData(
+        liquorCDChangeData?.liq_CD
+          ? `${liquorCDChangeData?.liq_CD}. ${liquorCDChangeData?.wholesale}`
+          : null
+      );
       setClickYN(true);
       //console.log(listRef.current.scrollHeight);
       if (listRef.current) {
@@ -405,7 +504,13 @@ const GtradeModel = ({
       insertButtonClick &&
       Object.keys(errors).length > 0
     ) {
-      alert('중복된 값이 존재합니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '중복된 값이 존재합니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
   };
 
@@ -420,7 +525,7 @@ const GtradeModel = ({
       const regNbRegExp = /^\d{3}-\d{2}-\d{5}$/;
       if (!regNbRegExp.test(e.target.value)) {
         setError('reg_NB', {
-          message: `000-00-0000형식을 맞춰서 입력하세요.`,
+          message: `형식을 맞춰서 입력하세요.`,
         });
         setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_ERROR: true });
         return; // 에러 계속 뜨게 할 건지 고민
@@ -435,7 +540,6 @@ const GtradeModel = ({
             });
             setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_DD_ERROR: true });
           }
-          console.log(response.data);
         });
       }
       setCheckDBErrorYN({ ...checkDBErrorYN, reg_NB_ERROR: false });
@@ -466,7 +570,6 @@ const GtradeModel = ({
               message: `중복된 주민등록번호가 존재합니다.`,
             });
           }
-          console.log(response.data);
           return;
         });
         setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: false });
@@ -493,16 +596,7 @@ const GtradeModel = ({
     params.REG_NB = e.target.value;
     await authAxiosInstance(`accounting/user/Strade/regNbVal`, {
       params,
-    }).then(response => {
-      console.log(response.data);
     });
-  };
-
-  // 주민등록번호 유효성
-  const onCompletePplNb = e => {
-    // if (e.target.value.length === 12) {
-    alert('hiiii');
-    // }
   };
 
   // 전화번호 실시간 010-0000-000 change
@@ -527,25 +621,32 @@ const GtradeModel = ({
   // onChange 시 DB 내 동일한 데이터 검사
   const onChangeDBDataSearch = async e => {
     let params = {};
-    console.log('=============', changeFormData);
     if (e.target.name === 'tr_CD') {
       params.CO_CD = company;
       params.TR_CD = e.target.value;
       await authAxiosInstance(`accounting/user/Strade/trCdVal`, {
         params,
       }).then(response => {
-        console.log(response.data);
         response.data &&
           setError('tr_CD', { message: `거래처 코드가 중복되었습니다.` });
         if (response.data) {
-          console.log('hiiiiiiii');
           setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: true });
         } else {
           setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: false });
           delete errors.tr_CD;
         }
       });
+    } else if (e.target.name === 'liq_CD') {
+      setLiquorCDChangeData(liquorCDChangeData => ({
+        ...liquorCDChangeData,
+        liq_CD: e.target.value,
+      }));
+      setChangeFormData(liquorCDChangeData => ({
+        ...liquorCDChangeData,
+        [e.target.name]: e.target.value,
+      }));
     }
+    setErrorName();
   };
 
   const checkItemHandler = (id, isChecked) => {
@@ -569,11 +670,10 @@ const GtradeModel = ({
   const allCheckedHandler = ({ target }) => {
     if (target.checked) {
       setDeleteCheck('listDelete');
-      setDeleteListCount(Array.from(checkItems).length);
       setDeleteYN(true);
       setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
       setIsAllChecked(true);
-      Array.from(checkItems);
+      setDeleteListCount(empList.length);
     } else {
       checkItems.clear();
       setCheckItems(checkItems);
@@ -611,16 +711,27 @@ const GtradeModel = ({
       // 체크된 행들의 sq_NB값을 수집
       gridViewStrade.cancel();
       const checkedRows = gridViewStrade.getCheckedItems(); // 실제 메소드 이름은 realgrid 문서를 참고해주세요.
-      console.log('요고얌', checkedRows);
 
       // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
       if (checkedRows.length === 0) {
-        alert('삭제할 항목을 선택해주세요.');
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: '삭제할 항목을 선택해주세요.',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         return;
       }
 
       if (checkedRows.length > 20) {
-        alert('한 번에 20개 이하의 항목만 삭제할 수 있습니다.');
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: '한 번에 20개 이하의 항목만 삭제할 수 있습니다.',
+          showConfirmButton: false,
+          timer: 1500,
+        });
         return;
       }
 
@@ -641,7 +752,6 @@ const GtradeModel = ({
             return sqNbValue;
           });
 
-          console.log('여기서확인하래요', sqNbsToDelete); // 이 부분에서 제대로 된 sq_NB 값들이 출력되는지 확인하세요.
           try {
             // 서버에 삭제 요청
             authAxiosInstance.delete(
@@ -651,7 +761,7 @@ const GtradeModel = ({
             // 알림 표시
             Swal.fire({
               icon: 'success',
-              title: '성공적으로 삭제되었습니다!',
+              title: '성공적으로 삭제되었습니다.',
               showConfirmButton: false,
               timer: 1500,
             });
@@ -659,12 +769,87 @@ const GtradeModel = ({
           } catch (error) {
             console.error('Failed to delete rows:', error);
           }
+          setDeleteYN(false);
+          setDeleteListCount();
         }
       });
     }
   };
 
+  const onBlurfinanceCDData = async e => {
+    await authAxiosInstance(`accounting/user/Strade//liqcodeInfo`, {
+      params: { LIQ_CD: e.target.value },
+    }).then(response => {
+      if (response.data.length === 1) {
+        setLiquorCDChangeData(liquorCDChangeData => ({
+          ...liquorCDChangeData,
+          liq_CD: response.data[0]?.liq_CD,
+          wholesale: response.data[0]?.wholesale,
+        }));
+        setChangeFormData(changeFormData => ({
+          ...changeFormData,
+          liq_CD: response.data[0]?.liq_CD,
+          wholesale: response.data[0]?.wholesale,
+        }));
+        setValue(
+          'liq_CD',
+          `${response.data[0]?.liq_CD}. ${response.data[0]?.wholesale}`
+        );
+        return;
+      } else if (response.data.length > 1) {
+        setLiquorCDModal(!liquorCDModal);
+        // setFinanceCDInputData(e.target.value);
+        return;
+      }
+      setValue('bank_CD', null);
+    });
+  };
+
+  const onKeyDownEnterFin = async e => {
+    if (e.key === 'Insert') {
+      onSubmit();
+    }
+    if (
+      e.key === 'Enter' &&
+      (e.target.value !== null || e.target.value !== '')
+    ) {
+      e.preventDefault();
+      await authAxiosInstance(`accounting/user/Strade//liqcodeInfo`, {
+        params: { LIQ_CD: e.target.value },
+      }).then(response => {
+        if (response.data.length === 1) {
+          setLiquorCDChangeData(liquorCDChangeData => ({
+            ...liquorCDChangeData,
+            liq_CD: response.data[0]?.liq_CD,
+            wholesale: response.data[0]?.wholesale,
+          }));
+          setChangeFormData(changeFormData => ({
+            ...changeFormData,
+            liq_CD: response.data[0]?.liq_CD,
+            wholesale: response.data[0]?.wholesale,
+          }));
+          setValue(
+            'liq_CD',
+            `${response.data[0]?.liq_CD}. ${response.data[0]?.wholesale}`
+          );
+          return;
+        } else if (response.data.length > 1) {
+          setLiquorCDModal(!liquorCDModal);
+          // setFinanceCDInputData(e.target.value);
+          return;
+        }
+        setValue('liq_CD', null);
+      });
+    }
+  };
+
   const state = {
+    liquorCDModal,
+    setLiquorCDModal,
+    liquorCDChangeData,
+    setLiquorCDChangeData,
+    liquorCDData,
+    setLiquorCDData,
     deleteYN,
     setDeleteYN,
     register,
@@ -742,6 +927,8 @@ const GtradeModel = ({
   };
 
   const actions = {
+    onformKeyDown,
+    liquorCDModalButton,
     onChangeOpenPost,
     onChangeDeleteListModal,
     onCompletePost,
@@ -754,18 +941,17 @@ const GtradeModel = ({
     onClickSearchEmpList,
     onChangeFunction,
     onClickInsertEmpBox,
-    onClickButtonRemoveEmp,
     onSubmit,
     onFocusError,
     handleCheckSelectChange,
     onCompleteRegNb,
-    onCompletePplNb,
     onChangeTel,
     onChangeHomeTel,
     onChangeDBDataSearch,
     checkItemHandler,
     allCheckedHandler,
     removeStradelist,
+    onKeyDownEnterFin,
   };
 
   return { state, actions };

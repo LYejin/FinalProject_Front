@@ -13,6 +13,8 @@ const FinancecodeModal = ({
   setState,
   inputData,
   setValue,
+  setChangeFormData,
+  setFinanceChangeCDData,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
@@ -65,7 +67,15 @@ const FinancecodeModal = ({
         finance_CD: jsonData.finance_CD,
         bank_NAME: jsonData.bank_NAME,
       };
-      setValue(row);
+      setFinanceChangeCDData(financeCDChangeData => ({
+        ...financeCDChangeData,
+        bank_CD: jsonData.finance_CD,
+      }));
+      setChangeFormData(changeFormData => ({
+        ...changeFormData,
+        bank_CD: jsonData.finance_CD,
+      }));
+
       setValue('bank_CD', `${row?.finance_CD}. ${row?.bank_NAME}`);
       //gridViewStrade.setValues(cellClickData, row, false);
       onChangeModalClose();

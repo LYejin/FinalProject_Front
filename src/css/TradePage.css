@@ -250,12 +250,12 @@
   height: 42px;
   border-top: 1px solid darkgray;
   border-bottom: 1px solid darkgray;
+  background-color: #fafafa;
   font-size: 14px;
 }
 
 .tradeRoleYNTitle {
   width: 250px;
-  background-color: #fafafa;
   padding-left: 140px;
   padding-right: 20px;
 }
@@ -269,6 +269,7 @@
 
 /* 삭제 하단 배너 */
 .deletBoxWrapper {
+  margin-left: -21px;
   display: flex;
   align-items: center;
   position: absolute;
@@ -279,8 +280,14 @@
   background-color: #50596c;
 }
 
+.deleteTitleWrapper {
+  display: flex;
+  width: 150px;
+}
+
 .deleteCount {
-  margin-left: 30px;
+  margin-left: 32px;
+  width: 30px;
   color: #3bc1db;
   font-size: large;
   font-weight: 600;
@@ -289,6 +296,7 @@
 .deleteTradeSpan {
   margin-left: 5px;
   color: white;
+  width: 60px;
   font-size: large;
   font-weight: 600;
 }
@@ -305,6 +313,7 @@
   display: flex;
   justify-content: end;
   width: 90%;
+  margin-right: 30px;
 }
 
 .trModalTitle {
@@ -346,4 +355,145 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* 에러 박스 CSS */
+.TRNameErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 47%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRNameErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 47%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TRCdErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 47%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRCdErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 47%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TRRegErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 47%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRRegErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 47%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TRPplErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 52%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRPplErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 47%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
+}
+
+.TRBaErrorBox {
+  min-width: 150px;
+  background-color: #ffdede;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  color: black;
+  font-weight: 600;
+  z-index: 1;
+  top: -130%;
+  left: 41%;
+  margin-left: -60px;
+  font-size: 12px;
+}
+
+.TRBaErrorBox::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 45%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffdede transparent transparent transparent;
 }
