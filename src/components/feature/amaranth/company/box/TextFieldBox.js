@@ -2,10 +2,11 @@ import React, { useRef } from 'react';
 
 const TextFieldBox = ({ width, value, SearchDataSet, searchData }) => {
   const TextFieldBoxWrapper = {
-    border: '1px solid #b6b6b6',
-    width: '200px',
-    height: '29px',
-    borderradius: '3px',
+    height: '28px',
+    width: '210px',
+    fontSize: '0.73rem',
+    border: '1px solid #ccc',
+    paddingLeft: '10px',
   };
 
   const handlerOnChange = e => {
@@ -34,7 +35,7 @@ const TextFieldBox = ({ width, value, SearchDataSet, searchData }) => {
     } else if (isNaN(inputValue)) {
       SearchDataSet(prevData => ({
         ...prevData,
-        CO_NM: inputValue,
+        CO_NM: inputValue.trim(),
       }));
     }
   };
@@ -43,8 +44,9 @@ const TextFieldBox = ({ width, value, SearchDataSet, searchData }) => {
     <input
       onChange={handlerOnChange}
       style={TextFieldBoxWrapper}
-      className="textInputBox "
+      className="comtextInputBox"
       defaultValue={value}
+      placeholder="회사코드/회사명을 입력하세요."
     />
   );
 };

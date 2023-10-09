@@ -1,0 +1,16 @@
+.companyNameInputBox {
+  border: 1px solid #b6b6b6;
+  width: 90px;
+  height: 25px;
+}
+
+.companyNameSearchInputBox {
+  border: 1px solid #b6b6b6;
+  width: 90px;
+  height: 25px;
+  margin-left: -15px;
+}
+
+.companyNameTypeLableText {
+  margin-left: 15px;
+}

@@ -42,6 +42,8 @@ import { getNowJoinTime } from '../../util/time';
 import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import { ko } from 'date-fns/esm/locale';
 
+import Pagination from 'react-js-pagination';
+
 import SubmitButton from '../../components/common/button/SubmitButton';
 
 import { isAfter } from 'date-fns';
@@ -62,6 +64,9 @@ const CompanyPage = () => {
     SearchDataSet,
     searchCompanyOnClick,
     reSetData,
+    saveBtn,
+    editBtn,
+    removeBtn,
   } = CompanyModel();
   const {
     register,
@@ -84,6 +89,7 @@ const CompanyPage = () => {
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
   const [companyList, setCompanyList] = useState([]); // select box 내 company list
 
+  const listRef = useRef(null); // list 화면 상하단 이동
   const [dateRange, setDateRange] = useState([]);
   const CATEGORY = useRef('사업장');
 
@@ -94,6 +100,13 @@ const CompanyPage = () => {
   const [endEnd, setEndEnd] = useState();
 
   const [changeHistoryGrid, setChangeHistoryGrid] = useState();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+
+  const handlePageChange = page => {
+    changeHistoryGrid.grid.setPage(page - 1);
+    setPage(page);
+  };
 
   const handleEndCalendarClick = () => {
     setIsEndOpen(!isEndOpen);
@@ -105,9 +118,9 @@ const CompanyPage = () => {
   };
 
   const handleDateReset = e => {
-    console.log('변경(리셋)', endStartDate);
-    // setEndStartDate(null);
-    // setEndEndDate(null);
+    console.log('변경(리셋)', endStartDate, e.key);
+    setEndStartDate(null);
+    setEndEndDate(null);
     setEndStart(null);
     setEndEnd(null);
   };
@@ -131,24 +144,49 @@ const CompanyPage = () => {
   React.useEffect(() => {
     getCompanyList();
     reset();
+    setSelectCategory('');
     setCompanySelect('');
+    setTotalPage(0);
+    setPage(1);
+    setEndStart(null);
+    setEndEnd(null);
   }, [changeHistoryOpenPost]);
+
+  const trimObjectProperties = obj => {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key) && typeof obj[key] === 'string') {
+        obj[key] = obj[key].trim();
+      }
+    }
+    return obj;
+  };
 
   const onMasterGridSubmit = async data => {
     data.CH_CATEGORY = CATEGORY.current;
-
+    console.log('companySelect', companySelect);
     if (endStart !== undefined && endEnd !== undefined) {
       data.startDate = endStart;
       data.endDate = endEnd;
     } else if (endStart !== undefined && endEnd === undefined) {
       data.startDate = endStart;
     }
+    if (companySelect !== '') {
+      const selectedValue = companySelect;
+
+      // data 배열에서 선택한 값과 일치하는 객체를 찾습니다.
+      const selectedCompany = companyList.find(
+        company => company.co_CD === selectedValue
+      );
+      data.CHD_TARGET_CO_NM = selectedCompany.co_NM;
+    }
+    data = trimObjectProperties(data);
 
     const response = await authAxiosInstance.post(
       'system/admin/groupManage/ChangeHistorySearch',
       data
     );
 
+    setTotalPage(response.data.length);
     changeHistoryGrid.grid.showProgress(); //데이터 로딩바 생성
     changeHistoryGrid.grid.cancel();
     changeHistoryGrid.provider.clearRows();
@@ -159,8 +197,24 @@ const CompanyPage = () => {
     changeHistoryGrid.provider.fillJsonData(response.data, {
       fillMode: 'set',
     });
-    console.log('변경검색', data);
+    console.log('변경검색', data, companySelect);
     console.log('변경검색1', response.data);
+  };
+
+  const editBtnClickHeander = () => {
+    if (editBtn?.current) {
+      editBtn?.current.click();
+    }
+  };
+  const saveBtnClickHeander = () => {
+    if (saveBtn?.current) {
+      saveBtn?.current.click();
+    }
+  };
+  const removeBtnClickHeander = () => {
+    if (removeBtn?.current) {
+      removeBtn?.current.click();
+    }
   };
   return (
     <div className="sb-nav-fixed">
@@ -171,6 +225,7 @@ const CompanyPage = () => {
       <ContentWrapper>
         <Title titleName={'회사관리'}>
           <button
+            type="button"
             className="changeHistoryWhiteButton"
             onClick={() => ModalOpenButton()}
           >
@@ -181,14 +236,15 @@ const CompanyPage = () => {
           <SelectBoxWrapper>
             <span className="leftSelectBoxPadding">사용여부</span>
             <SelectBox SearchDataSet={SearchDataSet} />
-            <span className="lastSelectBoxTextPadding">회사코드/회사명</span>
+            <span className="comlastSelectBoxTextPadding">회사</span>
             <TextFieldBox
               width={'200px'}
               SearchDataSet={SearchDataSet}
               searchData={searchData}
             />
+
             <button
-              className="companyFFcustomButton"
+              className="companySearchFFcustomButton"
               onClick={() => searchCompanyOnClick()}
             >
               <i className="fa-solid fa-magnifying-glass"></i>
@@ -203,19 +259,61 @@ const CompanyPage = () => {
               formDataSet={formDataSet}
               listCountSet={listCountSet}
               ch_listData={ch_listData}
+              ch_listDataSet={ch_listDataSet}
               listData={listData}
               listDataSet={listDataSet}
               searchCompanyOnClick={searchCompanyOnClick}
               reSetData={reSetData}
+              listRef={listRef}
             />
             <RightContentWrapper>
-              <DetailTitle detailTitle={'기본정보'}></DetailTitle>
+              <DetailTitle detailTitle={'기본정보'}>
+                <div className="button-container">
+                  {formData?.co_CD !== '' && formData ? (
+                    <div>
+                      <button
+                        ref={editBtn}
+                        className="companyWhiteButton"
+                        onClick={() => {
+                          editBtnClickHeander();
+                        }}
+                      >
+                        저장
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <button
+                        ref={saveBtn}
+                        className="companyWhiteButton"
+                        onClick={() => {
+                          saveBtnClickHeander();
+                        }}
+                      >
+                        저장
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    ref={removeBtn}
+                    className="companyWhiteButton"
+                    onClick={() => {
+                      removeBtnClickHeander();
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </DetailTitle>
               <ScrollWrapper width={'100%'}>
                 <CompanyInputBox
                   formData={formData}
                   formDataSet={formDataSet}
                   ch_listData={ch_listData}
                   ch_listDataSet={ch_listDataSet}
+                  saveBtn={saveBtn}
+                  editBtn={editBtn}
+                  removeBtn={removeBtn}
                 />
               </ScrollWrapper>
             </RightContentWrapper>
@@ -225,10 +323,9 @@ const CompanyPage = () => {
       {changeHistoryOpenPost && (
         <Modal
           width={'1300px'}
-          height={'800px'}
+          height={'600px'}
           title={'변경이력'}
           onClickEvent={ModalOpenButton}
-          buttonYN={true}
         >
           <form onSubmit={handleSubmit(onMasterGridSubmit)}>
             <SelectBoxWrapper>
@@ -236,7 +333,7 @@ const CompanyPage = () => {
 
               <div style={{ position: 'relative' }}>
                 <input
-                  className="FixedInputStyle"
+                  className="companyFixedInputStyle"
                   type="text"
                   readOnly
                   value={
@@ -287,14 +384,17 @@ const CompanyPage = () => {
                   </div>
                 )}
               </div>
-              {endStartDate && (
-                <button
-                  onClick={() => handleDateReset()}
-                  className="companyCancelButton"
-                >
-                  취소
-                </button>
-              )}
+              <div className="cancleDiv">
+                {endStartDate && (
+                  <button
+                    type="button"
+                    onClick={e => handleDateReset(e)}
+                    className="companyCancelButton"
+                  >
+                    취소
+                  </button>
+                )}
+              </div>
 
               <span className="searchModalSelectBoxPadding">변경구분</span>
               <ChangeHistorySelectCategory
@@ -308,7 +408,7 @@ const CompanyPage = () => {
               />
               <span className="changeHistoryLableCompanyText">회사</span>
               <EmpSelectBox
-                width={135}
+                width={190}
                 data={companyList}
                 setCompanySelect={setCompanySelect}
                 companySelect={companySelect}
@@ -338,6 +438,19 @@ const CompanyPage = () => {
             CATEGORY={CATEGORY.current}
             layout={empAndWorkChangeHistoryLayout}
             setChangeHistoryGrid={setChangeHistoryGrid}
+            changeHistoryGrid={changeHistoryGrid}
+            setTotalPage={setTotalPage}
+            ModalOpenButton={ModalOpenButton}
+          />
+
+          <Pagination
+            activePage={page}
+            totalItemsCount={totalPage}
+            itemsCountPerPage={11}
+            pageRangeDisplayed={5}
+            prevPageText={'‹'}
+            nextPageText={'›'}
+            onChange={handlePageChange}
           />
         </Modal>
       )}

@@ -154,8 +154,18 @@ const FundTypePage = () => {
     setSelectedViewOption(option);
   };
 
+  const trimObjectProperties = obj => {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key) && typeof obj[key] === 'string') {
+        obj[key] = obj[key].trim();
+      }
+    }
+    return obj;
+  };
+
   const onMasterGridSubmit = async SearchData => {
     console.log('마스터서브밋', SearchData);
+    SearchData = trimObjectProperties(SearchData);
 
     marsterGrid.grid.showProgress(); //데이터 로딩바 생성
     marsterGrid.grid.cancel();
@@ -183,7 +193,8 @@ const FundTypePage = () => {
   };
   const onSearchGridSubmit = async SearchData => {
     SearchData.CASH_FG = selectedOption;
-    console.log('라디오', SearchData, selectUseYN);
+    SearchData = trimObjectProperties(SearchData);
+    console.log('라디오!!!!!', SearchData, selectUseYN);
     searchGrid.grid.showProgress(); //데이터 로딩바 생성
     searchGrid.grid.cancel();
     searchGrid.provider.clearRows();
@@ -644,11 +655,9 @@ const FundTypePage = () => {
                   register={register}
                 />
                 <div className="selectBoxButtonWrapper">
-                  <SubmitButton
-                    data={<i className="fa-solid fa-magnifying-glass" />}
-                    width={'-10px'}
-                    height={30}
-                  />
+                  <button type="submit" className="companySearchFFcustomButton">
+                    <i className="fa-solid fa-magnifying-glass" />
+                  </button>
                 </div>
               </FundTypeSelectBoxWrapper>
             </form>

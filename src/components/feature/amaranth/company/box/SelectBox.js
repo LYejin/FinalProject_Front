@@ -10,10 +10,10 @@ const SelectBox = ({ data, width, SearchDataSet, register }) => {
   const MenuProps = {
     PaperProps: {
       style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: width,
+        height: '28px',
         fontSize: '0.8rem',
-        maxHeight: 250,
+        width: '100px',
+        borderRadius: 0,
       },
     },
   };

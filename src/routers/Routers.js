@@ -13,7 +13,6 @@ import GtradePage from '../pages/amaranth10/GtradePage';
 import FtradePage from '../pages/amaranth10/FtradePage';
 import FixedFundPage from '../pages/amaranth10/FixedFundPage';
 
-import CompanyChangeHistory from '../components/feature/amaranth/company/CompanyChangeHistory';
 import FundTypePage from '../pages/amaranth10/FundTypePage';
 import LoginMainPage from '../pages/amaranth10/LoginMainPage';
 import Login from '../pages/login/Login';
