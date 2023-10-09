@@ -1,0 +1,181 @@
+[1mdiff --git a/src/components/feature/amaranth/Department/DeptEmpListGrid.js b/src/components/feature/amaranth/Department/DeptEmpListGrid.js[m
+[1mindex 4f90dc3..491927e 100644[m
+[1m--- a/src/components/feature/amaranth/Department/DeptEmpListGrid.js[m
+[1m+++ b/src/components/feature/amaranth/Department/DeptEmpListGrid.js[m
+[36m@@ -5,7 +5,7 @@[m [mimport 'realgrid/dist/realgrid-style.css';[m
+ import { authAxiosInstance } from '../../../../axios/axiosInstance';[m
+ import NoData from './noEmp.png';[m
+ [m
+[31m-function DeptEmpListGrid({ CoCd, DeptCd, setIsLowLevel }) {[m
+[32m+[m[32mfunction DeptEmpListGrid({ CoCd, DeptCd }) {[m
+   const [chDataProvider, setChDataProvider] = useState(null);[m
+   const [chGridView, setChGridView] = useState(null);[m
+   const [isData, setIsData] = useState(false);[m
+[36m@@ -35,10 +35,8 @@[m [mfunction DeptEmpListGrid({ CoCd, DeptCd, setIsLowLevel }) {[m
+         });[m
+         if (responseData.data.length === 0) {[m
+           setIsData(false);[m
+[31m-          setIsLowLevel(false);[m
+         } else {[m
+           setIsData(true);[m
+[31m-          setIsLowLevel(true);[m
+         }[m
+       })[m
+       .catch(error => {[m
+[1mdiff --git a/src/components/feature/amaranth/Department/DeptInfoWrapper.js b/src/components/feature/amaranth/Department/DeptInfoWrapper.js[m
+[1mindex afb736d..0242b2e 100644[m
+[1m--- a/src/components/feature/amaranth/Department/DeptInfoWrapper.js[m
+[1m+++ b/src/components/feature/amaranth/Department/DeptInfoWrapper.js[m
+[36m@@ -193,13 +193,9 @@[m [mconst DeptInfoWrapper = ({[m
+                 valid={'text'}[m
+                 defaultValue={data ? data.dept_NM || '' : ''}[m
+                 placeholder="부서명을 입력해주세요."[m
+[31m-                register={[m
+[31m-                  isUpdate[m
+[31m-                    ? register('dept_NM', {[m
+[31m-                        required: '부서명을 입력해주세요.',[m
+[31m-                      })[m
+[31m-                    : register('dept_NM')[m
+[31m-                }[m
+[32m+[m[32m                register={register('dept_NM', {[m
+[32m+[m[32m                  required: '부서명을 입력해주세요.',[m
+[32m+[m[32m                })}[m
+                 errors={errors}[m
+                 maxLength={20}[m
+                 name="dept_NM"[m
+[1mdiff --git a/src/components/feature/amaranth/Department/ListDept.js b/src/components/feature/amaranth/Department/ListDept.js[m
+[1mindex 5fb632e..d5b7598 100644[m
+[1m--- a/src/components/feature/amaranth/Department/ListDept.js[m
+[1m+++ b/src/components/feature/amaranth/Department/ListDept.js[m
+[36m@@ -58,20 +58,19 @@[m [mfunction ListDept({ data, roof, deptStyle, searchValue, parentDeptYN }) {[m
+     setIsVisible(visibility);[m
+   }, [useSelect, showSelect, data]);[m
+ [m
+[31m-  console.log('이시발', isVisible);[m
+[31m-[m
+[31m-  console.log([m
+[31m-    'deptCD : ',[m
+[31m-    data.dept_CD,[m
+[31m-    ' dept_YN : ',[m
+[31m-    data.dept_YN,[m
+[31m-    'show_YN :',[m
+[31m-    data.show_YN[m
+[31m-  );[m
+[32m+[m[32m  // console.log([m
+[32m+[m[32m  //   'deptCD : ',[m
+[32m+[m[32m  //   data.dept_CD,[m
+[32m+[m[32m  //   ' dept_YN : ',[m
+[32m+[m[32m  //   data.dept_YN,[m
+[32m+[m[32m  //   'show_YN :',[m
+[32m+[m[32m  //   data.show_YN[m
+[32m+[m[32m  // );[m
+ [m
+   console.log('useSelect : ', useSelect, 'showSelect : ', showSelect);[m
+ [m
+   const onDeptClick = () => {[m
+[32m+[m[32m    console.log('엔비', data.emp_NB);[m
+     if (isModal === false) {[m
+       setMdeptCD(data.dept_CD);[m
+       setSelectedDivCd(data.div_CD);[m
+[36m@@ -83,8 +82,13 @@[m [mfunction ListDept({ data, roof, deptStyle, searchValue, parentDeptYN }) {[m
+     } else {[m
+       setIsHighLevel(false);[m
+     }[m
+[31m-    if (data.subDepts && data.subDepts.some(dept => dept.dept_YN === '1')) {[m
+[32m+[m[32m    if ([m
+[32m+[m[32m      (data.subDepts && data.subDepts.some(dept => dept.dept_YN === '1')) ||[m
+[32m+[m[32m      data.emp_NB !== '0'[m
+[32m+[m[32m    ) {[m
+       setIsLowLevel(true);[m
+[32m+[m[32m    } else {[m
+[32m+[m[32m      setIsLowLevel(false);[m
+     }[m
+ [m
+     handleSelectDepartment(data.dept_CD, data.div_CD);[m
+[1mdiff --git a/src/pages/amaranth10/DepartmentPage.js b/src/pages/amaranth10/DepartmentPage.js[m
+[1mindex c740760..828b608 100644[m
+[1m--- a/src/pages/amaranth10/DepartmentPage.js[m
+[1m+++ b/src/pages/amaranth10/DepartmentPage.js[m
+[36m@@ -111,8 +111,10 @@[m [mconst DepartmentPage = () => {[m
+     setAddress(data.zonecode);[m
+     setAddressDetail(fullAddr);[m
+     setData(prevData => ({[m
+[32m+[m[32m      ...prevData,[m
+       addr_NUM: '',[m
+     }));[m
+[32m+[m
+     setChangeFormData(prevChangeFormData => {[m
+       const updatedData = {[m
+         ...prevChangeFormData,[m
+[36m@@ -180,7 +182,7 @@[m [mconst DepartmentPage = () => {[m
+   }, [isUpdate]);[m
+ [m
+   const resetData = () => {[m
+[31m-    setData(prevData => ({[m
+[32m+[m[32m    setData({[m
+       co_NM: useCoCdName,[m
+       div_NM: selectedDivCdName,[m
+       mdept_CD: selectedDeptCd,[m
+[36m@@ -197,7 +199,7 @@[m [mconst DepartmentPage = () => {[m
+       addr: '',[m
+       addr_CD: '',[m
+       addr_NUM: '',[m
+[31m-    }));[m
+[32m+[m[32m    });[m
+   };[m
+ [m
+   const onClickInsert = () => {[m
+[36m@@ -285,15 +287,28 @@[m [mconst DepartmentPage = () => {[m
+       console.log('당연히 안나오겠지만,', data.dept_CD);[m
+       console.log('Submitted Data: ', changeFormData);[m
+ [m
+[32m+[m[32m      const mergedData = {[m
+[32m+[m[32m        ...changeFormData,[m
+[32m+[m[32m        dept_NM: changeFormData.dept_NM ? changeFormData.dept_NM : data.dept_NM,[m
+[32m+[m[32m        co_CD: useCoCd,[m
+[32m+[m[32m        div_CD: selectedDivCd,[m
+[32m+[m[32m        dept_CD: selectedDeptCd,[m
+[32m+[m[32m      };[m
+[32m+[m
+       const response = await authAxiosInstance.put([m
+         'system/user/departments/update',[m
+[31m-        {[m
+[31m-          ...changeFormData, // 기존의 changeFormData 객체를 펼침[m
+[31m-          co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열[m
+[31m-          div_CD: selectedDivCd,[m
+[31m-          dept_CD: selectedDeptCd,[m
+[31m-        }[m
+[32m+[m[32m        mergedData[m
+       );[m
+[32m+[m
+[32m+[m[32m      // const response = await authAxiosInstance.put([m
+[32m+[m[32m      //   'system/user/departments/update',[m
+[32m+[m[32m      //   {[m
+[32m+[m[32m      //     ...changeFormData, // 기존의 changeFormData 객체를 펼침[m
+[32m+[m[32m      //     co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열[m
+[32m+[m[32m      //     div_CD: selectedDivCd,[m
+[32m+[m[32m      //     dept_CD: selectedDeptCd,[m
+[32m+[m[32m      //   }[m
+[32m+[m[32m      // );[m
+       const updatedData = { ...data, ...changeFormData };[m
+       setChangeFormData(updatedData);[m
+ [m
+[36m@@ -303,8 +318,10 @@[m [mconst DepartmentPage = () => {[m
+         title: '업데이트 완료',[m
+         text: '부서 정보가 성공적으로 업데이트되었습니다.',[m
+       });[m
+[32m+[m[32m      console.log('아울아ㅓㄴ리ㅏㅇ', selectedDeptCd, useCoCd);[m
+     }[m
+     fetchDepartmentDataAfter(useCoCd);[m
+[32m+[m[32m    setChangeFormData({});[m
+     setIsUpdate(false);[m
+     setChangeForm(false);[m
+     setMdeptCD('');[m
+[36m@@ -502,7 +519,6 @@[m [mconst DepartmentPage = () => {[m
+       return;[m
+     }[m
+     if (isLowLevel && selectedRadioValue === '1' && newValue === '0') {[m
+[31m-      // 사용 상태에서 미사용 버튼을 클릭했을 때[m
+       const userConfirmation = window.confirm([m
+         '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.'[m
+       );[m
