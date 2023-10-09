@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getNowJoinTime } from '../util/time';
 import { authAxiosInstance, imageAxiosInstance } from '../axios/axiosInstance';
 import { onChangePhoneNumber } from '../util/number';
+import Swal from 'sweetalert2';
 
 const EmployeeModel = ({
   register,
@@ -39,6 +40,7 @@ const EmployeeModel = ({
   const [companySelect, setCompanySelect] = useState(''); // select box 내 companySelect
   const [workplaceSelect, setWorkplaceSelect] = useState(''); // Info box 내 workplace select
   const [infoBoxEnrlData, setInfoBoxEnrlData] = useState(''); // Info box 내 enrl 재직구분 데이터
+  const [deptModal, setDeptModal] = useState(''); // Info box 내 enrl 재직구분 데이터
   const listRef = useRef(null); // list 화면 상하단 이동
   const [emailPersonalData, setEmailPersonalData] = useState(''); // email drop box 데이터
   const [emailSalaryData, setEmailSalaryData] = useState(''); // email drop box 데이터
@@ -47,6 +49,36 @@ const EmployeeModel = ({
     username_ERROR: false,
     email_ADD_ERROR: false,
   }); // check db error YN
+  // 부서 모달창 내 정보 가져오기
+  const [selectedDeptCd, setSelectedDeptCd] = useState('');
+  const [selectedDivCd, setSelectedDivCd] = useState('');
+  const [selectedDeptNm, setSelectedDeptNm] = useState('');
+  const [selectedDivNm, setSelectedDivNm] = useState('');
+  const [deptAndDivData, setDeptAndDivData] = useState('');
+  const [deptAndDivDataChangeYN, setDeptAndDivDataChangeYN] = useState(false);
+
+  console.log('--------------', selectedDeptCd);
+
+  // 이미지 삭제
+  const handleImageRemove = () => {
+    setImgFile();
+    setImage();
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      image:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png',
+    }));
+  };
+
+  // 부서 모달 처리
+  const onChangeOpenDeptModal = () => {
+    setDeptModal(!deptModal);
+  };
+
+  // 부서 변화 여부
+  const onChangeDept = () => {
+    setDeptAndDivDataChangeYN(!deptAndDivDataChangeYN);
+  };
 
   // 우편번호
   const onChangeOpenPost = () => {
@@ -142,6 +174,9 @@ const EmployeeModel = ({
       setSelectedRadioValue(response.data[0]?.gender_FG);
       setInfoBoxEnrlData(response.data[0]?.enrl_FG);
       setCompany(response.data[0]?.co_CD);
+      setDeptAndDivData(
+        `${response.data[0]?.div_CD}. ${response.data[0]?.div_NM} / ${response.data[0]?.dept_CD}. ${response.data[0]?.dept_NM}`
+      );
       response.data[0]?.home_TEL &&
         setValue('home_TEL', onChangePhoneNumber(response.data[0]?.home_TEL));
       response.data[0]?.tel &&
@@ -167,42 +202,102 @@ const EmployeeModel = ({
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailEmpInfo = async (kor_NM, username) => {
-    setChangeForm(false);
-    setChangeFormData();
-    setEmailPersonalData('');
-    setEmailSalaryData('');
-    reset();
-    setImgFile();
-    setImgPriviewFile();
-    setAddress();
-    setAddressDetail();
     if (onChangeForm === true) {
-      alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
+      await Swal.fire({
+        text: '작성중인 내용이 있습니다. 취소하시겠습니까',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(async result => {
+        if (result.isConfirmed) {
+          setChangeForm(false);
+          console.log('***************', selectedDeptNm);
+          setChangeFormData();
+          setEmailPersonalData('');
+          setEmailSalaryData('');
+          reset();
+          setImgFile();
+          setImgPriviewFile();
+          setAddress();
+          setSelectedDeptNm();
+          setAddressDetail();
+          console.log('kor_nm : ', kor_NM, 'username : ', username);
+          setIsLoading(true);
+          setInsertButtonClick(false);
+          setClickYN(true);
+          const response = await authAxiosInstance.post(
+            'system/user/groupManage/employee/empDetail',
+            {
+              username: username,
+            }
+          );
+          setData(response?.data);
+          console.log(response?.data);
+          setDeptAndDivData(
+            `${response.data?.div_CD}. ${response.data?.div_NM} / ${response.data?.dept_CD}. ${response.data?.dept_NM}`
+          );
+          console.log(response?.data);
+          setSelectedRadioValue(response.data?.gender_FG);
+          setOpenDate(new Date(response.data?.join_DT) || '');
+          setImgFile(response.data?.pic_FILE_ID);
+          setIsLoading(false);
+          setUsername(response.data?.username);
+          setCompany(response.data?.co_CD);
+          setInfoBoxEnrlData(response.data?.enrl_FG);
+          setWorkplaceSelect(response.data?.div_CD);
+          response.data?.home_TEL &&
+            setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+          response.data?.tel &&
+            setValue('tel', onChangePhoneNumber(response.data?.tel));
+        } else if (result.isDenied) {
+          return;
+        }
+      });
     }
-    console.log('kornm : ', kor_NM, 'username : ', username);
-    setIsLoading(true);
-    setInsertButtonClick(false);
-    setClickYN(true);
-    const response = await authAxiosInstance.post(
-      'system/user/groupManage/employee/empDetail',
-      {
-        username: username,
-      }
-    );
-    setData(response?.data);
-    console.log(response?.data);
-    setSelectedRadioValue(response.data?.gender_FG);
-    setOpenDate(new Date(response.data?.join_DT) || '');
-    setImgFile(response.data?.pic_FILE_ID);
-    setIsLoading(false);
-    setUsername(response.data?.username);
-    setCompany(response.data?.co_CD);
-    setInfoBoxEnrlData(response.data?.enrl_FG);
-    setWorkplaceSelect(response.data?.div_CD);
-    response.data?.home_TEL &&
-      setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
-    response.data?.tel &&
-      setValue('tel', onChangePhoneNumber(response.data?.tel));
+    if (onChangeForm === false) {
+      setChangeForm(false);
+      console.log('***************', selectedDeptNm);
+      setChangeFormData();
+      setEmailPersonalData('');
+      setEmailSalaryData('');
+      reset();
+      setImgFile();
+      setImgPriviewFile();
+      setAddress();
+      setSelectedDeptNm();
+      setAddressDetail();
+      console.log('kor_nm : ', kor_NM, 'username : ', username);
+      setIsLoading(true);
+      setInsertButtonClick(false);
+      setClickYN(true);
+      const response = await authAxiosInstance.post(
+        'system/user/groupManage/employee/empDetail',
+        {
+          username: username,
+        }
+      );
+      setData(response?.data);
+      console.log(response?.data);
+      setDeptAndDivData(
+        `${response.data?.div_CD}. ${response.data?.div_NM} / ${response.data?.dept_CD}. ${response.data?.dept_NM}`
+      );
+      console.log(response?.data);
+      setSelectedRadioValue(response.data?.gender_FG);
+      setOpenDate(new Date(response.data?.join_DT) || '');
+      setImgFile(response.data?.pic_FILE_ID);
+      setIsLoading(false);
+      setUsername(response.data?.username);
+      setCompany(response.data?.co_CD);
+      setInfoBoxEnrlData(response.data?.enrl_FG);
+      setWorkplaceSelect(response.data?.div_CD);
+      response.data?.home_TEL &&
+        setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+      response.data?.tel &&
+        setValue('tel', onChangePhoneNumber(response.data?.tel));
+    }
   };
 
   // 조건 검색 버튼
@@ -243,11 +338,14 @@ const EmployeeModel = ({
     setInfoBoxEnrlData(0);
     setEmailPersonalData('');
     setEmailSalaryData('');
+    setSelectedDeptNm();
+    setDeptAndDivData();
     setCompany(companyList[0]?.co_CD);
     setImgPriviewFile();
     setOpenDate(new Date());
     setInsertButtonClick(true);
     setClickYN(false);
+    setSelectedDeptCd();
     setSelectedRadioValue('W');
     setAddress();
     setAddressDetail();
@@ -255,18 +353,37 @@ const EmployeeModel = ({
     setWorkplaceList('');
     setImage();
     setImgFile();
-    console.log('djhijsidjofijsdoifj', workplaceList[0]?.div_CD);
     setUsername('');
   };
 
   // 사원 remove 이벤트
   const onClickButtonRemoveEmp = async () => {
     const { enrl_FG } = getValues();
-    console.log('Eeeeeeeeeee', enrl_FG);
 
     if (enrl_FG === '2') {
-      alert('이미 삭제처리된 사원입니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '이미 삭제처리된 사원입니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    } else if (!clickYN) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '삭제할 수 없습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '사원정보가 비활성화되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       await authAxiosInstance.post(
         'system/user/groupManage/employee/empRemove',
         {
@@ -283,7 +400,6 @@ const EmployeeModel = ({
       if (listRef.current) {
         listRef.current.scrollTop = 0;
       }
-      alert('사원정보가 비활성화되었습니다.');
     }
   };
 
@@ -309,8 +425,15 @@ const EmployeeModel = ({
     if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length > 0
+      (changeFormData ? Object.keys(changeFormData).length > 0 : false)
     ) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '사원정보가 수정되었습니다.',
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.log('update 버튼');
       console.log(changeFormData);
       if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {
@@ -335,7 +458,6 @@ const EmployeeModel = ({
         `system/user/groupManage/employee/getList`
       );
 
-      alert('사원정보가 수정되었습니다.');
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
@@ -344,19 +466,31 @@ const EmployeeModel = ({
     } else if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length === 0
+      (changeFormData ? false : true)
     ) {
-      alert('사원정보가 수정된 정보가 없습니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '수정된 정보가 없습니다.',
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
 
     // 사원 insert 중일 때 저장버튼 기능
     if (!clickYN && insertButtonClick && Object.keys(errors).length === 0) {
-      console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiii', infoBoxEnrlData);
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '사원이 추가되었습니다.',
+        showConfirmButton: false,
+        timer: 1500,
+      });
       const userData = {
         emp_CD: data?.emp_CD,
         co_CD: company || null,
-        div_CD: workplaceSelect || null,
-        dept_CD: '1212',
+        div_CD: selectedDivCd || null,
+        dept_CD: selectedDeptCd || null,
         username: data?.username,
         password: data?.password,
         kor_NM: data?.kor_NM,
@@ -374,11 +508,13 @@ const EmployeeModel = ({
         addr: addressDetail || null,
         addr_NUM: data?.addr_NUM,
       };
+
       setUsername(data?.username);
       setData(userData);
       setWorkplaceSelect(workplaceSelect);
       setCompany(company);
 
+      setSelectedDeptNm();
       formData.append(
         'userData',
         new Blob([JSON.stringify(userData)], {
@@ -401,8 +537,10 @@ const EmployeeModel = ({
           kor_NM: data?.kor_NM,
         },
       ]);
-      alert('사원이 추가되었습니다.');
       reset();
+      setDeptAndDivData(
+        `${selectedDivCd}. ${selectedDivNm} / ${selectedDeptCd}. ${selectedDeptNm}`
+      );
       setEmailPersonalData('');
       setEmailSalaryData('');
       setImgFile();
@@ -505,7 +643,6 @@ const EmployeeModel = ({
         response.data &&
           setError('emp_CD', { message: '사번이 중복되었습니다.' });
         if (response.data) {
-          console.log('hiiiiiiii');
           setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: true });
         } else {
           setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: false });
@@ -513,6 +650,11 @@ const EmployeeModel = ({
         }
       });
     } else if (e.target.name === 'username') {
+      ///
+      if (e.target.value === '' || e.target.value === undefined) {
+        setCheckDBErrorYN({ ...checkDBErrorYN, tr_NM_ERROR: true });
+        setError('tr_NM', { message: `거래처명을 입력해주세요.` });
+      }
       params.USERNAME = e.target.value;
       await authAxiosInstance(
         `system/user/groupManage/employee/getUsernameInCompany`,
@@ -550,6 +692,16 @@ const EmployeeModel = ({
     console.log('checkDBErrorYN : ', checkDBErrorYN);
   };
 
+  //
+  const onChangeDeptAndDiv = () => {
+    clearErrors();
+    setChangeFormData(changeFormData => ({
+      ...changeFormData,
+      div_CD: selectedDivCd,
+      dept_CD: selectedDivCd,
+    }));
+  };
+
   console.log('errors', errors);
   console.log('changeFormData : ', changeFormData);
   console.log(checkDBErrorYN);
@@ -558,6 +710,18 @@ const EmployeeModel = ({
   // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
   const state = {
+    deptAndDivData,
+    setDeptAndDivData,
+    setSelectedDeptCd,
+    setSelectedDivCd,
+    setSelectedDeptNm,
+    setSelectedDivNm,
+    selectedDeptCd,
+    selectedDivCd,
+    selectedDeptNm,
+    selectedDivNm,
+    deptModal,
+    setDeptModal,
     empList,
     setEmpList,
     clickYN,
@@ -618,6 +782,8 @@ const EmployeeModel = ({
   };
 
   const actions = {
+    onChangeDeptAndDiv,
+    onChangeOpenDeptModal,
     onChangeOpenPost,
     onCompletePost,
     handleRadioChange,
@@ -638,6 +804,7 @@ const EmployeeModel = ({
     onChangePersonalMAIL,
     onChangeSalaryMAIL,
     onChangeDBDataSearch,
+    handleImageRemove,
   };
 
   return { state, actions };

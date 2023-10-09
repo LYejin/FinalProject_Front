@@ -155,10 +155,8 @@ const FtradeModel = ({
     const response = await authAxiosInstance(
       'accounting/user/Strade/getSFtradeList'
     );
-    console.log(response.data);
     setEmpList(response?.data);
     if (clickYN && !insertButtonClick) {
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^');
       setTR_CD(response.data[0]?.tr_CD);
       setData(response?.data[0]);
       setUseYN(response.data[0]?.use_YN);
@@ -178,52 +176,120 @@ const FtradeModel = ({
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailSGtradeInfo = async tr_CD => {
-    setChangeForm(false);
-    setDeleteYN(false);
-    setChangeFormData();
-    reset();
-    setAddress();
-    setAddressDetail();
     if (onChangeForm === true) {
-      alert('작성중인 내용이 있습니다. 취소하시겠습니까?');
-    }
-    setIsLoading(true);
-    setInsertButtonClick(false);
-    setClickYN(true);
-    const params = {};
-    params.TR_CD = tr_CD;
+      await Swal.fire({
+        text: '작성중인 내용이 있습니다. 취소하시겠습니까?',
+        icon: 'isConfirmed',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(async result => {
+        if (result.isConfirmed) {
+          setFinanceChangeCDData();
+          setChangeForm(false);
+          setDeleteYN(false);
+          setChangeFormData();
+          reset();
+          setAddress();
+          setAddressDetail();
+          setIsLoading(true);
+          setInsertButtonClick(false);
+          setClickYN(true);
+          const params = {};
+          params.TR_CD = tr_CD;
 
-    const response = await authAxiosInstance(
-      'accounting/user/Strade/sftradeDetail',
-      {
-        params,
-      }
-    );
-    console.log(response.data);
-    setData(response?.data);
-    setViewYN(response.data?.view_YN);
-    setSelectedRadioValue(response.data?.gender_FG);
-    setOpenDate(
-      JSON.stringify(new Date(response.data?.fstart_DT)) !==
-        '"1970-01-01T00:00:00.000Z"'
-        ? new Date(response.data?.fstart_DT)
-        : null
-    );
-    setCloseDate(
-      JSON.stringify(new Date(response.data?.fend_DT)) !==
-        '"1970-01-01T00:00:00.000Z"'
-        ? new Date(response.data?.fend_DT)
-        : null
-    );
-    setIsLoading(false);
-    setFinanceCDData(`${response.data?.bank_CD}. ${response.data?.bank_NAME}`);
-    setUseYN(response.data?.use_YN);
-    setTR_CD(response.data?.tr_CD);
-    setCompany(response.data.co_CD);
-    response.data.home_TEL &&
-      setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
-    response.data.tel &&
-      setValue('tel', onChangePhoneNumber(response.data.tel));
+          const response = await authAxiosInstance(
+            'accounting/user/Strade/sftradeDetail',
+            {
+              params,
+            }
+          );
+          console.log(response.data);
+          setData(response?.data);
+          setViewYN(response.data?.view_YN);
+          setSelectedRadioValue(response.data?.gender_FG);
+          setOpenDate(
+            JSON.stringify(new Date(response.data?.fstart_DT)) !==
+              '"1970-01-01T00:00:00.000Z"'
+              ? new Date(response.data?.fstart_DT)
+              : null
+          );
+          setCloseDate(
+            JSON.stringify(new Date(response.data?.fend_DT)) !==
+              '"1970-01-01T00:00:00.000Z"'
+              ? new Date(response.data?.fend_DT)
+              : null
+          );
+          setIsLoading(false);
+          setFinanceCDData(
+            response.data?.bank_CD
+              ? `${response.data?.bank_CD}. ${response.data?.bank_NAME}`
+              : null
+          );
+          setUseYN(response.data?.use_YN);
+          setTR_CD(response.data?.tr_CD);
+          setCompany(response.data.co_CD);
+          response.data.home_TEL &&
+            setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
+          response.data.tel &&
+            setValue('tel', onChangePhoneNumber(response.data.tel));
+        } else if (result.isDenied) {
+          return;
+        }
+      });
+    }
+    if (onChangeForm === false) {
+      setFinanceChangeCDData();
+      setChangeForm(false);
+      setDeleteYN(false);
+      setChangeFormData();
+      reset();
+      setAddress();
+      setAddressDetail();
+      setIsLoading(true);
+      setInsertButtonClick(false);
+      setClickYN(true);
+      const params = {};
+      params.TR_CD = tr_CD;
+
+      const response = await authAxiosInstance(
+        'accounting/user/Strade/sftradeDetail',
+        {
+          params,
+        }
+      );
+      console.log(response.data);
+      setData(response?.data);
+      setViewYN(response.data?.view_YN);
+      setSelectedRadioValue(response.data?.gender_FG);
+      setOpenDate(
+        JSON.stringify(new Date(response.data?.fstart_DT)) !==
+          '"1970-01-01T00:00:00.000Z"'
+          ? new Date(response.data?.fstart_DT)
+          : null
+      );
+      setCloseDate(
+        JSON.stringify(new Date(response.data?.fend_DT)) !==
+          '"1970-01-01T00:00:00.000Z"'
+          ? new Date(response.data?.fend_DT)
+          : null
+      );
+      setIsLoading(false);
+      setFinanceCDData(
+        response.data?.bank_CD
+          ? `${response.data?.bank_CD}. ${response.data?.bank_NAME}`
+          : null
+      );
+      setUseYN(response.data?.use_YN);
+      setTR_CD(response.data?.tr_CD);
+      setCompany(response.data.co_CD);
+      response.data.home_TEL &&
+        setValue('home_TEL', onChangePhoneNumber(response.data.home_TEL));
+      response.data.tel &&
+        setValue('tel', onChangePhoneNumber(response.data.tel));
+    }
   };
 
   // 조건 검색 버튼
@@ -276,25 +342,8 @@ const FtradeModel = ({
     setAddress();
     setAddressDetail();
     setFinanceChangeCDData();
-    setFinanceCDData();
     setTR_CD('');
     setUseYN('1');
-  };
-
-  // 사원 remove 이벤트
-  const onClickButtonRemoveEmp = async () => {
-    await authAxiosInstance.post('system/user/groupManage/employee/empRemove', {
-      kor_NM: data.kor_NM,
-      username: data.username,
-    });
-    setClickYN(true);
-    setChangeForm(false);
-    getEmpList();
-    setTR_CD(empList[0].tr_CD);
-    if (listRef.current) {
-      listRef.current.scrollTop = 0;
-    }
-    alert('사원정보가 비활성화되었습니다.');
   };
 
   // 사원 submit button(update, insert) 이벤트
@@ -302,19 +351,42 @@ const FtradeModel = ({
     const getJoinDT = getNowJoinTime(openDate);
     const getEndDT = closeDate ? getNowJoinTime(closeDate) : '';
 
-    checkDBErrorYN.emp_CD_ERROR &&
-      setError('emp_CD', { message: '사번이 중복되었습니다.' });
-    checkDBErrorYN.username_ERROR &&
-      setError('username', { message: 'ID가 중복되었습니다.' });
-    checkDBErrorYN.email_ADD_ERROR &&
-      setError('email_ADD', { message: 'ID가 중복되었습니다.' });
+    if (checkDBErrorYN.tr_CD_ERROR) {
+      setError('tr_CD', { message: '거래처 코드가 중복되었습니다.' });
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '거래처 코드가 중복되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      return;
+    }
+    if (checkDBErrorYN.tr_NM_ERROR) {
+      setError('tr_NM', { message: '거래처명을 입력해주세요.' });
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '거래처명을 입력해주세요.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      return;
+    }
 
     // 사원 update 중일 때 저장버튼 기능
     if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length > 0
+      (changeFormData ? Object.keys(changeFormData)?.length > 0 : false)
     ) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '금융거래처 정보가 수정되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       console.log('update 버튼');
       console.log(changeFormData);
       // const data = { ...changeFormData, tr_CD: tr_CD, tr_FG: '3', view_YN: viewYN }
@@ -326,21 +398,42 @@ const FtradeModel = ({
       );
       const responseGetList = await authAxiosInstance(
         `accounting/user/Strade/getSFtradeList`
-      );
+      ).error(err => {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: '금융거래처 수정이 실패했습니다.',
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      });
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
-      alert('사원정보가 수정되었습니다.');
     } else if (
       clickYN &&
       !insertButtonClick &&
-      Object.keys(changeFormData).length === 0
+      (changeFormData ? false : true)
     ) {
-      alert('사원정보가 수정된 정보가 없습니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '수정된 정보가 없습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
 
     // 사원 insert 중일 때 저장버튼 기능
     if (!clickYN && insertButtonClick && Object.keys(errors).length === 0) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: '금융거래처가 추가되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+
       const userData = {
         tr_CD: data?.tr_CD,
         tr_NM: data?.tr_NM,
@@ -352,13 +445,13 @@ const FtradeModel = ({
         fend_DT: getEndDT || null,
         ba_NB_TR: data?.ba_NB_TR,
         depositor: data?.depositor,
-        depositor_NM: data?.depositor_NM,
+        deposit_NM: data?.deposit_NM,
         account_OPEN_BN: data?.account_OPEN_BN,
-        bank_CD: financeCDChangeData?.finance_CD,
+        bank_CD: financeCDChangeData?.bank_CD,
       };
 
       setTR_CD(data?.tr_CD);
-      setData(userData);
+
       setCompany(company);
 
       console.log('insert 버튼');
@@ -376,24 +469,35 @@ const FtradeModel = ({
           BA_NB_TR: data?.BA_NB_TR,
         },
       ]);
-      alert('사원이 추가되었습니다.');
+      setData({ ...userData, tr_CD: response.data });
       reset();
       setChangeForm(false);
       setChangeFormData();
       setInsertButtonClick(false);
+      setFinanceCDData(
+        financeCDChangeData?.bank_CD
+          ? `${financeCDChangeData?.bank_CD}. ${financeCDChangeData?.bank_NAME}`
+          : null
+      );
       setClickYN(true);
-      console.log(listRef.current.scrollHeight);
+      //console.log(listRef.current.scrollHeight);
       if (listRef.current) {
         listRef.current.scrollTop = 3000;
       }
-      console.log(listRef.current.scrollHeight);
-      console.log(listRef.current.scrollTop);
+      // console.log(listRef.current.scrollHeight);
+      // console.log(listRef.current.scrollTop);
     } else if (
       !clickYN &&
       insertButtonClick &&
       Object.keys(errors).length > 0
     ) {
-      alert('중복된 값이 존재합니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '중복된 값이 존재합니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
   };
 
@@ -458,61 +562,38 @@ const FtradeModel = ({
   // onChange 시 DB 내 동일한 데이터 검사
   const onChangeDBDataSearch = async e => {
     let params = {};
-    console.log('=============', changeFormData);
-    if (e.target.name === 'emp_CD') {
+    if (e.target.name === 'tr_CD') {
       params.CO_CD = company;
-      params.EMP_CD = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getEmpCDInWorkplace`,
-        { params }
-      ).then(response => {
-        console.log(response.data);
+      params.TR_CD = e.target.value;
+      await authAxiosInstance(`accounting/user/Strade/trCdVal`, {
+        params,
+      }).then(response => {
         response.data &&
-          setError('emp_CD', { message: '사번이 중복되었습니다.' });
+          setError('tr_CD', { message: `거래처 코드가 중복되었습니다.` });
         if (response.data) {
-          console.log('hiiiiiiii');
-          setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: true });
+          setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: true });
         } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, emp_CD_ERROR: false });
-          delete errors.emp_CD;
+          setCheckDBErrorYN({ ...checkDBErrorYN, tr_CD_ERROR: false });
+          delete errors.tr_CD;
         }
       });
-    } else if (e.target.name === 'username') {
-      params.USERNAME = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getUsernameInCompany`,
-        { params }
-      ).then(response => {
-        console.log(response.data);
-        response.data &&
-          setError('username', { message: 'ID가 중복되었습니다.' });
-        if (response.data) {
-          setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });
-        } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: false });
-          delete errors.username;
-        }
-      });
-    } else if (e.target.name === 'email_ADD') {
-      params.EMAIL_ADD = e.target.value;
-      await authAxiosInstance(
-        `system/user/groupManage/employee/getEmailInCompany`,
-        {
-          params,
-        }
-      ).then(response => {
-        console.log(response.data);
-        response.data &&
-          setError('email_ADD', { message: 'ID가 중복되었습니다.' });
-        if (response.data) {
-          setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: true });
-        } else {
-          setCheckDBErrorYN({ ...checkDBErrorYN, email_ADD_ERROR: false });
-          delete errors.email_ADD;
-        }
-      });
+    } else if (e.target.name === 'bank_CD') {
+      setFinanceChangeCDData(financeCDChangeData => ({
+        ...financeCDChangeData,
+        bank_CD: e.target.value,
+      }));
+      setChangeFormData(changeFormData => ({
+        ...changeFormData,
+        [e.target.name]: e.target.value,
+      }));
+    } else if (
+      e.target.name === 'tr_NM' &&
+      (e.target.value === '' || e.target.value === undefined)
+    ) {
+      setCheckDBErrorYN({ ...checkDBErrorYN, tr_NM_ERROR: true });
+      setError('tr_NM', { message: `거래처명을 입력해주세요.` });
     }
-    console.log('checkDBErrorYN : ', checkDBErrorYN);
+    setErrorName();
   };
 
   // list 하나 클릭
@@ -538,11 +619,10 @@ const FtradeModel = ({
   const allCheckedHandler = ({ target }) => {
     if (target.checked) {
       setDeleteCheck('listDelete');
-      setDeleteListCount(Array.from(checkItems).length);
       setDeleteYN(true);
       setCheckItems(new Set(empList.map((data, index) => data.tr_CD)));
       setIsAllChecked(true);
-      Array.from(checkItems);
+      setDeleteListCount(empList.length);
     } else {
       checkItems.clear();
       setCheckItems(checkItems);
@@ -584,12 +664,25 @@ const FtradeModel = ({
 
       // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
       if (checkedRows.length === 0) {
-        alert('삭제할 항목을 선택해주세요.');
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: '삭제할 항목을 선택해주세요.',
+          showConfirmButton: false,
+          timer: 1000,
+        });
+
         return;
       }
 
       if (checkedRows.length > 20) {
-        alert('한 번에 20개 이하의 항목만 삭제할 수 있습니다.');
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: '한 번에 20개 이하의 항목만 삭제할 수 있습니다.',
+          showConfirmButton: false,
+          timer: 1000,
+        });
         return;
       }
 
@@ -622,9 +715,11 @@ const FtradeModel = ({
               icon: 'success',
               title: '성공적으로 삭제되었습니다!',
               showConfirmButton: false,
-              timer: 1500,
+              timer: 1000,
             });
             dataProviderStrade.removeRows(checkedRows);
+            setDeleteListCount(0);
+            setDeleteYN(false);
           } catch (error) {
             console.error('Failed to delete rows:', error);
           }
@@ -638,38 +733,66 @@ const FtradeModel = ({
       params: { FINANCE_CD: e.target.value },
     }).then(response => {
       if (response.data.length === 1) {
+        setFinanceChangeCDData(financeCDChangeData => ({
+          ...financeCDChangeData,
+          bank_CD: response.data[0]?.finance_CD,
+          bank_NAME: response.data[0]?.bank_NAME,
+        }));
+        setChangeFormData(changeFormData => ({
+          ...changeFormData,
+          bank_CD: response.data[0]?.finance_CD,
+        }));
         setValue(
           'bank_CD',
           `${response.data[0]?.finance_CD}. ${response.data[0]?.bank_NAME}`
         );
+        return;
       } else if (response.data.length > 1) {
         setFinanceCDModal(!financeCDModal);
         setFinanceCDInputData(e.target.value);
+        return;
       }
+      setValue('bank_CD', null);
     });
   };
 
-  const onKeyDownEnterFin = async e => {
-    if (
-      e.key === 'Enter' &&
-      (e.target.value !== null || e.target.value !== '')
-    ) {
-      await authAxiosInstance(`accounting/user/Strade//financecodeInfo`, {
-        params: { FINANCE_CD: e.target.value },
-      }).then(response => {
-        if (response.data.length === 1) {
-          setFinanceChangeCDData(response.data[0]);
-          setValue(
-            'bank_CD',
-            `${response.data[0]?.finance_CD}. ${response.data[0]?.bank_NAME}`
-          );
-        } else if (response.data.length > 1) {
-          setFinanceCDModal(!financeCDModal);
-          setFinanceCDInputData(e.target.value);
-        }
-      });
-    }
-  };
+  // const onKeyDownEnterFin = async e => {
+  //   if (e.key === 'Insert') {
+  //     console.log('hiii');
+  //   }
+  //   if (
+  //     e.key === 'Enter' &&
+  //     (e.target.value !== null || e.target.value !== '')
+  //   ) {
+  //     e.preventDefault();
+  //     await authAxiosInstance(`accounting/user/Strade//financecodeInfo`, {
+  //       params: { FINANCE_CD: e.target.value },
+  //     }).then(response => {
+  //       if (response.data.length === 1) {
+  //         setFinanceChangeCDData(financeCDChangeData => ({
+  //           ...financeCDChangeData,
+  //           bank_CD: response.data[0]?.finance_CD,
+  //         }));
+  //         setChangeFormData(changeFormData => ({
+  //           ...changeFormData,
+  //           bank_CD: response.data[0]?.finance_CD,
+  //         }));
+  //         setValue(
+  //           'bank_CD',
+  //           `${response.data[0]?.finance_CD}. ${response.data[0]?.bank_NAME}`
+  //         );
+  //         return;
+  //       } else if (response.data.length > 1) {
+  //         setFinanceCDModal(!financeCDModal);
+  //         setFinanceCDInputData(e.target.value);
+  //         return;
+  //       }
+  //       setValue('bank_CD', null);
+  //     });
+  //   }
+  // };
+
+  console.log(errors);
 
   const state = {
     deleteYN,
@@ -754,7 +877,6 @@ const FtradeModel = ({
     onClickSearchEmpList,
     onChangeFunction,
     onClickInsertEmpBox,
-    onClickButtonRemoveEmp,
     onSubmit,
     onFocusError,
     onChangeTel,
@@ -766,7 +888,7 @@ const FtradeModel = ({
     allCheckedHandler,
     removeStradelist,
     onBlurfinanceCDData,
-    onKeyDownEnterFin,
+    // onKeyDownEnterFin,
   };
   return { state, actions };
 };

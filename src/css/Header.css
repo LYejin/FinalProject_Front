@@ -8008,6 +8008,7 @@ fieldset:disabled .btn {
   font-size: 13px;
   font-family: Montserrat-Bold;
   cursor: pointer;
+  background-color: white;
 }
 
 .sb-sidenav-dark .sb-sidenav-menu .nav-linkShow:hover {

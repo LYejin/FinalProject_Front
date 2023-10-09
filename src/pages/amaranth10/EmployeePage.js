@@ -1,8 +1,3 @@
-import { useEffect, useState } from 'react';
-import {
-  authAxiosInstance,
-  imageAxiosInstance,
-} from '../../axios/axiosInstance';
 import {
   DetailTitle,
   MainTitle,
@@ -19,16 +14,13 @@ import {
 import EmpSelectListWrapper from './../../components/feature/amaranth/employee/EmpSelectListWrapper';
 import { EmpInfoBox } from '../../components/feature/amaranth/Index';
 import { useForm } from 'react-hook-form';
-import { getNowJoinTime } from './../../util/time';
 import CommonLayout from '../../components/common/CommonLayout';
 import DaumPostcode from 'react-daum-postcode';
 import Modal from '../../components/common/modal/Modal';
-import EventButton from '../../components/common/button/EventButton';
 import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBox';
 import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
-import { onChangePhoneNumber } from '../../util/number';
-import { useRef } from 'react';
 import EmployeeModel from '../../model/EmployeeModel';
+import DeptModalInEmp from '../../components/feature/amaranth/Modal/DeptModalInEmp';
 
 const EmployeePage = () => {
   const {
@@ -145,7 +137,7 @@ const EmployeePage = () => {
             </MainContentWrapper>
           </DetailContentWrapper>
         </ContentWrapper>
-        {state.isOpenPost ? (
+        {state.isOpenPost && (
           <Modal
             width={'560px'}
             height={'600px'}
@@ -155,7 +147,24 @@ const EmployeePage = () => {
           >
             <DaumPostcode autoClose onComplete={actions.onCompletePost} />
           </Modal>
-        ) : null}
+        )}
+        {state.deptModal && (
+          <DeptModalInEmp
+            onChangeOpenDeptModal={actions.onChangeOpenDeptModal}
+            setChangeFormData={state.setChangeFormData}
+            reset={reset}
+            setValue={setValue}
+            company={state.company}
+            setError={setError}
+            deptModal={state.deptModal}
+            setSelectedDeptCd={state.setSelectedDeptCd}
+            setSelectedDivCd={state.setSelectedDivCd}
+            setSelectedDeptNm={state.setSelectedDeptNm}
+            setSelectedDivNm={state.setSelectedDivNm}
+            selectedDeptCd={state.selectedDeptCd}
+            selectedDivCd={state.selectedDivCd}
+          />
+        )}
       </CommonLayout>
     </>
   );

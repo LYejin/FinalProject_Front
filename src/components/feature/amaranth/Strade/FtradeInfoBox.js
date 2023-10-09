@@ -11,19 +11,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import SelectBox from './../../../common/box/SelectBox';
 import { CiSquareMore } from 'react-icons/ci';
 
-const FtradeInfoBox = ({
-  register,
-  handleSubmit,
-  reset,
-  getValues,
-  errors,
-  clearErrors,
-  setValue,
-  setFocus,
-  setError,
-  state,
-  actions,
-}) => {
+const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
   const [trCDModal, setTrCDModal] = useState(false);
 
   const trCDModalButton = () => {
@@ -59,7 +47,7 @@ const FtradeInfoBox = ({
                       name="tr_CD"
                       {...register(
                         'tr_CD',
-                        state.selectedValue !== 'auto' &&
+                        state.selectedRadioValue !== 'auto' &&
                           !state.clickYN && {
                             required: '거래처코드를 입력해주세요.',
                           }
@@ -158,7 +146,7 @@ const FtradeInfoBox = ({
                       errors={errors}
                       name="tr_NM"
                       as="p"
-                      className="errorBox"
+                      className="TRNameErrorBox"
                     />
                   )}
                 </div>
@@ -190,7 +178,7 @@ const FtradeInfoBox = ({
                       errors={errors}
                       name="ba_NB_TR"
                       as="p"
-                      className="errorBox"
+                      className="TRBaErrorBox"
                     />
                   }
                 </div>
@@ -205,12 +193,12 @@ const FtradeInfoBox = ({
                     {...register('bank_CD')}
                     defaultValue={
                       state.financeCDChangeData
-                        ? `${state.financeCDChangeData?.finance_CD}. ${state.financeCDChangeData?.bank_NAME}`
+                        ? `${state.financeCDChangeData?.bank_CD}. ${state.financeCDChangeData?.bank_NAME}`
                         : state.financeCDData
                     }
                     onChange={actions.onChangeDBDataSearch}
                     onBlur={actions.onBlurfinanceCDData}
-                    onKeyDown={actions.onKeyDownEnterFin}
+                    // onKeyDown={actions.onKeyDownEnterFin}
                   />
                   <FaRegListAlt
                     className="FFInputIconStyle"
@@ -345,6 +333,8 @@ const FtradeInfoBox = ({
           setState={state.setFinanceChangeCDData}
           inputData={state.financeCDInputData}
           setValue={setValue}
+          setFinanceChangeCDData={state.setFinanceChangeCDData}
+          setChangeFormData={state.setChangeFormData}
         />
       )}
     </>

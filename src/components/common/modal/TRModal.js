@@ -1,7 +1,7 @@
 import React from 'react';
 import { Title } from '../Index';
 
-const Modal = ({
+const TitleXModal = ({
   width,
   height,
   children,
@@ -18,7 +18,7 @@ const Modal = ({
     width: width,
     height: height,
     backgroundColor: 'white',
-    zIndex: 1000,
+    zIndex: 20,
   };
 
   const onClickBottomButtonFunction = () => {
@@ -32,24 +32,10 @@ const Modal = ({
   return (
     <>
       <div style={modalBox}>
-        <div className="topModalWrapper">
-          <Title titleName={title}>
-            <div onClick={onClickEventFunction}>
-              <i className="fa-solid fa-xmark modelX"></i>
-            </div>
-          </Title>
-          {children}
-        </div>
-        <div className="bottomModalWrapper">
+        <div className="topModalWrapper">{children}</div>
+        <div className="bottomTRModalWrapper">
           {buttonYN && (
             <>
-              <button
-                type="button"
-                className="WhiteMenuButton"
-                onClick={onClickEventFunction}
-              >
-                취소
-              </button>
               <button
                 type="button"
                 className="BlueButton"
@@ -61,9 +47,9 @@ const Modal = ({
           )}
         </div>
       </div>
-      <div className="modalWrapper" onClick={onClickEventFunction}></div>
+      <div className="modalWrapper"></div>
     </>
   );
 };
 
-export default Modal;
+export default TitleXModal;

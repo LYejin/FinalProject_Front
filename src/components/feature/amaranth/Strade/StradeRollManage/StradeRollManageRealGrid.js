@@ -11,6 +11,7 @@ import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import EmpCodeHelpModal from '../../Modal/EmpCodeHelpModal/EmpCodeHelpModal';
 import DeptCodeHelpModal from '../../Modal/DeptCodeHelpModal/DeptCodeHelpModal';
 import Swal from 'sweetalert2';
+import { getNowJoinTime } from '../../../../../util/time';
 
 const StradeRollManageRealGrid = ({
   tr_CD,
@@ -29,6 +30,7 @@ const StradeRollManageRealGrid = ({
   const [cellClickData, setCellClickData] = useState(''); // 현재 클릭한 CellData
   const [empCheckDataList, setEmpCheckDataList] = useState(); // gridView 저장
   const [deptCheckDataList, setDeptCheckDataList] = useState(); // gridView 저장
+  const [bottomButtonClick, setBottomButtonClick] = useState(false); // gridView 저장
   const realgridElement = useRef(null);
   // RealGrid 컨테이너 엘리먼트를 참조합니다.
 
@@ -87,6 +89,7 @@ const StradeRollManageRealGrid = ({
             ? { ...data, roll_FG: '사용자' }
             : data
         );
+
         newDataList.map(
           data => (data.insert_DT = String(data.insert_DT).slice(0, 10))
         );
@@ -107,77 +110,42 @@ const StradeRollManageRealGrid = ({
 
     //마지막행에 항상 빈 행을 추가하는 기능
     gridView.setEditOptions({ displayEmptyEditRow: true });
-    // async function getFtradeGridData() {
-    //   const data = await authAxiosInstance(
-    //     'accounting/user/Strade/stradeRollManageSearchList',
-    //     {
-    //       params,
-    //     }
-    //   ).then(response => {
-    //     console.log('reeeeeeeeee : ', response);
-    //     dataProvider.fillJsonData(response, {
-    //       fillMode: 'set',
-    //     });
-    //     //마지막행에 항상 빈 행을 추가하는 기능
-    //     gridView.setEditOptions({ displayEmptyEditRow: true });
-    //     //뷰 마운트 시 커서 포커스를 마지막 행 첫번째 셀에 위치하게 설정
-    //     gridView.setCurrent({
-    //       itemIndex: dataProvider.getRowCount(),
-    //       column: 'CASH_FG',
-    //     });
-    //   });
-    // }
 
-    dataProvider.onRowMoving = function (provider, row, newRow) {
-      alert('provider.onRowMoving: ' + row + ' to ' + newRow);
+    //행 내 부서, 사원 유효성 검사
+    gridView.onValidateRow = (grid, itemIndex, dataRow, inserting, values) => {
+      const error = {};
+      let editItem = gridView.getEditingItem();
+      let rollFG;
+      // try {
+      //   if (
+      //     editItem?.values.roll_FG === '부서' &&
+      //     editItem?.values.dept_CD === undefined &&
+      //     empMenuButton === false &&
+      //     deptMenuButton === false
+      //   ) {
+      //     gridView.editOptions.appendable = false;
+      //     gridView.editOptions.insertable = false;
 
-      return true;
+      //     error.level = 'error';
+      //     //error.message = '부서코드를 반드시 입력해주세요.';
+      //     alert('부서코드를 반드시 입력해주세요.');
+      //     gridView.setCurrent({ itemIndex: itemIndex, column: 'dept_CD' });
+      //   } else if (
+      //     editItem?.values.roll_FG === '사용자' &&
+      //     editItem?.values.emp_CD === undefined
+      //   ) {
+      //     gridView.editOptions.appendable = false;
+      //     gridView.editOptions.insertable = false;
+      //     error.level = 'error';
+      //     //error.message = '사원코드를 반드시 입력해주세요.';
+      //     alert('사원코드를 반드시 입력해주세요.');
+      //     gridView.setCurrent({ itemIndex: itemIndex, column: 'emp_CD' });
+      //   }
+      // } catch (e) {
+      //   console.log(e);
+      // }
+      return error;
     };
-
-    // // 행 유효성
-    // gridView.onValidateRow = async (
-    //   grid,
-    //   itemIndex,
-    //   dataRow,
-    //   inserting,
-    //   values
-    // ) => {
-    //   const error = {};
-    //   const deptResponse = authAxiosInstance(
-    //     'accounting/user/Strade/gridUseDeptCd',
-    //     {
-    //       tr_CD: tr_CD,
-    //       dept_CD: values?.dept_CD,
-    //     }
-    //   );
-
-    //   if (values?.dept_CD !== undefined) {
-    //     if (deptResponse.data === '사용중') {
-    //       error.level = 'error';
-    //       error.message = '사용중인 부서코드입니다.';
-    //       return error;
-    //     } else if (deptResponse.data === '부서없음') {
-    //       error.level = 'error';
-    //       error.message = '존재하지 않는 부서코드입니다.';
-    //       return error;
-    //     }
-    //   } else if (values?.emp_CD !== undefined) {
-    //     await authAxiosInstance('accounting/user/Strade/gridUseEmpCd', {
-    //       tr_CD: tr_CD,
-    //       emp_CD: values?.emp_CD,
-    //     }).then(response => {
-    //       if (response.data === '사용중') {
-    //         error.level = 'error';
-    //         error.message = '사용중인 사원코드입니다.';
-    //         return error;
-    //       } else if (response.data === '부서없음') {
-    //         error.level = 'error';
-    //         error.message = '존재하지 않는 사원코드입니다.';
-    //         return error;
-    //       }
-    //     });
-    //   }
-    // };
 
     //칼럼 별 유효성 검사를 발생하는 이벤트를 처리합니다.
     gridView.onValidateColumn = async (
@@ -188,13 +156,24 @@ const StradeRollManageRealGrid = ({
       itemIndex,
       dataRow
     ) => {
+      let editItem = gridView.getEditingItem();
       const error = {};
       console.log(value);
+      console.log(column);
+      console.log(dataRow);
+
       if (
         column.fieldName === 'dept_CD' &&
-        gridView.getValue(itemIndex, 'dept_CD') !== undefined &&
+        grid.getValue(itemIndex, 'dept_CD') !== undefined &&
         gridView.getCurrent().dataRow === -1
       ) {
+        if (
+          column.values === undefined ||
+          value === '' ||
+          value === undefined
+        ) {
+          return;
+        }
         await authAxiosInstance
           .post('accounting/user/Strade/gridUseDeptCd', {
             tr_CD: tr_CD,
@@ -207,8 +186,37 @@ const StradeRollManageRealGrid = ({
                 gridView.setValues(itemIndex, { dept_CD: '' }, false);
                 error.level = 'error';
                 error.message = '사용중인 부서코드입니다.';
+
+                gridView.columnByName('emp_CD').editable = false;
+                gridView.columnByName('dept_CD').editable = true;
+                gridView.columnByName('emp_CD').buttonVisibility = 'hidden';
+                gridView.columnByName('dept_CD').buttonVisibility = 'default';
+                gridView.setCurrent({
+                  itemIndex: itemIndex + 1,
+                  fieldName: 'dept_CD',
+                });
+                gridView.setFocus();
                 alert('사용중인 부서코드입니다.');
                 return;
+              } else if (response.data === '부서없음') {
+                gridView.setCurrent({ dataRow: dataRow, column: 'emp_CD' });
+                gridView.setValues(itemIndex, { emp_CD: '' }, false);
+                gridView.columnByName('emp_CD').editable = false;
+                gridView.columnByName('dept_CD').editable = true;
+                gridView.columnByName('emp_CD').buttonVisibility = 'hidden';
+                gridView.columnByName('dept_CD').buttonVisibility = 'default';
+                gridView.setCurrent({ dataRow: dataRow, column: 'dept_CD' });
+                gridView.setValues(itemIndex, { dept_CD: '' }, false);
+                error.level = 'error';
+                error.message = '존재하지 않는 부서코드입니다.';
+                setTimeout(function () {
+                  gridView.setCurrent({
+                    itemIndex: itemIndex + 1,
+                    fieldName: 'dept_CD',
+                  });
+                }, 30);
+                gridView.setFocus();
+                alert('존재하지 않는 부서코드입니다.');
               }
             } catch (e) {
               console.log(e);
@@ -221,9 +229,12 @@ const StradeRollManageRealGrid = ({
 
       if (
         column.fieldName === 'emp_CD' &&
-        gridView.getValue(itemIndex, 'emp_CD') !== undefined &&
+        grid.getValue(itemIndex, 'emp_CD') !== undefined &&
         gridView.getCurrent().dataRow === -1
       ) {
+        if (column.values === undefined || value === '') {
+          return;
+        }
         await authAxiosInstance
           .post('accounting/user/Strade/gridUseEmpCd', {
             tr_CD: tr_CD,
@@ -235,8 +246,35 @@ const StradeRollManageRealGrid = ({
               gridView.setValues(itemIndex, { emp_CD: '' }, false);
               error.level = 'error';
               error.message = '사용중인 사원코드입니다.';
+
+              gridView.columnByName('emp_CD').editable = true;
+              gridView.columnByName('dept_CD').editable = false;
+              gridView.columnByName('emp_CD').buttonVisibility = 'default';
+              gridView.columnByName('dept_CD').buttonVisibility = 'hidden';
+              gridView.setCurrent({
+                itemIndex: itemIndex + 1,
+                fieldName: 'emp_CD',
+              });
+              gridView.setFocus();
               alert('사용중인 사원코드입니다.');
               return;
+            } else if (response.data === '사원없음') {
+              gridView.setCurrent({ dataRow: dataRow, column: 'emp_CD' });
+              gridView.setValues(itemIndex, { emp_CD: '' }, false);
+              gridView.columnByName('emp_CD').editable = true;
+              gridView.columnByName('dept_CD').editable = false;
+              gridView.columnByName('emp_CD').buttonVisibility = 'default';
+              gridView.columnByName('dept_CD').buttonVisibility = 'hidden';
+              gridView.setCurrent({ dataRow: dataRow, column: 'dept_CD' });
+              gridView.setValues(itemIndex, { dept_CD: '' }, false);
+              error.level = 'error';
+              error.message = '존재하지 않는 사원코드입니다.';
+              gridView.setCurrent({
+                itemIndex: itemIndex + 1,
+                fieldName: 'emp_CD',
+              });
+              gridView.setFocus();
+              alert('존재하지 않는 사원코드입니다.');
             }
           })
           .catch(error => {
@@ -250,10 +288,11 @@ const StradeRollManageRealGrid = ({
     // onRowInserting insert 전 확인 과정
     dataProvider.onRowInserting = async (provider, row, values) => {
       let editItem = gridView.getEditingItem();
-
       if (
-        editItem?.values.dept_CD === undefined &&
-        editItem?.values.emp_CD === undefined
+        (editItem?.values.dept_CD === undefined ||
+          editItem?.values.dept_CD === '') &&
+        (editItem?.values.emp_CD === undefined ||
+          editItem?.values.emp_CD === '')
       ) {
         return false;
       } else if (
@@ -264,27 +303,38 @@ const StradeRollManageRealGrid = ({
       }
     };
 
-    gridView.onEditCanceled = function (grid, index) {
-      console.log(
-        'grid.onEditCanceled driven, edit index=' + JSON.stringify(index)
-      );
-    };
-
     //onRowInserted
-    dataProvider.onRowInserted = (provider, newCount) => {
+    dataProvider.onRowInserted = async (provider, newCount) => {
       console.log(`onRowInserted`, newCount, provider);
       let editItem = gridView.getEditingItem();
       let rollFG;
+      let data = {};
       if (editItem?.values.roll_FG === '부서') {
         rollFG = '1';
       } else if (editItem?.values.roll_FG === '사용자') {
         rollFG = '2';
       }
-      if (editItem?.values.dept_CD !== '' || editItem?.values.emp_CD !== '') {
-        gridView.setEditOptions({ insertable: true });
+      if (
+        (editItem?.values.dept_CD !== undefined &&
+          editItem?.values.dept_CD !== '') ^
+        (editItem?.values.emp_CD !== undefined &&
+          editItem?.values.emp_CD !== '')
+      ) {
+        gridView.commit();
+        var today = new Date();
+        const date = getNowJoinTime(today);
+        dataProvider.setValue(editItem.itemIndex, 'insert_DT', date);
+
+        gridView.commit();
+        gridView.setEditOptions({
+          insertable: true,
+          appendable: true,
+          crossWhenExitLast: true,
+        });
+        gridView.commit();
         authAxiosInstance
           .post('accounting/user/Strade/stradeRollManageInsert', {
-            ...editItem.values,
+            ...editItem?.values,
             tr_CD: tr_CD,
             use_YN: '1',
             roll_FG: rollFG,
@@ -292,8 +342,12 @@ const StradeRollManageRealGrid = ({
           .then(response => {
             console.log('hiiiiiiiiii:', response.data);
           });
-        gridView.commit();
       }
+
+      gridView.columnByName('emp_CD').editable = false;
+      gridView.columnByName('dept_CD').editable = false;
+      gridView.columnByName('emp_CD').buttonVisibility = 'hidden';
+      gridView.columnByName('dept_CD').buttonVisibility = 'hidden';
     };
 
     // row 업데이트 시
@@ -314,10 +368,8 @@ const StradeRollManageRealGrid = ({
 
     // 메뉴 클릭시 이벤트
     gridView.onCellButtonClicked = function (grid, index, column) {
-      console.log('--------------------', grid, index, column);
       var current = gridView.getCurrent();
       setEmpGridValue('');
-      console.log('current: ', current);
       if (index.fieldIndex === 2) {
         setDeptMenuButton(true);
       } else if (index.fieldIndex === 4) {
@@ -330,6 +382,9 @@ const StradeRollManageRealGrid = ({
     gridView.onCellEdited = async (grid, itemIndex, row, field) => {
       let rowValue = gridView.getValue(row, 'dept_CD');
       let editItem = gridView.getEditingItem();
+      gridView.editOptions.appendable = false;
+      gridView.editOptions.crossWhenExitLast = false;
+      gridView.editOptions.enterToTab = false;
       if (field === 2 && rowValue !== '') {
         const response = await authAxiosInstance(
           'accounting/user/Strade/gridDeptCd',
@@ -341,6 +396,7 @@ const StradeRollManageRealGrid = ({
             dept_NM: response.data,
           };
           gridView.setValues(itemIndex, data, false);
+          gridView.editOptions.appendable = true;
         } else if (response.data === '') {
         } else {
           // 모달창 띄우기
@@ -361,11 +417,13 @@ const StradeRollManageRealGrid = ({
             kor_NM: response.data,
           };
           gridView.setValues(itemIndex, data, false);
+          gridView.editOptions.appendable = true;
         } else if (response.data === '') {
         } else {
           // 모달창 띄우기
-          setEmpGridValue(editItem.values.emp_CD);
+          gridView.setValues(itemIndex, { emp_CD: '' }, false);
           setEmpMenuButton(true);
+          setEmpGridValue(editItem.values.emp_CD);
           setCellClickData(itemIndex);
         }
       }
@@ -377,11 +435,12 @@ const StradeRollManageRealGrid = ({
           column: 'roll_FG',
         });
       }
+
+      gridView.editOptions.crossWhenExitLast = true;
     };
 
     // 변경되면 이벤트 발생
     gridView.onEditChange = (grid, index, value) => {
-      console.log('iiiii');
       if (value === '부서' || value === '1') {
         const data = {
           emp_CD: '',
@@ -409,59 +468,56 @@ const StradeRollManageRealGrid = ({
     gridView.onCellClicked = function (grid, clickData) {
       if (
         clickData.dataRow >= 0 &&
-        dataProvider.getRowState(clickData.dataRow) === 'updated'
+        dataProvider.getRowState(clickData.dataRow) === 'updated' &&
+        dataProvider.getRowState(clickData.dataRow) === 'created'
       ) {
-        console.log(dataProvider.getRowState(clickData.dataRow));
         grid.editOptions.editable = false;
       } else {
         grid.editOptions.editable = true;
       }
     };
 
-    // gridView.onValueChanged = function (grid, newIndex) {
-    //   console.log('iiiiiiiiiiiiiiiiiiiiiiiii');
-    //   // if (newIndex.fieldName === 'emp_CD' || newIndex.fieldName === 'kor_NM') {
-    //   //   gridView.setEditOptions({ appendable: false });
-    //   // }
-    // };
-
-    dataProvider.onValueChanged = function (provider) {
-      alert('dataChanged!');
-    };
-
-    gridView.onCurrentChanging = (grid, oldIndex, newIndex) => {
-      console.log('jiii');
-      // let current = gridView.getCurrent();
-      // let editItem = gridView.getEditingItem(); // 변경중인 데이터 가져오기
-      // let rollFGData = editItem?.values ? editItem.values?.roll_FG : false;
-      // const stradeRows = dataProvider.getJsonRows(0, -1); // 마지막행 row
-      // var value = gridView.getEditValue();
-
-      // console.log('value: ' + value);
-      // console.log('current : ', current);
-      // if (oldIndex.fieldName === 'roll_FG' && rollFGData === '부서') {
-      //   gridView.columnByName('dept_CD').editable = true;
-      //   gridView.columnByName('emp_CD').editable = false;
-      //   gridView.columnByName('dept_CD').buttonVisibility = 'default';
-      //   gridView.columnByName('emp_CD').buttonVisibility = 'hidden';
-      //   console.log(grid, newIndex);
-      //   console.log('vla : ', value);
-      //   gridView.setCurrent({
-      //     itemIndex: Object.keys(stradeRows).length,
-      //     column: 'dept_CD',
-      //   });
-      //   newIndex.fieldIndex = 1;
-      // } else if (oldIndex.fieldName === 'roll_FG' && rollFGData === '사용자') {
-      //   gridView.columnByName('emp_CD').editable = true;
-      //   gridView.columnByName('dept_CD').editable = false;
-      //   gridView.columnByName('emp_CD').buttonVisibility = 'default';
-      //   gridView.columnByName('dept_CD').buttonVisibility = 'hidden';
-      //   gridView.setCurrent({
-      //     itemIndex: Object.keys(stradeRows).length,
-      //     column: 'emp_CD',
-      //   });
-      //   newIndex.fieldIndex = 3;
-      // }
+    // 마지막행 전에 insert
+    gridView.onKeyDown = (grid, event) => {
+      gridView.editOptions.appendable = false;
+      gridView.editOptions.insertable = false;
+      gridView.editOptions.crossWhenExitLast = false;
+      gridView.editOptions.enterToTab = false;
+      let editItem = gridView.getEditingItem();
+      if (event.code === 'Tab' || event.code === 'Enter') {
+        const displayCol = gridView.getDisplayColumns();
+        let beforeReadOnlyCol;
+        for (let i = 0; i < displayCol.length; i++) {
+          if (displayCol[i].readOnly === true) {
+            beforeReadOnlyCol = displayCol[i - 1].name;
+          }
+        }
+        if (
+          gridView.getCurrent().itemIndex + 1 === gridView.getItemCount() &&
+          gridView.getCurrent().column === beforeReadOnlyCol &&
+          ((editItem.values?.dept_NM !== undefined &&
+            editItem.values?.dept_NM !== '') ||
+            (editItem.values?.kor_NM !== '' &&
+              editItem.values?.kor_NM !== undefined))
+        ) {
+          gridView.editOptions.appendable = true;
+          gridView.editOptions.insertable = true;
+          gridView.editOptions.crossWhenExitLast = true;
+          gridView.editOptions.enterToTab = true;
+          gridView.commit();
+          var today = new Date();
+          const date = getNowJoinTime(today);
+          gridView.commit();
+          dataProvider.setValue(grid.getItemCount() - 2, 'insert_DT', date);
+          setTimeout(function () {
+            gridView.setCurrent({
+              itemIndex: grid.getItemCount() + 1,
+              fieldName: 'roll_FG',
+            });
+          }, 30);
+          gridView.commit();
+        }
+      }
     };
 
     // commit 되었을 시
@@ -469,29 +525,25 @@ const StradeRollManageRealGrid = ({
       if (index.fieldIndex === 6) {
         var curr = gridView.getCurrent();
         dataProvider.setRowState(curr.itemIndex, 'created', true);
-
-        // //포커스된 셀 변경
-        // gridView.setCurrent({
-        //   itemIndex: index.itemIndex + 1,
-        //   column: 'roll_FG',
-        // });
-      }
-    };
-
-    // // 현재 셀 값이 변경되었을 시 발생되는 이벤트
-    gridView.onCurrentChanged = function (grid, newIndex) {
-      console.log(grid, newIndex);
-      if (newIndex.fieldIndex === 6) {
-        grid.editOptions.insertable = true;
-        grid.editOptions.appendWhenExitLast = true;
-        //dataProvider.setRowState(newIndex.itemIndex, 'created');
+        var today = new Date();
+        const date = getNowJoinTime(today);
+        gridView.commit();
+        dataProvider.setValue(grid.getItemCount() - 2, 'insert_DT', date);
+        gridView.commit();
+        setTimeout(function () {
+          gridView.setCurrent({
+            itemIndex: grid.getItemCount() + 1,
+            fieldName: 'roll_FG',
+          });
+        }, 30);
+        gridView.commit();
       }
     };
 
     // check button click 시 삭제 우선 그리드로 변경
     gridView.onItemChecked = () => {
       const checkedRows = gridView.getCheckedItems();
-      if (checkedRows.length > 0) {
+      if (checkedRows.length > 0 || gridView.isAllChecked()) {
         setDeleteCheck('gridDelete');
         setDeleteListCount(checkedRows.length);
         setDeleteYN(true);
@@ -501,26 +553,8 @@ const StradeRollManageRealGrid = ({
       }
     };
 
-    gridView.onCurrentRowChanged = function (grid, oldRow, newRow) {
-      // console.log(newRow);
-      // console.log('Ggggggggg', grid);
-      // var current = gridView.getCurrent();
-      // console.log('currentcurrentcurrentcurrent', current);
-      // if (current.dataRow >= 0) {
-      //   grid.editOptions.editable = false;
-      // } else {
-      //   grid.editOptions.editable = true;
-      //   gridView.setEditOptions({ appendable: false });
-      // }
-      // if (!editable) {
-      //   // 신규행이 아니면. 전체컬럼 editable:false
-      //   columns.forEach(function (obj) {
-      //     grid.setColumnProperty(obj, 'editable', false);
-      //   });
-      // }
-      // columns.forEach(function (obj) {
-      //   grid.setColumnProperty(obj, 'editable', true);
-      // });
+    gridView.onItemAllChecked = (grid, checked) => {
+      console.log('All checked as ' + checked);
     };
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
@@ -545,11 +579,17 @@ const StradeRollManageRealGrid = ({
     gridView.editOptions.deletable = true;
 
     //등록일 입력 비활성화
-    gridView.columnByName('insert_DT').editable = false;
+    //gridView.columnByName('insert_DT').editable = false;
+    gridView.columnByName('insert_DT').readOnly = true;
     gridView.columnByName('dept_CD').editable = false;
     gridView.columnByName('dept_NM').editable = false;
     gridView.columnByName('emp_CD').editable = false;
     gridView.columnByName('kor_NM').editable = false;
+
+    gridView.editOptions.appendWhenExitLast = true; // Tab 또는 Enter 키로 마지막 셀을 벗어날 때 행 추가 여부
+    gridView.editOptions.commitWhenExitLast = true; // Tab 이나 Enter 키로 셀을 벗어날 때 행을 commit 할지의 여부
+    gridView.editOptions.crossWhenExitLast = true; // Tab이 이나 Enter 키로 마지막 셀을 벗어날 때 다음 행으로 이동할지의 여부
+    gridView.editOptions.skipReadOnly = true; // 컬럼간 이동시 readOnly 셀을 건너뛰고 이동할지에 대한 여부.
 
     //컬럼 너비 자동 조절 설정
     gridView.setDisplayOptions({ fitStyle: 'evenFill' });
@@ -564,7 +604,7 @@ const StradeRollManageRealGrid = ({
       enterToTab: true, //셀에 데이터 입력 후 다음 셀로 이동하기 여부 기능
       hintOnError: false, //편집 중에 에러가 있는 셀에 마우스가 위치할 때 에러 힌트 툴팁 표시 여부
       skipReadOnly: true, //readOnly, editable로 설정되 있는 컬럼 Enter키 입력시 foucs 스킵하는 기능
-      useArrowKeys: true, //방향키로 셀 간 이동 가능 여부 기능
+      //useArrowKeys: true, //방향키로 셀 간 이동 가능 여부 기능
       enterToNextRow: true,
       breakMergeOnEmpty: true, // 빈 셀일 때 머지 중단 여부
       crossWhenExitLast: true, // tab/enter 키로 마지막 셀을 벗어날 때 다음 행으로 이동한다.
@@ -598,8 +638,12 @@ const StradeRollManageRealGrid = ({
           cellClickData={cellClickData}
           dataProviderStrade={dataProviderStrade}
           setEmpCheckDataList={setEmpCheckDataList}
+          setDeptCheckDataList={setDeptCheckDataList}
           empGridValue={empGridValue}
           setEmpGridValue={setEmpGridValue}
+          setBottomButtonClick={setBottomButtonClick}
+          setDeleteYN={setDeleteYN}
+          setDeleteListCount={setDeleteListCount}
         />
       )}
       {deptMenuButton && (
@@ -613,6 +657,9 @@ const StradeRollManageRealGrid = ({
           setDeptCheckDataList={setDeptCheckDataList}
           deptGridValue={deptGridValue}
           setDeptGridValue={setDeptGridValue}
+          setBottomButtonClick={setBottomButtonClick}
+          setDeleteYN={setDeleteYN}
+          setDeleteListCount={setDeleteListCount}
         />
       )}
     </>

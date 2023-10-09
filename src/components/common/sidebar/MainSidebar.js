@@ -36,7 +36,6 @@ import { GiBackwardTime } from 'react-icons/gi';
 const MainSidebar = () => {
   const menu = localStorage.getItem('menu');
   const menuData = JSON.parse(localStorage.getItem('mainSidebar'));
-  console.log(menuData);
   const [clickMenu, setClickMenu] = useState(menu);
   const iconList = [
     { name: 'FaCoins', value: <FaCoins className="nav__icon" /> },
@@ -89,7 +88,6 @@ const MainSidebar = () => {
   ];
 
   const icon = <FaCalculator className="nav__icon" />;
-  console.log(icon);
 
   useEffect(() => {
     setClickMenu(localStorage.getItem('menu'));
@@ -127,8 +125,8 @@ const MainSidebar = () => {
                   return (
                     <Link
                       key={data.icon}
-                      name={data.link}
-                      to={`/${data.link}`}
+                      name={data.link && data.link}
+                      to={data.link && `/${data.link}`}
                       className={
                         clickMenu === data.link
                           ? 'nav__link active'

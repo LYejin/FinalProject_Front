@@ -3,7 +3,7 @@ import { ValueType } from 'realgrid';
 export const fields = [
   {
     fieldName: 'finance_CD',
-    dataType: ValueType.INT,
+    dataType: ValueType.TEXT,
   },
   {
     fieldName: 'bank_NAME',

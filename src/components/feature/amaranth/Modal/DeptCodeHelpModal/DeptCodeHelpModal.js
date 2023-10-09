@@ -12,6 +12,7 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import StradeCodeHelpUseYNSelectBox from '../StradeCodeHelpModal/StradeCodeHelpUseYNSelectBox';
 import EventButton from '../../../../common/button/EventButton';
+import { getNowJoinTime } from '../../../../../util/time';
 
 const DeptCodeHelpModal = ({
   onChangeModalClose,
@@ -23,6 +24,7 @@ const DeptCodeHelpModal = ({
   setDeptCheckDataList,
   deptGridValue,
   setDeptGridValue,
+  setBottomButtonClick,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
@@ -89,6 +91,16 @@ const DeptCodeHelpModal = ({
         column: 'note',
       });
       gridViewStrade.setValues(cellClickData, row, false);
+      gridViewStrade.setCurrent({
+        itemIndex: cellClickData + 1,
+        fieldName: 'note',
+      });
+      gridViewStrade.setFocus();
+      gridViewStrade.setEditOptions({
+        commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+        appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+        crossWhenExitLast: true,
+      });
       setDeptMenuButton(false);
     };
 
@@ -145,31 +157,52 @@ const DeptCodeHelpModal = ({
   }, []);
 
   const onClickBottomButtonEvent = () => {
+    gridViewStrade.editOptions.insertable = false;
     var rowDatas = [];
     const checkRows = gridViewState.getCheckedRows();
     const stradeRows = dataProviderState.getJsonRows(0, -1);
+    var today = new Date();
+    const date = getNowJoinTime(today);
     for (var i in checkRows) {
       var data = dataProviderState.getJsonRow(checkRows[i]);
       let rowData = {
         tr_CD: tr_CD,
-        roll_FG: 1,
+        roll_FG: '1',
         dept_CD: data.dept_CD,
         dept_NM: data.dept_NM,
+        emp_CD: null,
+        kor_NM: null,
+        note: null,
+        insert_DT: date,
       };
-      dataProviderStrade.addRow(rowData);
-
       gridViewStrade.commit();
       gridViewStrade.cancel();
       rowDatas.push(rowData);
     }
-    authAxiosInstance
-      .post('accounting/user/Strade/stradeRollInDeptInsert', rowDatas)
-      .then(response => {
-        console.log(response?.data);
-      });
+    authAxiosInstance.post(
+      'accounting/user/Strade/stradeRollInDeptInsert',
+      rowDatas
+    );
+
+    const newDataList = rowDatas?.map(data =>
+      data.roll_FG === '1'
+        ? { ...data, roll_FG: '부서' }
+        : data.roll_FG === '2'
+        ? { ...data, roll_FG: '사용자' }
+        : data
+    );
+    dataProviderStrade.insertRows(cellClickData, newDataList);
+    dataProviderStrade.setRowState(cellClickData + rowDatas.length, 'none'); // 최하단 row 값이어야함
     setDeptCheckDataList(rowDatas);
-    alert(JSON.stringify(rowDatas));
     onChangeModalClose();
+    setBottomButtonClick(false);
+    gridViewStrade.setEditOptions({
+      insertable: true, //행 삽입 가능 여부
+      appendable: true, //행 추가 가능 여부
+      commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+      appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+      crossWhenExitLast: true,
+    });
   };
 
   return (
@@ -182,19 +215,12 @@ const DeptCodeHelpModal = ({
       onClickBottomButtonEvent={onClickBottomButtonEvent}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">부서코드</span>
+        <span className="liqModalTitle">검색어</span>
         <input
           type="text"
           className="textInputBox"
           {...register('selectValue')}
           defaultValue={deptGridValue && deptGridValue}
-        />
-        <span className="rightSelectBoxPadding">사용여부</span>
-        <StradeCodeHelpUseYNSelectBox
-          width={200}
-          register={register}
-          state={useYNSelectData}
-          setState={setUseYNSelectData}
         />
         <div className="selectBoxButtonWrapper">
           <EventButton

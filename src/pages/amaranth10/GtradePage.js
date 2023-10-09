@@ -17,6 +17,7 @@ import SelectBoxUSEYN from '../../components/common/box/SelectBoxUSEYN';
 import GtradeModel from '../../model/GtradeModel';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
+import DeleteTradeModal from '../../components/feature/amaranth/Modal/DeleteTradeModal';
 
 const GtradePage = () => {
   const {
@@ -51,7 +52,7 @@ const GtradePage = () => {
         <ContentWrapper>
           <Title titleName={'일반거래처등록'}></Title>
           <DetailContentWrapper>
-            <SelectBoxWrapper height="92px" width="1200px">
+            <SelectBoxWrapper height="92px" width="1375px">
               <div className="selectDetailWrapper">
                 <div className="selectBox">
                   <div className="selectTop1">
@@ -121,7 +122,7 @@ const GtradePage = () => {
             >
               <SelectListWrapperCommon
                 width={'295px'}
-                title={'사용자:'}
+                title={'거래처'}
                 listRef={state.listRef}
                 dataCount={state.empList.length}
                 clickedBoxID={state.tr_CD}
@@ -147,19 +148,13 @@ const GtradePage = () => {
                 <form
                   onSubmit={handleSubmit(actions.onSubmit)}
                   onChange={actions.onChangeFunction}
+                  onKeyDown={actions.onformKeyDown}
                 >
                   <div className="tableHeader">
                     <div className="defaultTitle">기본등록사항</div>
                     <div className="buttonWrapper">
                       <button type="submit" className="WhiteButton">
                         저장
-                      </button>
-                      <button
-                        type="button"
-                        className="WhiteButton"
-                        onClick={actions.onClickButtonRemoveEmp}
-                      >
-                        삭제
                       </button>
                     </div>
                   </div>
@@ -183,22 +178,24 @@ const GtradePage = () => {
                   </ScrollWrapper>
                 </form>
               </RightContentWrapper>
-              {state.deleteYN === true && state.deleteListCount > 0 && (
-                <div className="deletBoxWrapper">
+            </MainContentWrapper>
+            {state.deleteYN === true && state.deleteListCount > 0 && (
+              <div className="deletBoxWrapper">
+                <div className="deleteTitleWrapper">
                   <div className="deleteCount">{state.deleteListCount}건</div>
                   <div className="deleteTradeSpan">선택됨</div>
-                  <div className="deleteButtonTradeWrapper">
-                    <div
-                      type="button"
-                      className="deleteTradeButton"
-                      onClick={actions.removeStradelist}
-                    >
-                      삭제
-                    </div>
+                </div>
+                <div className="deleteButtonTradeWrapper">
+                  <div
+                    type="button"
+                    className="deleteTradeButton"
+                    onClick={actions.removeStradelist}
+                  >
+                    삭제
                   </div>
                 </div>
-              )}
-            </MainContentWrapper>
+              </div>
+            )}
           </DetailContentWrapper>
         </ContentWrapper>
       </CommonLayout2>
@@ -214,32 +211,12 @@ const GtradePage = () => {
         </Modal>
       ) : null}
       {state.deleteListModal && (
-        <Modal
-          width={'560px'}
-          height={'600px'}
-          title={'거래처'}
+        <DeleteTradeModal
+          name="일반"
           onClickEvent={actions.onChangeDeleteListModal}
-        >
-          <div>일반거래처 삭제 요청이 완료되었습니다.</div>
-          <div>
-            <span>요청 {state.deleteListCount}건</span>
-            <span>
-              성공 {state.deleteListCount - state.deleteStradeInfo.length}건
-            </span>
-            <span>실패 {state.deleteStradeInfo.length}건</span>
-          </div>
-          {state.deleteStradeInfo.map((info, index) => (
-            <>
-              <div>
-                {index + 1}. 거래처 코드 {info.tr_CD}
-              </div>
-              <div>
-                고정자금등록에 {info.count}건 등록된 데이터가 존재하여 삭제할 수
-                없습니다.
-              </div>
-            </>
-          ))}
-        </Modal>
+          deleteListCount={state.deleteListCount}
+          deleteStradeInfo={state.deleteStradeInfo}
+        />
       )}
     </>
   );

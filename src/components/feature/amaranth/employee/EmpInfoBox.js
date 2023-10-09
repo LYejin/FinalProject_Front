@@ -6,17 +6,16 @@ import EmpInfoCompanySelectBox from './EmpInfoCompanySelectBox';
 import { ErrorMessage } from '@hookform/error-message';
 import EmpInfoWorkplaceSelectBox from './EmpInfoWorkplaceSelectBox';
 import EmpInfoEnrlSelectBox from './EmpInfoEnrlSelectBox';
-import EmpEmailSelectBox from './EmpEmailPersonalSelectBox';
 import EmpEmailPersonalSelectBox from './EmpEmailPersonalSelectBox';
 import EmpEmailSalarySelectBox from './EmpEmailSalarySelectBox';
 import { ko } from 'date-fns/esm/locale';
+import { FaRegListAlt, FaRegCalendarAlt, FaSitemap } from 'react-icons/fa';
 
 const EmpInfoBox = ({
   register,
   errors,
   state,
   actions,
-  setValue,
   clearErrors,
   setError,
   getValues,
@@ -30,12 +29,10 @@ const EmpInfoBox = ({
     return new Promise(resolve => {
       reader.onload = () => {
         state.setImgPriviewFile(reader.result);
-        console.log('base64:', reader.result);
         resolve();
       };
     });
   };
-  console.log(errors);
 
   return (
     <div className="selectListWrapper">
@@ -78,13 +75,22 @@ const EmpInfoBox = ({
                   >
                     <i className="fa-solid fa-paperclip"></i>
                   </label>
+                  {state.imgFile && (
+                    <button
+                      type="button"
+                      className="imageButtonWrapper2"
+                      onClick={actions.handleImageRemove}
+                    >
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  )}
                 </div>
               </div>
             </td>
           </tr>
 
           <tr>
-            <th className="headerCellStyle">회사/사업장</th>
+            <th className="headerCellStyle">회사/부서</th>
             <td colSpan="3" className="cellStyle">
               <div className="inputWrapperStyle">
                 <div className="empInfoCompanySelectBox">
@@ -105,7 +111,52 @@ const EmpInfoBox = ({
                   />
                 </div>
                 <div className="empInfoWorkplaceSelectBox">
-                  <EmpInfoWorkplaceSelectBox
+                  <div className="errorWrapper">
+                    <input
+                      type="text"
+                      className="reqInputStyleLiq"
+                      name="dept_CD"
+                      {...register(
+                        'dept_CD',
+                        !state?.clickYN && {
+                          required: '부서를 입력해주세요.',
+                        }
+                      )}
+                      style={{
+                        backgroundColor: '#fef4f4',
+                        border:
+                          errors?.dept_CD &&
+                          (state.checkDBErrorYN?.dept_CD_ERROR ||
+                            state.errorName === 'dept_CD')
+                            ? '1px solid red'
+                            : '1px solid #ccc',
+                      }}
+                      defaultValue={
+                        state.selectedDeptNm
+                          ? `${state.selectedDivCd}. ${state.selectedDivNm} / ${state.selectedDeptCd}. ${state.selectedDeptNm}`
+                          : state.deptAndDivData
+                      }
+                      onChange={actions.onChangeDeptAndDiv}
+                      onFocus={actions.onFocusError}
+                      //onBlur={actions.onBlurfinanceCDData}
+                      onKeyDown={actions.onKeyDownEnterFin}
+                    />
+                    <FaSitemap
+                      className="FFInputIconStyle"
+                      size={20}
+                      onClick={actions.onChangeOpenDeptModal}
+                    />
+                    {(state.checkDBErrorYN?.dept_CD_ERROR ||
+                      state.errorName === 'dept_CD') && (
+                      <ErrorMessage
+                        errors={errors}
+                        name="dept_CD"
+                        as="p"
+                        className="TRDeptErrorBox"
+                      />
+                    )}
+                  </div>
+                  {/* <EmpInfoWorkplaceSelectBox
                     width={'calc(100% - 7px)'}
                     data={state.workplaceList || []}
                     workplaceSelect={state.workplaceSelect}
@@ -115,7 +166,7 @@ const EmpInfoBox = ({
                     errors={errors}
                     errorName={state.errorName}
                     setChangeFormData={state.setChangeFormData}
-                  />
+                  /> */}
                 </div>
               </div>
             </td>
@@ -131,7 +182,7 @@ const EmpInfoBox = ({
                   placeholder="사원번호를 입력해주세요(최대 10글자)"
                   {...register(
                     'emp_CD',
-                    !state.clickYN && {
+                    !state?.clickYN && {
                       required: '사번을 입력해주세요.',
                     }
                   )}
@@ -144,19 +195,19 @@ const EmpInfoBox = ({
                         state.errorName === 'emp_CD')
                         ? '1px solid red'
                         : '1px solid #ccc',
-                    backgroundColor: state.clickYN ? '#f2f2f2' : '#fef4f4',
+                    backgroundColor: state?.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
-                  disabled={state.clickYN}
+                  disabled={state?.clickYN}
                   onFocus={actions.onFocusError}
                   onChange={actions.onChangeDBDataSearch}
                 />
-                {(state.checkDBErrorYN.emp_CD_ERROR ||
+                {(state.checkDBErrorYN?.emp_CD_ERROR ||
                   state.errorName === 'emp_CD') && (
                   <ErrorMessage
                     errors={errors}
                     name="emp_CD"
                     as="p"
-                    className="errorBox"
+                    className="TREmpCDErrorBox"
                   />
                 )}
               </div>
@@ -173,9 +224,9 @@ const EmpInfoBox = ({
                   placeholder="사용자 이름을 입력해주세요"
                   {...register(
                     'kor_NM',
-                    !state.clickYN && { required: '이름을 입력해주세요.' }
+                    !state?.clickYN && { required: '이름을 입력해주세요.' }
                   )}
-                  defaultValue={state.data.kor_NM}
+                  defaultValue={state.data?.kor_NM}
                   style={{
                     border:
                       errors.kor_NM && state.errorName === 'kor_NM'
@@ -184,12 +235,12 @@ const EmpInfoBox = ({
                   }}
                   onFocus={actions.onFocusError}
                 />
-                {state.errorName === 'kor_NM' && (
+                {state?.errorName === 'kor_NM' && (
                   <ErrorMessage
                     errors={errors}
                     name="kor_NM"
                     as="p"
-                    className="errorBox"
+                    className="TREmpCDErrorBox"
                   />
                 )}
               </div>
@@ -219,7 +270,7 @@ const EmpInfoBox = ({
                         : '1px solid #ccc',
                     backgroundColor: state.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
-                  disabled={state.clickYN}
+                  disabled={state?.clickYN}
                   onFocus={actions.onFocusError}
                   onChange={actions.onChangeDBDataSearch}
                 />
@@ -229,7 +280,7 @@ const EmpInfoBox = ({
                     errors={errors}
                     name="username"
                     as="p"
-                    className="errorBox"
+                    className="TRUsernameErrorBox"
                   />
                 )}
               </div>
@@ -243,7 +294,7 @@ const EmpInfoBox = ({
                   className="reqInputStyle"
                   {...register(
                     'email_ADD',
-                    !state.clickYN && {
+                    !state?.clickYN && {
                       required: 'ID를 입력해주세요.',
                       pattern: {
                         value: /\w+/,
@@ -251,7 +302,7 @@ const EmpInfoBox = ({
                       },
                     }
                   )}
-                  defaultValue={state.data.email_ADD}
+                  defaultValue={state.data?.email_ADD}
                   style={{
                     border:
                       errors?.email_ADD &&
@@ -261,7 +312,7 @@ const EmpInfoBox = ({
                         : '1px solid #ccc',
                     backgroundColor: state.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
-                  disabled={state.clickYN}
+                  disabled={state?.clickYN}
                   onFocus={actions.onFocusError}
                   onChange={actions.onChangeDBDataSearch}
                 />
@@ -271,7 +322,7 @@ const EmpInfoBox = ({
                     errors={errors}
                     name="email_ADD"
                     as="p"
-                    className="errorBox"
+                    className="TRUsernameErrorBox"
                   />
                 )}
               </div>
@@ -287,7 +338,7 @@ const EmpInfoBox = ({
                   className="reqInputStyle"
                   {...register(
                     'password',
-                    !state.clickYN && {
+                    !state?.clickYN && {
                       required: '비밀번호를 입력해주세요.',
                     }
                   )}
@@ -304,7 +355,7 @@ const EmpInfoBox = ({
                     errors={errors}
                     name="password"
                     as="p"
-                    className="errorBox"
+                    className="TRUsernameErrorBox"
                   />
                 )}
               </div>
@@ -323,7 +374,7 @@ const EmpInfoBox = ({
                   type="radio"
                   name="gender_FG"
                   value="W"
-                  checked={state.selectedValue === 'W'}
+                  checked={state?.selectedRadioValue === 'W'}
                   onChange={actions.handleRadioChange}
                 />
                 여자
@@ -332,7 +383,7 @@ const EmpInfoBox = ({
                   type="radio"
                   name="gender_FG"
                   value="M"
-                  checked={state.selectedValue === 'M'}
+                  checked={state?.selectedRadioValue === 'M'}
                   onChange={actions.handleRadioChange}
                 />
                 남자
@@ -479,7 +530,7 @@ const EmpInfoBox = ({
                 className="inputStyle"
                 name="addr_NUM"
                 {...register('addr_NUM')}
-                defaultValue={state.data.addr_NUM}
+                defaultValue={state.data?.addr_NUM}
               />
             </td>
           </tr>
