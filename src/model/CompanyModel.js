@@ -17,6 +17,10 @@ const CompanyModel = () => {
   const [listCount, listCountSet] = useState(0);
   const [searchData, SearchDataSet] = useState();
 
+  const saveBtn = useRef(null);
+  const editBtn = useRef(null);
+  const removeBtn = useRef(null);
+
   const reSetData = useRef({
     acct_FG: '일반 의료기관',
     business: '',
@@ -111,6 +115,9 @@ const CompanyModel = () => {
     SearchDataSet,
     searchCompanyOnClick,
     reSetData,
+    saveBtn,
+    editBtn,
+    removeBtn,
   };
 };
 
