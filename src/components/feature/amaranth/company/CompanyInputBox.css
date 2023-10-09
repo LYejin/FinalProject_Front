@@ -30,12 +30,6 @@
   height: 40px;
 }
 
-.radioStyle {
-  margin-left: 10px;
-  color: blue;
-  vertical-align: middle;
-}
-
 .inputStyle {
   width: 100%;
   height: 26px;
@@ -114,9 +108,11 @@
 }
 
 /* Style for radio buttons */
-.radioStyle {
+.comRadioStyle {
+  margin-left: 10px;
   margin-right: 10px;
   color: blue;
+  vertical-align: middle;
 }
 
 /* Style for submit buttons */
@@ -236,13 +232,22 @@
 .button-container {
   display: flex;
   justify-content: flex-end;
+  margin-left: auto;
+  margin-bottom: 2px;
 }
 .C_addressInputStyle {
   width: 185px;
-  margin-right: 5px;
   height: 26px;
   border: 1px solid #ccc;
-  background: #ffffff;
+  background: #fef4f4;
+}
+
+.C_companyNameInputStyle {
+  width: 185px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #fef4f4;
+  margin-right: 10px;
 }
 
 .C_datePickerInputStyle {
@@ -282,7 +287,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 500px;
+  height: 700px;
+}
+.loadingText {
+  margin-bottom: 300px;
 }
 
 .loadingContainer h2 {
@@ -292,10 +300,15 @@
 }
 
 /*검색창 css*/
-.textInputBox {
-  border: 1px solid #b6b6b6;
-  width: 200px;
-  height: 29px;
+.comtextInputBox {
+  /* border: 1px solid #b6b6b6;
+  width: 210px;
+  height: 28px;
+  padding-left: 10px; */
+}
+.comlastSelectBoxTextPadding {
+  margin-left: 60px;
+  margin-right: 3px;
 }
 
 .companyWhiteButton {
@@ -306,10 +319,10 @@
   color: #000000;
   transition: border-color 0.3s;
   box-shadow: none;
-  width: 60px;
+  width: 50px;
   height: 30px;
   margin-bottom: 5px;
-  margin-right: 10px;
+  margin-left: 10px;
   cursor: pointer;
   border-radius: 3px;
 }
@@ -350,9 +363,28 @@
   box-shadow: none;
   height: 30px;
   margin-left: auto;
-  margin-right: 10px;
 }
 .companyFFcustomButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
+.companySearchFFcustomButton {
+  width: 30px;
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  color: darkgray;
+  transition: border-color 0.3s;
+  vertical-align: middle;
+  box-shadow: none;
+  height: 30px;
+  margin-left: auto;
+  margin-right: 10px;
+}
+.companySearchFFcustomButton:hover {
   border-color: #000000;
   box-shadow: none;
 }
@@ -368,13 +400,60 @@
   vertical-align: middle;
   box-shadow: none;
   height: 30px;
-  margin-left: auto;
+  margin-right: -20px;
+  margin-left: -10px;
 }
 .companyCancelButton:hover {
   border-color: #000000;
   box-shadow: none;
 }
+.cancleDiv {
+  width: 10px;
+  height: 100%;
+}
 
-.cancelDiv {
-  display: inline-bloc;
+.postWhiteButton {
+  background-image: linear-gradient(#f9f9f9, #eaeaea);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  height: 26px;
+  margin-left: 10px;
+}
+.postWhiteButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
+.companyFixedInputStyle {
+  margin-left: 5px;
+  height: 30px;
+  border: 1px solid lightgray;
+  border-radius: 0;
+  /* outline: none; */
+  width: 185px;
+  padding-right: 35px;
+  padding-left: 5px;
+}
+
+.comimageButtonWrapper2 {
+  width: 27px;
+  height: 27px;
+  background-color: white;
+  border: 1px solid gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 3.95rem;
+  right: -3.8rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.comimageButtonWrapper2:hover {
+  background-color: #8f8f8f;
 }

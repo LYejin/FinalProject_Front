@@ -60,7 +60,7 @@ const FundTypeSearch = ({
     //마운트 시 로드될 행 데이터 출력
     //{ "CASH_CD": CASH_CD }
     grid.showProgress();
-    loadRowData({ searchData: inputData, LEVEL_CD: LEVEL_CD })
+    loadRowData({ searchData: inputData, LEVEL_CD: LEVEL_CD, USE_YN: '여' })
       .then(loadData => {
         grid.closeProgress();
         console.log('검색전(서치)', CASH_CD, inputData, LEVEL_CD);
