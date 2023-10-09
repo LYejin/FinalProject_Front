@@ -477,7 +477,7 @@ const WorkplacePage = () => {
         <DetailContentWrapper>
           <WorkpSelectBoxWrapper>
             <CompSelectBox
-              title={'회사선택'}
+              title={'회사'}
               data={companyData}
               height={28}
               width={200}

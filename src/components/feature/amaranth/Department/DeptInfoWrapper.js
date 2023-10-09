@@ -193,13 +193,9 @@ const DeptInfoWrapper = ({
                 valid={'text'}
                 defaultValue={data ? data.dept_NM || '' : ''}
                 placeholder="부서명을 입력해주세요."
-                register={
-                  isUpdate
-                    ? register('dept_NM', {
-                        required: '부서명을 입력해주세요.',
-                      })
-                    : register('dept_NM')
-                }
+                register={register('dept_NM', {
+                  required: '부서명을 입력해주세요.',
+                })}
                 errors={errors}
                 maxLength={20}
                 name="dept_NM"

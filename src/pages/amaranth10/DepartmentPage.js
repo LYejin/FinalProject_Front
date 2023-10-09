@@ -66,8 +66,14 @@ const DepartmentPage = () => {
   const [selectedDivCd, setSelectedDivCd] = useState(null);
   const [selectedDivCdName, setSelectedDivCdName] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [IsOpenMdept, setIsOpenMdept] = useState(false);
-  const [MdeptCD, setMdeptCD] = useState('');
+  const [IsOpenMdept, setIsOpenMdept] = useState(false); //상위부서 모달창
+  const [MdeptCD, setMdeptCD] = useState(''); //상위부서 설정값
+  const [isLowLevel, setIsLowLevel] = useState(false); //하위부서,직원 확인
+  const [isHighLevel, setIsHighLevel] = useState(false); //상위부서 사용여부 확인
+  const [useSelect, setUseSelect] = useState('0'); //조직도표시 사용여부
+  const [showSelect, setShowSelect] = useState('0'); //조직도표시 표시기능
+
+  console.log('isHighLevel : ', isHighLevel);
 
   const formRef = useRef(null);
 
@@ -105,8 +111,10 @@ const DepartmentPage = () => {
     setAddress(data.zonecode);
     setAddressDetail(fullAddr);
     setData(prevData => ({
+      ...prevData,
       addr_NUM: '',
     }));
+
     setChangeFormData(prevChangeFormData => {
       const updatedData = {
         ...prevChangeFormData,
@@ -174,7 +182,7 @@ const DepartmentPage = () => {
   }, [isUpdate]);
 
   const resetData = () => {
-    setData(prevData => ({
+    setData({
       co_NM: useCoCdName,
       div_NM: selectedDivCdName,
       mdept_CD: selectedDeptCd,
@@ -191,7 +199,7 @@ const DepartmentPage = () => {
       addr: '',
       addr_CD: '',
       addr_NUM: '',
-    }));
+    });
   };
 
   const onClickInsert = () => {
@@ -279,15 +287,28 @@ const DepartmentPage = () => {
       console.log('당연히 안나오겠지만,', data.dept_CD);
       console.log('Submitted Data: ', changeFormData);
 
+      const mergedData = {
+        ...changeFormData,
+        dept_NM: changeFormData.dept_NM ? changeFormData.dept_NM : data.dept_NM,
+        co_CD: useCoCd,
+        div_CD: selectedDivCd,
+        dept_CD: selectedDeptCd,
+      };
+
       const response = await authAxiosInstance.put(
         'system/user/departments/update',
-        {
-          ...changeFormData, // 기존의 changeFormData 객체를 펼침
-          co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열
-          div_CD: selectedDivCd,
-          dept_CD: selectedDeptCd,
-        }
+        mergedData
       );
+
+      // const response = await authAxiosInstance.put(
+      //   'system/user/departments/update',
+      //   {
+      //     ...changeFormData, // 기존의 changeFormData 객체를 펼침
+      //     co_CD: useCoCd, // 추가적인 프로퍼티를 여기에 나열
+      //     div_CD: selectedDivCd,
+      //     dept_CD: selectedDeptCd,
+      //   }
+      // );
       const updatedData = { ...data, ...changeFormData };
       setChangeFormData(updatedData);
 
@@ -297,8 +318,10 @@ const DepartmentPage = () => {
         title: '업데이트 완료',
         text: '부서 정보가 성공적으로 업데이트되었습니다.',
       });
+      console.log('아울아ㅓㄴ리ㅏㅇ', selectedDeptCd, useCoCd);
     }
     fetchDepartmentDataAfter(useCoCd);
+    setChangeFormData({});
     setIsUpdate(false);
     setChangeForm(false);
     setMdeptCD('');
@@ -490,10 +513,25 @@ const DepartmentPage = () => {
   };
 
   const handleRadioChange = e => {
-    setSelectedRadioValue(e.target.value);
-    setChangeFormData(changeFormData => ({
-      ...changeFormData,
-      [e.target.name]: e.target.value,
+    const newValue = e.target.value;
+    if (isHighLevel && selectedRadioValue === '0' && newValue === '1') {
+      alert('상위부서를 먼저 사용 으로 변경해주세요');
+      return;
+    }
+    if (isLowLevel && selectedRadioValue === '1' && newValue === '0') {
+      const userConfirmation = window.confirm(
+        '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.'
+      );
+      if (!userConfirmation) {
+        // 사용자가 취소를 선택하면 값을 업데이트하지 않고 함수 종료
+        return;
+      }
+    }
+
+    setSelectedRadioValue(newValue);
+    setChangeFormData(prevState => ({
+      ...prevState,
+      [e.target.name]: newValue,
     }));
   };
 
@@ -638,6 +676,10 @@ const DepartmentPage = () => {
                     setSelectedDivCd,
                     setSelectedDivCdName,
                     setIsUpdate,
+                    setIsHighLevel,
+                    setIsLowLevel,
+                    useSelect,
+                    showSelect,
                   }}
                 >
                   <DeptShowWrapper
@@ -646,6 +688,10 @@ const DepartmentPage = () => {
                     height={'100%'}
                     data={DeptData}
                     searchValue={searchValue}
+                    useSelect={useSelect}
+                    showSelect={showSelect}
+                    setUseSelect={setUseSelect}
+                    setShowSelect={setShowSelect}
                   />
                 </DeptContext.Provider>
               </LeftContentWrapper>
@@ -711,7 +757,11 @@ const DepartmentPage = () => {
                     </ScrollWrapper>
                   ) : (
                     selectedDept === '0' && (
-                      <DeptEmpListGrid CoCd={useCoCd} DeptCd={selectedDeptCd} />
+                      <DeptEmpListGrid
+                        CoCd={useCoCd}
+                        DeptCd={selectedDeptCd}
+                        setIsLowLevel={setIsLowLevel}
+                      />
                     )
                   )}
                 </div>
