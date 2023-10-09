@@ -40,6 +40,56 @@
   font-weight: 600;
 }
 
+.FixedChartBoxWrapper {
+  min-width: 1200px;
+  height: 280px;
+  border-top: 2px solid #1C90FB;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ChartStateSelectBar {
+  display: flex;           /* flex 레이아웃 적용 */
+  margin-top: 10px;
+  margin-bottom: -2px;
+  margin-left: auto;
+}
+
+
+.ChartStateBox{
+  display: flex; 
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center;     /* 수직 가운데 정렬 */
+  width: 80px;
+  height: 35px;
+  color: black;
+  border-radius: 10px 10px 0 0; 
+  background-color: #F1F1F1;
+  border-bottom: 2px solid #1C90FB;
+  margin-right: 3px;
+}
+
+.SelectChartStateBox{
+  display: flex; 
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center;     /* 수직 가운데 정렬 */
+  width: 80px;
+  height: 35px;
+  color: black;
+  background-color: white;
+  border-right: 2px solid #1C90FB;
+  border-top: 2px solid #1C90FB;
+  border-left: 2px solid #1C90FB;
+  border-radius: 10px 10px 0 0; 
+  margin-right: 3px;
+}
+
+
+
 .FPSelectBoxWrapper {
   min-width: 1050px;
   height: 90px;

@@ -8,6 +8,7 @@ const DeptSubTitle = ({
   isAdding,
   deleteDiv,
   children,
+  margin,
 }) => {
   const onClick = () => {
     if (isAdding) {
@@ -21,7 +22,11 @@ const DeptSubTitle = ({
     deleteDiv();
   };
 
-  return <div className="deptSubTitleWrapper">{children}</div>;
+  return (
+    <div className="deptSubTitleWrapper" style={{ marginTop: margin }}>
+      {children}
+    </div>
+  );
 };
 
 export default DeptSubTitle;

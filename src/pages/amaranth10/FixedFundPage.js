@@ -16,6 +16,7 @@ import FundTypeSearchGrid from '../../components/feature/amaranth/fixedfund/real
 import StradeCodeHelpModal from '../../components/feature/amaranth/Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
 import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
+import FixedChartBox from '../../components/feature/amaranth/fixedfund/realgrid/FixedChartBox';
 
 const FixedFundPage = () => {
   useEffect(() => {}, []);
@@ -90,7 +91,7 @@ const FixedFundPage = () => {
             <FixedFundSelectBoxWrapper onValuesChange={handleValuesChange} />
             <MainContentWrapper state={0}>
               <FullContentWrapper>
-                <DeptSubTitle>
+                <DeptSubTitle margin={-5}>
                   <div
                     className={`subTitleInfo ${
                       selectedDiv === '1' ? 'IsSelected' : ''
@@ -116,6 +117,7 @@ const FixedFundPage = () => {
                   DISQ={selectedDiv}
                   values={searchValues}
                 />
+                <FixedChartBox />
               </FullContentWrapper>
             </MainContentWrapper>
           </DetailContentWrapper>
