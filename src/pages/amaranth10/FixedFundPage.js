@@ -16,7 +16,7 @@ import FundTypeSearchGrid from '../../components/feature/amaranth/fixedfund/real
 import StradeCodeHelpModal from '../../components/feature/amaranth/Modal/StradeCodeHelpModal/StradeCodeHelpModal';
 import FundTypeModel from '../../components/feature/amaranth/fundType/model/FundTypeModel';
 import FundTypeModal from '../../components/feature/amaranth/fundType/Modal/FundTypeModal';
-import FixedChartBox from '../../components/feature/amaranth/fixedfund/realgrid/FixedChartBox';
+import FixedChartBox from '../../components/feature/amaranth/fixedfund/FixedChartBox';
 
 const FixedFundPage = () => {
   useEffect(() => {}, []);
@@ -109,14 +109,14 @@ const FixedFundPage = () => {
                     수입
                   </div>
                 </DeptSubTitle>
-                <FixedFundGrid
+                {/* <FixedFundGrid
                   onChangeOpenCash={onChangeOpenCash}
                   onChangeOpenStrade={onChangeOpenStrade}
                   setMarsterGrid={setMarsterGrid}
                   setGridViewStrade={setGridViewStrade}
                   DISQ={selectedDiv}
                   values={searchValues}
-                />
+                /> */}
                 <FixedChartBox />
               </FullContentWrapper>
             </MainContentWrapper>
