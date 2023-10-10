@@ -144,6 +144,21 @@ const DeptCodeHelpModal = ({
       crossWhenExitLast: true, // tab/enter 키로 마지막 셀을 벗어날 때 다음 행으로 이동한다.
     });
 
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
+
     // 데이터 프로바이더와 그리드 뷰를 상태에 저장합니다.
     setDataProviderState(dataProvider);
     setGridViewState(gridView);

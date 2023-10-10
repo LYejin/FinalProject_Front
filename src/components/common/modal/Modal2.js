@@ -54,7 +54,7 @@ const Modal2 = ({
     <>
       <div style={modalBox}>
         <button style={closeButtonStyle} onClick={onClose}>
-          <i className="fa-solid fa-xmark modelX"></i>
+          <i className="fa-solid fa-xmark"></i>
         </button>
         <div className="topModalWrapper2">
           <Title titleName={title} />

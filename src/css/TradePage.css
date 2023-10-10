@@ -282,12 +282,11 @@
 
 .deleteTitleWrapper {
   display: flex;
-  width: 150px;
+  width: 300px;
 }
 
 .deleteCount {
   margin-left: 32px;
-  width: 30px;
   color: #3bc1db;
   font-size: large;
   font-weight: 600;
