@@ -309,14 +309,14 @@ export const WidthColumns = [
     styleName: 'left-column',
     header: {
       text: '수지구분',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
     name: 'CASH_CD_L1',
     fieldName: 'CASH_CD_L1',
     width: '80',
-    styleName: 'left-column ',
+    styleName: 'left-column',
     editor: {
       type: 'number',
       maxLength: 4,
@@ -325,7 +325,7 @@ export const WidthColumns = [
     },
     header: {
       text: '자금코드(레벨1)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
@@ -335,14 +335,14 @@ export const WidthColumns = [
     styleName: 'left-column',
     header: {
       text: '과목명(레벨1)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
     name: 'CASH_CD_L2',
     fieldName: 'CASH_CD_L2',
     width: '80',
-    styleName: 'left-column ',
+    styleName: 'left-column',
     editor: {
       type: 'number',
       maxLength: 4,
@@ -351,7 +351,7 @@ export const WidthColumns = [
     },
     header: {
       text: '자금코드(레벨2)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
@@ -361,14 +361,14 @@ export const WidthColumns = [
     styleName: 'left-column',
     header: {
       text: '과목명(레벨2)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
     name: 'CASH_CD_L3',
     fieldName: 'CASH_CD_L3',
     width: '80',
-    styleName: 'left-column ',
+    styleName: 'left-column',
     editor: {
       type: 'number',
       maxLength: 4,
@@ -377,7 +377,7 @@ export const WidthColumns = [
     },
     header: {
       text: '자금코드(레벨3)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
@@ -387,7 +387,7 @@ export const WidthColumns = [
     styleName: 'left-column',
     header: {
       text: '과목명(레벨3)',
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
@@ -397,24 +397,24 @@ export const WidthColumns = [
     styleName: 'left-column ',
     header: {
       text: '최하위여부', // 열 헤더 텍스트 수정
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
   {
     name: 'USE_YN',
     fieldName: 'USE_YN',
     width: '100', // 너비 수정
-    styleName: 'left-column ',
+    styleName: 'left-column',
     header: {
       text: '사용여부', // 열 헤더 텍스트 수정
-      styleName: 'left-column  ',
+      styleName: 'left-column',
     },
   },
   {
     name: 'DISP_SQ',
     fieldName: 'DISP_SQ',
     width: '100', // 너비 수정
-    styleName: 'left-column ',
+    styleName: 'left-column',
     editor: {
       type: 'number',
       editFormat: '#,##0',
@@ -426,7 +426,7 @@ export const WidthColumns = [
     numberFormat: '#,##0',
     header: {
       text: '정렬구분', // 열 헤더 텍스트 수정
-      styleName: 'left-column ',
+      styleName: 'left-column',
     },
   },
 ];

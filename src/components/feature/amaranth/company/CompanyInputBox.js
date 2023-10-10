@@ -578,7 +578,12 @@ const CompanyInputBox = ({
       hyphenation(dup[e.target.name], e.target.name);
     }
 
-    if (ch_formData.CO_CD !== '' && dup.PIC_FILE_ID !== formData.pic_FILE_ID) {
+    const undefinedCheck =
+      dup.PIC_FILE_ID === undefined && formData.pic_FILE_ID === undefined;
+    if (
+      (ch_formData.CO_CD !== '' && dup.PIC_FILE_ID !== formData.pic_FILE_ID) ||
+      undefinedCheck
+    ) {
       setChFormData(prevChFormData => ({
         ...prevChFormData,
         [fieldName]: fieldValue,
@@ -1252,6 +1257,7 @@ const CompanyInputBox = ({
                   dateFormat="yyyy-MM-dd"
                   calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                   className="C_datePickerReqInputStyle"
+                  onKeyDown={e => e.preventDefault()}
                   locale={ko}
                 />
               </td>
@@ -1267,6 +1273,7 @@ const CompanyInputBox = ({
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                     className="C_datePickerInputStyle"
+                    onKeyDown={e => e.preventDefault()}
                     locale={ko}
                   />
                   <p className="p_margin">/</p>
@@ -1279,6 +1286,7 @@ const CompanyInputBox = ({
                     dateFormat="yyyy-MM-dd"
                     calendarIcon={<i className="fa fa-calendar" />} // 달력 아이콘 설정
                     className="C_datePickerInputStyle"
+                    onKeyDown={e => e.preventDefault()}
                     locale={ko}
                   />
                 </div>

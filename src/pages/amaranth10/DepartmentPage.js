@@ -31,6 +31,7 @@ import Swal from 'sweetalert2';
 import _ from 'lodash';
 import Modal2 from '../../components/common/modal/Modal2';
 import DeptEmpListGrid from '../../components/feature/amaranth/Department/DeptEmpListGrid';
+import CommonLayout from '../../components/common/CommonLayout';
 
 const DepartmentPage = () => {
   const {
@@ -640,7 +641,7 @@ const DepartmentPage = () => {
 
   return (
     <>
-      <CommonLayout2>
+      <CommonLayout>
         <MainTitle mainTitle={'시스템설정'} />
         <ContentWrapper>
           <Title titleName={'부서관리'}></Title>
@@ -827,7 +828,7 @@ const DepartmentPage = () => {
             </DeptContext.Provider>
           </Modal2>
         ) : null}
-      </CommonLayout2>
+      </CommonLayout>
     </>
   );
 };

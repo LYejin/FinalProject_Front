@@ -32,7 +32,7 @@ const DeleteTradeModal = ({
           성공{' '}
           <span className="deleteTRSpanColor2">
             <span className="deleteTRSpanCount">
-              {deleteListCount - deleteStradeInfo.length}
+              {Math.abs(deleteListCount - deleteStradeInfo.length)}
             </span>
             건
           </span>
