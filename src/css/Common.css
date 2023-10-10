@@ -65,6 +65,27 @@
   box-shadow: none;
 }
 
+.NewBlueChartButton {
+  background: linear-gradient(#1caafb, #1c90fb);
+  border: 1px solid lightgray;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  transition: border-color 0.3s;
+  box-shadow: none;
+  width: 150px;
+  height: 30px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.NewBlueChartButton:hover {
+  border-color: #000000;
+  box-shadow: none;
+}
+
 .WhiteButton:hover {
   border-color: #000000;
   box-shadow: none;
