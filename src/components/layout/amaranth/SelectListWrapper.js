@@ -79,27 +79,27 @@ const SelectListWrapper = ({
     }));
   };
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await asyncRequest(
-          'system/admin/groupManage/CompanySelect',
-          'get'
-        );
-        const first_formData = await asyncRequest(
-          'system/admin/groupManage/CompanyDetail/' + response.data[0].co_CD,
-          'get'
-        );
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await asyncRequest(
+  //         'system/admin/groupManage/CompanySelect',
+  //         'get'
+  //       );
+  //       const first_formData = await asyncRequest(
+  //         'system/admin/groupManage/CompanyDetail/' + response.data[0].co_CD,
+  //         'get'
+  //       );
 
-        //formSetting(response.data,first_formData.data )
-        listDataSet(response.data);
-        formDataSet(first_formData.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
+  //       //formSetting(response.data,first_formData.data )
+  //       listDataSet(response.data);
+  //       formDataSet(first_formData.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <div style={selectListWrapper}>

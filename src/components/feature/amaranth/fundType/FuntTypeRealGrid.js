@@ -135,8 +135,6 @@ function RealGrid({
         tag: 'excelImport',
       },
     ];
-    //우클릭 시 그리드에 메뉴창 띄우기 여부 설정
-    grid.setContextMenu(contextMenu);
   };
   const handleFileInputClick = (e, grid) => {
     fileInput.current.click(); // Trigger file input click
@@ -191,10 +189,6 @@ function RealGrid({
       {
         label: '엑셀 내보내기',
         tag: 'excelExport',
-      },
-      {
-        label: '엑셀 가져오기',
-        tag: 'excelImport',
       },
     ]);
 
@@ -264,13 +258,7 @@ function RealGrid({
     grid.onContextMenuItemClicked = function (grid, item, clickData) {
       //handleXlsFile; excelExport excelImport
       if (item.tag === 'excelExport') {
-        excelExport(grid, fundTypeLayout);
-      } else if (item.tag === 'excelImport') {
-        setMenuGrid(prveData => ({
-          ...prveData,
-          grid: grid,
-        }));
-        handleFileInputClick(grid);
+        excelExport(grid, '자금종목');
       }
     };
     // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.

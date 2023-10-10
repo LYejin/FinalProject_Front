@@ -13,7 +13,7 @@ import { authAxiosInstance } from '../axios/axiosInstance';
 const CompanyModel = () => {
   const [formData, formDataSet] = useState();
   const [listData, listDataSet] = useState();
-  const [ch_listData, ch_listDataSet] = useState(0);
+  const [ch_listData, ch_listDataSet] = useState(0); //인풋데이터 변경 확인
   const [listCount, listCountSet] = useState(0);
   const [searchData, SearchDataSet] = useState();
 
