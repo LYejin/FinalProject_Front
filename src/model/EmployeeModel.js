@@ -600,7 +600,13 @@ const EmployeeModel = ({
       insertButtonClick &&
       Object.keys(errors).length > 0
     ) {
-      alert('중복된 값이 존재합니다.');
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '중복된 값이 존재합니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
     let endTime = new Date().getTime();
     console.log('resulttttttttttttttt :', endTime - startTime);
