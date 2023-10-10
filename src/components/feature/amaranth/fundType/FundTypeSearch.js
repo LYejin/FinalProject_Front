@@ -121,40 +121,6 @@ const FundTypeSearch = ({
     //헤더 높이 자동 조절 설정
     grid.setHeader({ height: 30 });
 
-    grid.setContextMenu([
-      {
-        label: '엑셀 내보내기',
-        tag: 'excelExport',
-      },
-      {
-        label: '엑셀 가져오기',
-        tag: 'excelImport',
-      },
-    ]);
-
-    // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
-    grid.onContextMenuItemClicked = function (grid, item, clickData) {
-      //handleXlsFile; excelExport excelImport
-      if (item.tag === 'excelExport') {
-        excelExport(grid);
-      } else if (item.tag === 'excelImport') {
-        setMenuGrid(prveData => ({
-          ...prveData,
-          grid: grid,
-        }));
-        handleFileInputClick(grid);
-      }
-    };
-    // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.
-    grid.onContextMenuPopup = function (grid, x, y, elementName) {
-      if (elementName.cellType === 'data') {
-        // 데이터 셀에서 컨텍스트 메뉴 팝업을 엽니다.
-        //setDataCellContextMenu(grid);
-      } else {
-        return false;
-      }
-    };
-
     //특정 행의 자금종목코드 데이터 불러오기 기능
     grid.onCellDblClicked = function (grid, clickData) {
       // 고정자금등록 페이지 자금과목 검색

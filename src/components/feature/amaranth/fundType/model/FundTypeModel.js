@@ -3,6 +3,7 @@ import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 const FundTypeModel = () => {
   const [CASH_CD, setCASH_CD] = useState();
   const [LEVEL_CD, setLEVEL_CD] = useState();
@@ -145,23 +146,22 @@ const FundTypeModel = () => {
   };
 
   //그리드 데이터를 엑셀문서화 시켜주는 함수
-  const excelExport = (targetgrid, layout) => {
+  const excelExport = (targetgrid, fileName) => {
     console.log('엑셀화', targetgrid);
     window.JSZip = window.JSZip || JSZip;
     targetgrid.exportGrid({
       type: 'excel',
       target: 'local',
-      fileName: 'gridExportSample.xlsx',
+      fileName: fileName + '.xlsx',
       progressMessage: '엑셀 Export중입니다.',
       header: true,
       compatibility: true,
-      hideColumns: ['CASH_CD'],
+      //hideColumns: ['CASH_CD'],
       //onlyCheckedItems: true,
       //hideChildHeaders: true,
       //items: ['CASH_CD', 'CASH_NM'],
       done: function () {
         //내보내기 완료 후 실행되는 함수
-        alert('저장완료');
       },
     });
   };

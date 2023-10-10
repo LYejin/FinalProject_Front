@@ -73,7 +73,10 @@ export const columns = [
     },
     styleCallback: (grid, dataCell) => {
       const ret = {};
-      if (dataCell.item.rowState === 'updated') {
+      if (
+        dataCell.item.rowState === 'updated' ||
+        dataCell.item.rowState === 'created'
+      ) {
         grid.setColumnProperty('dept_CD', 'button', 'none');
       } else {
         grid.setColumnProperty('dept_CD', 'button', 'action');
@@ -100,7 +103,10 @@ export const columns = [
     },
     styleCallback: (grid, dataCell) => {
       const ret = {};
-      if (dataCell.item.rowState === 'updated') {
+      if (
+        dataCell.item.rowState === 'updated' ||
+        dataCell.item.rowState === 'created'
+      ) {
         grid.setColumnProperty('emp_CD', 'button', 'none');
       } else {
         grid.setColumnProperty('emp_CD', 'button', 'action');

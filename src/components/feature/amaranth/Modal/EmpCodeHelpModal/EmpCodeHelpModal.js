@@ -8,6 +8,7 @@ import Modal from '../../../../common/modal/Modal';
 import SelectBoxWrapper from '../../../../layout/amaranth/SelectBoxWrapper';
 import EventButton from '../../../../common/button/EventButton';
 import SelectBox from './../../../../common/box/SelectBox';
+import { getNowJoinTime } from '../../../../../util/time';
 
 const EmpCodeHelpModal = ({
   onChangeModalClose,
@@ -19,7 +20,9 @@ const EmpCodeHelpModal = ({
   dataProviderStrade,
   setEmpCheckDataList,
   empGridValue,
+  setBottomButtonClick,
   setEmpGridValue,
+  setDeptCheckDataList,
 }) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
@@ -88,6 +91,16 @@ const EmpCodeHelpModal = ({
         column: 'note',
       });
       gridViewStrade.setValues(cellClickData, row, false);
+      gridViewStrade.setCurrent({
+        itemIndex: cellClickData + 1,
+        fieldName: 'note',
+      });
+      gridViewStrade.setFocus();
+      gridViewStrade.setEditOptions({
+        commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+        appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+        crossWhenExitLast: true,
+      });
       setEmpMenuButton(false);
     };
 
@@ -149,35 +162,53 @@ const EmpCodeHelpModal = ({
   }, []);
 
   const onClickBottomButtonEvent = () => {
+    gridViewStrade.editOptions.insertable = false;
     var rowDatas = [];
     const checkRows = gridViewState.getCheckedRows();
     const stradeRows = dataProviderState.getJsonRows(0, -1);
+    var today = new Date();
+    const date = getNowJoinTime(today);
     for (var i in checkRows) {
       var data = dataProviderState.getJsonRow(checkRows[i]);
       let rowData = {
         tr_CD: tr_CD,
-        roll_FG: 2,
+        roll_FG: '2',
+        dept_CD: null,
+        dept_NM: null,
         emp_CD: data.emp_CD,
         kor_NM: data.kor_NM,
+        insert_DT: date,
       };
-
       gridViewStrade.commit();
       gridViewStrade.cancel();
-      // 아예 insert 하는 방법?
-
       rowDatas.push(rowData);
     }
 
-    authAxiosInstance
-      .post('accounting/user/Strade/stradeRollInEmpInsert', rowDatas)
-      .then(response => {
-        console.log(response?.data);
-      });
+    authAxiosInstance.post(
+      'accounting/user/Strade/stradeRollInEmpInsert',
+      rowDatas
+    );
 
+    const newDataList = rowDatas?.map(data =>
+      data.roll_FG === '1'
+        ? { ...data, roll_FG: '부서' }
+        : data.roll_FG === '2'
+        ? { ...data, roll_FG: '사용자' }
+        : data
+    );
+
+    dataProviderStrade.insertRows(cellClickData, newDataList);
+    dataProviderStrade.setRowState(cellClickData + rowDatas.length, 'none');
     setEmpCheckDataList(rowDatas);
-
-    alert(JSON.stringify(rowDatas));
     onChangeModalClose();
+    setBottomButtonClick(false);
+    gridViewStrade.setEditOptions({
+      insertable: true, //행 삽입 가능 여부
+      appendable: true, //행 추가 가능 여부
+      commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+      appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+      crossWhenExitLast: true,
+    });
   };
 
   return (
@@ -190,20 +221,20 @@ const EmpCodeHelpModal = ({
       onClickBottomButtonEvent={onClickBottomButtonEvent}
     >
       <SelectBoxWrapper>
-        <span className="rightSelectBoxPadding">사원코드</span>
+        <span className="liqModalTitle">검색어</span>
         <input
           type="text"
           className="textInputBox"
           {...register('selectValue')}
           defaultValue={empGridValue && empGridValue}
         />
-        <span className="rightSelectBoxPadding">재직여부</span>
+        {/* <span className="rightSelectBoxPadding">재직여부</span>
         <SelectBox
           width={'100px'}
           data={['재직', '휴직', '퇴직']}
           state={enrlFGSelectData}
           setState={setEnrlFGSelectData}
-        />
+        /> */}
         <div className="selectBoxButtonWrapper">
           <EventButton
             data={<i className="fa-solid fa-magnifying-glass"></i>}

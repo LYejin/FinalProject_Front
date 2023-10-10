@@ -12,17 +12,12 @@ import SelectBox from './../../../common/box/SelectBox';
 import { CiSquareMore } from 'react-icons/ci';
 import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
-const GtradeInfoBox = ({ register, errors, state, actions }) => {
+const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
   const [trCDModal, setTrCDModal] = useState(false);
-  const [liquorCDModal, setLiquorCDModal] = useState(false);
   const [liquorCDData, setLiquorCDData] = useState(false);
 
   const trCDModalButton = () => {
     setTrCDModal(!trCDModal);
-  };
-
-  const liquorCDModalButton = () => {
-    setLiquorCDModal(!liquorCDModal);
   };
 
   return (
@@ -80,7 +75,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                         errors={errors}
                         name="tr_CD"
                         as="p"
-                        className="errorBox"
+                        className="TRCdErrorBox"
                       />
                     )}
                   </div>
@@ -148,7 +143,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                       errors={errors}
                       name="tr_NM"
                       as="p"
-                      className="errorBox"
+                      className="TRNameErrorBox"
                     />
                   )}
                 </div>
@@ -186,7 +181,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                     errors={errors}
                     name="reg_NB"
                     as="p"
-                    className="errorBox"
+                    className="TRRegErrorBox"
                   />
                 </div>
               </td>
@@ -201,7 +196,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                     <SelectBox
                       data={['내국인', '외국인']}
                       name="for_YN"
-                      width={180}
+                      width={100}
                       state={state.selectForYN}
                       setState={state.setSelectForYN}
                       setChangeFormData={state.setChangeFormData}
@@ -236,7 +231,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                         errors={errors}
                         name="ppl_NB"
                         as="p"
-                        className="errorBox"
+                        className="TRPplErrorBox"
                       />
                     }
                   </div>
@@ -340,6 +335,7 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                   {...register('fax')}
                   onChange={actions.onChangeHomeTel}
                   defaultValue={state.data.fax}
+                  maxLength="13"
                 />
               </td>
             </tr>
@@ -376,17 +372,19 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
                     className="reqInputStyleLiq"
                     name="liq_CD"
                     {...register('liq_CD')}
-                    onChange={actions.onChangeTel}
                     defaultValue={
-                      liquorCDData
-                        ? `${liquorCDData?.liq_CD}. ${liquorCDData?.wholesale}`
-                        : state.data.liq_CD
+                      state.liquorCDChangeData
+                        ? `${state.liquorCDChangeData?.liq_CD}. ${state.liquorCDChangeData?.wholesale}`
+                        : state.liquorCDData
                     }
+                    onChange={actions.onChangeDBDataSearch}
+                    //onBlur={actions.onBlurfinanceCDData}
+                    onKeyDown={actions.onKeyDownEnterFin}
                   />
                   <FaRegListAlt
                     className="FFInputIconStyle"
                     size={20}
-                    onClick={liquorCDModalButton}
+                    onClick={actions.liquorCDModalButton}
                   />
                 </div>
               </td>
@@ -474,10 +472,13 @@ const GtradeInfoBox = ({ register, errors, state, actions }) => {
           tr_CD={state.tr_CD}
         />
       )}
-      {liquorCDModal && (
+      {state.liquorCDModal && (
         <LiquorcodeModal
-          onChangeModalClose={liquorCDModalButton}
-          setState={setLiquorCDData}
+          onChangeModalClose={actions.liquorCDModalButton}
+          setState={state.setLiquorCDData}
+          setValue={setValue}
+          setLiquorCDChangeData={state.setLiquorCDChangeData}
+          setChangeFormData={state.setChangeFormData}
         />
       )}
     </>

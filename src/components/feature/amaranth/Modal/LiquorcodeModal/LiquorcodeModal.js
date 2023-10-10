@@ -10,7 +10,13 @@ import EventButton from '../../../../common/button/EventButton';
 import SelectBox from '../../../../common/box/SelectBox';
 import WhiteButton from '../../../../common/button/WhiteButton';
 
-const LiquorcodeModal = ({ onChangeModalClose, setState }) => {
+const LiquorcodeModal = ({
+  onChangeModalClose,
+  setState,
+  setLiquorCDChangeData,
+  setValue,
+  setChangeFormData,
+}) => {
   const { register, getValues } = useForm({
     mode: 'onChange',
   });
@@ -61,7 +67,16 @@ const LiquorcodeModal = ({ onChangeModalClose, setState }) => {
       var jsonData = dataProvider.getJsonRow(current.itemIndex);
       const row = { liq_CD: jsonData.liq_CD, wholesale: jsonData.wholesale };
 
-      setState(row);
+      setLiquorCDChangeData(financeCDChangeData => ({
+        ...financeCDChangeData,
+        liq_CD: jsonData.liq_CD,
+      }));
+      setChangeFormData(changeFormData => ({
+        ...changeFormData,
+        liq_CD: jsonData.liq_CD,
+      }));
+
+      setValue('bank_CD', `${row?.liq_CD}. ${row?.wholesale}`);
       onChangeModalClose();
     };
 

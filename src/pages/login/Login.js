@@ -26,7 +26,9 @@ const Login = () => {
         if (res.headers['authorization'] != null) {
           setAccessToken(res.headers['authorization']);
         }
-        await axiosInstance('common/page/mainSidebarList').then(res => {
+        await axiosInstance('common/page/mainSidebarList', {
+          params: { USERNAME: data.username },
+        }).then(res => {
           localStorage.setItem('mainSidebar', JSON.stringify(res.data));
         });
         localStorage.setItem('menu', 'Home');

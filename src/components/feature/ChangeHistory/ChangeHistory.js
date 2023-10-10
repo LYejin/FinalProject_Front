@@ -37,6 +37,7 @@ const ChangeHistory = ({
   //   setreqCASH_CD,
   CATEGORY,
   layout,
+  columnLabels,
   setChangeHistoryGrid,
   changeHistoryGrid,
   setTotalPage,
@@ -187,10 +188,6 @@ const ChangeHistory = ({
         label: '엑셀 내보내기',
         tag: 'excelExport',
       },
-      {
-        label: '엑셀 가져오기',
-        tag: 'excelImport',
-      },
     ]);
 
     // // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
@@ -289,7 +286,7 @@ const ChangeHistory = ({
             ModalOpenDetaillButton={ModalOpenDetaillButton}
             searchDetailLow={searchDetailLow}
             layout={changeHistoryDetailCLayout}
-            columnLabels={workplaceLabels}
+            columnLabels={columnLabels}
           />
         </Modal>
       )}
