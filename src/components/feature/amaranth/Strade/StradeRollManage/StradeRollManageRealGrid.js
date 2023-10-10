@@ -12,6 +12,7 @@ import EmpCodeHelpModal from '../../Modal/EmpCodeHelpModal/EmpCodeHelpModal';
 import DeptCodeHelpModal from '../../Modal/DeptCodeHelpModal/DeptCodeHelpModal';
 import Swal from 'sweetalert2';
 import { getNowJoinTime } from '../../../../../util/time';
+import FundTypeModel from '../../fundType/model/FundTypeModel';
 
 const StradeRollManageRealGrid = ({
   tr_CD,
@@ -33,6 +34,7 @@ const StradeRollManageRealGrid = ({
   const [bottomButtonClick, setBottomButtonClick] = useState(false); // gridView 저장
   const realgridElement = useRef(null);
   // RealGrid 컨테이너 엘리먼트를 참조합니다.
+  const { excelExport } = FundTypeModel();
 
   // 모달창 Close
   const onChangeModalClose = () => {
@@ -517,6 +519,46 @@ const StradeRollManageRealGrid = ({
           }, 30);
           gridView.commit();
         }
+      }
+    };
+
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
+
+    //우클릭 시 그리드에 메뉴창 띄우기 여부 설정
+    gridView.setContextMenu();
+    //그리드에 컨텍스트 메뉴를 생성해줍니다
+    gridView.setContextMenu([
+      {
+        label: '엑셀 내보내기',
+        tag: 'excelExport',
+      },
+    ]);
+    // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
+    gridView.onContextMenuItemClicked = function (grid, item, clickData) {
+      //handleXlsFile; excelExport excelImport
+      if (item.tag === 'excelExport') {
+        excelExport(grid, '거래처 조회권한 엑셀');
+      }
+    };
+    // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.
+    gridView.onContextMenuPopup = function (grid, x, y, elementName) {
+      if (elementName.cellType === 'data') {
+        // 데이터 셀에서 컨텍스트 메뉴 팝업을 엽니다.
+        //setDataCellContextMenu(grid);
+      } else {
+        return false;
       }
     };
 

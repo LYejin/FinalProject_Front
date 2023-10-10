@@ -21,6 +21,13 @@ import EmpSelectBox from '../../components/feature/amaranth/employee/EmpSelectBo
 import EmpCheckSelectBox from '../../components/feature/amaranth/employee/EmpCheckSelectBox';
 import EmployeeModel from '../../model/EmployeeModel';
 import DeptModalInEmp from '../../components/feature/amaranth/Modal/DeptModalInEmp';
+import ChangeHistoryModal from '../../components/common/modal/ChangeHistoryModal';
+import {
+  comPanyChangeHistoryLayout,
+  companyLabels,
+  empAndWorkChangeHistoryLayout,
+  employeeLabels,
+} from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
 
 const EmployeePage = () => {
   const {
@@ -54,7 +61,16 @@ const EmployeePage = () => {
       <CommonLayout>
         <MainTitle mainTitle={'시스템 설정'} />
         <ContentWrapper>
-          <Title titleName={'상용직관리'}></Title>
+          <Title titleName={'상용직관리'}>
+            {' '}
+            <button
+              type="button"
+              className="changeHistoryWhiteButton"
+              onClick={() => actions.ModalOpenButton()}
+            >
+              변경이력
+            </button>
+          </Title>
           <DetailContentWrapper>
             <SelectBoxWrapper width="1150px">
               <span className="rightSelectBoxPadding">회사</span>
@@ -101,6 +117,7 @@ const EmployeePage = () => {
                 <form
                   onSubmit={handleSubmit(actions.onSubmit)}
                   onChange={actions.onChangeFunction}
+                  onKeyDown={e => actions.onKeyDownEmp(e)}
                 >
                   <div className="tableHeader">
                     <div className="defaultTitle">기본정보</div>
@@ -163,6 +180,15 @@ const EmployeePage = () => {
             setSelectedDivNm={state.setSelectedDivNm}
             selectedDeptCd={state.selectedDeptCd}
             selectedDivCd={state.selectedDivCd}
+          />
+        )}
+        {state.changeHistoryOpenPost && (
+          <ChangeHistoryModal
+            CATEGORY={state.CATEGORY.current}
+            changeHistoryOpenPost={state.changeHistoryOpenPost}
+            setChangeHistoryOpenPost={state.setChangeHistoryOpenPost}
+            layout={empAndWorkChangeHistoryLayout}
+            columnLabels={employeeLabels}
           />
         )}
       </CommonLayout>

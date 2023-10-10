@@ -62,7 +62,7 @@ const GtradePage = () => {
                     <input
                       type="text"
                       className="textInputBox"
-                      {...register('select_TR_CD')}
+                      {...register('select_TR_CDG')}
                     />
                     <span className="rightSelectBoxPaddingGtrade">
                       거래처명
@@ -70,7 +70,7 @@ const GtradePage = () => {
                     <input
                       type="text"
                       className="textInputBox"
-                      {...register('select_TR_NM')}
+                      {...register('select_TR_NMG')}
                     />
                     <span className="rightSelectBoxPaddingGtradeREG">
                       사업자등록번호
@@ -78,7 +78,7 @@ const GtradePage = () => {
                     <input
                       type="text"
                       className="textInputBox"
-                      {...register('select_REG_NB')}
+                      {...register('select_REG_NBG')}
                     />
                   </div>
                   <div className="selectTop2">
@@ -88,7 +88,7 @@ const GtradePage = () => {
                     <input
                       type="text"
                       className="textInputBox"
-                      {...register('select_PPL_NB')}
+                      {...register('select_PPL_NBG')}
                     />
                     <span className="rightSelectBoxPaddingGtrade">
                       사용여부
