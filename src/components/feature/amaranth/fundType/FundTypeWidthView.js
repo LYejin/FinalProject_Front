@@ -115,23 +115,13 @@ const FundTypeWidthView = ({
         label: '엑셀 내보내기',
         tag: 'excelExport',
       },
-      {
-        label: '엑셀 가져오기',
-        tag: 'excelImport',
-      },
     ]);
 
     // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
     grid.onContextMenuItemClicked = function (grid, item, clickData) {
       //handleXlsFile; excelExport excelImport
       if (item.tag === 'excelExport') {
-        excelExport(grid);
-      } else if (item.tag === 'excelImport') {
-        setMenuGrid(prveData => ({
-          ...prveData,
-          grid: grid,
-        }));
-        handleFileInputClick(grid);
+        excelExport(grid, '자금종목(계층형)');
       }
     };
     // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.

@@ -33,6 +33,7 @@ import ChangeHistory from '../../components/feature/ChangeHistory/ChangeHistory'
 import Modal from '../../components/common/modal/Modal';
 import {
   comPanyChangeHistoryLayout,
+  companyLabels,
   empAndWorkChangeHistoryLayout,
 } from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
 import ChangeHistorySelectCategory from '../../components/feature/ChangeHistory/box/ChangeHistorySelectCategory';
@@ -49,6 +50,7 @@ import SubmitButton from '../../components/common/button/SubmitButton';
 import { isAfter } from 'date-fns';
 
 import { useRef } from 'react';
+import ChangeHistoryModal from '../../components/common/modal/ChangeHistoryModal';
 
 const CompanyPage = () => {
   const {
@@ -90,8 +92,10 @@ const CompanyPage = () => {
   const [companyList, setCompanyList] = useState([]); // select box 내 company list
 
   const listRef = useRef(null); // list 화면 상하단 이동
+  const [insertCheck, setInsertCheck] = useState(null);
+
   const [dateRange, setDateRange] = useState([]);
-  const CATEGORY = useRef('사업장');
+  const CATEGORY = useRef('회사');
 
   const [endStartDate, setEndStartDate] = useState(null);
   const [endEndDate, setEndEndDate] = useState(null);
@@ -203,13 +207,19 @@ const CompanyPage = () => {
 
   const editBtnClickHeander = () => {
     if (editBtn?.current) {
+      console.log('수정버튼(타냐1?)');
       editBtn?.current.click();
+    } else if (formData?.co_CD === '') {
+      console.log('수정버튼(타냐2?)');
     }
+    console.log('수정버튼', formData);
   };
   const saveBtnClickHeander = () => {
     if (saveBtn?.current) {
+      console.log('저장버튼(타냐1?)', formData);
       saveBtn?.current.click();
     }
+    console.log('저장버튼(타냐2?)', formData);
   };
   const removeBtnClickHeander = () => {
     if (removeBtn?.current) {
@@ -269,7 +279,7 @@ const CompanyPage = () => {
             <RightContentWrapper>
               <DetailTitle detailTitle={'기본정보'}>
                 <div className="button-container">
-                  {formData?.co_CD !== '' && formData ? (
+                  {(formData?.co_CD !== '' && formData) || insertCheck ? (
                     <div>
                       <button
                         ref={editBtn}
@@ -309,6 +319,8 @@ const CompanyPage = () => {
                 <CompanyInputBox
                   formData={formData}
                   formDataSet={formDataSet}
+                  setInsertCheck={setInsertCheck}
+                  insertCheck={insertCheck}
                   ch_listData={ch_listData}
                   ch_listDataSet={ch_listDataSet}
                   saveBtn={saveBtn}
@@ -320,7 +332,7 @@ const CompanyPage = () => {
           </MainContentWrapper>
         </DetailContentWrapper>
       </ContentWrapper>
-      {changeHistoryOpenPost && (
+      {/* {changeHistoryOpenPost && (
         <Modal
           width={'1300px'}
           height={'600px'}
@@ -436,7 +448,7 @@ const CompanyPage = () => {
           <ChangeHistory
             onChangeModalClose={onChangeModalClose}
             CATEGORY={CATEGORY.current}
-            layout={empAndWorkChangeHistoryLayout}
+            layout={comPanyChangeHistoryLayout}
             setChangeHistoryGrid={setChangeHistoryGrid}
             changeHistoryGrid={changeHistoryGrid}
             setTotalPage={setTotalPage}
@@ -453,6 +465,15 @@ const CompanyPage = () => {
             onChange={handlePageChange}
           />
         </Modal>
+      )} */}
+      {changeHistoryOpenPost && (
+        <ChangeHistoryModal
+          CATEGORY={CATEGORY.current}
+          changeHistoryOpenPost={changeHistoryOpenPost}
+          setChangeHistoryOpenPost={setChangeHistoryOpenPost}
+          layout={comPanyChangeHistoryLayout}
+          columnLabels={companyLabels}
+        />
       )}
     </div>
   );

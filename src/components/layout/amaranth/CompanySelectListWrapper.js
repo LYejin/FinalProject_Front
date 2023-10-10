@@ -11,6 +11,7 @@ const CompanySelectListWrapper = ({
   data,
   formData,
   formDataSet,
+  insertCheck,
   ch_listData,
   ch_listDataSet,
   listData,
@@ -34,26 +35,15 @@ const CompanySelectListWrapper = ({
       setClickedBoxID(listData[0]?.co_CD);
     }
   }, [listData]);
+  React.useEffect(() => {
+    searchCompanyOnClick();
+  }, []); ///wjnfnowevoinweinovwionveionion
 
-  const asyncRequest = async (url, methodType, data, headers) => {
-    const cookies = document.cookie;
-    const token = cookies.split('=')[1];
-    try {
-      const response = await axios({
-        method: methodType,
-        url: url,
-        data: data,
-        withCredentials: true,
-        headers: { Authorization: token },
-      });
-      console.log(response.data);
+  React.useEffect(() => {
+    reSetCompanyList();
+    console.log('리스트 리셋');
+  }, [insertCheck]);
 
-      return response;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
   const clickEmp = async (co_CD, focusElement) => {
     console.log('검증확인', ch_listData, co_CD, formData.co_CD, focusElement);
     const empData = '';
@@ -99,18 +89,36 @@ const CompanySelectListWrapper = ({
     }
   };
 
+  const reSetCompanyList = async () => {
+    console.log('adivndnkvskndvknsdvnklsd');
+    try {
+      const response = await authAxiosInstance.post(
+        'system/admin/groupManage/CompanySelect'
+      );
+
+      if (response.data) {
+        listDataSet(response.data);
+        listCountSet(response.data.length);
+      }
+    } catch (error) {
+      if (error !== '') {
+        listDataSet();
+        formDataSet(reSetData.current);
+        listCountSet(0);
+      }
+    }
+  };
+
   const clickAddBtn = () => {
     console.log('안녕'.formData);
     setClickedBoxID('');
     ch_listDataSet(0);
+    formDataSet();
     formDataSet(prevFormData => ({
       ...prevFormData,
       ...reSetData.current,
     }));
   };
-  React.useEffect(() => {
-    searchCompanyOnClick();
-  }, []);
 
   return (
     <div style={selectListWrapper}>
