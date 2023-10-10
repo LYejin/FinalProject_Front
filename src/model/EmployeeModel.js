@@ -57,7 +57,20 @@ const EmployeeModel = ({
   const [deptAndDivData, setDeptAndDivData] = useState('');
   const [deptAndDivDataChangeYN, setDeptAndDivDataChangeYN] = useState(false);
 
+  // 변경이력
+  const [changeHistoryOpenPost, setChangeHistoryOpenPost] = useState(false);
+  const [endStartDate, setEndStartDate] = useState(null);
+  const [endEndDate, setEndEndDate] = useState(null);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+  const CATEGORY = useRef('사원');
   console.log('--------------', selectedDeptCd);
+
+  const ModalOpenButton = () => {
+    setChangeHistoryOpenPost(!changeHistoryOpenPost);
+    setIsEndOpen(false);
+    setEndStartDate();
+    setEndEndDate();
+  };
 
   const onKeyDownEmp = e => {
     if (e.key === 'Insert') {
@@ -756,6 +769,9 @@ const EmployeeModel = ({
   // console.log('@@@@@@@@@@@@@@@@@@@@@@', company);
 
   const state = {
+    CATEGORY,
+    setChangeHistoryOpenPost,
+    changeHistoryOpenPost,
     deptAndDivData,
     setDeptAndDivData,
     setSelectedDeptCd,
@@ -828,6 +844,7 @@ const EmployeeModel = ({
   };
 
   const actions = {
+    ModalOpenButton,
     onKeyDownEmp,
     onChangeDeptAndDiv,
     onChangeOpenDeptModal,
