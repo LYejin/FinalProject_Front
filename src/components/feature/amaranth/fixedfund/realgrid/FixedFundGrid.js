@@ -17,6 +17,7 @@ function FixedFundGrid({
   isOpenCash,
   setInputFixedCashCD,
   setChartShow,
+  excelExport,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -225,6 +226,30 @@ function FixedFundGrid({
       grid: grid,
       provider: provider,
     }));
+
+    //그리드에 컨텍스트 메뉴를 생성해줍니다
+    grid.setContextMenu([
+      {
+        label: '엑셀 내보내기',
+        tag: 'excelExport',
+      },
+    ]);
+    // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
+    grid.onContextMenuItemClicked = function (grid, item, clickData) {
+      //handleXlsFile; excelExport excelImport
+      if (item.tag === 'excelExport') {
+        excelExport(grid, '고정자금');
+      }
+    };
+    // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.
+    grid.onContextMenuPopup = function (grid, x, y, elementName) {
+      if (elementName.cellType === 'data') {
+        // 데이터 셀에서 컨텍스트 메뉴 팝업을 엽니다.
+        //setDataCellContextMenu(grid);
+      } else {
+        return false;
+      }
+    };
 
     // 행 추가,삽입 옵션을 설정합니다.
     grid.setEditOptions({

@@ -99,6 +99,7 @@ const FixedFundPage = () => {
     setSearchGrid,
     setMenuGrid,
     inputData,
+    excelExport,
   } = FundTypeModel();
 
   const onSearchGridSubmit = async SearchData => {
@@ -200,6 +201,7 @@ const FixedFundPage = () => {
                   isOpenCash={isOpenCash}
                   setInputFixedCashCD={setInputFixedCashCD}
                   setChartShow={setChartShow}
+                  excelExport={excelExport}
                 />
                 {chartShow && (
                   <FixedChartBox
