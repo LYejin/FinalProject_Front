@@ -76,7 +76,7 @@ const LiquorcodeModal = ({
         liq_CD: jsonData.liq_CD,
       }));
 
-      setValue('bank_CD', `${row?.liq_CD}. ${row?.wholesale}`);
+      setValue('liq_CD', `${row?.liq_CD}. ${row?.wholesale}`);
       onChangeModalClose();
     };
 
@@ -97,6 +97,20 @@ const LiquorcodeModal = ({
 
     //그리드 푸터 생성 비활성화
     gridView.setFooter({ visible: false });
+
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
 
     //입력 비활성화
     gridView.columnByName('liq_CD').editable = false;

@@ -109,7 +109,7 @@ const ChangeHistoryModal = ({
   };
 
   const onMasterGridSubmit = async data => {
-    data.CH_CATEGORY = CATEGORY.current;
+    data.CH_CATEGORY = CATEGORY;
     console.log('companySelect', companySelect);
     if (endStart !== undefined && endEnd !== undefined) {
       data.startDate = endStart;

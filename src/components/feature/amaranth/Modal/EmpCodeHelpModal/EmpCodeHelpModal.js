@@ -122,6 +122,20 @@ const EmpCodeHelpModal = ({
     //그리드 푸터 생성 비활성화
     gridView.setFooter({ visible: false });
 
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
+
     //입력 비활성화
     gridView.columnByName('emp_CD').editable = false;
     gridView.columnByName('kor_NM').editable = false;

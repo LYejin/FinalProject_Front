@@ -58,7 +58,7 @@ const DeptInEmpModal = ({
     <>
       <div style={modalBox}>
         <button style={closeButtonStyle} onClick={onClickCloseButton}>
-          X
+          <i className="fa-solid fa-xmark"></i>
         </button>
         <div className="topModalWrapper2">
           <Title titleName={title} />
