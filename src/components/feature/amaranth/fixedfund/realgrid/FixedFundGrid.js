@@ -16,11 +16,23 @@ function FixedFundGrid({
   setHandleDeleteRows,
   isOpenCash,
   setInputFixedCashCD,
+  setChartShow,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력 값 관리를 위한 state
+  const [gridHeight, setGridHeight] = useState('600px');
   const realgridElement = useRef(null);
+
+  const toggleGridHeight = () => {
+    if (gridHeight === '200px') {
+      setGridHeight('600px');
+      setChartShow(false);
+    } else {
+      setGridHeight('200px');
+      setChartShow(true);
+    }
+  };
 
   const queryParams = new URLSearchParams();
 
@@ -463,10 +475,13 @@ function FixedFundGrid({
           marginTop: -50,
           display: 'flex',
           justifyContent: 'flex-end',
-          width: 100,
+          width: 500,
           height: 30,
         }}
       >
+        <button className="NewBlueChartButton" onClick={toggleGridHeight}>
+          기간별 차트확인
+        </button>
         <button className="WhiteButton" onClick={handleDeleteRows}>
           행 삭제
         </button>
@@ -474,10 +489,11 @@ function FixedFundGrid({
       <div
         ref={realgridElement}
         style={{
-          height: '300px',
+          height: gridHeight,
           width: '100%',
           margin: '0 auto',
           borderTop: '1.5px solid #555',
+          transition: 'height 0.6s ease-in-out', // 애니메이션 효과 추가
         }}
       ></div>
     </div>

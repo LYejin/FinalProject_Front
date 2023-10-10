@@ -21,7 +21,11 @@ import FundTypeSearch from '../../feature/amaranth/fundType/FundTypeSearch';
 import { useForm } from 'react-hook-form';
 import { ko } from 'date-fns/esm/locale';
 
-const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
+const FixedFundSelectBoxWrapper = ({
+  onValuesChange,
+  onChangeFunction,
+  setSelectedDivCd,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false); //거래처 모달 State
   const [isOpenCash, setIsOpenCash] = useState(false); //자금과목 모달 State
@@ -173,6 +177,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
     if (divCode !== null && !hasSent.current) {
       // divCode가 초기값(null)이 아니고, 아직 sendValuesToParent를 호출하지 않았을 때
       sendValuesToParent();
+      setSelectedDivCd(divCode);
       hasSent.current = true; // 함수를 호출했으므로 flag를 true로 설정
     }
   }, [divCode]);
@@ -285,6 +290,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
       endStart,
       endEnd,
     });
+    setSelectedDivCd(divCode);
     onValuesChange({
       divCode,
       cashCode,
