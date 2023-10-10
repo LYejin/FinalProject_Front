@@ -34,6 +34,11 @@ import { useFetcher } from '../../../node_modules/react-router-dom/dist/index';
 import Modal from '../../components/common/modal/Modal';
 import DaumPostcode from 'react-daum-postcode';
 import { authAxiosInstance } from '../../axios/axiosInstance';
+import ChangeHistoryModal from '../../components/common/modal/ChangeHistoryModal';
+import {
+  empAndWorkChangeHistoryLayout,
+  workplaceLabels,
+} from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
 
 const WorkplacePage = () => {
   const [companyData, setCompanyData] = useState([]);
@@ -53,6 +58,8 @@ const WorkplacePage = () => {
   const [showUploadDiv, setShowUploadDiv] = useState(true);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [inputDivValue, setInputDivValue] = useState('');
+  const [changeHistoryOpenPost, setChangeHistoryOpenPost] = useState(false);
+  const CATEGORY = useRef('사업장');
 
   // 이미지 선택 시 실행되는 함수
   const handleImageSelect = imageData => {
@@ -466,6 +473,10 @@ const WorkplacePage = () => {
     return hasError;
   };
 
+  const ModalOpenButton = () => {
+    setChangeHistoryOpenPost(!changeHistoryOpenPost);
+  };
+
   return (
     <div className="sb-nav-fixed">
       <Header />
@@ -473,7 +484,15 @@ const WorkplacePage = () => {
       <Sidebar />
       <MainTitle mainTitle={'시스템 설정'} />
       <ContentWrapper>
-        <Title titleName={'사업장관리'}></Title>
+        <Title titleName={'사업장관리'}>
+          <button
+            type="button"
+            className="changeHistoryWhiteButton"
+            onClick={() => ModalOpenButton()}
+          >
+            변경이력
+          </button>
+        </Title>
         <DetailContentWrapper>
           <WorkpSelectBoxWrapper>
             <CompSelectBox
@@ -565,6 +584,15 @@ const WorkplacePage = () => {
           <DaumPostcode autoClose onComplete={onCompletePost} />
         </Modal>
       ) : null}
+      {changeHistoryOpenPost && (
+        <ChangeHistoryModal
+          CATEGORY={CATEGORY.current}
+          changeHistoryOpenPost={changeHistoryOpenPost}
+          setChangeHistoryOpenPost={setChangeHistoryOpenPost}
+          layout={empAndWorkChangeHistoryLayout}
+          columnLabels={workplaceLabels}
+        />
+      )}
     </div>
   );
 };
