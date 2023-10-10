@@ -3,6 +3,7 @@ import { authAxiosInstance } from '../../../../../axios/axiosInstance';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 const FundTypeModel = () => {
   const [CASH_CD, setCASH_CD] = useState();
   const [LEVEL_CD, setLEVEL_CD] = useState();

@@ -24,6 +24,9 @@ import CompanyNameSelect from './companyName/CompanyNameSelect';
 
 const CompanyInputBox = ({
   formData,
+  formDataSet,
+  insertCheck,
+  setInsertCheck,
   ch_listData,
   ch_listDataSet,
   saveBtn,
@@ -69,12 +72,12 @@ const CompanyInputBox = ({
 
   const regexPatterns = {
     CO_CD: [/^\d{4}$/, '4자리 숫자로 입력하세요'],
-    CO_NM: [/^.{1,17}$/, '10자리 이내로 입력하세요'],
+    CO_NM: [/^.{1,30}$/, '회사명이 너무 깁니다.'],
     CO_NMK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     BUSINESS: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     JONGMOK: [/^.{1,10}$/, '10자리 이내로 입력하세요'],
     REG_NB: [/^\d{3}-\d{2}-\d{5}$/, '형식에 맞춰서 입력하세요'],
-    CEO_NM: [/^[가-힣A-Za-z]{2,10}$/, '3~10자리 이내로 입력하세요'],
+    CEO_NM: [/^[가-힣A-Za-z]{2,10}$/, '2~10자리 이내로 입력하세요'],
     HO_FAX: [/^\d{3}-\d{3}-\d{4}$/, '형식에 맞춰 입력하세요'],
     CEO_TEL: [/^0\d{2}-\d{3,4}-\d{4}$/, '전화번호 형식에 맞게 입력하세요'],
     PPL_NB: [
@@ -116,9 +119,25 @@ const CompanyInputBox = ({
 
   React.useEffect(() => {
     if (formData) {
-      console.log('마운틴', formData);
+      console.log(
+        '마운틴',
+        formData,
+        '서버',
+        formData.pic_FILE_ID,
+        '아닌',
+        formData.PIC_FILE_ID,
+        formData?.pic_FILE_ID?.includes('data:image'),
+        formData?.PIC_FILE_ID?.includes('data:image')
+      );
 
-      setSelectedImage(formData.pic_FILE_ID);
+      // if (formData?.pic_FILE_ID) {
+      //   console.log('타냐?(서버(');
+      //   setSelectedImage(formData.pic_FILE_ID);
+      // }
+      // if (formData?.PIC_FILE_ID) {
+      //   console.log('타냐?(아닌(');
+      //   setSelectedImage(formData.PIC_FILE_ID);
+      // }
 
       setChFormData();
       console.log(
@@ -130,7 +149,7 @@ const CompanyInputBox = ({
       );
       setChFormData(prevChFormData => ({
         ...prevChFormData,
-        CO_CD: formData.co_CD,
+        CO_CD: formData.co_CD ? formData.co_CD : formData.CO_CD,
       }));
       console.log('??????????', ch_formData);
 
@@ -141,13 +160,17 @@ const CompanyInputBox = ({
           hyphenation(up_FormData[uppercaseKey], uppercaseKey);
         } else if (!transformColme.includes(uppercaseKey)) {
           setValue(uppercaseKey, up_FormData[uppercaseKey]);
+          if (uppercaseKey === 'PIC_FILE_ID') {
+            setSelectedImage(up_FormData.PIC_FILE_ID);
+          }
         }
       }
+
       console.log('qudrud', up_FormData);
       console.log('에러', dupError);
 
       setSelectedDate(getValues()); //
-
+      setInsertCheck();
       clearErrors();
     }
   }, [formData]);
@@ -297,7 +320,7 @@ const CompanyInputBox = ({
     setValue('CO_FG', '법인');
   };
   const handleOverlayClick = e => {
-    e.stopPropagation(); // 이벤트 전파 중단
+    e.stopPropagation(); // 이벤트 전파 중단ChFormData
   };
   // 우편번호 검색 시 처리
   const onCompletePost = data => {
@@ -333,7 +356,12 @@ const CompanyInputBox = ({
     }
   };
   const handleImageRemove = () => {
-    setSelectedImage();
+    setSelectedImage('');
+    setValue('PIC_FILE_ID', '');
+    setChFormData(prevChFormData => ({
+      ...prevChFormData,
+      PIC_FILE_ID: 'none',
+    }));
   };
 
   const onSubmit = async (empdata, e) => {
@@ -356,6 +384,7 @@ const CompanyInputBox = ({
         if (selectedImage) {
           const imageByteArray = selectedImage;
           console.log('이미지', imageByteArray);
+          empdata.PIC_FILE_ID = imageByteArray;
           n_formData.append('PIC_FILE_ID', imageByteArray);
         }
 
@@ -377,9 +406,20 @@ const CompanyInputBox = ({
             showConfirmButton: false,
             timer: 1200,
           });
-          console.log('인풋', companyCodeInput.current);
+          console.log('인풋', empdata);
           //companyCodeInput.current.readOnly = true;
         }
+        ch_listDataSet(0);
+        setInsertCheck(true);
+        formDataSet();
+        formDataSet(prevFormData => ({
+          ...prevFormData,
+          ...empdata,
+        }));
+        // formDataSet(prevFormData => ({
+        //   ...prevFormData,
+        //   ...n_formData,
+        // }));
         console.log('전달된:', response.data);
       } catch (error) {
         console.error('데이터 전송 실패:', error);
@@ -616,7 +656,9 @@ const CompanyInputBox = ({
       console.log(
         '변경(확인)',
         key,
+        '1',
         obj1[key],
+        '2',
         obj2[key],
         obj1[key] !== obj2[key]
       );
@@ -647,8 +689,11 @@ const CompanyInputBox = ({
     console.log(
       '변경!!!!!!!!!!!!',
       ch_formData,
+      'ㄴㅇㄴㅇㄹㄴㅇㄹ',
       formData,
+      'ㄴㅇㄴㅇㄹㄴㅇㄹ',
       getValues(),
+      'ㅇㄹㄴㅇㄹㄴㅇㄹㄴㅇㄹ',
       checkFormData,
       up_FormData,
       selectedImage,
@@ -685,6 +730,10 @@ const CompanyInputBox = ({
               timer: 1200,
             });
           }
+          formDataSet(prevFormData => ({
+            ...prevFormData,
+            ...checkFormData,
+          }));
         } catch (error) {
           console.log(error);
           Swal.fire({
@@ -709,6 +758,7 @@ const CompanyInputBox = ({
         }
       }
     } else {
+      console.log('수정여부 확인@!!!!!');
       ch_listDataSet(0);
       Swal.fire({
         position: 'center',
@@ -739,6 +789,8 @@ const CompanyInputBox = ({
           showConfirmButton: false,
           timer: 1200,
         });
+        ch_listDataSet(0);
+        console.log('삭제검사', getValues());
       } catch (error) {
         console.log(error);
         Swal.fire({
