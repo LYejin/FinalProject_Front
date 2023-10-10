@@ -19,7 +19,9 @@ const LoginMainPage = () => {
         <img src={MainLogo} alt="Main Logo" className="logo" />
       </div>
       <div className="centerContent">
-        <div className="title">Amaranth 10</div>
+        <div className="title">
+          Amaranth <span className="numberText">10</span>
+        </div>
         <div className="subtitle">
           기업의 지속가능한 성장을 위해 디지털 혁신을 완성한다
         </div>
