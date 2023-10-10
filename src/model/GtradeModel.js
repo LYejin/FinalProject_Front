@@ -104,11 +104,13 @@ const GtradeModel = ({
   // radio
   const handleRadioChange = e => {
     setSelectedRadioValue(e.target.value);
-    setValue('tr_CD', '');
     setChangeFormData(changeFormData => ({
       ...changeFormData,
       [e.target.name]: e.target.value,
     }));
+    setValue('tr_CD', '');
+    clearErrors();
+    console.log(e.target.value);
   };
 
   // 개업일 선택 시 처리 함수
@@ -172,7 +174,7 @@ const GtradeModel = ({
   useEffect(() => {
     getEmpList();
     setChangeForm(false);
-  }, []);
+  }, [isAllChecked]);
 
   // click 시 사원 정보 가져오기 이벤트
   const onClickDetailSGtradeInfo = async tr_CD => {
@@ -231,8 +233,8 @@ const GtradeModel = ({
           setIsLoading(false);
           setTR_CD(response.data?.tr_CD);
           setUseYN(response.data?.use_YN);
-          response.data.home_TEL &&
-            setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+          response.data.phone_NB &&
+            setValue('phone_NB', onChangePhoneNumber(response.data?.phone_NB));
           response.data.tel &&
             setValue('tel', onChangePhoneNumber(response.data?.tel));
         } else if (result.isDenied) {
@@ -285,8 +287,8 @@ const GtradeModel = ({
       setIsLoading(false);
       setTR_CD(response.data?.tr_CD);
       setUseYN(response.data?.use_YN);
-      response.data.home_TEL &&
-        setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
+      response.data.phone_NB &&
+        setValue('phone_NB', onChangePhoneNumber(response.data?.phone_NB));
       response.data.tel &&
         setValue('tel', onChangePhoneNumber(response.data?.tel));
     }
@@ -294,23 +296,25 @@ const GtradeModel = ({
 
   // 조건 검색 버튼
   const onClickSearchEmpList = () => {
-    const { select_TR_CD, select_TR_NM, select_REG_NB, select_PPL_NB } =
+    const { select_TR_CDG, select_TR_NMG, select_REG_NBG, select_PPL_NBG } =
       getValues();
+    console.log(select_TR_CDG, select_TR_NMG, select_PPL_NBG, selectUseYN);
+
     const params = {};
 
-    if (select_TR_CD !== '') {
-      params.TR_CD = select_TR_CD;
+    if (select_TR_CDG !== '' && select_TR_CDG !== undefined) {
+      params.TR_CD = select_TR_CDG;
     }
-    if (select_TR_NM !== '') {
-      params.TR_NM = select_TR_NM;
+    if (select_TR_NMG !== '' && select_TR_NMG !== undefined) {
+      params.TR_NM = select_TR_NMG;
     }
-    if (select_REG_NB !== '') {
-      params.REG_NB = select_REG_NB;
+    if (select_REG_NBG !== '' && select_REG_NBG !== undefined) {
+      params.REG_NB = select_REG_NBG;
     }
-    if (select_PPL_NB !== '') {
-      params.PPL_NB = select_PPL_NB;
+    if (select_PPL_NBG !== '' && select_PPL_NBG !== undefined) {
+      params.PPL_NB = select_PPL_NBG;
     }
-    if (selectUseYN !== '') {
+    if (selectUseYN !== '' && selectUseYN !== undefined) {
       params.USE_YN = selectUseYN;
     }
 
@@ -340,6 +344,7 @@ const GtradeModel = ({
     setCloseDate();
     setLiquorCDChangeData();
     setLiquorCDModal();
+    setLiquorCDData();
     setValue('reg_NB', '');
     setValue('ppl_NB', '');
     setSelectForYN('0');
@@ -359,18 +364,41 @@ const GtradeModel = ({
     const getEndDT = closeDate ? getNowJoinTime(closeDate) : '';
 
     if (checkDBErrorYN.tr_CD_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '거래처가 중복되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('tr_CD', { message: '거래처가 중복되었습니다.' });
+      setFocus('tr_CD');
       return;
     }
 
     if (checkDBErrorYN.reg_NB_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '형식에 맞춰서 입력하세요..',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('reg_NB', { message: '형식에 맞춰서 입력하세요.' });
       setFocus('reg_NB');
       return;
     }
 
     if (checkDBErrorYN.ppl_NB_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '주민번호 형식에 맞게 입력하세요.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('ppl_NB', { message: '주민번호 형식에 맞게 입력하세요.' });
+      setFocus('ppl_NB');
       return;
     }
 
@@ -383,7 +411,7 @@ const GtradeModel = ({
       Swal.fire({
         position: 'center',
         icon: 'success',
-        title: '일반거래처 정보가 수정되었습니다.',
+        title: '일반거래처가 수정되었습니다.',
         showConfirmButton: false,
         timer: 1000,
       });
@@ -404,15 +432,7 @@ const GtradeModel = ({
       console.log(responseUpdate.data);
       const responseGetList = await authAxiosInstance(
         `accounting/user/Strade/getSGtradeList`
-      ).error(err => {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: '일반거래처 수정이 실패했습니다.',
-          showConfirmButton: false,
-          timer: 1000,
-        });
-      });
+      );
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
@@ -435,7 +455,7 @@ const GtradeModel = ({
       Swal.fire({
         position: 'center',
         icon: 'success',
-        title: '일반 거래처가 추가되었습니다.',
+        title: '일반거래처가 추가되었습니다.',
         showConfirmButton: false,
         timer: 1000,
       });
@@ -464,25 +484,23 @@ const GtradeModel = ({
         liq_CD: liquorCDChangeData?.liq_CD,
       };
 
-      //setCompany(company);
-
       console.log('insert 버튼');
       console.log(userData);
       const response = await authAxiosInstance.post(
         'accounting/user/Strade/stradeInsert',
         userData
       );
-      setData({ ...userData, tr_CD: response.data });
+      setTR_CD(response?.data);
       console.log(response.data);
       setEmpList([
         ...empList,
         {
-          tr_CD: response.data,
+          tr_CD: response?.data,
           tr_NM: data?.tr_NM,
           reg_NB: data?.reg_NB,
         },
       ]);
-      setData({ ...userData, tr_CD: response.data });
+      setData({ ...userData, tr_CD: response?.data, phone_NB: data?.phone_NB });
       reset();
       setChangeForm(false);
       setChangeFormData();
@@ -682,18 +700,17 @@ const GtradeModel = ({
     }
   };
 
+  const removeCheckedHandler = async () => {
+    checkItems.clear();
+    setCheckItems(checkItems);
+    setIsAllChecked(false);
+    setDeleteYN(false);
+  };
+
   // list 삭제 이벤트
   const removeStradelist = async () => {
     if (deleteCheck === 'listDelete') {
-      const response = await authAxiosInstance.delete(
-        'accounting/user/Strade/stradeDelete',
-        {
-          data: { tr_CD: Array.from(checkItems), tr_FG: '1' },
-        }
-      );
-      setDeleteListCount(Array.from(checkItems).length);
-      setDeleteStradeInfo(response.data);
-      Swal.fire({
+      await Swal.fire({
         title: `체크된 데이터 : ${Array.from(checkItems).length}건`,
         text: '체크된 데이터를 모두 삭제하시겠습니까?',
         icon: 'warning',
@@ -702,9 +719,26 @@ const GtradeModel = ({
         cancelButtonColor: '#d33',
         confirmButtonText: '확인',
         cancelButtonText: '취소',
-      }).then(result => {
+      }).then(async result => {
         if (result.isConfirmed) {
+          const response = await authAxiosInstance.delete(
+            'accounting/user/Strade/stradeDelete',
+            {
+              data: { tr_CD: Array.from(checkItems), tr_FG: '1' },
+            }
+          );
+          setDeleteListCount(Array.from(checkItems).length);
           setDeleteListModal(true);
+          setDeleteStradeInfo(response.data);
+          getEmpList();
+          checkItems.clear();
+          setCheckItems(checkItems);
+          setIsAllChecked(false);
+          setDeleteYN(false);
+          // setDeleteListCount(0);
+          if (listRef.current) {
+            listRef.current.scrollTop = 0;
+          }
         }
       });
     } else if (deleteCheck === 'gridDelete') {
@@ -842,6 +876,10 @@ const GtradeModel = ({
       });
     }
   };
+
+  console.log('errors', errors);
+  console.log('changeFormData : ', changeFormData);
+  console.log(checkDBErrorYN);
 
   const state = {
     liquorCDModal,

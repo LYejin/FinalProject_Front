@@ -92,6 +92,15 @@ const Sidebar = () => {
                   >
                     사업장관리
                   </Link>
+                  <Link
+                    className={`nav-linkShow ${
+                      menu === 'Department' && 'activeMenu'
+                    }`}
+                    to="/Department"
+                    onClick={() => onClickMenu('Department')}
+                  >
+                    부서관리
+                  </Link>
                 </nav>
               </div>
               <div

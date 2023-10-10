@@ -101,6 +101,7 @@ const EmployeePage = () => {
                 <form
                   onSubmit={handleSubmit(actions.onSubmit)}
                   onChange={actions.onChangeFunction}
+                  onKeyDown={e => actions.onKeyDownEmp(e)}
                 >
                   <div className="tableHeader">
                     <div className="defaultTitle">기본정보</div>

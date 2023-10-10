@@ -77,7 +77,7 @@ const FtradePage = () => {
               />
               <div className="rightFtradeUSEYN">사용여부</div>
               <SelectBoxUSEYN
-                width={'80px'}
+                width={'100px'}
                 state={state.selectUseYN}
                 setState={state.setSelectUseYN}
                 clickYN={state.clickYN}
@@ -89,6 +89,7 @@ const FtradePage = () => {
               />
               <div className="selectBoxButtonWrapper">
                 <button
+                  type="button"
                   className="FFcustomButton"
                   onClick={actions.onClickSearchEmpList}
                 >

@@ -59,14 +59,22 @@ const EmployeeModel = ({
 
   console.log('--------------', selectedDeptCd);
 
+  const onKeyDownEmp = e => {
+    if (e.key === 'Insert') {
+      onSubmit();
+    }
+    if (e.key === 'Delete' || e.keyCode === 46) {
+      onClickButtonRemoveEmp();
+    }
+  };
+
   // 이미지 삭제
   const handleImageRemove = () => {
     setImgFile();
     setImage();
     setChangeFormData(changeFormData => ({
       ...changeFormData,
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png',
+      pic_FILE_ID: '',
     }));
   };
 
@@ -174,6 +182,7 @@ const EmployeeModel = ({
       setSelectedRadioValue(response.data[0]?.gender_FG);
       setInfoBoxEnrlData(response.data[0]?.enrl_FG);
       setCompany(response.data[0]?.co_CD);
+      setImgFile(response.data[0]?.pic_FILE_ID);
       setDeptAndDivData(
         `${response.data[0]?.div_CD}. ${response.data[0]?.div_NM} / ${response.data[0]?.dept_CD}. ${response.data[0]?.dept_NM}`
       );
@@ -359,7 +368,7 @@ const EmployeeModel = ({
   // 사원 remove 이벤트
   const onClickButtonRemoveEmp = async () => {
     const { enrl_FG } = getValues();
-
+    console.log('jkkkk');
     if (enrl_FG === '2') {
       Swal.fire({
         position: 'center',
@@ -410,12 +419,44 @@ const EmployeeModel = ({
     const getJoinDT = getNowJoinTime(openDate);
     const formData = new FormData();
 
-    checkDBErrorYN.emp_CD_ERROR &&
+    if (checkDBErrorYN.emp_CD_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '사번이 중복되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('emp_CD', { message: '사번이 중복되었습니다.' });
-    checkDBErrorYN.username_ERROR &&
+      setFocus('emp_CD');
+      return;
+    }
+
+    if (checkDBErrorYN.username_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'ID가 중복되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('username', { message: 'ID가 중복되었습니다.' });
-    checkDBErrorYN.email_ADD_ERROR &&
+      setFocus('username');
+      return;
+    }
+
+    if (checkDBErrorYN.email_ADD_ERROR) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'ID가 중복되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       setError('email_ADD', { message: 'ID가 중복되었습니다.' });
+      setFocus('email_ADD');
+      return;
+    }
 
     if (image !== null) {
       formData.append('image', image);
@@ -510,7 +551,7 @@ const EmployeeModel = ({
       };
 
       setUsername(data?.username);
-      setData(userData);
+      setData({ ...userData, home_TEL: data?.home_TEL, tel: data?.tel });
       setWorkplaceSelect(workplaceSelect);
       setCompany(company);
 
@@ -544,7 +585,6 @@ const EmployeeModel = ({
       setEmailPersonalData('');
       setEmailSalaryData('');
       setImgFile();
-      setImgPriviewFile();
       setChangeForm(false);
       setChangeFormData();
       setInsertButtonClick(false);
@@ -651,10 +691,10 @@ const EmployeeModel = ({
       });
     } else if (e.target.name === 'username') {
       ///
-      if (e.target.value === '' || e.target.value === undefined) {
-        setCheckDBErrorYN({ ...checkDBErrorYN, tr_NM_ERROR: true });
-        setError('tr_NM', { message: `거래처명을 입력해주세요.` });
-      }
+      // if (e.target.value === '' || e.target.value === undefined) {
+      //   setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });
+      //   setError('username', { message: `로그인ID를 입력해주세요.` });
+      // }
       params.USERNAME = e.target.value;
       await authAxiosInstance(
         `system/user/groupManage/employee/getUsernameInCompany`,
@@ -782,6 +822,7 @@ const EmployeeModel = ({
   };
 
   const actions = {
+    onKeyDownEmp,
     onChangeDeptAndDiv,
     onChangeOpenDeptModal,
     onChangeOpenPost,
