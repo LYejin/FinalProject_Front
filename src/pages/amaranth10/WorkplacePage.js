@@ -26,6 +26,7 @@ import {
   WorkPlaceInfoWrapper,
   WorkpSelectBoxWrapper,
 } from '../../components/layout/amaranth/Index';
+import _ from 'lodash';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -39,8 +40,22 @@ import {
   empAndWorkChangeHistoryLayout,
   workplaceLabels,
 } from '../../components/feature/ChangeHistory/Realgrid-Data-ChangeHistory';
+import { useForm } from 'react-hook-form';
 
 const WorkplacePage = () => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+    clearErrors,
+    setValue,
+    setError,
+  } = useForm({
+    mode: 'onChange',
+  });
+
   const [companyData, setCompanyData] = useState([]);
   const [workplaceData, setWorkplaceData] = useState([]);
   const [workplaceDetailData, setWorkplaceDetailData] = useState([]);
@@ -58,8 +73,36 @@ const WorkplacePage = () => {
   const [showUploadDiv, setShowUploadDiv] = useState(true);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [inputDivValue, setInputDivValue] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [changeFormData, setChangeFormData] = useState({}); // 변경된 form data
+  const [data, setData] = useState({});
   const [changeHistoryOpenPost, setChangeHistoryOpenPost] = useState(false);
+  const [onChangeForm, setChangeForm] = useState(false); // 폼 변경 사항 확인
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedDivCd, setSelectedDivCd] = useState(null);
+  const [useCoCd, setUseCoCd] = useState('');
+
   const CATEGORY = useRef('사업장');
+
+  const formRef = useRef(null);
+
+  const onChangeFunction = e => {
+    const updatedData = {
+      ...changeFormData,
+      [e.target.name]: e.target.value,
+    };
+    // setChangeFormData(updatedData);
+    setChangeFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+
+    const isChanged = Object.keys(updatedData).some(
+      key => !_.isEqual(data[key], updatedData[key])
+    );
+
+    setChangeForm(isChanged);
+  };
 
   // 이미지 선택 시 실행되는 함수
   const handleImageSelect = imageData => {
@@ -105,7 +148,26 @@ const WorkplacePage = () => {
     setIsOpenPost(!isOpenPost);
   };
 
-  // 우편번호 검색 시 처리
+  //  우편번호 검색 시 처리
+  // const onCompletePost = data => {
+  //   let fullAddr = data.address;
+  //   let extraAddr = '';
+
+  //   if (data.addressType === 'R') {
+  //     if (data.bname !== '') {
+  //       extraAddr += data.bname;
+  //     }
+  //     fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
+  //   }
+
+  //   setAddress(data.zonecode);
+  //   console.log(data.zonecode);
+  //   setAddressDetail(fullAddr);
+  //   console.log(fullAddr);
+  //   setIsOpenPost(false);
+  // };
+
+  //  우편번호 검색 시 처리
   const onCompletePost = data => {
     let fullAddr = data.address;
     let extraAddr = '';
@@ -116,11 +178,32 @@ const WorkplacePage = () => {
       }
       fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
     }
-
+    setChangeForm(true);
     setAddress(data.zonecode);
-    console.log(data.zonecode);
     setAddressDetail(fullAddr);
-    console.log(fullAddr);
+    setData(prevData => ({
+      ...prevData,
+      addr_NUM: '',
+    }));
+
+    setChangeFormData(prevChangeFormData => {
+      const updatedData = {
+        ...prevChangeFormData,
+        addr_CD: data.zonecode,
+        addr: fullAddr,
+      };
+
+      // 비교를 수행하여 setChangeForm 설정
+      const isChanged =
+        prevChangeFormData &&
+        Object.keys(updatedData).some(
+          key => !_.isEqual(prevChangeFormData[key], updatedData[key])
+        );
+      setChangeForm(!isChanged);
+
+      return updatedData;
+    });
+
     setIsOpenPost(false);
   };
 
@@ -129,27 +212,36 @@ const WorkplacePage = () => {
   };
 
   const handleCloseDateChange = date => {
-    setCloseDate(date);
+    if (!date || isNaN(date.getTime())) {
+      setCloseDate(null);
+    } else {
+      setCloseDate(date);
+    }
   };
 
   const onSearchButtonClick = () => {};
 
-  const inputRefs = {
-    divCDRef: useRef(null),
-    divNMRef: useRef(null),
-    addrCDRef: useRef(null),
-    divADDRRef: useRef(null),
-    addrNUMRef: useRef(null),
-    divTELRef: useRef(null),
-    regNBRef: useRef(null),
-    divTOCDRef: useRef(null),
-    divNMKRef: useRef(null),
-    businessRef: useRef(null),
-    jongmokRef: useRef(null),
-    masNMRef: useRef(null),
-    divFAXRef: useRef(null),
-    copNBRef: useRef(null),
-    divYNRef: useRef(null),
+  const resetData = () => {
+    setData({
+      business: '',
+      close_DT: '',
+      cop_NB: '',
+      div_ADDR: '',
+      div_CD: '',
+      div_FAX: '',
+      div_NM: '',
+      div_NMK: '',
+      div_TEL: '',
+      div_TO_CD: '',
+      div_YN: '',
+      fill_YN: '',
+      jongmok: '',
+      mas_NM: '',
+      open_DT: '',
+      reg_NB: '',
+      addr_CD: '',
+      addr_NUM: '',
+    });
   };
 
   const fetchWorkplaceData = async () => {
@@ -159,6 +251,7 @@ const WorkplacePage = () => {
       );
       setWorkplaceData(response.data);
       console.log('데이터입니다', workplaceData);
+      console.log('데이터입니다아아앙', workplaceData[0].div_CD);
     } catch (error) {
       console.error('Error fetching employee list:', error);
     }
@@ -223,6 +316,9 @@ const WorkplacePage = () => {
   };
 
   const FetchWorkplaceDetailInfo = async (divCd, coCd) => {
+    reset();
+    setAddress();
+    setAddressDetail();
     try {
       const response = await authAxiosInstance.get(
         `system/user/WorkplaceManage/getWorkpInfo`,
@@ -250,9 +346,20 @@ const WorkplacePage = () => {
           isAdding: false,
         };
         deleteImage();
-        setWorkplaceDetailData(updatedWorkplaceDetailData);
-        setOpenDate(new Date(openDate) || '');
-        setCloseDate(new Date(closeDate) || '');
+        setData(updatedWorkplaceDetailData);
+        if (openDate) {
+          setOpenDate(new Date(openDate));
+        } else {
+          setOpenDate(null);
+        }
+
+        if (closeDate) {
+          setCloseDate(new Date(closeDate));
+        } else {
+          setCloseDate(null);
+        }
+        setSelectedDivCd(divCd);
+        setUseCoCd(coCd);
         setIsAdding(false);
         setAddress('');
         setAddressDetail('');
@@ -290,7 +397,12 @@ const WorkplacePage = () => {
   };
 
   const handleAddClick = () => {
-    setWorkplaceDetailData(initialWorkplaceDetailData);
+    reset();
+    setSelectedCompanyForInsert('');
+    setSelectedCompany('');
+    setData(initialWorkplaceDetailData);
+    setAddress();
+    setAddressDetail();
     setIsAdding(true);
     fetchCompanyData();
     setOpenDate(new Date());
@@ -298,118 +410,117 @@ const WorkplacePage = () => {
     setSelectedImage('');
   };
 
-  const createWorkplaceData = (inputRefs, div_CD, co_CD, selectedImage) => {
-    return {
-      div_CD: div_CD || '',
-      co_CD: co_CD || '',
-      div_NM: inputRefs.divNMRef?.current?.value || '',
-      div_ADDR: inputRefs.divADDRRef?.current?.value || '',
-      addr_CD: inputRefs.addrCDRef?.current?.value || '',
-      addr_NUM: inputRefs.addrNUMRef?.current?.value || '',
-      div_TEL: inputRefs.divTELRef?.current?.value || '',
-      reg_NB: inputRefs.regNBRef?.current?.value || '',
-      div_TO_CD: '121', // 업태코드 업데이트 필요 시 추가
-      div_NMK: inputRefs.divNMKRef?.current?.value || '',
-      business: inputRefs.businessRef?.current?.value || '',
-      jongmok: inputRefs.jongmokRef?.current?.value || '',
-      mas_NM: inputRefs.masNMRef?.current?.value || '',
-      open_DT: parseDateToString(openDate) || '',
-      close_DT: parseDateToString(closeDate) || '',
-      div_FAX: inputRefs.divFAXRef?.current?.value || '',
-      cop_NB: inputRefs.copNBRef?.current?.value || '',
-      pic_FILE_ID: selectedImage,
-    };
-  };
+  const onSubmit = async data => {
+    console.log('이거왜', isAdding);
+    console.log('인서트입니다.');
+    console.log('당연히 안나오겠지만,', data.div_NM);
+    console.log('당연히 안나오겠지만,', data.div_CD);
+    console.log('Submitted Data: ', data);
+    if (isAdding) {
+      const Workpdata = {
+        div_CD: data?.div_CD || '',
+        co_CD: selectedCompanyForInsert,
+        div_NM: data?.div_NM || '',
+        div_ADDR: data?.div_ADDR || '',
+        addr_CD: data?.addr_CD || '',
+        addr_NUM: data?.addr_NUM || '',
+        div_TEL: data?.div_TEL || '',
+        reg_NB: data?.reg_NB || '',
+        div_TO_CD: '',
+        div_NMK: data?.div_NMK || '',
+        business: data?.business || '',
+        jongmok: data?.jongmok || '',
+        mas_NM: data?.mas_NM || '',
+        div_FAX: data?.div_FAX || '',
+        cop_NB: data?.cop_NB || '',
+        open_DT: parseDateToString(openDate) || '',
+        close_DT: parseDateToString(closeDate) || '',
+        pic_FILE_ID: selectedImage,
+      };
 
-  const handleInsert = async () => {
-    const data = createWorkplaceData(
-      inputRefs,
-      inputRefs.divCDRef.current.value,
-      selectedCompanyForInsert,
-      selectedImage
-    );
-
-    console.log(data);
-    try {
-      const response = await authAxiosInstance.post(
-        '/system/user/WorkplaceManage/insert',
-        data
-      );
-
-      console.log('Insert response:', response.data);
-
-      Swal.fire({
-        icon: 'success',
-        title: '저장 완료',
-        text: '사업장 정보가 성공적으로 저장되었습니다.',
-      });
-      FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
-    } catch (error) {
-      console.error('Error inserting workplace:', error);
-      Swal.fire({
-        icon: 'error',
-        title: '저장 실패',
-        text: '사업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
-      });
-    }
-  };
-
-  const handleUpdate = async () => {
-    console.log(inputRefs.divNMRef.current.value);
-    console.log(inputRefs.copNBRef.current.value);
-    console.log('update 함수 실행!');
-    const data = createWorkplaceData(
-      inputRefs,
-      workplaceDetailData.div_CD,
-      workplaceDetailData.co_CD,
-      selectedImage
-    );
-    try {
       console.log(data);
-      const response = await authAxiosInstance.put(
-        '/system/user/WorkplaceManage/update',
-        data
-      );
+      try {
+        const response = await authAxiosInstance.post(
+          '/system/user/WorkplaceManage/insert',
+          Workpdata
+        );
 
-      if (response.status === 200) {
+        console.log('Insert response:', response.data);
+
+        Swal.fire({
+          icon: 'success',
+          title: '저장 완료',
+          text: '사업장 정보가 성공적으로 저장되었습니다.',
+        });
+        fetchWorkplaceData();
+        FetchWorkplaceDetailInfo(Workpdata.div_CD, Workpdata.co_CD);
+      } catch (error) {
+        console.error('Error inserting workplace:', error);
+        Swal.fire({
+          icon: 'error',
+          title: '저장 실패',
+          text: '사업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
+        });
+      }
+    } else if (!isAdding) {
+      if (!onChangeForm) {
+        Swal.fire({
+          icon: 'error',
+          title: '변경된 내용이 없습니다.',
+        });
+        return;
+      }
+
+      console.log('update 함수 실행!');
+      try {
+        console.log(data);
+
+        const mergedData = {
+          ...changeFormData,
+          co_CD: useCoCd,
+          div_CD: selectedDivCd,
+        };
+        const response = await authAxiosInstance.put(
+          '/system/user/WorkplaceManage/update',
+          mergedData
+        );
+
+        const updatedData = { ...data, ...changeFormData };
+        setChangeFormData(updatedData);
+
+        console.log(response.data);
         Swal.fire({
           icon: 'success',
           title: '업데이트 완료',
           text: '사업장 정보가 성공적으로 업데이트되었습니다.',
         });
-
-        // Swal.fire({
-        //   title: '업데이트 완료',
-        //   text: '사업장 정보가 성공적으로 업데이트되었습니다.',
-        //   icon: 'success',
-        // }).then(result => {
-        //   if (result.isConfirmed) {
-        //     Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-        //   }
-        // });
-        fetchWorkplaceData();
-        FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
-        console.log('이게궁금합니다', data.div_CD);
-      } else {
+      } catch (error) {
+        console.error('Error updating workplace:', error);
         Swal.fire({
           icon: 'error',
           title: '업데이트 실패',
           text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
         });
       }
-    } catch (error) {
-      console.error('Error updating workplace:', error);
-      Swal.fire({
-        icon: 'error',
-        title: '업데이트 실패',
-        text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
-      });
     }
+    FetchWorkplaceDetailInfo(selectedDivCd, useCoCd);
+    fetchWorkplaceData();
+    setChangeFormData({});
+    setIsAdding(false);
+    setChangeForm(false);
   };
 
   const deleteDiv = async () => {
+    if (data.div_YN === '0') {
+      Swal.fire({
+        icon: 'error',
+        title: '잘못된 요청',
+        text: '이미 삭제된 사업장입니다.',
+      });
+      return;
+    }
     try {
-      const { div_CD, co_CD } = workplaceDetailData;
+      const { div_CD, co_CD } = data;
       const response = await authAxiosInstance.put(
         `system/user/WorkplaceManage/delete/${div_CD}/${co_CD}`,
         null
@@ -420,10 +531,7 @@ const WorkplacePage = () => {
           title: '삭제완료',
           text: '사업장 정보가 삭제되었습니다.',
         });
-        FetchWorkplaceDetailInfo(
-          workplaceDetailData.div_CD,
-          workplaceDetailData.co_CD
-        );
+        FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
         console.log('Workplace deleted successfully');
       } else {
         console.log('Error deleting workplace');
@@ -447,30 +555,6 @@ const WorkplacePage = () => {
     } catch (error) {
       console.error('Error fetching company data:', error);
     }
-  };
-
-  const handleValidationAndShowMessages = () => {
-    let hasError = false;
-
-    // ... (이전 코드 생략)
-
-    if (hasError) {
-      // 에러 발생 시 에러 메시지 표시 및 커서 이동 로직 구현
-      if (!selectedCompanyForInsert) {
-        inputRefs.companyRef.current.focus(); // 회사 선택 필드로 포커스 이동
-        //setCompanyError(true); // 회사 선택 에러 메시지 표시
-      } else if (!inputRefs.divCDRef.current.value) {
-        inputRefs.divCDRef.current.focus(); // div_CD 필드로 포커스 이동
-        //setDivCDError(true); // div_CD 에러 메시지 표시
-      } else if (!inputRefs.divNMRef?.current?.value) {
-        inputRefs.divNMRef.current.focus(); // div_NM 필드로 포커스 이동
-        //setDivNMError(true); // div_NM 에러 메시지 표시
-      }
-
-      // 나머지 필드들에 대해서도 동일한 방식으로 처리 가능
-    }
-
-    return hasError;
   };
 
   const ModalOpenButton = () => {
@@ -541,34 +625,43 @@ const WorkplacePage = () => {
               <WorkpHeadTitle
                 titleName={isAdding ? '사업장 등록' : '기본정보'}
                 isAdding={isAdding}
-                onClickInsert={handleInsert}
-                onClickUpdate={handleUpdate}
+                onClickInsert={handleSubmit(onSubmit)}
+                onClickUpdate={handleSubmit(onSubmit)}
                 deleteDiv={deleteDiv}
               ></WorkpHeadTitle>
               <ScrollWrapper width={'100%'} deptH={-40}>
-                <WorkPlaceInfoWrapper
-                  data={workplaceDetailData}
-                  inputRefs={inputRefs}
-                  companyData={companyData}
-                  onCompanyChange={setSelectedCompanyForInsert}
-                  openDate={openDate}
-                  setOpenDate={setOpenDate}
-                  closeDate={closeDate}
-                  setCloseDate={setCloseDate}
-                  handleOpenDateChange={handleOpenDateChange}
-                  handleCloseDateChange={handleCloseDateChange}
-                  onChangeOpenPost={onChangeOpenPost}
-                  address={address}
-                  addressDetail={addressDetail}
-                  onImageSelect={handleImageSelect}
-                  selectedImage={selectedImage}
-                  isImageUploaded={isImageUploaded}
-                  deleteImage={deleteImage}
-                  showUploadDiv={showUploadDiv}
-                  handleImageChange={handleImageChange}
-                  handleClick={handleClick}
-                  setShowUploadDiv={setShowUploadDiv}
-                />
+                <form
+                  ref={formRef}
+                  onChange={onChangeFunction}
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  <WorkPlaceInfoWrapper
+                    data={data}
+                    register={register}
+                    selectedCompany={selectedCompany}
+                    setSelectedCompany={setSelectedCompany}
+                    companyData={companyData}
+                    onCompanyChange={setSelectedCompanyForInsert}
+                    openDate={openDate}
+                    setOpenDate={setOpenDate}
+                    closeDate={closeDate}
+                    setCloseDate={setCloseDate}
+                    handleOpenDateChange={handleOpenDateChange}
+                    handleCloseDateChange={handleCloseDateChange}
+                    onChangeOpenPost={onChangeOpenPost}
+                    address={address}
+                    addressDetail={addressDetail}
+                    onImageSelect={handleImageSelect}
+                    selectedImage={selectedImage}
+                    isImageUploaded={isImageUploaded}
+                    deleteImage={deleteImage}
+                    showUploadDiv={showUploadDiv}
+                    handleImageChange={handleImageChange}
+                    handleClick={handleClick}
+                    setShowUploadDiv={setShowUploadDiv}
+                    errors={errors}
+                  />
+                </form>
               </ScrollWrapper>
             </RightContentWrapper>
           </MainContentWrapper>

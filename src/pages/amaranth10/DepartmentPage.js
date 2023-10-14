@@ -398,7 +398,6 @@ const DepartmentPage = () => {
       return (allDepts || [])
         .filter(dept => dept && dept.mdept_CD === dept_CD)
         .sort((a, b) => {
-          // sort_YN이 null이거나 undefined인 경우를 모두 고려하여 정렬
           const aSortValue =
             a.sort_YN !== null && a.sort_YN !== undefined
               ? parseInt(a.sort_YN)
@@ -417,9 +416,9 @@ const DepartmentPage = () => {
     };
 
     const divGroups = (data || []).reduce((acc, curr) => {
-      const div_CD = curr?.div_CD || ''; // div_CD가 있는지 확인
-      const div_NM = curr?.div_NM || ''; // div_NM이 있는지 확인
-      if (!div_CD) return acc; // div_CD가 없으면 현재의 accumulator 반환
+      const div_CD = curr?.div_CD || ''; 
+      const div_NM = curr?.div_NM || ''; 
+      if (!div_CD) return acc; 
       if (!acc[div_CD]) {
         acc[div_CD] = {
           div_NM: div_NM,

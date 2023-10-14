@@ -69,6 +69,7 @@ const FixedYearChart = ({ DISP_SQ, DIV_CD }) => {
           height={600}
           data={YearAomout}
           margin={{ top: 50, right: 40, bottom: 30, left: 40 }}
+          startAnimation="disabled"
         >
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis dataKey="연도" />
@@ -94,12 +95,7 @@ const FixedYearChart = ({ DISP_SQ, DIV_CD }) => {
             barSize={30}
             fill="#7ac4c0"
           />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="고정 자금수"
-            stroke="#ff7300"
-          />
+          <Line yAxisId="right" dataKey="고정 자금수" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
     </>
