@@ -15,7 +15,7 @@ import DateSelectBox from './DateSelectBox';
 
 const FixedDailyChart = ({ DISP_SQ, DIV_CD }) => {
   const [inputYear, setInputYear] = useState('2023');
-  const [inputMonth, setInputMonth] = useState('3');
+  const [inputMonth, setInputMonth] = useState('10');
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -79,9 +79,7 @@ const FixedDailyChart = ({ DISP_SQ, DIV_CD }) => {
             textAnchor="middle"
             fill="#000"
             fontSize={16}
-          >
-            {`월 일자별 금액`}
-          </text>
+          ></text>
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis
             dataKey={entry => `${entry.DAY}일`}

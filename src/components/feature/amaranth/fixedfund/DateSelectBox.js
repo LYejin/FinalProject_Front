@@ -11,7 +11,7 @@ const DateSelectBox = ({ type, value, onChange }) => {
   if (type === 'year' && !value) {
     value = '2023';
   } else if (type === 'month' && !value) {
-    value = '3';
+    value = '10';
   }
 
   if (type === 'year') {
@@ -56,6 +56,13 @@ const DateSelectBox = ({ type, value, onChange }) => {
             fontSize: '0.8rem',
             width: '150px',
             borderRadius: 0,
+          }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: '200px',
+              },
+            },
           }}
         >
           {menuItems}
