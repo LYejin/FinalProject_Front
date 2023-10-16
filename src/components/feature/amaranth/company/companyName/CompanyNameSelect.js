@@ -164,7 +164,7 @@ const CompanyNameSelect = ({
           <input
             type="hidden"
             name="status"
-            value="Y"
+            value="N"
             {...register('status')}
           />
           <input

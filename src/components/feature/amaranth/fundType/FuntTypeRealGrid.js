@@ -7,6 +7,7 @@ import { authAxiosInstance } from '../../../../axios/axiosInstance';
 
 function RealGrid({
   onChangeOpenPost,
+  setSelectedViewOption,
   loadRowData,
   setCASH_CD,
   setLEVEL_CD,
@@ -122,6 +123,9 @@ function RealGrid({
           reject(error);
         });
     });
+  };
+  const handleViewOptionChange = () => {
+    setSelectedViewOption('가로형태조회');
   };
 
   const setDataCellContextMenu = grid => {
@@ -763,8 +767,9 @@ function RealGrid({
     provider.onRowDeleting = async function (provider, row) {};
 
     grid.onKeyDown = async (grid, event) => {
-      if (event.ctrlKey && event.key === 'Delete') {
-        const nowLow = grid.getCurrent();
+      console.log('삭제', event.key);
+      const nowLow = grid.getCurrent();
+      if (event.ctrlKey && event.key === 'Delete' && nowLow.dataRow !== -1) {
         const checkData = [];
         checkData.push(grid.getValue(nowLow.dataRow, 'CASH_CD').toString());
         const highFundsData = await highFundsList(checkData);
@@ -785,6 +790,9 @@ function RealGrid({
 
       if (event.key === 'Escape' && searchValue.current !== '') {
         searchValue.current = '';
+      }
+      if (event.key === 'F9') {
+        handleViewOptionChange();
       }
     };
 
