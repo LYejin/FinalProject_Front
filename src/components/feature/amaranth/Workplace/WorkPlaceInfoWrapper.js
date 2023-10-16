@@ -11,6 +11,7 @@ import clipImage from './clipBtn.png';
 import delImage from './deleteBtn.png';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { ko } from 'date-fns/locale';
 
 const WorkPlaceInfoWrapper = ({
   data,
@@ -37,6 +38,9 @@ const WorkPlaceInfoWrapper = ({
   errors,
   selectedCompany,
   setSelectedCompany,
+  setError,
+  clearErrors,
+  coCd,
 }) => {
   const [divCdError, setDivCdError] = useState(null);
   const [divNameError, setDivNameError] = useState(false);
@@ -170,6 +174,7 @@ const WorkPlaceInfoWrapper = ({
               {data.isAdding ? (
                 <InfoInput
                   type="number"
+                  valid={'workp'}
                   defaultValue={data ? data.div_CD || '' : ''}
                   placeholder="사업장 코드를 입력해주세요."
                   register={register('div_CD', {
@@ -178,6 +183,9 @@ const WorkPlaceInfoWrapper = ({
                   errors={errors}
                   maxLength={20}
                   name="div_CD"
+                  setError={setError}
+                  clearErrors={clearErrors}
+                  CoCd={coCd}
                 />
               ) : data ? (
                 data.div_CD || ''
@@ -236,8 +244,12 @@ const WorkPlaceInfoWrapper = ({
             <td className="cellStyle">
               <InfoInput
                 name="business"
+                valid={'text'}
                 defaultValue={data ? data.business || '' : ''}
-                register={register('business')}
+                register={register('business', {
+                  required: '업태를 입력해주세요.',
+                })}
+                errors={errors}
                 maxLength={10}
               />
             </td>
@@ -245,8 +257,12 @@ const WorkPlaceInfoWrapper = ({
             <td className="cellStyle">
               <InfoInput
                 name="jongmok"
+                valid={'text'}
                 defaultValue={data ? data.jongmok || '' : ''}
-                register={register('jongmok')}
+                register={register('jongmok', {
+                  required: '종목을 입력해주세요.',
+                })}
+                errors={errors}
                 maxLength={10}
               />
             </td>
@@ -258,7 +274,7 @@ const WorkPlaceInfoWrapper = ({
                 name="div_TEL"
                 defaultValue={data ? data.div_TEL || '' : ''}
                 register={register('div_TEL')}
-                maxLength={10}
+                maxLength={15}
               />
             </td>
             <th className="headerCellStyle">대표팩스</th>
@@ -267,7 +283,7 @@ const WorkPlaceInfoWrapper = ({
                 name="div_FAX"
                 defaultValue={data ? data.div_FAX || '' : ''}
                 register={register('div_FAX')}
-                maxLength={10}
+                maxLength={15}
               />
             </td>
           </tr>
@@ -276,9 +292,13 @@ const WorkPlaceInfoWrapper = ({
             <td className="cellStyle">
               <InfoInput
                 name="reg_NB"
+                valid={'text'}
                 defaultValue={data ? data.reg_NB || '' : ''}
-                register={register('reg_NB')}
-                maxLength={10}
+                register={register('reg_NB', {
+                  required: '사업자번호를 입력해주세요.',
+                })}
+                errors={errors}
+                maxLength={15}
               />
             </td>
             <th className="headerCellStyle">법인번호</th>
@@ -287,7 +307,7 @@ const WorkPlaceInfoWrapper = ({
                 name="cop_NB"
                 defaultValue={data ? data.cop_NB || '' : ''}
                 register={register('cop_NB')}
-                maxLength={10}
+                maxLength={15}
               />
             </td>
           </tr>
@@ -299,6 +319,7 @@ const WorkPlaceInfoWrapper = ({
                 onChange={handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="inputStyle"
+                locale={ko}
               />
             </td>
             <th className="headerCellStyle">폐업일</th>
@@ -308,6 +329,7 @@ const WorkPlaceInfoWrapper = ({
                 onChange={handleCloseDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="inputStyle"
+                locale={ko}
               />
             </td>
           </tr>
@@ -344,21 +366,20 @@ const WorkPlaceInfoWrapper = ({
           </tr>
           <tr>
             <td colSpan="2" className="cellStyle">
-              <input
-                type="text"
-                className={`reqInputStyle ${divADDRError ? 'inputError' : ''}`}
+              <InfoInput
+                register={register('div_ADDR')}
                 defaultValue={addressDetail ? addressDetail : data.div_ADDR}
-                key={addressDetail ? addressDetail : data.div_ADDR}
+                maxLength={50}
+                name="div_ADDR"
               />
             </td>
 
             <td className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                placeholder="직접입력"
-                defaultValue={addressDetail ? '' : data.addr_NUM}
-                key={addressDetail ? '' : data.addr_NUM}
+              <InfoInput
+                name="addr_NUM"
+                register={register('addr_NUM')}
+                defaultValue={data.addr_NUM}
+                maxLength={40}
               />
             </td>
           </tr>
@@ -379,137 +400,10 @@ const WorkPlaceInfoWrapper = ({
         </tbody>
       </table>
       <br></br>
-      {/* <div>
-        <DetailTitle detailTitle={'신고 관련 정보'}></DetailTitle>
-      </div>
-      <table className="tableStyle">
-        <tbody>
-          <tr>
-            <th className="headerCellStyle"> 주업종코드</th>
-            <td colSpan="3" className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle">
-              지방세신고지
-              <br />
-              (행정동)
-            </th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-            <th className="headerCellStyle">
-              지방세신고지
-              <br />
-              (법정동)
-            </th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle">전자신고ID</th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-            <th className="headerCellStyle">주류코드</th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle" rowSpan="2">
-              전자신고용주소
-            </th>
-            <td colSpan="3" className="cellStyle">
-              <input
-                type="text"
-                className="inputStyle"
-                style={{
-                  border: '1px solid #ccc',
-                  height: '26px',
-                  width: '120px',
-                }}
-              />
-              <ButtonW data={'우편번호'}></ButtonW>
-              {/* <SelectBox
-                className="inputStyle"
-                style={{ verticalAlign: 'middle' }}
-              /> */}
-      {/*<input
-                type="text"
-                className="inputStyle"
-                style={{
-                  border: '1px solid #ccc',
-                  height: '26px',
-                  width: '120px',
-                  marginLeft: '10px',
-                }}
-              />
-              <input
-                type="text"
-                className="inputStyle"
-                style={{
-                  border: '1px solid #ccc',
-                  height: '26px',
-                  width: '120px',
-                  marginLeft: '10px',
-                }}
-              />
-              <input
-                type="text"
-                className="inputStyle"
-                style={{
-                  border: '1px solid #ccc',
-                  height: '26px',
-                  width: '120px',
-                  marginLeft: '10px',
-                }}
-              />
-            </td>
-          </tr>
-
-          <tr>
-            <td colSpan="2" className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle">신고용대표번호</th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-            <th className="headerCellStyle">신고용휴대전화</th>
-            <td className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-          <tr>
-            <th className="headerCellStyle"> Email</th>
-            <td colSpan="3" className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-        </tbody>
-      </table> */}
       <div>
         <DetailTitle detailTitle={'인감 정보'}></DetailTitle>
       </div>
-      {/* <table className="tableStyle">
-        <tbody>
-          <tr>
-            <th className="headerCellStyle"> 발신명의</th>
-            <td colSpan="3" className="cellStyle">
-              <input type="text" className="inputStyle" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <br /> */}
+
       <table className="tableStyle2">
         <thead>
           <tr className="headerRowStyle">

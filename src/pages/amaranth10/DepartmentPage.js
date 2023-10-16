@@ -416,9 +416,9 @@ const DepartmentPage = () => {
     };
 
     const divGroups = (data || []).reduce((acc, curr) => {
-      const div_CD = curr?.div_CD || ''; 
-      const div_NM = curr?.div_NM || ''; 
-      if (!div_CD) return acc; 
+      const div_CD = curr?.div_CD || '';
+      const div_NM = curr?.div_NM || '';
+      if (!div_CD) return acc;
       if (!acc[div_CD]) {
         acc[div_CD] = {
           div_NM: div_NM,
@@ -752,6 +752,7 @@ const DepartmentPage = () => {
                           addressDetail={addressDetail}
                           setChangeForm={onChangeFunction}
                           onChangeOpenDeptList={onChangeOpenDeptList}
+                          handleDivClick={handleDivClick}
                         />
                       </form>
                     </ScrollWrapper>

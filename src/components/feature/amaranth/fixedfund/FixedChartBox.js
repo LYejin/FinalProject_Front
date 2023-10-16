@@ -5,19 +5,43 @@ import FixedQuarterChart from './FixedQuarterChart';
 import FixedMonthChart from './FixedMonthChart';
 import FixedDailyChart from './FixedDailyChart';
 
-const FixedChartBox = ({ DISP_SQ, selectedDivCd }) => {
+const FixedChartBox = ({ DISP_SQ, selectedDivCd, isRender }) => {
   const [selectedChart, setSelectedChart] = useState('연간'); // 기본으로 "연간"이 선택된 상태로 설정
 
   const renderChart = () => {
     switch (selectedChart) {
       case '연간':
-        return <FixedYearChart DISP_SQ={DISP_SQ} DIV_CD={selectedDivCd} />;
+        return (
+          <FixedYearChart
+            DISP_SQ={DISP_SQ}
+            DIV_CD={selectedDivCd}
+            isRender={isRender}
+          />
+        );
       case '분기':
-        return <FixedQuarterChart DISP_SQ={DISP_SQ} DIV_CD={selectedDivCd} />;
+        return (
+          <FixedQuarterChart
+            DISP_SQ={DISP_SQ}
+            DIV_CD={selectedDivCd}
+            isRender={isRender}
+          />
+        );
       case '월별':
-        return <FixedMonthChart DISP_SQ={DISP_SQ} DIV_CD={selectedDivCd} />;
+        return (
+          <FixedMonthChart
+            DISP_SQ={DISP_SQ}
+            DIV_CD={selectedDivCd}
+            isRender={isRender}
+          />
+        );
       case '일자별':
-        return <FixedDailyChart DISP_SQ={DISP_SQ} DIV_CD={selectedDivCd} />;
+        return (
+          <FixedDailyChart
+            DISP_SQ={DISP_SQ}
+            DIV_CD={selectedDivCd}
+            isRender={isRender}
+          />
+        );
       default:
         return null;
     }

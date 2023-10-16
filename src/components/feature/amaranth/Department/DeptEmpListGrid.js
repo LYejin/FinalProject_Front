@@ -30,10 +30,23 @@ function DeptEmpListGrid({ CoCd, DeptCd }) {
     authAxiosInstance
       .get(`/system/user/departments/list?${queryParams.toString()}`)
       .then(responseData => {
-        dataProvider.fillJsonData(responseData.data, {
+        const transformedData = responseData.data.map(item => {
+          return {
+            ...item,
+            enrl_FG:
+              item.enrl_FG === '0'
+                ? '재직'
+                : item.enrl_FG === '1'
+                ? '휴직'
+                : item.enrl_FG,
+          };
+        });
+
+        dataProvider.fillJsonData(transformedData, {
           fillMode: 'set',
         });
-        if (responseData.data.length === 0) {
+
+        if (transformedData.length === 0) {
           setIsData(false);
         } else {
           setIsData(true);

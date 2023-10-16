@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'recharts';
 import DateSelectBox from './DateSelectBox';
-const FixedYearChart = ({ DISP_SQ, DIV_CD }) => {
+const FixedYearChart = ({ DISP_SQ, DIV_CD, isRender }) => {
   const [inputYear, setInputYear] = useState('2023');
   const [YearAomout, setYearAmount] = useState('');
 
@@ -54,7 +54,7 @@ const FixedYearChart = ({ DISP_SQ, DIV_CD }) => {
 
   useEffect(() => {
     GetYearAmount();
-  }, [inputYear, DISP_SQ, DIV_CD]);
+  }, [inputYear, DISP_SQ, DIV_CD, isRender]);
 
   return (
     <>

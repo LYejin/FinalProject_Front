@@ -138,7 +138,7 @@ const WorkplacePage = () => {
 
   useEffect(() => {
     fetchWorkplaceData();
-    FetchWorkplaceDetailInfo('002', '1232');
+    FetchWorkplaceDetailInfo('1111', '1004');
     fetchCompanyData();
   }, []);
 
@@ -147,27 +147,6 @@ const WorkplacePage = () => {
     console.log(isOpenPost);
     setIsOpenPost(!isOpenPost);
   };
-
-  //  우편번호 검색 시 처리
-  // const onCompletePost = data => {
-  //   let fullAddr = data.address;
-  //   let extraAddr = '';
-
-  //   if (data.addressType === 'R') {
-  //     if (data.bname !== '') {
-  //       extraAddr += data.bname;
-  //     }
-  //     fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
-  //   }
-
-  //   setAddress(data.zonecode);
-  //   console.log(data.zonecode);
-  //   setAddressDetail(fullAddr);
-  //   console.log(fullAddr);
-  //   setIsOpenPost(false);
-  // };
-
-  //  우편번호 검색 시 처리
   const onCompletePost = data => {
     let fullAddr = data.address;
     let extraAddr = '';
@@ -190,7 +169,7 @@ const WorkplacePage = () => {
       const updatedData = {
         ...prevChangeFormData,
         addr_CD: data.zonecode,
-        addr: fullAddr,
+        div_ADDR: fullAddr,
       };
 
       // 비교를 수행하여 setChangeForm 설정
@@ -207,15 +186,39 @@ const WorkplacePage = () => {
     setIsOpenPost(false);
   };
 
+  // 날짜 변경 핸들러
   const handleOpenDateChange = date => {
     setOpenDate(date);
+    setChangeFormData(prevChangeFormData => {
+      const newFormData = {
+        ...prevChangeFormData,
+        open_DT: parseDateToString(date),
+      };
+
+      // 비교를 수행하여 setChangeForm 설정
+      const isChanged =
+        prevChangeFormData &&
+        Object.keys(newFormData).some(
+          key => !_.isEqual(prevChangeFormData[key], newFormData[key])
+        );
+      setChangeForm(isChanged); // 만약 변경사항이 있다면 true로 설정
+
+      return newFormData;
+    });
   };
 
   const handleCloseDateChange = date => {
+    setCloseDate(date);
     if (!date || isNaN(date.getTime())) {
-      setCloseDate(null);
+      setChangeForm(prevChangeFormData => ({
+        ...prevChangeFormData,
+        close_DT: null,
+      }));
     } else {
-      setCloseDate(date);
+      setChangeFormData(prevChangeFormData => ({
+        ...prevChangeFormData,
+        close_DT: date,
+      }));
     }
   };
 
@@ -421,8 +424,8 @@ const WorkplacePage = () => {
         div_CD: data?.div_CD || '',
         co_CD: selectedCompanyForInsert,
         div_NM: data?.div_NM || '',
-        div_ADDR: data?.div_ADDR || '',
-        addr_CD: data?.addr_CD || '',
+        div_ADDR: data ? data.div_ADDR || addressDetail : addressDetail,
+        addr_CD: data ? data.addr_CD || address : address,
         addr_NUM: data?.addr_NUM || '',
         div_TEL: data?.div_TEL || '',
         reg_NB: data?.reg_NB || '',
@@ -484,7 +487,7 @@ const WorkplacePage = () => {
           '/system/user/WorkplaceManage/update',
           mergedData
         );
-
+        console.log('왜 모르지', mergedData);
         const updatedData = { ...data, ...changeFormData };
         setChangeFormData(updatedData);
 
@@ -660,6 +663,9 @@ const WorkplacePage = () => {
                     handleClick={handleClick}
                     setShowUploadDiv={setShowUploadDiv}
                     errors={errors}
+                    setError={setError}
+                    coCd={selectedCompany}
+                    clearErrors={clearErrors}
                   />
                 </form>
               </ScrollWrapper>

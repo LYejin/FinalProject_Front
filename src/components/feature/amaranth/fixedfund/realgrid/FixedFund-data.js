@@ -205,7 +205,7 @@ export const columns = [
   {
     name: 'bank_NAME',
     fieldName: 'bank_NAME',
-    width: '80',
+    width: '100',
     editable: false,
     header: {
       text: '금융기관',
@@ -257,7 +257,7 @@ export const columns = [
   {
     name: 'DEAL_PD',
     fieldName: 'DEAL_PD',
-    width: '80',
+    width: '90',
     editButtonVisibility: 'visible',
     values: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     labels: [
