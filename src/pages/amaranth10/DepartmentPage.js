@@ -74,7 +74,7 @@ const DepartmentPage = () => {
   const [useSelect, setUseSelect] = useState('0'); //조직도표시 사용여부
   const [showSelect, setShowSelect] = useState('0'); //조직도표시 표시기능
 
-  console.log('isHighLevel : ', isHighLevel);
+  // console.log('isHighLevel : ', isHighLevel);
 
   const formRef = useRef(null);
 
@@ -178,10 +178,6 @@ const DepartmentPage = () => {
     setMdeptCD('');
   }, []);
 
-  useEffect(() => {
-    console.log('isUpdate', isUpdate);
-  }, [isUpdate]);
-
   const resetData = () => {
     setData({
       co_NM: useCoCdName,
@@ -211,13 +207,13 @@ const DepartmentPage = () => {
   };
 
   const onSubmit = async data => {
-    console.log('이거왜', isUpdate);
+    // console.log('이거왜', isUpdate);
     if (isUpdate) {
-      console.log('인서트입니다.');
-      console.log('당연히 안나오겠지만,', data.dept_CD);
-      console.log('당연히 안나오겠지만,', data.dept_YN);
-      console.log('당연히 안나오겠지만,', data.show_YN);
-      console.log('Submitted Data: ', data);
+      // console.log('인서트입니다.');
+      // console.log('당연히 안나오겠지만,', data.dept_CD);
+      // console.log('당연히 안나오겠지만,', data.dept_YN);
+      // console.log('당연히 안나오겠지만,', data.show_YN);
+      // console.log('Submitted Data: ', data);
 
       try {
         const response = await authAxiosInstance.get(
@@ -261,18 +257,20 @@ const DepartmentPage = () => {
         addr_NUM: data?.addr_NUM,
       };
 
-      console.log('insert 버튼');
-      console.log(userData);
+      // console.log('insert 버튼');
+      // console.log(userData);
 
       const response = await authAxiosInstance.post(
         'system/user/departments/insert',
         userData
       );
-      console.log(response.data);
+      // console.log(response.data);
       Swal.fire({
         icon: 'success',
         title: '부서추가 완료',
         text: '부서 정보가 성공적으로 입력되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
       });
       setSelectedDeptCd(userData.dept_CD);
       setIsUpdate(false);
@@ -281,12 +279,14 @@ const DepartmentPage = () => {
         Swal.fire({
           icon: 'error',
           title: '변경된 내용이 없습니다.',
+          showConfirmButton: false,
+          timer: 1000,
         });
         return;
       }
-      console.log('업데이트입니다.');
-      console.log('당연히 안나오겠지만,', data.dept_CD);
-      console.log('Submitted Data: ', changeFormData);
+      // console.log('업데이트입니다.');
+      // console.log('당연히 안나오겠지만,', data.dept_CD);
+      // console.log('Submitted Data: ', changeFormData);
 
       const mergedData = {
         ...changeFormData,
@@ -313,13 +313,15 @@ const DepartmentPage = () => {
       const updatedData = { ...data, ...changeFormData };
       setChangeFormData(updatedData);
 
-      console.log(response.data);
+      // console.log(response.data);
       Swal.fire({
         icon: 'success',
         title: '업데이트 완료',
         text: '부서 정보가 성공적으로 업데이트되었습니다.',
+        showConfirmButton: false,
+        timer: 1000,
       });
-      console.log('아울아ㅓㄴ리ㅏㅇ', selectedDeptCd, useCoCd);
+      // console.log('아울아ㅓㄴ리ㅏㅇ', selectedDeptCd, useCoCd);
     }
     fetchDepartmentDataAfter(useCoCd);
     setChangeFormData({});
@@ -351,12 +353,12 @@ const DepartmentPage = () => {
       const response = await authAxiosInstance.get(
         `/system/user/departments/getDeptList/${selectedCoCd}`
       );
-      console.log('이건뭐지? : ', response.data);
+      // console.log('이건뭐지? : ', response.data);
       setVisible(false);
       setIsUpdate(false);
       const organizedData = hierarchyData(response.data);
       setDeptData(organizedData);
-      console.log('오늘은 너다:', organizedData);
+      // console.log('오늘은 너다:', organizedData);
       setChangeForm(false);
       setAllDepartmentData(response.data);
       setUseCoCd(selectedCoCd); //현재 선택된 회사코드
@@ -466,7 +468,7 @@ const DepartmentPage = () => {
   };
 
   const handleSelectDepartment = async (dept_CD, div_CD) => {
-    console.log('불렀잖아:', dept_CD, div_CD);
+    // console.log('불렀잖아:', dept_CD, div_CD);
     setSearchValue(dept_CD);
     reset();
     setAddress();
@@ -492,11 +494,11 @@ const DepartmentPage = () => {
         dept => dept.dept_CD === dept_CD
       );
       if (foundDept) {
-        console.log('Found matching department data:', foundDept);
+        // console.log('Found matching department data:', foundDept);
         if (!isVisible) {
           setVisible(true);
         }
-        console.log(response.data);
+        // console.log(response.data);
         setData({
           ...response.data,
           co_NM: foundDept.co_NM,
@@ -505,7 +507,7 @@ const DepartmentPage = () => {
         setSelectedRadioValue(response.data.dept_YN);
         setShowRadioValue(response.data.show_YN);
       } else {
-        console.log('No matching department found.');
+        // console.log('No matching department found.');
       }
     } catch (error) {
       console.error('Error fetching department data:', error);
@@ -515,14 +517,25 @@ const DepartmentPage = () => {
   const handleRadioChange = e => {
     const newValue = e.target.value;
     if (isHighLevel && selectedRadioValue === '0' && newValue === '1') {
-      alert('상위부서를 먼저 사용 으로 변경해주세요');
+      Swal.fire({
+        icon: 'warning',
+        title: '알림',
+        text: '상위부서를 먼저 사용 으로 변경해주세요',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       return;
     }
     if (isLowLevel && selectedRadioValue === '1' && newValue === '0') {
-      const userConfirmation = window.confirm(
-        '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.'
-      );
-      if (!userConfirmation) {
+      const userConfirmation = Swal.fire({
+        icon: 'question',
+        title: '확인',
+        text: '부서를 미사용으로 변경시 \n하위부서 및 해당부서의 사원들도 미사용으로 변경됩니다.',
+        showCancelButton: true,
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      });
+      if (!userConfirmation.isConfirmed) {
         // 사용자가 취소를 선택하면 값을 업데이트하지 않고 함수 종료
         return;
       }
@@ -566,14 +579,20 @@ const DepartmentPage = () => {
   const queryParams = new URLSearchParams();
 
   const checkDeleteDept = async () => {
-    console.log('CoCd : ', useCoCd, 'Dept_CD :', selectedDeptCd);
+    // console.log('CoCd : ', useCoCd, 'Dept_CD :', selectedDeptCd);
     if (
       !useCoCd ||
       !selectedDeptCd ||
       useCoCd === '' ||
       selectedDeptCd === ''
     ) {
-      alert('부서를 선택하세요');
+      Swal.fire({
+        icon: 'warning',
+        title: '알림',
+        text: '부서를 선택하세요',
+        showConfirmButton: false,
+        timer: 1000,
+      });
       return;
     }
 
@@ -586,11 +605,16 @@ const DepartmentPage = () => {
       );
 
       if (response.data === false) {
-        const userConfirmation = window.confirm(
-          '부서에 속한 하위 부서 혹은 사원이 존재하므로 삭제할 수 없습니다.\n미사용으로 변경하시겠습니까?'
-        );
+        const userConfirmation = await Swal.fire({
+          icon: 'question',
+          title: '확인',
+          text: '부서에 속한 하위 부서 혹은 사원이 존재하므로 삭제할 수 없습니다.\n미사용으로 변경하시겠습니까?',
+          showCancelButton: true,
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        });
 
-        if (userConfirmation) {
+        if (userConfirmation.isConfirmed) {
           const response = await authAxiosInstance.put(
             '/system/user/departments/update-department-employee',
             {
@@ -599,16 +623,18 @@ const DepartmentPage = () => {
             }
           );
 
-          console.log('부서 삭제', response.data);
+          // console.log('부서 삭제', response.data);
           fetchDepartmentData(useCoCd);
           Swal.fire({
             icon: 'success',
             title: '삭제 완료',
             text: '부서 정보가 성공적으로 변경 되었습니다.',
+            showConfirmButton: false,
+            timer: 1000,
           });
-          console.log('미사용으로 변경');
+          // console.log('미사용으로 변경');
         } else {
-          console.log('삭제취소');
+          // console.log('삭제취소');
         }
       } else {
         const deleteConfirmation = window.confirm('부서를 삭제하시겠습니까?');
@@ -622,15 +648,17 @@ const DepartmentPage = () => {
               },
             }
           );
-          console.log('부서 삭제', response.data);
+          // console.log('부서 삭제', response.data);
           fetchDepartmentData(useCoCd);
           Swal.fire({
             icon: 'success',
             title: '삭제 완료',
             text: '부서가 삭제되었습니다.',
+            showConfirmButton: false,
+            timer: 1000,
           });
         } else {
-          console.log('삭제취소');
+          // console.log('삭제취소');
         }
       }
     } catch (error) {

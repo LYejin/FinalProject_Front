@@ -39,8 +39,8 @@ function FixedFundGrid({
 
   const queryParams = new URLSearchParams();
 
-  console.log('그럼 잘와야지?', values);
-  console.log('오픈캐시', isOpenCash);
+  // console.log('그럼 잘와야지?', values);
+  // console.log('오픈캐시', isOpenCash);
 
   const createQueryParams = values => {
     const queryParams = new URLSearchParams();
@@ -57,13 +57,13 @@ function FixedFundGrid({
   };
 
   const fetchGridData = async () => {
-    console.log('패치함');
+    // console.log('패치함');
     const queryParams = createQueryParams(values);
     authAxiosInstance
       .get(`/accounting/user/AcashFixManage/getList?${queryParams.toString()}`)
       .then(responseData => {
-        console.log('드드드드드드 : ', queryParams.toString());
-        console.log('이번에가져온것', responseData.data);
+        // console.log('드드드드드드 : ', queryParams.toString());
+        // console.log('이번에가져온것', responseData.data);
 
         // yyyymmdd의 형태를 yyyy-mm-dd로 변환하는 함수
         const formatDate = dateStr => {
@@ -99,7 +99,7 @@ function FixedFundGrid({
     // 체크된 행들의 sq_NB값을 수집
     gridView.cancel();
     const checkedRows = gridView.getCheckedItems();
-    console.log('요고얌', checkedRows);
+    // console.log('요고얌', checkedRows);
 
     // 체크된 행이 없거나 20개를 초과한 경우 alert을 띄움
     if (checkedRows.length === 0) {
@@ -118,7 +118,7 @@ function FixedFundGrid({
       return sqNbValue;
     });
 
-    console.log('여기서확인하래요', sqNbsToDelete);
+    // console.log('여기서확인하래요', sqNbsToDelete);
     try {
       // 서버에 삭제 요청
       const response = await authAxiosInstance.delete(
@@ -173,7 +173,7 @@ function FixedFundGrid({
     rowData['div_CD'] = values.divCode;
     rowData['disp_SQ'] = DISQ;
     formatRowDate(rowData);
-    console.log('Insert 동작/ 지수 : ', DISQ);
+    // console.log('Insert 동작/ 지수 : ', DISQ);
     return new Promise((resolve, reject) => {
       authAxiosInstance
         .post('accounting/user/AcashFixManage/insert', rowData)
@@ -193,7 +193,7 @@ function FixedFundGrid({
     rowData['div_CD'] = values.divCode;
     rowData['disp_SQ'] = DISQ;
     formatRowDate(rowData);
-    console.log('이게 내 데이터', rowData);
+    // console.log('이게 내 데이터', rowData);
     return new Promise((resolve, reject) => {
       authAxiosInstance
         .put('accounting/user/AcashFixManage/update', rowData)
@@ -289,8 +289,8 @@ function FixedFundGrid({
         )
         .then(responseData => {
           grid.closeProgress();
-          console.log('드드드드드드 : ', queryParams.toString());
-          console.log('이번에가져온것', responseData.data);
+          // console.log('드드드드드드 : ', queryParams.toString());
+          // console.log('이번에가져온것', responseData.data);
 
           // yyyymmdd의 형태를 yyyy-mm-dd로 변환하는 함수
           const formatDate = dateStr => {
@@ -331,7 +331,7 @@ function FixedFundGrid({
       if (values.sq_NB && values.cash_CD) {
         rowUpdate(grid.getValues(itemIndex))
           .then(() => {
-            console.log('rowUpdate 실행');
+            // console.log('rowUpdate 실행');
             return fetchDataAndUpdateGrid();
           })
           .catch(error => {
@@ -340,7 +340,7 @@ function FixedFundGrid({
       } else if (values.cash_CD) {
         rowInsert(grid.getValues(itemIndex))
           .then(() => {
-            console.log('rowInsert 실행');
+            // console.log('rowInsert 실행');
             return fetchDataAndUpdateGrid(1);
           })
           .catch(error => {
@@ -412,7 +412,7 @@ function FixedFundGrid({
       console.log('Event triggered'); // 이벤트가 트리거되는지 확인
 
       if (current.fieldName === 'cash_CD') {
-        console.log('CASH_CD changed to:', newValue); // CASH_CD의 새로운 값 출력
+        // console.log('CASH_CD changed to:', newValue); // CASH_CD의 새로운 값 출력
 
         if (newValue && newValue !== '') {
           grid.editOptions.commitWhenExitLast = true; // Tap, Enter키 입력시 커밋(행이동 or 행 추가) 가능

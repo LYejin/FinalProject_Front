@@ -135,13 +135,13 @@ const FixedFundSelectBoxWrapper = ({
   } = FundTypeModel();
 
   const handleOptionChange = option => {
-    console.log('라디오', option);
+    // console.log('라디오', option);
     setSelectedOption(option);
   };
 
   const onSearchGridSubmit = async SearchData => {
     SearchData.CASH_FG = selectedOption;
-    console.log('라디오', SearchData, selectUseYN);
+    // console.log('라디오', SearchData, selectUseYN);
     searchGrid.grid.showProgress(); //데이터 로딩바 생성
     searchGrid.grid.cancel();
     searchGrid.provider.clearRows();
@@ -281,16 +281,16 @@ const FixedFundSelectBoxWrapper = ({
   };
 
   const sendValuesToParent = () => {
-    console.log('버튼을 눌러보았다', {
-      divCode,
-      cashCode,
-      gtradeCode,
-      ftradeCode,
-      startStart,
-      startEnd,
-      endStart,
-      endEnd,
-    });
+    // console.log('버튼을 눌러보았다', {
+    //   divCode,
+    //   cashCode,
+    //   gtradeCode,
+    //   ftradeCode,
+    //   startStart,
+    //   startEnd,
+    //   endStart,
+    //   endEnd,
+    // });
     setSelectedDivCd(divCode);
     onValuesChange({
       divCode,

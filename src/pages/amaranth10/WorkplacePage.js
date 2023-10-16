@@ -109,7 +109,7 @@ const WorkplacePage = () => {
     setSelectedImage(imageData);
     setShowUploadDiv(false);
     setIsImageUploaded(true);
-    console.log('Selected Image Data:', imageData);
+    // console.log('Selected Image Data:', imageData);
   };
 
   const handleClick = () => {
@@ -144,7 +144,7 @@ const WorkplacePage = () => {
 
   // 우편번호
   const onChangeOpenPost = () => {
-    console.log(isOpenPost);
+    // console.log(isOpenPost);
     setIsOpenPost(!isOpenPost);
   };
   const onCompletePost = data => {
@@ -253,22 +253,22 @@ const WorkplacePage = () => {
         '/system/user/WorkplaceManage/getList'
       );
       setWorkplaceData(response.data);
-      console.log('데이터입니다', workplaceData);
-      console.log('데이터입니다아아앙', workplaceData[0].div_CD);
+      // console.log('데이터입니다', workplaceData);
+      // console.log('데이터입니다아아앙', workplaceData[0].div_CD);
     } catch (error) {
       console.error('Error fetching employee list:', error);
     }
   };
 
   const SearchWorkplace = async (divCd1, divYn1, coCd1) => {
-    console.log('부르셨습니까?');
+    // console.log('부르셨습니까?');
     if (divCd1 === '' && divYn1 === '' && coCd1 === '') {
       try {
         const response = await authAxiosInstance.get(
           '/system/user/WorkplaceManage/getList'
         );
         setWorkplaceData(response.data);
-        console.log(response.data.length);
+        // console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
           const firstCoCd = response.data[0].co_CD;
@@ -278,9 +278,11 @@ const WorkplacePage = () => {
             icon: 'error',
             title: '검색 실패',
             text: '조건에 맞는 사업장이 존재하지 않습니다.',
+            showConfirmButton: false,
+            timer: 1000,
           });
         }
-        console.log(workplaceData);
+        // console.log(workplaceData);
       } catch (error) {
         console.error('Error fetching employee list:', error);
       }
@@ -296,10 +298,10 @@ const WorkplacePage = () => {
         const response = await authAxiosInstance.get(
           `/system/user/WorkplaceManage/getList?${queryParams.toString()}`
         );
-        console.log(queryParams.toString());
+        // console.log(queryParams.toString());
         setWorkplaceData(response.data);
-        console.log(response.data, '는 뭘까용?');
-        console.log(response.data.length);
+        // console.log(response.data, '는 뭘까용?');
+        // console.log(response.data.length);
         if (response.data.length > 0) {
           const firstDivCd = response.data[0].div_CD;
           const firstCoCd = response.data[0].co_CD;
@@ -308,10 +310,12 @@ const WorkplacePage = () => {
           Swal.fire({
             icon: 'error',
             title: '검색 실패',
-            text: '조건에 맞는 사업장이 존재하지 않습니다.',
+            // text: '조건에 맞는 사업장이 존재하지 않습니다.',
+            showConfirmButton: false,
+            timer: 1000,
           });
         }
-        console.log(workplaceData);
+        // console.log(workplaceData);
       } catch (error) {
         console.error('Error fetching employee list:', error);
       }
@@ -332,7 +336,7 @@ const WorkplacePage = () => {
           },
         }
       );
-      console.log('dfsdfasdfsfasdfsd', response.data);
+      // console.log('dfsdfasdfsfasdfsd', response.data);
       const fetchedWorkplaceDetailData = response.data;
       const openDate = parseDateString(fetchedWorkplaceDetailData.open_DT);
       const closeDate = parseDateString(fetchedWorkplaceDetailData.close_DT);
@@ -414,11 +418,11 @@ const WorkplacePage = () => {
   };
 
   const onSubmit = async data => {
-    console.log('이거왜', isAdding);
-    console.log('인서트입니다.');
-    console.log('당연히 안나오겠지만,', data.div_NM);
-    console.log('당연히 안나오겠지만,', data.div_CD);
-    console.log('Submitted Data: ', data);
+    // console.log('이거왜', isAdding);
+    // console.log('인서트입니다.');
+    // console.log('당연히 안나오겠지만,', data.div_NM);
+    // console.log('당연히 안나오겠지만,', data.div_CD);
+    // console.log('Submitted Data: ', data);
     if (isAdding) {
       const Workpdata = {
         div_CD: data?.div_CD || '',
@@ -454,6 +458,8 @@ const WorkplacePage = () => {
           icon: 'success',
           title: '저장 완료',
           text: '사업장 정보가 성공적으로 저장되었습니다.',
+          showConfirmButton: false,
+          timer: 1000,
         });
         fetchWorkplaceData();
         FetchWorkplaceDetailInfo(Workpdata.div_CD, Workpdata.co_CD);
@@ -463,6 +469,8 @@ const WorkplacePage = () => {
           icon: 'error',
           title: '저장 실패',
           text: '사업장 정보 저장에 실패했습니다. 다시 시도해주세요.',
+          showConfirmButton: false,
+          timer: 1000,
         });
       }
     } else if (!isAdding) {
@@ -470,13 +478,15 @@ const WorkplacePage = () => {
         Swal.fire({
           icon: 'error',
           title: '변경된 내용이 없습니다.',
+          showConfirmButton: false,
+          timer: 1000,
         });
         return;
       }
 
-      console.log('update 함수 실행!');
+      // console.log('update 함수 실행!');
       try {
-        console.log(data);
+        // console.log(data);
 
         const mergedData = {
           ...changeFormData,
@@ -487,15 +497,17 @@ const WorkplacePage = () => {
           '/system/user/WorkplaceManage/update',
           mergedData
         );
-        console.log('왜 모르지', mergedData);
+        // console.log('왜 모르지', mergedData);
         const updatedData = { ...data, ...changeFormData };
         setChangeFormData(updatedData);
 
-        console.log(response.data);
+        // console.log(response.data);
         Swal.fire({
           icon: 'success',
           title: '업데이트 완료',
           text: '사업장 정보가 성공적으로 업데이트되었습니다.',
+          showConfirmButton: false,
+          timer: 1000,
         });
       } catch (error) {
         console.error('Error updating workplace:', error);
@@ -503,6 +515,8 @@ const WorkplacePage = () => {
           icon: 'error',
           title: '업데이트 실패',
           text: '사업장 정보 업데이트에 실패했습니다. 다시 시도해주세요.',
+          showConfirmButton: false,
+          timer: 1000,
         });
       }
     }
@@ -519,6 +533,8 @@ const WorkplacePage = () => {
         icon: 'error',
         title: '잘못된 요청',
         text: '이미 삭제된 사업장입니다.',
+        showConfirmButton: false,
+        timer: 1000,
       });
       return;
     }
@@ -533,6 +549,8 @@ const WorkplacePage = () => {
           icon: 'success',
           title: '삭제완료',
           text: '사업장 정보가 삭제되었습니다.',
+          showConfirmButton: false,
+          timer: 1000,
         });
         FetchWorkplaceDetailInfo(data.div_CD, data.co_CD);
         console.log('Workplace deleted successfully');
