@@ -9,6 +9,7 @@ const SelectWorkplaceListWrapper = ({
   FetchWorkplaceDetailInfo,
   handleAddClick,
   isAdding,
+  onClickInserFunction,
 }) => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
@@ -16,7 +17,6 @@ const SelectWorkplaceListWrapper = ({
     setSelectedItemIndex(0);
   }, []);
 
-  console.log('호우', data);
   const selectListWrapper = {
     position: 'relative',
     minWidth: width,

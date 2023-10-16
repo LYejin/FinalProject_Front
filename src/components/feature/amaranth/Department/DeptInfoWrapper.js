@@ -32,6 +32,7 @@ const DeptInfoWrapper = ({
   addressDetail,
   onChangeOpenPost,
   onChangeOpenDeptList,
+  handleDivClick,
 }) => {
   // console.log('바든데이터', data);
   // console.log('과자과', data.mdept_CD);
@@ -227,6 +228,7 @@ const DeptInfoWrapper = ({
                 type="button"
                 className="MdeptcustomButton"
                 style={{ float: 'left' }}
+                onClick={() => handleDivClick('0')}
               >
                 <AiOutlineApartment />
               </button>
