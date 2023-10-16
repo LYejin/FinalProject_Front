@@ -492,7 +492,7 @@ const EmployeeModel = ({
         icon: 'success',
         title: '사원정보가 수정되었습니다.',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
       });
       console.log('update 버튼');
       console.log(changeFormData);
@@ -533,7 +533,7 @@ const EmployeeModel = ({
         icon: 'error',
         title: '수정된 정보가 없습니다.',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
       });
     }
 
@@ -544,7 +544,7 @@ const EmployeeModel = ({
         icon: 'success',
         title: '사원이 추가되었습니다.',
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1000,
       });
       const userData = {
         emp_CD: data?.emp_CD,
