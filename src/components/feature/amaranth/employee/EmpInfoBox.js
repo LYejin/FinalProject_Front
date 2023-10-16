@@ -55,13 +55,13 @@ const EmpInfoBox = ({
                     ref={imgRef}
                   />
                   <div className="userImageLabel">
-                    {state.imgPriviewFile ? (
-                      <img src={state.imgPriviewFile} alt="userImage" />
+                    {state?.imgPriviewFile ? (
+                      <img src={state?.imgPriviewFile} alt="userImage" />
                     ) : (
                       <img
                         src={
-                          state.imgFile
-                            ? state.imgFile
+                          state?.imgFile
+                            ? state?.imgFile
                             : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
                         }
                         alt="userImage"
@@ -75,11 +75,11 @@ const EmpInfoBox = ({
                   >
                     <i className="fa-solid fa-paperclip"></i>
                   </label>
-                  {(state.imgFile || state.imgPriviewFile) && (
+                  {state?.imgFile && (
                     <button
                       type="button"
                       className="imageButtonWrapper2"
-                      onClick={actions.handleImageRemove}
+                      onClick={actions?.handleImageRemove}
                     >
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -96,15 +96,15 @@ const EmpInfoBox = ({
                 <div className="empInfoCompanySelectBox">
                   <EmpInfoCompanySelectBox
                     width={230}
-                    data={state.companyList}
-                    setWorkplaceSelect={state.setWorkplaceSelect}
-                    setCompany={state.setCompany}
-                    company={state.company}
-                    setWorkplaceList={state.setWorkplaceList}
-                    clickYN={state.clickYN}
+                    data={state?.companyList}
+                    setWorkplaceSelect={state?.setWorkplaceSelect}
+                    setCompany={state?.setCompany}
+                    company={state?.company}
+                    setWorkplaceList={state?.setWorkplaceList}
+                    clickYN={state?.clickYN}
                     register={register}
                     errors={errors}
-                    errorName={state.errorName}
+                    errorName={state?.errorName}
                     setError={setError}
                     getValues={getValues}
                     clearErrors={clearErrors}
@@ -127,27 +127,27 @@ const EmpInfoBox = ({
                         border:
                           errors?.dept_CD &&
                           (state.checkDBErrorYN?.dept_CD_ERROR ||
-                            state.errorName === 'dept_CD')
+                            state?.errorName === 'dept_CD')
                             ? '1px solid red'
                             : '1px solid #ccc',
                       }}
                       defaultValue={
-                        state.selectedDeptNm
-                          ? `${state.selectedDivCd}. ${state.selectedDivNm} / ${state.selectedDeptCd}. ${state.selectedDeptNm}`
-                          : state.deptAndDivData
+                        state?.selectedDeptNm
+                          ? `${state?.selectedDivCd}. ${state?.selectedDivNm} / ${state.selectedDeptCd}. ${state.selectedDeptNm}`
+                          : state?.deptAndDivData
                       }
-                      onChange={actions.onChangeDeptAndDiv}
-                      onFocus={actions.onFocusError}
+                      onChange={actions?.onChangeDeptAndDiv}
+                      onFocus={actions?.onFocusError}
                       //onBlur={actions.onBlurfinanceCDData}
-                      onKeyDown={actions.onKeyDownEnterFin}
+                      onKeyDown={actions?.onKeyDownEnterFin}
                     />
                     <FaSitemap
                       className="FFInputIconStyle"
                       size={20}
-                      onClick={actions.onChangeOpenDeptModal}
+                      onClick={actions?.onChangeOpenDeptModal}
                     />
                     {(state.checkDBErrorYN?.dept_CD_ERROR ||
-                      state.errorName === 'dept_CD') && (
+                      state?.errorName === 'dept_CD') && (
                       <ErrorMessage
                         errors={errors}
                         name="dept_CD"
@@ -198,8 +198,8 @@ const EmpInfoBox = ({
                     backgroundColor: state?.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
                   disabled={state?.clickYN}
-                  onFocus={actions.onFocusError}
-                  onChange={actions.onChangeDBDataSearch}
+                  onFocus={actions?.onFocusError}
+                  onChange={actions?.onChangeDBDataSearch}
                 />
                 {(state.checkDBErrorYN?.emp_CD_ERROR ||
                   state.errorName === 'emp_CD') && (
@@ -229,12 +229,12 @@ const EmpInfoBox = ({
                   defaultValue={state.data?.kor_NM}
                   style={{
                     border:
-                      errors.kor_NM && state.errorName === 'kor_NM'
+                      errors.kor_NM && state?.errorName === 'kor_NM'
                         ? '1px solid red'
                         : '1px solid #ccc',
                   }}
                   maxLength="20"
-                  onFocus={actions.onFocusError}
+                  onFocus={actions?.onFocusError}
                 />
                 {state?.errorName === 'kor_NM' && (
                   <ErrorMessage
@@ -272,11 +272,11 @@ const EmpInfoBox = ({
                     backgroundColor: state.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
                   disabled={state?.clickYN}
-                  onFocus={actions.onFocusError}
-                  onChange={actions.onChangeDBDataSearch}
+                  onFocus={actions?.onFocusError}
+                  onChange={actions?.onChangeDBDataSearch}
                 />
                 {(state.checkDBErrorYN?.username_ERROR ||
-                  state.errorName === 'username') && (
+                  state?.errorName === 'username') && (
                   <ErrorMessage
                     errors={errors}
                     name="username"
@@ -308,18 +308,18 @@ const EmpInfoBox = ({
                   style={{
                     border:
                       errors?.email_ADD &&
-                      (state.checkDBErrorYN?.email_ADD_ERROR ||
-                        state.errorName === 'email_ADD')
+                      (state?.checkDBErrorYN?.email_ADD_ERROR ||
+                        state?.errorName === 'email_ADD')
                         ? '1px solid red'
                         : '1px solid #ccc',
-                    backgroundColor: state.clickYN ? '#f2f2f2' : '#fef4f4',
+                    backgroundColor: state?.clickYN ? '#f2f2f2' : '#fef4f4',
                   }}
                   disabled={state?.clickYN}
-                  onFocus={actions.onFocusError}
-                  onChange={actions.onChangeDBDataSearch}
+                  onFocus={actions?.onFocusError}
+                  onChange={actions?.onChangeDBDataSearch}
                 />
                 {(state.checkDBErrorYN?.email_ADD_ERROR ||
-                  state.errorName === 'email_ADD') && (
+                  state?.errorName === 'email_ADD') && (
                   <ErrorMessage
                     errors={errors}
                     name="email_ADD"
@@ -346,14 +346,14 @@ const EmpInfoBox = ({
                   )}
                   style={{
                     border:
-                      errors.password && state.errorName === 'password'
+                      errors.password && state?.errorName === 'password'
                         ? '1px solid red'
                         : '1px solid #ccc',
                   }}
                   maxLength="50"
-                  onFocus={actions.onFocusError}
+                  onFocus={actions?.onFocusError}
                 />
-                {state.errorName === 'password' && (
+                {state?.errorName === 'password' && (
                   <ErrorMessage
                     errors={errors}
                     name="password"
@@ -378,7 +378,7 @@ const EmpInfoBox = ({
                   name="gender_FG"
                   value="W"
                   checked={state?.selectedRadioValue === 'W'}
-                  onChange={actions.handleRadioChange}
+                  onChange={actions?.handleRadioChange}
                 />
                 여자
                 <input
@@ -387,7 +387,7 @@ const EmpInfoBox = ({
                   name="gender_FG"
                   value="M"
                   checked={state?.selectedRadioValue === 'M'}
-                  onChange={actions.handleRadioChange}
+                  onChange={actions?.handleRadioChange}
                 />
                 남자
               </div>
@@ -397,13 +397,13 @@ const EmpInfoBox = ({
               <EmpInfoEnrlSelectBox
                 width={'calc(100% - 7px)'}
                 data={['재직', '휴직', '퇴직']}
-                infoBoxEnrlData={state.infoBoxEnrlData}
-                setInfoBoxEnrlData={state.setInfoBoxEnrlData}
-                clickYN={state.clickYN}
+                infoBoxEnrlData={state?.infoBoxEnrlData}
+                setInfoBoxEnrlData={state?.setInfoBoxEnrlData}
+                clickYN={state?.clickYN}
                 register={register}
                 errors={errors}
-                errorName={state.errorName}
-                setChangeFormData={state.setChangeFormData}
+                errorName={state?.errorName}
+                setChangeFormData={state?.setChangeFormData}
               />
             </td>
           </tr>
@@ -430,10 +430,10 @@ const EmpInfoBox = ({
                 />
                 <EmpEmailPersonalSelectBox
                   width={'calc(100% - 300px)'}
-                  onClickEvent={actions.onChangePersonalMAIL}
-                  emailPersonalData={state.emailPersonalData}
-                  setEmailPersonalData={state.setEmailPersonalData}
-                  setChangeFormData={state.setChangeFormData}
+                  onClickEvent={actions?.onChangePersonalMAIL}
+                  emailPersonalData={state?.emailPersonalData}
+                  setEmailPersonalData={state?.setEmailPersonalData}
+                  setChangeFormData={state?.setChangeFormData}
                 />
               </div>
             </td>
@@ -461,10 +461,10 @@ const EmpInfoBox = ({
                 />
                 <EmpEmailSalarySelectBox
                   width={'calc(100% - 300px)'}
-                  onClickEvent={actions.onChangeSalaryMAIL}
-                  emailSalaryData={state.emailSalaryData}
-                  setEmailSalaryData={state.setEmailSalaryData}
-                  setChangeFormData={state.setChangeFormData}
+                  onClickEvent={actions?.onChangeSalaryMAIL}
+                  emailSalaryData={state?.emailSalaryData}
+                  setEmailSalaryData={state?.setEmailSalaryData}
+                  setChangeFormData={state?.setChangeFormData}
                 />
               </div>
             </td>
@@ -477,7 +477,7 @@ const EmpInfoBox = ({
                 className="inputStyle"
                 name="tel"
                 {...register('tel')}
-                onChange={actions.onChangeTel}
+                onChange={actions?.onChangeTel}
                 defaultValue={state.data?.tel}
                 maxLength="13"
               />
@@ -489,7 +489,7 @@ const EmpInfoBox = ({
                 name="home_TEL"
                 className="inputStyle"
                 {...register('home_TEL')}
-                onChange={actions.onChangeHomeTel}
+                onChange={actions?.onChangeHomeTel}
                 defaultValue={state.data?.home_TEL}
                 maxLength="13"
               />
@@ -506,13 +506,13 @@ const EmpInfoBox = ({
                 name="zipcode"
                 {...register('zipcode')}
                 defaultValue={
-                  state.address ? state.address : state.data?.zipcode
+                  state?.address ? state?.address : state.data?.zipcode
                 }
                 maxLength="7"
               />
               <EventButton
                 data={'우편번호'}
-                onClickEvent={actions.onChangeOpenPost}
+                onClickEvent={actions?.onChangeOpenPost}
               ></EventButton>
             </td>
           </tr>
@@ -524,7 +524,7 @@ const EmpInfoBox = ({
                 name="addr"
                 {...register('addr')}
                 defaultValue={
-                  state.addressDetail ? state.addressDetail : state.data?.addr
+                  state?.addressDetail ? state?.addressDetail : state.data?.addr
                 }
                 maxLength="140"
               />
@@ -544,9 +544,9 @@ const EmpInfoBox = ({
             <th className="headerCellStyle">입사일</th>
             <td className="cellStyle">
               <DatePicker
-                selected={state.openDate}
+                selected={state?.openDate}
                 name="join_DT"
-                onChange={actions.handleOpenDateChange}
+                onChange={actions?.handleOpenDateChange}
                 dateFormat="yyyy-MM-dd"
                 className="datePickerInputStyle"
                 locale={ko}
