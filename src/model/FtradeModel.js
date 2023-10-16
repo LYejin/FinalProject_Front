@@ -169,6 +169,13 @@ const FtradeModel = ({
     }
   };
 
+  const getEmpListReal = async () => {
+    const response = await authAxiosInstance(
+      'accounting/user/Strade/getSFtradeList'
+    );
+    setEmpList(response?.data);
+  };
+
   useEffect(() => {
     getEmpList();
     setChangeForm(false);
@@ -296,18 +303,19 @@ const FtradeModel = ({
   const onClickSearchEmpList = () => {
     const { select_TR_CD, select_TR_NM, select_BA_NB_TR } = getValues();
     console.log(select_TR_CD, select_TR_NM, select_BA_NB_TR, selectUseYN);
+
     const params = {};
 
-    if (select_TR_CD !== '') {
+    if (select_TR_CD !== '' && select_TR_CD !== undefined) {
       params.TR_CD = select_TR_CD;
     }
-    if (select_TR_NM !== '') {
+    if (select_TR_NM !== '' && select_TR_NM !== undefined) {
       params.TR_NM = select_TR_NM;
     }
-    if (select_BA_NB_TR !== '') {
+    if (select_BA_NB_TR !== '' && select_BA_NB_TR !== undefined) {
       params.BA_NB_TR = select_BA_NB_TR;
     }
-    if (selectUseYN !== '') {
+    if (selectUseYN !== '' && selectUseYN !== undefined) {
       params.USE_YN = selectUseYN;
     }
 
@@ -352,11 +360,11 @@ const FtradeModel = ({
     const getEndDT = closeDate ? getNowJoinTime(closeDate) : '';
 
     if (checkDBErrorYN.tr_CD_ERROR) {
-      setError('tr_CD', { message: '거래처 코드가 중복되었습니다.' });
+      setError('tr_CD', { message: '거래처코드가 중복되었습니다.' });
       Swal.fire({
         position: 'center',
         icon: 'error',
-        title: '거래처 코드가 중복되었습니다.',
+        title: '거래처코드가 중복되었습니다.',
         showConfirmButton: false,
         timer: 1000,
       });
@@ -383,7 +391,7 @@ const FtradeModel = ({
       Swal.fire({
         position: 'center',
         icon: 'success',
-        title: '금융거래처 정보가 수정되었습니다.',
+        title: '금융거래처가 수정되었습니다.',
         showConfirmButton: false,
         timer: 1000,
       });
@@ -398,15 +406,7 @@ const FtradeModel = ({
       );
       const responseGetList = await authAxiosInstance(
         `accounting/user/Strade/getSFtradeList`
-      ).error(err => {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: '금융거래처 수정이 실패했습니다.',
-          showConfirmButton: false,
-          timer: 1000,
-        });
-      });
+      );
       setEmpList(responseGetList.data);
       setChangeForm(false);
       setChangeFormData();
@@ -450,8 +450,6 @@ const FtradeModel = ({
         bank_CD: financeCDChangeData?.bank_CD,
       };
 
-      setTR_CD(data?.tr_CD);
-
       setCompany(company);
 
       console.log('insert 버튼');
@@ -460,16 +458,17 @@ const FtradeModel = ({
         'accounting/user/Strade/stradeInsert',
         userData
       );
-      console.log(response.data);
+      setTR_CD(response?.data);
+      console.log(response?.data);
       setEmpList([
         ...empList,
         {
-          tr_CD: response.data,
+          tr_CD: response?.data,
           tr_NM: data?.tr_NM,
           BA_NB_TR: data?.BA_NB_TR,
         },
       ]);
-      setData({ ...userData, tr_CD: response.data });
+      setData({ ...userData, tr_CD: response?.data });
       reset();
       setChangeForm(false);
       setChangeFormData();
@@ -592,6 +591,13 @@ const FtradeModel = ({
     ) {
       setCheckDBErrorYN({ ...checkDBErrorYN, tr_NM_ERROR: true });
       setError('tr_NM', { message: `거래처명을 입력해주세요.` });
+    } else if (
+      e.target.name === 'tr_NM' &&
+      e.target.value !== '' &&
+      e.target.value !== undefined
+    ) {
+      setCheckDBErrorYN({ ...checkDBErrorYN, tr_NM_ERROR: false });
+      clearErrors();
     }
     setErrorName();
   };
@@ -634,14 +640,6 @@ const FtradeModel = ({
   // list 삭제 이벤트
   const removeStradelist = async () => {
     if (deleteCheck === 'listDelete') {
-      const response = await authAxiosInstance.delete(
-        'accounting/user/Strade/stradeDelete',
-        {
-          data: { tr_CD: Array.from(checkItems), tr_FG: '3' },
-        }
-      );
-      setDeleteListCount(Array.from(checkItems).length);
-      setDeleteStradeInfo(response.data);
       Swal.fire({
         title: `체크된 데이터 : ${Array.from(checkItems).length}건`,
         text: '체크된 데이터를 모두 삭제하시겠습니까?',
@@ -651,9 +649,23 @@ const FtradeModel = ({
         cancelButtonColor: '#d33',
         confirmButtonText: '확인',
         cancelButtonText: '취소',
-      }).then(result => {
+      }).then(async result => {
         if (result.isConfirmed) {
+          const response = await authAxiosInstance.delete(
+            'accounting/user/Strade/stradeDelete',
+            {
+              data: { tr_CD: Array.from(checkItems), tr_FG: '3' },
+            }
+          );
+          setDeleteListCount(Array.from(checkItems).length);
           setDeleteListModal(true);
+          setDeleteStradeInfo(response.data);
+          getEmpListReal();
+          checkItems.clear();
+          setCheckItems(checkItems);
+          setIsAllChecked(false);
+          setDeleteYN(false);
+          // setDeleteListCount(0);
         }
       });
     } else if (deleteCheck === 'gridDelete') {

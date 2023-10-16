@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { authAxiosInstance } from '../../../../axios/axiosInstance';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import DateSelectBox from './DateSelectBox';
 
-const FixedQuarterChart = ({ children }) => {
-  const [div_CD, setDiv_CD] = useState('5555');
-  const [useCoCd, setUseCoCd] = useState('1004');
+const FixedQuarterChart = ({ DISP_SQ, DIV_CD }) => {
   const [inputYear, setInputYear] = useState('2023');
-  const [DISP_SQ, setDISP_SQ] = useState('1');
   const [quarterlyAmount, setQuarterlyAmount] = useState([]);
 
   const COLORS = [
@@ -25,8 +23,7 @@ const FixedQuarterChart = ({ children }) => {
         `/accounting/user/AcashFixManage/quarterly/`,
         {
           params: {
-            DIV_CD: div_CD,
-            CO_CD: useCoCd,
+            DIV_CD: DIV_CD,
             inputYear: inputYear,
             DISP_SQ: DISP_SQ,
           },
@@ -41,7 +38,7 @@ const FixedQuarterChart = ({ children }) => {
 
   useEffect(() => {
     GetQuarterAmount();
-  }, []);
+  }, [inputYear, DISP_SQ, DIV_CD]);
 
   const RenderCustomLegend = ({ payload }) => {
     return (
@@ -75,6 +72,10 @@ const FixedQuarterChart = ({ children }) => {
         ))}
       </div>
     );
+  };
+
+  const handleYearChange = e => {
+    setInputYear(e.target.value);
   };
 
   const renderPieCharts = () => {
@@ -115,8 +116,9 @@ const FixedQuarterChart = ({ children }) => {
               ))}
             </Pie>
             <text x={125} y={170} textAnchor="middle" verticalAnchor="middle">
-              {`총 금액: ${data.TOTAL_AMOUNT}원`}
+              {`총 금액: ${data.TOTAL_AMOUNT.toLocaleString()}원`}
             </text>
+
             <Legend
               verticalAlign="bottom"
               height={36}
@@ -131,6 +133,11 @@ const FixedQuarterChart = ({ children }) => {
 
   return (
     <>
+      <DateSelectBox
+        type={'year'}
+        value={inputYear}
+        onChange={handleYearChange}
+      />
       <div
         style={{
           display: 'flex',

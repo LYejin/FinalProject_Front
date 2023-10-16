@@ -11,11 +11,9 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-const FixedYearChart = ({ children }) => {
-  const [div_CD, setDiv_CD] = useState('5555');
-  const [useCoCd, setUseCoCd] = useState('1004');
+import DateSelectBox from './DateSelectBox';
+const FixedYearChart = ({ DISP_SQ, DIV_CD, isRender }) => {
   const [inputYear, setInputYear] = useState('2023');
-  const [DISP_SQ, setDISP_SQ] = useState('1');
   const [YearAomout, setYearAmount] = useState('');
 
   const GetYearAmount = async () => {
@@ -24,8 +22,7 @@ const FixedYearChart = ({ children }) => {
         `/accounting/user/AcashFixManage/yearlyAmounts/`,
         {
           params: {
-            DIV_CD: div_CD,
-            CO_CD: useCoCd,
+            DIV_CD: DIV_CD,
             inputYear: inputYear,
             DISP_SQ: DISP_SQ,
           },
@@ -51,18 +48,28 @@ const FixedYearChart = ({ children }) => {
     }
   };
 
+  const handleYearChange = e => {
+    setInputYear(e.target.value);
+  };
+
   useEffect(() => {
     GetYearAmount();
-  }, []);
+  }, [inputYear, DISP_SQ, DIV_CD, isRender]);
 
   return (
     <>
+      <DateSelectBox
+        type={'year'}
+        value={inputYear}
+        onChange={handleYearChange}
+      />
       <ResponsiveContainer>
         <ComposedChart
           width={600}
-          height={400}
+          height={600}
           data={YearAomout}
-          margin={{ top: 40, right: 40, bottom: 30, left: 40 }}
+          margin={{ top: 50, right: 40, bottom: 30, left: 40 }}
+          startAnimation="disabled"
         >
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis dataKey="연도" />
@@ -88,12 +95,7 @@ const FixedYearChart = ({ children }) => {
             barSize={30}
             fill="#7ac4c0"
           />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="고정 자금수"
-            stroke="#ff7300"
-          />
+          <Line yAxisId="right" dataKey="고정 자금수" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
     </>

@@ -88,6 +88,19 @@ const StradeCodeHelpModal = ({
       /////////////
     });
 
+    gridView.setHeader({
+      height: 35,
+      background: 'red',
+      foreground: '#fff',
+      fontSize: 14,
+      paddingLeft: 10,
+    });
+    gridView.setDisplayOptions({
+      fitStyle: 'evenFill',
+      rowHeight: 35,
+      columnMovable: false,
+      selectionStyle: 'none',
+    });
     //
     gridView.onCellDblClicked = function (grid, clickData) {
       if (InputState === 1) {

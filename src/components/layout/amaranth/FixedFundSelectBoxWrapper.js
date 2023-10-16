@@ -20,8 +20,13 @@ import SubmitButton from '../../common/button/SubmitButton';
 import FundTypeSearch from '../../feature/amaranth/fundType/FundTypeSearch';
 import { useForm } from 'react-hook-form';
 import { ko } from 'date-fns/esm/locale';
-
-const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
+import { redirect } from '../../../../node_modules/react-router-dom/dist/index';
+import { BiTrash } from 'react-icons/bi';
+const FixedFundSelectBoxWrapper = ({
+  onValuesChange,
+  onChangeFunction,
+  setSelectedDivCd,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false); //사업장 모달 State
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false); //거래처 모달 State
   const [isOpenCash, setIsOpenCash] = useState(false); //자금과목 모달 State
@@ -173,6 +178,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
     if (divCode !== null && !hasSent.current) {
       // divCode가 초기값(null)이 아니고, 아직 sendValuesToParent를 호출하지 않았을 때
       sendValuesToParent();
+      setSelectedDivCd(divCode);
       hasSent.current = true; // 함수를 호출했으므로 flag를 true로 설정
     }
   }, [divCode]);
@@ -285,6 +291,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
       endStart,
       endEnd,
     });
+    setSelectedDivCd(divCode);
     onValuesChange({
       divCode,
       cashCode,
@@ -321,7 +328,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
             onChange={e => setInputValue(e.target.value)} // 사용자의 입력을 상태에 반영
             onBlur={handleBlur} // onBlur 이벤트가 발생할 때 handleBlurOrEnter 함수 실행
             onKeyDown={e => e.key === 'Enter' && handleEnter()} // onKeyDown 이벤트를 처리
-            style={{ backgroundColor: 'pink' }}
+            style={{ backgroundColor: '#fef4f4' }}
           />
           <FaRegListAlt
             className="FFInputIconStyle"
@@ -539,9 +546,12 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
             style={{
               marginLeft: -60,
               marginRight: 30,
+              color: 'red',
+              fontSize: '28px',
             }}
+            className="FFcustomButton"
           >
-            취소
+            <BiTrash />
           </button>
         )}
 
@@ -575,6 +585,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
                 startDate={endStartDate}
                 endDate={endEndDate}
                 inline
+                locale={ko}
               />
               {endStartDate && (
                 <DatePicker
@@ -591,6 +602,7 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
                   minDate={
                     new Date(endStartDate.getTime() + 24 * 60 * 60 * 1000)
                   }
+                  locale={ko}
                   inline
                 />
               )}
@@ -602,9 +614,12 @@ const FixedFundSelectBoxWrapper = ({ onValuesChange, onChangeFunction }) => {
             onClick={handleDateReset}
             style={{
               marginLeft: -40,
+              color: 'red',
+              fontSize: '28px',
             }}
+            className="FFcustomButton"
           >
-            취소
+            <BiTrash />
           </button>
         )}
       </div>

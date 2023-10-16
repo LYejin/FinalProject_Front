@@ -139,10 +139,10 @@ const Sidebar2 = () => {
                   </Link>
                   <Link
                     className={`nav-linkShow ${
-                      menu === 'Department' && 'activeMenu'
+                      menu === 'FixedFund' && 'activeMenu'
                     }`}
-                    to="/Department"
-                    onClick={() => onClickMenu('Department')}
+                    to="/FixedFund"
+                    onClick={() => onClickMenu('FixedFund')}
                   >
                     고정자금등록
                   </Link>

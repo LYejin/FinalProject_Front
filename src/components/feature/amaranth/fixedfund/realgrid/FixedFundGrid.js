@@ -16,11 +16,26 @@ function FixedFundGrid({
   setHandleDeleteRows,
   isOpenCash,
   setInputFixedCashCD,
+  setChartShow,
+  excelExport,
+  setRender,
+  isRender,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
   const [inputValue, setInputValue] = useState(''); // 입력 값 관리를 위한 state
+  const [gridHeight, setGridHeight] = useState('600px');
   const realgridElement = useRef(null);
+
+  const toggleGridHeight = () => {
+    if (gridHeight === '200px') {
+      setGridHeight('600px');
+      setChartShow(false);
+    } else {
+      setGridHeight('200px');
+      setChartShow(true);
+    }
+  };
 
   const queryParams = new URLSearchParams();
 
@@ -120,6 +135,7 @@ function FixedFundGrid({
       );
       //삭제된 데이터만 안보이게
       dataProvider.removeRows(checkedRows);
+      setRender(prev => !prev);
       // 알림 표시
       Swal.fire({
         icon: 'success',
@@ -164,6 +180,7 @@ function FixedFundGrid({
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
+          setRender(prev => !prev);
         })
         .catch(error => {
           console.error(error);
@@ -183,6 +200,7 @@ function FixedFundGrid({
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
+          setRender(prev => !prev);
         })
         .catch(error => {
           console.error(error);
@@ -213,6 +231,30 @@ function FixedFundGrid({
       grid: grid,
       provider: provider,
     }));
+
+    //그리드에 컨텍스트 메뉴를 생성해줍니다
+    grid.setContextMenu([
+      {
+        label: '엑셀 내보내기',
+        tag: 'excelExport',
+      },
+    ]);
+    // 그리드 내에서 컨텍스트 메뉴 항목이 클릭될 때 실행되는 함수를 정의합니다.
+    grid.onContextMenuItemClicked = function (grid, item, clickData) {
+      //handleXlsFile; excelExport excelImport
+      if (item.tag === 'excelExport') {
+        excelExport(grid, '고정자금');
+      }
+    };
+    // 그리드 내에서 컨텍스트 메뉴 팝업이 열릴 때 실행되는 함수를 정의합니다.
+    grid.onContextMenuPopup = function (grid, x, y, elementName) {
+      if (elementName.cellType === 'data') {
+        // 데이터 셀에서 컨텍스트 메뉴 팝업을 엽니다.
+        //setDataCellContextMenu(grid);
+      } else {
+        return false;
+      }
+    };
 
     // 행 추가,삽입 옵션을 설정합니다.
     grid.setEditOptions({
@@ -463,10 +505,13 @@ function FixedFundGrid({
           marginTop: -50,
           display: 'flex',
           justifyContent: 'flex-end',
-          width: 100,
+          width: 500,
           height: 30,
         }}
       >
+        <button className="NewBlueChartButton" onClick={toggleGridHeight}>
+          기간별 차트확인
+        </button>
         <button className="WhiteButton" onClick={handleDeleteRows}>
           행 삭제
         </button>
@@ -474,10 +519,11 @@ function FixedFundGrid({
       <div
         ref={realgridElement}
         style={{
-          height: '300px',
+          height: gridHeight,
           width: '100%',
           margin: '0 auto',
           borderTop: '1.5px solid #555',
+          transition: 'height 0.6s ease-in-out', // 애니메이션 효과 추가
         }}
       ></div>
     </div>

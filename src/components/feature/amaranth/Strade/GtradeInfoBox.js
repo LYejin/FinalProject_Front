@@ -45,7 +45,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                       name="tr_CD"
                       {...register(
                         'tr_CD',
-                        state.selectedRadioValue !== 'auto' &&
+                        state.selectedRadioValue === 'manual' &&
                           !state.clickYN && {
                             required: '거래처코드를 입력해주세요.',
                           }
@@ -347,7 +347,6 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   className="inputStyle"
                   name="website"
                   {...register('website')}
-                  onChange={actions.onChangeTel}
                   defaultValue={state.data.website}
                 />
               </td>
@@ -358,7 +357,6 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   name="email"
                   className="inputStyle"
                   {...register('email')}
-                  onChange={actions.onChangeHomeTel}
                   defaultValue={state.data.email}
                 />
               </td>
