@@ -129,13 +129,14 @@ const FundTypePage = () => {
       !isOpenPost
     ) {
       if (!reqCASH_CD) {
-        console.log('확인용(페이지)');
+        console.log('확인용(페이지)SUM_CD');
         marsterGrid?.grid.setCurrent({
           dataRow: marsterGrid?.grid.getCurrent().dataRow,
           column: 'SUM_CD',
         });
         marsterGrid?.grid.setFocus();
       } else {
+        console.log('확인용(페이지)CASH_CD');
         marsterGrid?.grid.setCurrent({
           dataRow: marsterGrid?.grid.getCurrent().dataRow,
           column: 'CASH_CD',
@@ -591,6 +592,7 @@ const FundTypePage = () => {
               {selectedViewOption === '세로형태조회' ? (
                 <RealGrid
                   onChangeOpenPost={onChangeOpenPost}
+                  setSelectedViewOption={setSelectedViewOption}
                   loadRowData={loadRowData}
                   setCASH_CD={setCASH_CD}
                   setLEVEL_CD={setLEVEL_CD}
@@ -606,6 +608,7 @@ const FundTypePage = () => {
               ) : (
                 <FundTypeWidthView
                   loadTreeRowData={loadTreeRowData}
+                  setSelectedViewOption={setSelectedViewOption}
                   excelExport={excelExport}
                   excelImport={excelImport}
                   setMenuGrid={setMenuGrid}
