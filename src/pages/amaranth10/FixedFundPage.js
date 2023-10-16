@@ -67,7 +67,7 @@ const FixedFundPage = () => {
   const [isRender, setRender] = useState('');
 
   const handleOptionChange = option => {
-    console.log('라디오', option);
+    // console.log('라디오', option);
     setSelectedOption(option);
   };
 
@@ -105,7 +105,7 @@ const FixedFundPage = () => {
 
   const onSearchGridSubmit = async SearchData => {
     SearchData.CASH_FG = selectedOption;
-    console.log('라디오', SearchData, selectUseYN);
+    // console.log('라디오', SearchData, selectUseYN);
     searchGrid.grid.showProgress(); //데이터 로딩바 생성
     searchGrid.grid.cancel();
     searchGrid.provider.clearRows();
@@ -113,11 +113,11 @@ const FixedFundPage = () => {
     searchGrid.grid.cancel();
     loadRowData(SearchData)
       .then(loadData => {
-        console.log('검색전', CASH_CD, loadData);
+        // console.log('검색전', CASH_CD, loadData);
         if (CASH_CD !== undefined) {
           loadData = loadData.filter(item => CASH_CD !== item.CASH_CD);
         }
-        console.log('검색후', CASH_CD, loadData);
+        // console.log('검색후', CASH_CD, loadData);
         searchGrid.grid.closeProgress(); // 서버 데이터 로드 완료시 로딩바 제거
         searchGrid.provider.fillJsonData(loadData, {
           fillMode: 'set',
@@ -156,7 +156,7 @@ const FixedFundPage = () => {
       endEnd,
     } = values;
     setSearchValues(values);
-    console.log('버튼을 누른거야?');
+    // console.log('버튼을 누른거야?');
   };
 
   return (
