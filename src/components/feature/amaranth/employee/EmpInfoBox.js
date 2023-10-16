@@ -75,7 +75,7 @@ const EmpInfoBox = ({
                   >
                     <i className="fa-solid fa-paperclip"></i>
                   </label>
-                  {state?.imgFile && (
+                  {(state?.imgFile || state?.imgPriviewFile) && (
                     <button
                       type="button"
                       className="imageButtonWrapper2"

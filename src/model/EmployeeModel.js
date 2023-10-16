@@ -276,6 +276,8 @@ const EmployeeModel = ({
           setCompany(response.data?.co_CD);
           setInfoBoxEnrlData(response.data?.enrl_FG);
           setWorkplaceSelect(response.data?.div_CD);
+
+          clearErrors();
           response.data?.home_TEL &&
             setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
           response.data?.tel &&
@@ -321,6 +323,8 @@ const EmployeeModel = ({
       setCompany(response.data?.co_CD);
       setInfoBoxEnrlData(response.data?.enrl_FG);
       setWorkplaceSelect(response.data?.div_CD);
+
+      clearErrors();
       response.data?.home_TEL &&
         setValue('home_TEL', onChangePhoneNumber(response.data?.home_TEL));
       response.data?.tel &&
@@ -363,6 +367,7 @@ const EmployeeModel = ({
   const onClickInsertEmpBox = () => {
     reset();
     resetData();
+    clearErrors();
     setInfoBoxEnrlData(0);
     setEmailPersonalData('');
     setEmailSalaryData('');
@@ -494,6 +499,7 @@ const EmployeeModel = ({
         showConfirmButton: false,
         timer: 1000,
       });
+      setChangeForm(false);
       console.log('update 버튼');
       console.log(changeFormData);
       if (changeFormData && Object.keys(changeFormData).includes('home_TEL')) {

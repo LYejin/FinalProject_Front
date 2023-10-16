@@ -15,21 +15,21 @@ const baseConfig = {
 };
 
 const authConfig = {
-  baseURL: process.env.API_BASE_URL,
+  baseURL: '',
+  // timeout: 1000, 요청 최대 대기 시간
   headers: {
-    Authorization: accesstoken,
+    Authorization: getAccessToken(),
   },
   cache: 'no-store',
   withCredentials: true,
 };
 
 const imageConfig = {
-  baseURL: process.env.API_BASE_URL,
+  baseURL: '',
   headers: {
     Authorization: accesstoken,
     'Content-Type': 'multipart/form-data',
   },
-  cache: 'no-store',
   withCredentials: true,
 };
 
@@ -57,10 +57,10 @@ axiosInstance.interceptors.response.use(
 ////////////////////////////////////////////////////////////
 
 //요청 인터셉터
-// authAxiosInstance.interceptors.request.use(async config => {
-//   config.headers['Authorization'] = getAccessToken();
-//   return config;
-// });
+authAxiosInstance.interceptors.request.use(async config => {
+  config.headers['Authorization'] = getAccessToken();
+  return config;
+});
 
 //응답 인터셉터
 authAxiosInstance.interceptors.response.use(
@@ -73,6 +73,7 @@ authAxiosInstance.interceptors.response.use(
       const originalRequest = config;
       await axiosInstance('/account/user/token/getAccessToken')
         .then(response => {
+          console.log('ㅇㅇㅇㅇ', response);
           originalRequest.headers.Authorization =
             response.headers['authorization'];
           setAccessToken(response.headers['authorization']);
