@@ -134,10 +134,6 @@
   line-height: 2; /* 수직 가운데 정렬 */
 }
 
-.fundTypeWidthView .rg-focused-row {
-  background: #eff7ff !important;
-}
-
 .fundTypeWidthView .rg-focused-row td:nth-child(-n + 1) {
   background: #efe2ea;
 }

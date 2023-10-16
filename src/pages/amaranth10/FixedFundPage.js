@@ -64,6 +64,7 @@ const FixedFundPage = () => {
   const [changeFormData, setChangeFormData] = useState({});
   const [onChangeForm, setChangeForm] = useState(false);
   const [clickYN, setClickYN] = useState(true);
+  const [isRender, setRender] = useState('');
 
   const handleOptionChange = option => {
     console.log('라디오', option);
@@ -202,11 +203,14 @@ const FixedFundPage = () => {
                   setInputFixedCashCD={setInputFixedCashCD}
                   setChartShow={setChartShow}
                   excelExport={excelExport}
+                  setRender={setRender}
+                  isRender={isRender}
                 />
                 {chartShow && (
                   <FixedChartBox
                     DISP_SQ={selectedDiv}
                     selectedDivCd={selectedDivCd}
+                    isRender={isRender}
                   />
                 )}
               </FullContentWrapper>

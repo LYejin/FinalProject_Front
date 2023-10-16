@@ -15,6 +15,7 @@ import {
 } from './Realgrid-Data-FundType';
 import './FundTypeWidthView.css';
 const FundTypeWidthView = ({
+  setSelectedViewOption,
   loadTreeRowData,
   excelExport,
   excelImport,
@@ -26,9 +27,14 @@ const FundTypeWidthView = ({
   const realgridElement = useRef(null);
   const fileInput = useRef();
 
+  const handleViewOptionChange = () => {
+    setSelectedViewOption('세로형태조회');
+  };
+
   const handleFileInputClick = (e, grid) => {
     fileInput.current.click(); // Trigger file input click
   };
+
   useEffect(() => {
     // RealGrid 컨테이너 엘리먼트를 참조합니다.
     const container = realgridElement.current;
@@ -57,7 +63,9 @@ const FundTypeWidthView = ({
           itemIndex: 0,
           column: 'CASH_FG',
         });
-        grid.setFocus();
+        setTimeout(() => {
+          grid.setFocus();
+        }, 30);
       })
       .catch(error => {
         console.error(error);
@@ -95,17 +103,8 @@ const FundTypeWidthView = ({
     //헤더 높이 자동 조절 설정
     grid.setHeader({ height: 35 });
 
-    //체크바 너비  옵션 설정
-    grid.setCheckBar({ width: 30 });
-
     // 행 수정 데이터 기능 비활성화
     grid.setEditOptions({ editable: false });
-
-    //(컬럼 너비) + (행 높이) 자동 조절 설정
-    grid.setDisplayOptions({ fitStyle: 'evenFill', rowHeight: 30 });
-
-    //헤더 높이 자동 조절 설정
-    grid.setHeader({ height: 30 });
 
     //포커스된 행의 배경색 스타일 적용
     grid.setDisplayOptions({ useFocusClass: true });
@@ -131,6 +130,13 @@ const FundTypeWidthView = ({
         //setDataCellContextMenu(grid);
       } else {
         return false;
+      }
+    };
+
+    grid.onKeyDown = async (grid, event) => {
+      console.log('삭제2', event.key);
+      if (event.key === 'F8') {
+        handleViewOptionChange();
       }
     };
 

@@ -61,6 +61,36 @@ const InfoInput = forwardRef(
           }
         }
       }
+
+      if (valid === 'workp') {
+        if (valid === 'workp' && /^[0-9]{4}$/.test(value)) {
+          try {
+            const response = await authAxiosInstance.get(
+              'system/user/WorkplaceManage/workPCheck',
+              {
+                params: { coCd: CoCd, divCd: value },
+              }
+            );
+            if (response.data) {
+              // 중복이면 에러를 설정합니다.
+              setError(name, {
+                type: 'manual',
+                message: '중복된 번호입니다.',
+              });
+            } else {
+              // 중복이 아니면 에러를 클리어합니다.
+              clearErrors(name);
+            }
+          } catch (error) {
+            console.error('Error during duplicate check', error);
+            // 요청 중 오류가 발생하면 에러를 설정합니다.
+            setError(name, {
+              type: 'manual',
+              message: '회사를 선택하세요',
+            });
+          }
+        }
+      }
     };
 
     if (type === 1) {

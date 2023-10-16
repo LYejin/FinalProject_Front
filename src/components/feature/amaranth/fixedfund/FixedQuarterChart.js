@@ -116,8 +116,9 @@ const FixedQuarterChart = ({ DISP_SQ, DIV_CD }) => {
               ))}
             </Pie>
             <text x={125} y={170} textAnchor="middle" verticalAnchor="middle">
-              {`총 금액: ${data.TOTAL_AMOUNT}원`}
+              {`총 금액: ${data.TOTAL_AMOUNT.toLocaleString()}원`}
             </text>
+
             <Legend
               verticalAlign="bottom"
               height={36}
