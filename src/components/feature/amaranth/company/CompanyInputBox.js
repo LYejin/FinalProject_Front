@@ -777,8 +777,9 @@ const CompanyInputBox = ({
 
   const removeBtnClick = async () => {
     const CO_CD = formData.co_CD;
-    console.log('삭제', formData.use_YN);
-    if (formData.use_YN !== '0') {
+    const checkFormData = getValues();
+    console.log('삭제', getValues(), getValues().USE_YN);
+    if (getValues().USE_YN !== '0') {
       try {
         const response = await authAxiosInstance.put(
           'system/admin/groupManage/CompanyRemove/' + CO_CD,
@@ -795,6 +796,8 @@ const CompanyInputBox = ({
           timer: 1200,
         });
         ch_listDataSet(0);
+        setValue('USE_YN', '0');
+
         console.log('삭제검사', getValues());
       } catch (error) {
         console.log(error);

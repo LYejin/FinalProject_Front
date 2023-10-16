@@ -494,12 +494,11 @@ const GtradeModel = ({
 
       console.log('insert 버튼');
       console.log(userData);
-      const response = await authAxiosInstance.post(
-        'accounting/user/Strade/stradeInsert',
-        userData
-      );
-      setTR_CD(response?.data);
-      console.log(response.data);
+      const response = await authAxiosInstance
+        .post('accounting/user/Strade/stradeInsert', userData)
+        .then(response => {
+          setTR_CD(response?.data);
+        });
       // setEmpList([
       //   ...empList,
       //   {
