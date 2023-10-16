@@ -85,11 +85,11 @@ function RealGrid({
       if (response.data.length === 0) {
         onRowSelected('');
       } else if (response.data.length === 1) {
-        console.log('데이터가 하나 있습니다.', response.data[0]);
+        // console.log('데이터가 하나 있습니다.', response.data[0]);
         onRowSelected(response.data[0]); // 데이터가 하나 있는 경우 onRowSelected 호출
       } else {
         // 데이터가 여러개 경우 onRowSelected 호출
-        console.log('데이터가 여러 개 있습니다.');
+        // console.log('데이터가 여러 개 있습니다.');
         onOpen();
         fetchData(inputValue);
       }
