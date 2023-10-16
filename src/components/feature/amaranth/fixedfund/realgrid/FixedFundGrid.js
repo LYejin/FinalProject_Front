@@ -18,6 +18,8 @@ function FixedFundGrid({
   setInputFixedCashCD,
   setChartShow,
   excelExport,
+  setRender,
+  isRender,
 }) {
   const [dataProvider, setDataProvider] = useState(null);
   const [gridView, setGridView] = useState(null);
@@ -133,6 +135,7 @@ function FixedFundGrid({
       );
       //삭제된 데이터만 안보이게
       dataProvider.removeRows(checkedRows);
+      setRender(prev => !prev);
       // 알림 표시
       Swal.fire({
         icon: 'success',
@@ -177,6 +180,7 @@ function FixedFundGrid({
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
+          setRender(prev => !prev);
         })
         .catch(error => {
           console.error(error);
@@ -196,6 +200,7 @@ function FixedFundGrid({
         .then(response => {
           const stateValue = response.data;
           resolve(stateValue);
+          setRender(prev => !prev);
         })
         .catch(error => {
           console.error(error);

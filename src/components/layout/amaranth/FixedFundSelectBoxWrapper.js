@@ -20,7 +20,8 @@ import SubmitButton from '../../common/button/SubmitButton';
 import FundTypeSearch from '../../feature/amaranth/fundType/FundTypeSearch';
 import { useForm } from 'react-hook-form';
 import { ko } from 'date-fns/esm/locale';
-
+import { redirect } from '../../../../node_modules/react-router-dom/dist/index';
+import { BiTrash } from 'react-icons/bi';
 const FixedFundSelectBoxWrapper = ({
   onValuesChange,
   onChangeFunction,
@@ -327,7 +328,7 @@ const FixedFundSelectBoxWrapper = ({
             onChange={e => setInputValue(e.target.value)} // 사용자의 입력을 상태에 반영
             onBlur={handleBlur} // onBlur 이벤트가 발생할 때 handleBlurOrEnter 함수 실행
             onKeyDown={e => e.key === 'Enter' && handleEnter()} // onKeyDown 이벤트를 처리
-            style={{ backgroundColor: 'pink' }}
+            style={{ backgroundColor: '#fef4f4' }}
           />
           <FaRegListAlt
             className="FFInputIconStyle"
@@ -545,9 +546,12 @@ const FixedFundSelectBoxWrapper = ({
             style={{
               marginLeft: -60,
               marginRight: 30,
+              color: 'red',
+              fontSize: '28px',
             }}
+            className="FFcustomButton"
           >
-            취소
+            <BiTrash />
           </button>
         )}
 
@@ -581,6 +585,7 @@ const FixedFundSelectBoxWrapper = ({
                 startDate={endStartDate}
                 endDate={endEndDate}
                 inline
+                locale={ko}
               />
               {endStartDate && (
                 <DatePicker
@@ -597,6 +602,7 @@ const FixedFundSelectBoxWrapper = ({
                   minDate={
                     new Date(endStartDate.getTime() + 24 * 60 * 60 * 1000)
                   }
+                  locale={ko}
                   inline
                 />
               )}
@@ -608,9 +614,12 @@ const FixedFundSelectBoxWrapper = ({
             onClick={handleDateReset}
             style={{
               marginLeft: -40,
+              color: 'red',
+              fontSize: '28px',
             }}
+            className="FFcustomButton"
           >
-            취소
+            <BiTrash />
           </button>
         )}
       </div>
