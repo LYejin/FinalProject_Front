@@ -186,10 +186,8 @@ const EmployeeModel = ({
     const response = await authAxiosInstance(
       `system/user/groupManage/employee/getList`
     );
-    console.log(response.data);
     setEmpList(response.data);
     if (clickYN && !insertButtonClick) {
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^');
       setUsername(response.data[0]?.username);
       setData(response?.data[0] || resetData());
       setSelectedRadioValue(response.data[0]?.gender_FG);
@@ -206,6 +204,14 @@ const EmployeeModel = ({
       setWorkplaceSelect(response.data[0]?.div_CD);
     }
     setChangeForm(false);
+  };
+
+  // 사원 리스트 얻는 axios
+  const getEmpListInit = async emp => {
+    const response = await authAxiosInstance(
+      `system/user/groupManage/employee/getList`
+    );
+    setEmpList(response.data);
   };
 
   // 회사 리스트 얻는 axios
@@ -578,19 +584,20 @@ const EmployeeModel = ({
 
       console.log('insert 버튼');
       console.log(userData);
-      const response = await imageAxiosInstance.post(
+      await imageAxiosInstance.post(
         'system/user/groupManage/employee/empInsert',
         formData
       );
-      console.log(response.data);
-      setEmpList([
-        ...empList,
-        {
-          join_DT: getJoinDT,
-          username: data?.username,
-          kor_NM: data?.kor_NM,
-        },
-      ]);
+      // setEmpList([
+      //   ...empList,
+      //   {
+      //     join_DT: getJoinDT,
+      //     username: data?.username,
+      //     kor_NM: data?.kor_NM,
+      //   },
+      // ]);
+
+      getEmpListInit();
       reset();
       setDeptAndDivData(
         `${selectedDivCd}. ${selectedDivNm} / ${selectedDeptCd}. ${selectedDeptNm}`
@@ -602,12 +609,9 @@ const EmployeeModel = ({
       setChangeFormData();
       setInsertButtonClick(false);
       setClickYN(true);
-      console.log(listRef.current.scrollHeight);
-      if (listRef.current) {
-        listRef.current.scrollTop = 3000;
-      }
-      console.log(listRef.current.scrollHeight);
-      console.log(listRef.current.scrollTop);
+      // if (listRef.current) {
+      //   listRef.current.scrollTop = 3000;
+      // }
     } else if (
       !clickYN &&
       insertButtonClick &&
@@ -709,6 +713,8 @@ const EmployeeModel = ({
         }
       });
     } else if (e.target.name === 'username') {
+      setValue('email_ADD', e.target.value);
+      setValue('personal_MAIL', e.target.value);
       ///
       // if (e.target.value === '' || e.target.value === undefined) {
       //   setCheckDBErrorYN({ ...checkDBErrorYN, username_ERROR: true });

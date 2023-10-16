@@ -6247,7 +6247,6 @@ fieldset:disabled .btn {
   background-color: white;
   left: 53px;
   height: 50px;
-  cursor: pointer;
   z-index: -1;
 }
 

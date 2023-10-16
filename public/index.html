@@ -1,38 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- <script src="../src/js/datatables-simple-demo.js"></script> -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <title>React App</title>
-    <script
-      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- IONICONS -->
-    <!-- <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script> -->
-    <script>
-      /** 아래 라이선스키는 localhost, 127.0.0.1에서만 사용이 가능한 라이선스 입니다. */
-      var realGrid2Lic =
-        'upVcPE+wPOmtLjqyBIh9RkM/nBOseBrflwxYpzGZyYm9cY8amGDkiMnVeQKUHJDjW2y71jtk+wteqHQ1mRMIXzEcGIrzZpzzNTakk0yR9UcO/hzNodVsIiqQNVtxmmYt';
-    </script>
-    <style>
-      /* .rg-button-action {
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <style>
+    /* .rg-button-action {
         background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE2IDE2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0ZGRkZGRjt9LnN0MXtmaWxsOiM0Mjc3QUQ7fS5zdDJ7ZmlsbDojNjlCNjMxO30uc3Qze2ZpbGw6I0ZGQ0MwMjt9LnN0NHtmaWxsOiM5RTcyMTU7fS5zdDV7ZmlsbDojNjJBOUZGO30uc3Q2e2ZpbGw6IzJDM0U1MDt9LnN0N3tmaWxsOiNCM0IzQjM7fS5zdDh7ZmlsbDojQjIzQTNBO30uc3Q5e2ZpbGw6IzM0NkJBOTt9LnN0MTB7ZmlsbDojMTcxNzE3O30uc3QxMXtvcGFjaXR5OjAuNTtmaWxsOiM2MkE5RkY7fS5zdDEye2ZpbGw6IzY3Njc2Nzt9LnN0MTN7ZmlsbDojRTU2NjE1O308L3N0eWxlPjxnPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMyw1SDNDMi40LDUsMiw0LjYsMiw0czAuNC0xLDEtMWgxMGMwLjYsMCwxLDAuNCwxLDFTMTMuNiw1LDEzLDV6Ii8+PC9nPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMyw5SDNDMi40LDksMiw4LjYsMiw4czAuNC0xLDEtMWgxMGMwLjYsMCwxLDAuNCwxLDFTMTMuNiw5LDEzLDl6Ii8+PC9nPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMywxM0gzYy0wLjYsMC0xLTAuNC0xLTFzMC40LTEsMS0xaDEwYzAuNiwwLDEsMC40LDEsMVMxMy42LDEzLDEzLDEzeiIvPjwvZz48L2c+PC9zdmc+)
           no-repeat center !important;
       }
@@ -40,11 +17,38 @@
         background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTYgMTYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE2IDE2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6I0ZGRkZGRjt9LnN0MXtmaWxsOiM0Mjc3QUQ7fS5zdDJ7ZmlsbDojNjlCNjMxO30uc3Qze2ZpbGw6I0ZGQ0MwMjt9LnN0NHtmaWxsOiM5RTcyMTU7fS5zdDV7ZmlsbDojNjJBOUZGO30uc3Q2e2ZpbGw6IzJDM0U1MDt9LnN0N3tmaWxsOiNCM0IzQjM7fS5zdDh7ZmlsbDojQjIzQTNBO30uc3Q5e2ZpbGw6IzM0NkJBOTt9LnN0MTB7ZmlsbDojMTcxNzE3O30uc3QxMXtvcGFjaXR5OjAuNTtmaWxsOiM2MkE5RkY7fS5zdDEye2ZpbGw6IzY3Njc2Nzt9LnN0MTN7ZmlsbDojRTU2NjE1O308L3N0eWxlPjxnPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMyw1SDNDMi40LDUsMiw0LjYsMiw0czAuNC0xLDEtMWgxMGMwLjYsMCwxLDAuNCwxLDFTMTMuNiw1LDEzLDV6Ii8+PC9nPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMyw5SDNDMi40LDksMiw4LjYsMiw4czAuNC0xLDEtMWgxMGMwLjYsMCwxLDAuNCwxLDFTMTMuNiw5LDEzLDl6Ii8+PC9nPjxnPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMywxM0gzYy0wLjYsMC0xLTAuNC0xLTFzMC40LTEsMS0xaDEwYzAuNiwwLDEsMC40LDEsMVMxMy42LDEzLDEzLDEzeiIvPjwvZz48L2c+PC9zdmc+)
           no-repeat center !important;
       } */
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+    crossorigin="anonymous"></script>
+  <!-- <script src="../src/js/datatables-simple-demo.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <title>React App</title>
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- IONICONS -->
+  <!-- <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script> -->
+  <!-- <script>
+    /** 아래 라이선스키는 localhost, 127.0.0.1에서만 사용이 가능한 라이선스 입니다. */
+    var realGrid2Lic =
+      'upVcPE+wPOmtLjqyBIh9RkM/nBOseBrflwxYpzGZyYmdt0IGq/YgDCOkprfWx8onHMuQsxpEaXgjzMHVcqbkABE4/PAt4c86';
+  </script> -->
+  <!-- <script>
+    /** 아래 라이선스키는 localhost, 127.0.0.1에서만 사용이 가능한 라이선스 입니다. */
+    var realGrid2Lic =
+      'upVcPE+wPOmtLjqyBIh9RkM/nBOseBrflwxYpzGZyYmdt0IGq/YgDE8kAnALsLnJOTdTiFYZM1sjzMHVcqbkABE4/PAt4c86';
+  </script> -->
+
+  <script>
+    /** 아래 라이선스키는 localhost, 127.0.0.1에서만 사용이 가능한 라이선스 입니다. */
+    var realGrid2Lic =
+      'upVcPE+wPOmtLjqyBIh9RkM/nBOseBrflwxYpzGZyYm9cY8amGDkiMnVeQKUHJDjW2y71jtk+wteqHQ1mRMIXzEcGIrzZpzzNTakk0yR9UcO/hzNodVsIiqQNVtxmmYt';
+  </script>
+
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>

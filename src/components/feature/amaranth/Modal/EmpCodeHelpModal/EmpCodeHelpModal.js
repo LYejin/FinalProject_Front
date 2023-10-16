@@ -213,16 +213,16 @@ const EmpCodeHelpModal = ({
 
     dataProviderStrade.insertRows(cellClickData, newDataList);
     dataProviderStrade.setRowState(cellClickData + rowDatas.length, 'none');
-    setEmpCheckDataList(rowDatas);
+    //setEmpCheckDataList(rowDatas);
     onChangeModalClose();
     setBottomButtonClick(false);
-    gridViewStrade.setEditOptions({
-      insertable: true, //행 삽입 가능 여부
-      appendable: true, //행 추가 가능 여부
-      commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
-      appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
-      crossWhenExitLast: true,
-    });
+    // gridViewStrade.setEditOptions({
+    //   insertable: true, //행 삽입 가능 여부
+    //   appendable: true, //행 추가 가능 여부
+    //   commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+    //   appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+    //   crossWhenExitLast: true,
+    // });
   };
 
   return (

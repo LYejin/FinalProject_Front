@@ -52,6 +52,7 @@ const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
                             required: '거래처코드를 입력해주세요.',
                           }
                       )}
+                      maxLength="9"
                       style={{
                         border:
                           errors.tr_CD &&
@@ -191,6 +192,7 @@ const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
                     name="bank_CD"
                     className="inputStyle"
                     {...register('bank_CD')}
+                    maxLength="3"
                     defaultValue={
                       state.financeCDChangeData
                         ? `${state.financeCDChangeData?.bank_CD}. ${state.financeCDChangeData?.bank_NAME}`
@@ -216,6 +218,7 @@ const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
                   name="depositor"
                   className="inputStyle"
                   {...register('depositor')}
+                  maxLength="70"
                   defaultValue={state.data?.depositor}
                 />
               </td>
@@ -225,6 +228,7 @@ const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
                   type="text"
                   name="deposit_NM"
                   className="inputStyle"
+                  maxLength="70"
                   {...register('deposit_NM')}
                   defaultValue={state.data?.deposit_NM}
                 />
@@ -237,6 +241,7 @@ const FtradeInfoBox = ({ register, errors, setValue, state, actions }) => {
                   type="text"
                   name="account_OPEN_BN"
                   className="reqInputStyleAccount"
+                  maxLength="70"
                   {...register('account_OPEN_BN')}
                   defaultValue={state.data?.account_OPEN_BN}
                 />

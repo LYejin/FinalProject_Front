@@ -290,14 +290,14 @@
   color: #3bc1db;
   font-size: large;
   font-weight: 600;
+  width: 40px;
 }
 
 .deleteTradeSpan {
-  margin-left: 5px;
   color: white;
-  width: 60px;
   font-size: large;
   font-weight: 600;
+  width: 100px;
 }
 
 .liqModalTitle {

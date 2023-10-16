@@ -50,6 +50,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                             required: '거래처코드를 입력해주세요.',
                           }
                       )}
+                      maxLength="9"
                       style={{
                         border:
                           errors.tr_CD &&
@@ -134,6 +135,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                           ? '1px solid red'
                           : '1px solid #ccc',
                     }}
+                    maxLength="50"
                     onFocus={actions.onFocusError}
                     onChange={actions.onChangeDBDataSearch}
                   />
@@ -244,6 +246,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   name="ceo_NM"
                   className="inputStyle"
                   {...register('ceo_NM')}
+                  maxLength="20"
                   defaultValue={state.data.ceo_NM}
                   onChange={actions.onChangeDBDataSearch}
                 />
@@ -258,6 +261,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                     name="business"
                     className="inputStyle"
                     {...register('business')}
+                    maxLength="50"
                     defaultValue={state.data.business}
                   />
                 </div>
@@ -267,6 +271,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                 <input
                   type="text"
                   name="jongmok"
+                  maxLength="20"
                   className="inputStyle"
                   {...register('jongmok')}
                   defaultValue={state.data.jongmok}
@@ -282,6 +287,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   type="text"
                   className="addressInputStyle"
                   name="zip"
+                  maxLength="7"
                   {...register('zip')}
                   defaultValue={state.address ? state.address : state.data.zip}
                 />
@@ -298,6 +304,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   className="addrNum"
                   name="addr"
                   {...register('addr')}
+                  maxLength="140"
                   defaultValue={
                     state.addressDetail ? state.addressDetail : state.data.addr
                   }
@@ -309,6 +316,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   className="inputStyle"
                   name="addr_NUM"
                   {...register('addr_NUM')}
+                  maxLength="140"
                   defaultValue={state.data.addr_NUM}
                 />
               </td>
@@ -347,6 +355,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   className="inputStyle"
                   name="website"
                   {...register('website')}
+                  maxLength="28"
                   defaultValue={state.data.website}
                 />
               </td>
@@ -357,6 +366,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                   name="email"
                   className="inputStyle"
                   {...register('email')}
+                  maxLength="70"
                   defaultValue={state.data.email}
                 />
               </td>
@@ -369,6 +379,7 @@ const GtradeInfoBox = ({ register, errors, state, actions, setValue }) => {
                     type="text"
                     className="reqInputStyleLiq"
                     name="liq_CD"
+                    maxLength="1"
                     {...register('liq_CD')}
                     defaultValue={
                       state.liquorCDChangeData

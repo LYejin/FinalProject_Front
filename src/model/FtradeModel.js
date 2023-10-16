@@ -460,14 +460,15 @@ const FtradeModel = ({
       );
       setTR_CD(response?.data);
       console.log(response?.data);
-      setEmpList([
-        ...empList,
-        {
-          tr_CD: response?.data,
-          tr_NM: data?.tr_NM,
-          BA_NB_TR: data?.BA_NB_TR,
-        },
-      ]);
+      // setEmpList([
+      //   ...empList,
+      //   {
+      //     tr_CD: response?.data,
+      //     tr_NM: data?.tr_NM,
+      //     ba_NB_TR: data?.ba_NB_TR,
+      //   },
+      // ]);
+      getEmpListInit();
       setData({ ...userData, tr_CD: response?.data });
       reset();
       setChangeForm(false);
@@ -498,6 +499,14 @@ const FtradeModel = ({
         timer: 1000,
       });
     }
+  };
+
+  // 사원 리스트 얻는 axios
+  const getEmpListInit = async emp => {
+    const response = await authAxiosInstance(
+      `accounting/user/Strade/getSFtradeList`
+    );
+    setEmpList(response.data || null);
   };
 
   // 에러 처리 이벤트

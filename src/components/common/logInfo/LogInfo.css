@@ -32,4 +32,5 @@
   margin-right: 20px; /* 원하는 여백 값으로 조정합니다. */
   margin-top: 5px;
   font-size: 20px;
+  cursor: pointer;
 }

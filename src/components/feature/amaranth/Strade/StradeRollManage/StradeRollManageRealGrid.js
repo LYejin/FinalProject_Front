@@ -596,14 +596,22 @@ const StradeRollManageRealGrid = ({
     };
 
     gridView.onItemAllChecked = (grid, checked) => {
-      console.log('All checked as ' + checked);
+      const checkedRows = gridView.getCheckedItems();
+      if (checkedRows.length > 0 || gridView.isAllChecked()) {
+        setDeleteCheck('gridDelete');
+        setDeleteListCount(checkedRows.length);
+        setDeleteYN(true);
+      } else {
+        setDeleteCheck('');
+        setDeleteYN(false);
+      }
     };
 
     // 그리드의 컬럼 레이아웃을 설정합니다.
     gridView.setColumnLayout(fundTypeLayout);
 
     // 그리드의 상태 바를 숨깁니다.
-    //gridView.setStateBar({ visible: false });
+    gridView.setStateBar({ visible: false });
 
     // 그리드의 고정 옵션을 설정합니다.
     gridView.setFixedOptions({});
@@ -681,6 +689,7 @@ const StradeRollManageRealGrid = ({
           dataProviderStrade={dataProviderStrade}
           setEmpCheckDataList={setEmpCheckDataList}
           setDeptCheckDataList={setDeptCheckDataList}
+          deptCheckDataList={deptCheckDataList}
           empGridValue={empGridValue}
           setEmpGridValue={setEmpGridValue}
           setBottomButtonClick={setBottomButtonClick}
@@ -697,6 +706,7 @@ const StradeRollManageRealGrid = ({
           cellClickData={cellClickData}
           dataProviderStrade={dataProviderStrade}
           setDeptCheckDataList={setDeptCheckDataList}
+          deptCheckDataList={deptCheckDataList}
           deptGridValue={deptGridValue}
           setDeptGridValue={setDeptGridValue}
           setBottomButtonClick={setBottomButtonClick}

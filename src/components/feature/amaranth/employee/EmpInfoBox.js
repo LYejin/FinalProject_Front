@@ -75,7 +75,7 @@ const EmpInfoBox = ({
                   >
                     <i className="fa-solid fa-paperclip"></i>
                   </label>
-                  {state.imgFile && (
+                  {(state.imgFile || state.imgPriviewFile) && (
                     <button
                       type="button"
                       className="imageButtonWrapper2"
@@ -233,6 +233,7 @@ const EmpInfoBox = ({
                         ? '1px solid red'
                         : '1px solid #ccc',
                   }}
+                  maxLength="20"
                   onFocus={actions.onFocusError}
                 />
                 {state?.errorName === 'kor_NM' && (
@@ -302,6 +303,7 @@ const EmpInfoBox = ({
                       },
                     }
                   )}
+                  maxLength="50"
                   defaultValue={state.data?.email_ADD}
                   style={{
                     border:
@@ -348,6 +350,7 @@ const EmpInfoBox = ({
                         ? '1px solid red'
                         : '1px solid #ccc',
                   }}
+                  maxLength="50"
                   onFocus={actions.onFocusError}
                 />
                 {state.errorName === 'password' && (
@@ -505,6 +508,7 @@ const EmpInfoBox = ({
                 defaultValue={
                   state.address ? state.address : state.data?.zipcode
                 }
+                maxLength="7"
               />
               <EventButton
                 data={'우편번호'}
@@ -522,6 +526,7 @@ const EmpInfoBox = ({
                 defaultValue={
                   state.addressDetail ? state.addressDetail : state.data?.addr
                 }
+                maxLength="140"
               />
             </td>
             <td className="cellStyle">
@@ -531,6 +536,7 @@ const EmpInfoBox = ({
                 name="addr_NUM"
                 {...register('addr_NUM')}
                 defaultValue={state.data?.addr_NUM}
+                maxLength="140"
               />
             </td>
           </tr>

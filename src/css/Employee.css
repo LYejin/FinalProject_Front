@@ -345,3 +345,13 @@
   border-style: solid;
   border-color: #ffdede transparent transparent transparent;
 }
+
+.empListBoxAvatar {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.empListDetailBoxWrapper {
+  display: flex;
+}

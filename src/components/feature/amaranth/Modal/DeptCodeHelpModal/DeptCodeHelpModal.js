@@ -21,6 +21,7 @@ const DeptCodeHelpModal = ({
   gridViewStrade,
   cellClickData,
   dataProviderStrade,
+  deptCheckDataList,
   setDeptCheckDataList,
   deptGridValue,
   setDeptGridValue,
@@ -169,7 +170,7 @@ const DeptCodeHelpModal = ({
       gridView.destroy();
       dataProvider.destroy(); // useEffect는 한 번만 실행되도록 빈 배열을 의존성으로 설정합니다.
     };
-  }, []);
+  }, [deptCheckDataList]);
 
   const onClickBottomButtonEvent = () => {
     gridViewStrade.editOptions.insertable = false;
@@ -208,16 +209,16 @@ const DeptCodeHelpModal = ({
     );
     dataProviderStrade.insertRows(cellClickData, newDataList);
     dataProviderStrade.setRowState(cellClickData + rowDatas.length, 'none'); // 최하단 row 값이어야함
-    setDeptCheckDataList(rowDatas);
+    //setDeptCheckDataList(rowDatas);
     onChangeModalClose();
     setBottomButtonClick(false);
-    gridViewStrade.setEditOptions({
-      insertable: true, //행 삽입 가능 여부
-      appendable: true, //행 추가 가능 여부
-      commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
-      appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
-      crossWhenExitLast: true,
-    });
+    // gridViewStrade.setEditOptions({
+    //   insertable: true, //행 삽입 가능 여부
+    //   appendable: true, //행 추가 가능 여부
+    //   // commitWhenExitLast: true, //Tap, Enter키 입력시 커밋(행행 유효성동 or 행 추가) 가능
+    //   // appendWhenExitLast: true, //Tap, Enter키 입력시 행추가 가능
+    //   // crossWhenExitLast: true,
+    // });
   };
 
   return (

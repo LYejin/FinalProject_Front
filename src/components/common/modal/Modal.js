@@ -18,7 +18,7 @@ const Modal = ({
     width: width,
     height: height,
     backgroundColor: 'white',
-    zIndex: 1000,
+    zIndex: 10000,
   };
 
   const onClickBottomButtonFunction = () => {

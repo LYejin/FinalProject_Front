@@ -1,18 +1,19 @@
 import React from 'react';
 import LogInfo from '../logInfo/LogInfo';
 import styled from 'styled-components';
+import { Link } from '../../../../node_modules/react-router-dom/dist/index';
 
 const Header = () => {
   return (
     <>
       <nav className="sb-topnav navbar navbar-expand navbar-dark bg-white">
-        <a className="navbar-brand ps-3" href="index.html">
+        <Link className="navbar-brand ps-3" to="/LoginMain">
           <img
             src={`${process.env.PUBLIC_URL}/image/amaranth10Logo.png`}
             className="amaranth-logo"
             alt="React"
           />
-        </a>
+        </Link>
         {/* <button
           className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
           id="sidebarToggle"

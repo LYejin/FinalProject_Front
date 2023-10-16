@@ -325,6 +325,14 @@ const GtradeModel = ({
     });
   };
 
+  // 사원 리스트 얻는 axios
+  const getEmpListInit = async emp => {
+    const response = await authAxiosInstance(
+      `accounting/user/Strade/getSGtradeList`
+    );
+    setEmpList(response.data || null);
+  };
+
   // form 상태 change 되었는지 확인
   const onChangeFunction = e => {
     setChangeForm(true);
@@ -492,16 +500,17 @@ const GtradeModel = ({
       );
       setTR_CD(response?.data);
       console.log(response.data);
-      setEmpList([
-        ...empList,
-        {
-          tr_CD: response?.data,
-          tr_NM: data?.tr_NM,
-          reg_NB: data?.reg_NB,
-        },
-      ]);
+      // setEmpList([
+      //   ...empList,
+      //   {
+      //     tr_CD: response?.data,
+      //     tr_NM: data?.tr_NM,
+      //     reg_NB: data?.reg_NB,
+      //   },
+      // ]);
       setData({ ...userData, tr_CD: response?.data, phone_NB: data?.phone_NB });
       reset();
+
       setChangeForm(false);
       setChangeFormData();
       setInsertButtonClick(false);
@@ -512,9 +521,10 @@ const GtradeModel = ({
       );
       setClickYN(true);
       //console.log(listRef.current.scrollHeight);
-      if (listRef.current) {
-        listRef.current.scrollTop = 3000;
-      }
+      // if (listRef.current) {
+      //   listRef.current.scrollTop = 3000;
+      // }
+      getEmpListInit();
       //console.log(listRef.current.scrollHeight);
       //console.log(listRef.current.scrollTop);
     } else if (
@@ -579,16 +589,15 @@ const GtradeModel = ({
         return;
       } else {
         delete errors.ppl_NB;
-        setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_DD_ERROR: true });
         await authAxiosInstance(`accounting/user/Strade/pplNbVal`, {
           params: { PPL_NB: e.target.value },
         }).then(response => {
           if (response.data) {
+            setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_DD_ERROR: true });
             setError('ppl_NB', {
               message: `중복된 주민등록번호가 존재합니다.`,
             });
           }
-          return;
         });
         setCheckDBErrorYN({ ...checkDBErrorYN, ppl_NB_ERROR: false });
       }
